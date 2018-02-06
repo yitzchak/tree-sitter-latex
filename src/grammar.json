@@ -1,0 +1,305 @@
+{
+  "name": "latex",
+  "rules": {
+    "tex": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "text_mode"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "text_mode"
+          }
+        }
+      ]
+    },
+    "text_mode": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "escaped"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "command"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "parameter"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "inline_math"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "display_math"
+        }
+      ]
+    },
+    "math_mode": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "escaped"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "command"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "parameter"
+        }
+      ]
+    },
+    "parameter": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "parameter_char"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[0-9]+"
+        }
+      ]
+    },
+    "escaped": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "escape"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "escape"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "begin_group"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "end_group"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "math_shift"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "alignment_tab"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "parameter_char"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "space"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "other"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "active_char"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "comment_char"
+            }
+          ]
+        }
+      ]
+    },
+    "command": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "escape"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "letter"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "letter"
+          }
+        }
+      ]
+    },
+    "group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tex"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "display_math": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "math_mode"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        }
+      ]
+    },
+    "inline_math": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "math_mode"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        }
+      ]
+    },
+    "escape": {
+      "type": "STRING",
+      "value": "\\"
+    },
+    "begin_group": {
+      "type": "STRING",
+      "value": "{"
+    },
+    "end_group": {
+      "type": "STRING",
+      "value": "}"
+    },
+    "math_shift": {
+      "type": "STRING",
+      "value": "$"
+    },
+    "alignment_tab": {
+      "type": "STRING",
+      "value": "&"
+    },
+    "end_of_line": {
+      "type": "STRING",
+      "value": "\n"
+    },
+    "parameter_char": {
+      "type": "STRING",
+      "value": "#"
+    },
+    "superscript": {
+      "type": "STRING",
+      "value": "^"
+    },
+    "subscript": {
+      "type": "STRING",
+      "value": "_"
+    },
+    "space": {
+      "type": "PATTERN",
+      "value": "[ \\t]"
+    },
+    "letter": {
+      "type": "PATTERN",
+      "value": "[a-zA-Z]"
+    },
+    "other": {
+      "type": "PATTERN",
+      "value": "[^\\\\{}$&\\n#^_ \\ta-zA-Z~%]"
+    },
+    "active_char": {
+      "type": "STRING",
+      "value": "~"
+    },
+    "comment_char": {
+      "type": "STRING",
+      "value": "%"
+    },
+    "comment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "%.*"
+        }
+      ]
+    }
+  },
+  "extras": [
+    {
+      "type": "SYMBOL",
+      "name": "comment"
+    }
+  ],
+  "conflicts": [],
+  "externals": [],
+  "inline": []
+}

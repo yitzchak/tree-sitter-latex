@@ -1,0 +1,31 @@
+{
+  "name": "tree-sitter-latex",
+  "version": "0.0.0",
+  "description": "LaTeX grammar for tree-sitter",
+  "main": "index.js",
+  "scripts": {
+    "build": "tree-sitter generate && node-gyp build",
+    "test": "tree-sitter test && tree-sitter parse examples --quiet --time"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yitzchak/tree-sitter-latex.git"
+  },
+  "keywords": [
+    "parser",
+    "lexer",
+    "latex"
+  ],
+  "author": "Tarn Burton <twburton@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yitzchak/tree-sitter-latex/issues"
+  },
+  "homepage": "https://github.com/yitzchak/tree-sitter-latex",
+  "dependencies": {
+    "nan": "^2.8.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.8.6"
+  }
+}
