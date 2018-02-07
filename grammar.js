@@ -1,71 +1,81 @@
 module.exports = grammar({
   name: 'latex',
 
-  extras: $ => [$.comment],
+  extras: $ => [
+    $.magic,
+    $.comment
+  ],
 
   rules: {
-    tex: $ => seq(
-      $.text_mode,
-      repeat($.text_mode)
-    ),
+    tex: $ => $.text_mode,
 
-    text_mode: $ => choice(
-      $.escaped,
+    text_mode: $ => repeat1(choice(
+      $.active_char,
       $.command,
-      $.group,
+      $.escaped,
       $.parameter,
+      $.subscript,
+      $.superscript,
+      $.text,
       $.inline_math,
-      $.display_math
-    ),
+      $.display_math,
+      $.text_group,
+      $.comment
+    )),
 
-    math_mode: $ => choice(
-      $.escaped,
+    math_mode: $ => repeat1(choice(
+      $.active_char,
       $.command,
-      $.group,
-      $.parameter
-    ),
+      $.escaped,
+      $.parameter,
+      $.subscript,
+      $.superscript,
+      $.text,
+      $.math_group,
+      $.comment
+    )),
 
     parameter: $ => seq(
-      $.parameter_char, /[0-9]+/
+      $.parameter_char, $.number
     ),
 
     escaped: $ => seq(
       $.escape,
-      choice(
-        $.escape,
-        $.begin_group,
-        $.end_group,
-        $.math_shift,
-        $.alignment_tab,
-        $.parameter_char,
-        $.space,
-        $.other,
-        $.active_char,
-        $.comment_char
-      )
+      /./
     ),
 
     command: $ => seq(
       $.escape,
-      $.letter,
-      repeat($.letter)
+      choice(
+        $.storage,
+        $.catcode,
+        $.keyword
+      )
     ),
 
-    group: $ => seq(
-      $.begin_group, $.tex, $.end_group
+    storage: $ => /[egx]?def/,
+
+    catcode: $ => seq(
+      /k?catcode`/, $.escaped, '=', $.number
+    ),
+
+    text_group: $ => seq(
+      $.begin_group, $.text_mode, $.end_group
+    ),
+
+    math_group: $ => seq(
+      $.begin_group, $.math_mode, $.end_group
     ),
 
     display_math: $ => seq(
       $.math_shift, $.math_shift,
       $.math_mode,
-      repeat($.math_mode),
       $.math_shift, $.math_shift
     ),
 
     inline_math: $ => seq(
       $.math_shift,
       $.math_mode,
-      repeat($.math_mode),
       $.math_shift
     ),
 
@@ -81,10 +91,14 @@ module.exports = grammar({
     //ignored_character: //,
     space: $ => /[ \t]/,
     letter: $ => /[a-zA-Z]/,
+    keyword: $ => /[a-zA-Z]+/,
     other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
     active_char: $ => '~',
     comment_char: $ => '%',
+    text: $ => /[^\\{}$&#^_~%]+/,
+    number: $ => /[0-9]+/,
 
-    comment: $ => seq(/%.*/)
+    comment: $ => /%.*/,
+    magic: $ => /%\s+!T[eE]X\s+(\w+:)?\w+\s*=.*/
   }
 })
