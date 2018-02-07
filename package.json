@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tree-sitter generate && node-gyp build",
+    "parse": "node scripts/parse.js",
     "test": "tree-sitter test && tree-sitter parse examples --quiet --time"
   },
   "repository": {
@@ -26,6 +27,8 @@
     "nan": "^2.8.0"
   },
   "devDependencies": {
+    "concat-stream": "^1.6.0",
+    "tree-sitter": "^0.8.8",
     "tree-sitter-cli": "^0.8.6"
   }
 }
