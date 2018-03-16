@@ -1,15 +1,11 @@
 module.exports = grammar({
   name: 'latex',
 
-  extras: $ => [
-    $.magic,
-    $.comment
-  ],
-
   rules: {
     tex: $ => $.text_mode,
 
     text_mode: $ => repeat1(choice(
+      $.comment,
       $.active_char,
       $.command,
       $.escaped,
@@ -24,6 +20,7 @@ module.exports = grammar({
     )),
 
     math_mode: $ => repeat1(choice(
+      $.comment,
       $.active_char,
       $.command,
       $.escaped,
@@ -79,6 +76,14 @@ module.exports = grammar({
       $.math_shift
     ),
 
+    comment: $ => seq(
+      $.comment_char,
+      choice(
+        $.magic,
+        $.comment_text
+      )
+    ),
+
     escape: $ => '\\',
     begin_group: $ => '{',
     end_group: $ => '}',
@@ -98,7 +103,7 @@ module.exports = grammar({
     text: $ => /[^\\{}$&#^_~%]+/,
     number: $ => /[0-9]+/,
 
-    comment: $ => /%.*/,
-    magic: $ => /%\s+!T[eE]X\s+(\w+:)?\w+\s*=.*/
+    magic: $ => /\s*!T[eE]X\s+.*/,
+    comment_text: $ => /.*/
   }
 })
