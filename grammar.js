@@ -264,10 +264,12 @@ module.exports = grammar({
     ),
 
     section: $ => seq(
-      $.escape, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/,
+      $.section_token,
       optional($.opt_text_group),
       $.text_group
     ),
+
+    section_token: $ => seq($.escape, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/),
 
     storage: $ => seq($.escape, /[egx]?def/),
 

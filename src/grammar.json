@@ -1656,11 +1656,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "escape"
-        },
-        {
-          "type": "PATTERN",
-          "value": "section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec"
+          "name": "section_token"
         },
         {
           "type": "CHOICE",
@@ -1677,6 +1673,19 @@
         {
           "type": "SYMBOL",
           "name": "text_group"
+        }
+      ]
+    },
+    "section_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec"
         }
       ]
     },
