@@ -12,6 +12,7 @@ module.exports = grammar({
       $.text,
       $.display_math,
       $.inline_math,
+      $.text_environment,
       $.command,
       $.escaped,
       $.text_group,
@@ -25,6 +26,7 @@ module.exports = grammar({
       $.subscript,
       $.superscript,
       $.text,
+      $.math_environment,
       $.command,
       $.escaped,
       $.math_group,
@@ -34,6 +36,14 @@ module.exports = grammar({
 
     parameter: $ => seq(
       $.parameter_char, $.number
+    ),
+
+    text_environment: $ => seq(
+      $.begin, repeat($.text_mode), $.end
+    ),
+
+    math_environment: $ => seq(
+      $.begin, repeat($.math_mode), $.end
     ),
 
     display_math: $ => choice(
@@ -220,52 +230,47 @@ module.exports = grammar({
       /[^()\[\]]/
     ),
 
-    command: $ => seq(
-      $.escape,
-      choice(
-        $.begin,
-        $.catcode,
-        $.documentclass,
-        $.end,
-        $.include,
-        $.section,
-        $.storage,
-        $.usepackage,
-        $.keyword
-      )
+    command: $ => choice(
+      $.catcode,
+      $.documentclass,
+      $.include,
+      $.section,
+      $.storage,
+      $.usepackage,
+      seq($.escape, $.name)
     ),
 
-    begin: $ => seq("begin", $.text_group),
+    begin: $ => seq($.escape, "begin", $.text_group),
 
-    end: $ => seq("end", $.text_group),
+    end: $ => seq($.escape, "end", $.text_group),
 
     documentclass: $ => seq(
-      "documentclass",
+      $.escape, "documentclass",
       optional($.opt_text_group),
       $.text_group
     ),
 
     usepackage: $ => seq(
-      "usepackage",
+      $.escape, "usepackage",
       optional($.opt_text_group),
       $.text_group
     ),
 
     include: $ => seq(
-      /include|input/,
+      $.escape, /include|input/,
       $.text_group
     ),
 
     section: $ => seq(
-      /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/,
+      $.escape, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/,
       optional($.opt_text_group),
       $.text_group
     ),
 
-    storage: $ => /[egx]?def/,
+    storage: $ => seq($.escape, /[egx]?def/),
 
     catcode: $ => seq(
-      /k?catcode`/, $.escaped, '=', $.number
+      $.escape, /k?catcode`/, $.escaped, '=', $.number
     ),
 
     text_group: $ => seq(
@@ -306,7 +311,7 @@ module.exports = grammar({
     //ignored_character: //,
     space: $ => /[ \t]/,
     letter: $ => /[a-zA-Z]/,
-    keyword: $ => /[a-zA-Z]+/,
+    name: $ => /[a-zA-Z]+/,
     other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
     active_char: $ => '~',
     comment_char: $ => '%',
