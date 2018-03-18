@@ -17,6 +17,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "alignment_tab"
+        },
+        {
+          "type": "SYMBOL",
           "name": "parameter"
         },
         {
@@ -71,6 +75,10 @@
         {
           "type": "SYMBOL",
           "name": "active_char"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "alignment_tab"
         },
         {
           "type": "SYMBOL",

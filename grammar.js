@@ -6,6 +6,7 @@ module.exports = grammar({
 
     text_mode: $ => choice(
       $.active_char,
+      $.alignment_tab,
       $.parameter,
       $.subscript,
       $.superscript,
@@ -22,6 +23,7 @@ module.exports = grammar({
 
     math_mode: $ => choice(
       $.active_char,
+      $.alignment_tab,
       $.parameter,
       $.subscript,
       $.superscript,
