@@ -159,73 +159,73 @@ module.exports = grammar({
       )
     ),
 
-    begin_align: $ => seq($.escape, 'begin', $.begin_group, 'align', $.end_group),
+    begin_align: $ => seq($.begin_token,  $.begin_group, 'align', $.end_group),
 
-    end_align: $ => seq($.escape, 'end', $.begin_group, 'align', $.end_group),
+    end_align: $ => seq($.end_token,  $.begin_group, 'align', $.end_group),
 
-    begin_align_star: $ => seq($.escape, 'begin', $.begin_group, 'align*', $.end_group),
+    begin_align_star: $ => seq($.begin_token,  $.begin_group, 'align*', $.end_group),
 
-    end_align_star: $ => seq($.escape, 'end', $.begin_group, 'align*', $.end_group),
+    end_align_star: $ => seq($.end_token,  $.begin_group, 'align*', $.end_group),
 
-    begin_alignat: $ => seq($.escape, 'begin', $.begin_group, 'alignat', $.end_group, $.text_group),
+    begin_alignat: $ => seq($.begin_token,  $.begin_group, 'alignat', $.end_group, $.text_group),
 
-    end_alignat: $ => seq($.escape, 'end', $.begin_group, 'alignat', $.end_group),
+    end_alignat: $ => seq($.end_token,  $.begin_group, 'alignat', $.end_group),
 
-    begin_alignat_star: $ => seq($.escape, 'begin', $.begin_group, 'alignat*', $.end_group, $.text_group),
+    begin_alignat_star: $ => seq($.begin_token,  $.begin_group, 'alignat*', $.end_group, $.text_group),
 
-    end_alignat_star: $ => seq($.escape, 'end', $.begin_group, 'alignat*', $.end_group),
+    end_alignat_star: $ => seq($.end_token,  $.begin_group, 'alignat*', $.end_group),
 
-    begin_eqnarray: $ => seq($.escape, 'begin', $.begin_group, 'eqnarray', $.end_group),
+    begin_eqnarray: $ => seq($.begin_token,  $.begin_group, 'eqnarray', $.end_group),
 
-    end_eqnarray: $ => seq($.escape, 'end', $.begin_group, 'eqnarray', $.end_group),
+    end_eqnarray: $ => seq($.end_token,  $.begin_group, 'eqnarray', $.end_group),
 
-    begin_eqnarray_star: $ => seq($.escape, 'begin', $.begin_group, 'eqnarray*', $.end_group),
+    begin_eqnarray_star: $ => seq($.begin_token,  $.begin_group, 'eqnarray*', $.end_group),
 
-    end_eqnarray_star: $ => seq($.escape, 'end', $.begin_group, 'eqnarray*', $.end_group),
+    end_eqnarray_star: $ => seq($.end_token,  $.begin_group, 'eqnarray*', $.end_group),
 
-    begin_equation: $ => seq($.escape, 'begin', $.begin_group, 'equation', $.end_group),
+    begin_equation: $ => seq($.begin_token,  $.begin_group, 'equation', $.end_group),
 
-    end_equation: $ => seq($.escape, 'end', $.begin_group, 'equation', $.end_group),
+    end_equation: $ => seq($.end_token,  $.begin_group, 'equation', $.end_group),
 
-    begin_equation_star: $ => seq($.escape, 'begin', $.begin_group, 'equation*', $.end_group),
+    begin_equation_star: $ => seq($.begin_token,  $.begin_group, 'equation*', $.end_group),
 
-    end_equation_star: $ => seq($.escape, 'end', $.begin_group, 'equation*', $.end_group),
+    end_equation_star: $ => seq($.end_token,  $.begin_group, 'equation*', $.end_group),
 
-    begin_flalign: $ => seq($.escape, 'begin', $.begin_group, 'flalign', $.end_group),
+    begin_flalign: $ => seq($.begin_token,  $.begin_group, 'flalign', $.end_group),
 
-    end_flalign: $ => seq($.escape, 'end', $.begin_group, 'flalign', $.end_group),
+    end_flalign: $ => seq($.end_token,  $.begin_group, 'flalign', $.end_group),
 
-    begin_flalign_star: $ => seq($.escape, 'begin', $.begin_group, 'flalign*', $.end_group),
+    begin_flalign_star: $ => seq($.begin_token,  $.begin_group, 'flalign*', $.end_group),
 
-    end_flalign_star: $ => seq($.escape, 'end', $.begin_group, 'flalign*', $.end_group),
+    end_flalign_star: $ => seq($.end_token,  $.begin_group, 'flalign*', $.end_group),
 
-    begin_gather: $ => seq($.escape, 'begin', $.begin_group, 'gather', $.end_group),
+    begin_gather: $ => seq($.begin_token,  $.begin_group, 'gather', $.end_group),
 
-    end_gather: $ => seq($.escape, 'end', $.begin_group, 'gather', $.end_group),
+    end_gather: $ => seq($.end_token,  $.begin_group, 'gather', $.end_group),
 
-    begin_gather_star: $ => seq($.escape, 'begin', $.begin_group, 'gather*', $.end_group),
+    begin_gather_star: $ => seq($.begin_token,  $.begin_group, 'gather*', $.end_group),
 
-    end_gather_star: $ => seq($.escape, 'end', $.begin_group, 'gather*', $.end_group),
+    end_gather_star: $ => seq($.end_token,  $.begin_group, 'gather*', $.end_group),
 
-    begin_multline: $ => seq($.escape, 'begin', $.begin_group, 'multline', $.end_group),
+    begin_multline: $ => seq($.begin_token,  $.begin_group, 'multline', $.end_group),
 
-    end_multline: $ => seq($.escape, 'end', $.begin_group, 'multline', $.end_group),
+    end_multline: $ => seq($.end_token,  $.begin_group, 'multline', $.end_group),
 
-    begin_multline_star: $ => seq($.escape, 'begin', $.begin_group, 'multline*', $.end_group),
+    begin_multline_star: $ => seq($.begin_token,  $.begin_group, 'multline*', $.end_group),
 
-    end_multline_star: $ => seq($.escape, 'end', $.begin_group, 'multline*', $.end_group),
+    end_multline_star: $ => seq($.end_token,  $.begin_group, 'multline*', $.end_group),
 
-    begin_split: $ => seq($.escape, 'begin', $.begin_group, 'split', $.end_group),
+    begin_split: $ => seq($.begin_token,  $.begin_group, 'split', $.end_group),
 
-    end_split: $ => seq($.escape, 'end', $.begin_group, 'split', $.end_group),
+    end_split: $ => seq($.end_token,  $.begin_group, 'split', $.end_group),
 
-    begin_split_star: $ => seq($.escape, 'begin', $.begin_group, 'split*', $.end_group),
+    begin_split_star: $ => seq($.begin_token,  $.begin_group, 'split*', $.end_group),
 
-    end_split_star: $ => seq($.escape, 'end', $.begin_group, 'split*', $.end_group),
+    end_split_star: $ => seq($.end_token,  $.begin_group, 'split*', $.end_group),
 
-    begin_math: $ => seq($.escape, 'begin', $.begin_group, 'math', $.end_group),
+    begin_math: $ => seq($.begin_token,  $.begin_group, 'math', $.end_group),
 
-    end_math: $ => seq($.escape, 'end', $.begin_group, 'math', $.end_group),
+    end_math: $ => seq($.end_token,  $.begin_group, 'math', $.end_group),
 
     escaped: $ => seq(
       $.escape,
@@ -239,43 +239,53 @@ module.exports = grammar({
       $.section,
       $.storage,
       $.usepackage,
-      seq($.escape, $.name)
+      $.token
     ),
 
-    begin: $ => seq($.escape, "begin", $.text_group),
+    begin: $ => seq($.begin_token, $.text_group),
 
-    end: $ => seq($.escape, "end", $.text_group),
+    begin_token: $ => seq($.escape, "begin"),
+
+    end: $ => seq($.end_token, $.text_group),
+
+    end_token: $ => seq($.escape, "end"),
 
     documentclass: $ => seq(
-      $.escape, "documentclass",
+      $.documentclass_token,
       optional($.opt_text_group),
       $.text_group
     ),
+
+    documentclass_token: $ => seq($.escape, "documentclass"),
 
     usepackage: $ => seq(
-      $.escape, "usepackage",
+      $.usepackage_token,
       optional($.opt_text_group),
       $.text_group
     ),
 
-    include: $ => seq(
-      $.escape, /include|input/,
-      $.text_group
+    usepackage_token: $ => seq($.escape, "usepackage"),
+
+    include: $ => seq($.include_token, $.text_group),
+
+    include_token: $ => seq($.escape, /include|input/),
+
+    section: $ => seq($.section_token, optional($.opt_text_group), $.text_group),
+
+    section_token: $ => seq(
+      $.escape,
+      /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/
     ),
 
-    section: $ => seq(
-      $.section_token,
-      optional($.opt_text_group),
-      $.text_group
-    ),
+    storage: $ => $.storage_token,
 
-    section_token: $ => seq($.escape, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/),
-
-    storage: $ => seq($.escape, /[egx]?def/),
+    storage_token: $ => seq($.escape, /[egx]?def/),
 
     catcode: $ => seq(
-      $.escape, /k?catcode`/, $.escaped, '=', $.number
+      $.catcode_token, $.escaped, '=', $.number
     ),
+
+    catcode_token: $ => seq($.escape, /k?catcode`/),
 
     text_group: $ => seq(
       $.begin_group, repeat($.text_mode), $.end_group
@@ -292,6 +302,8 @@ module.exports = grammar({
     opt_math_group: $ => seq(
       $.begin_opt, repeat($.math_mode), $.end_opt
     ),
+
+    token: $ => seq($.escape, $.name),
 
     comment: $ => seq(
       $.comment_char,
