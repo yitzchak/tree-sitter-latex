@@ -13,6 +13,7 @@ module.exports = grammar({
       $.text,
       $.display_math,
       $.inline_math,
+      $.verbatim_environment,
       $.text_environment,
       $.command,
       $.escaped,
@@ -227,6 +228,148 @@ module.exports = grammar({
 
     end_math: $ => seq($.end_token,  $.begin_group, 'math', $.end_group),
 
+    begin_verbatim: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'verbatim',
+      $.end_group
+    ),
+
+    end_verbatim: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'verbatim',
+      $.end_group
+    ),
+
+    begin_Verbatim: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'Verbatim',
+      $.end_group
+    ),
+
+    end_Verbatim: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'Verbatim',
+      $.end_group
+    ),
+
+    begin_Verbatim_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'Verbatim*',
+      $.end_group
+    ),
+
+    end_Verbatim_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'Verbatim*',
+      $.end_group
+    ),
+
+    begin_BVerbatim: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'BVerbatim',
+      $.end_group
+    ),
+
+    end_BVerbatim: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'BVerbatim',
+      $.end_group
+    ),
+
+    begin_BVerbatim_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'BVerbatim*',
+      $.end_group
+    ),
+
+    end_BVerbatim_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'BVerbatim*',
+      $.end_group
+    ),
+
+    begin_LVerbatim: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'LVerbatim',
+      $.end_group
+    ),
+
+    end_LVerbatim: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'LVerbatim',
+      $.end_group
+    ),
+
+    begin_LVerbatim_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'LVerbatim*',
+      $.end_group
+    ),
+
+    end_LVerbatim_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'LVerbatim*',
+      $.end_group
+    ),
+
+    verbatim_environment: $ => choice(
+      seq(
+        $.begin_verbatim,
+        repeat($.verbatim_token),
+        $.end_verbatim
+      ),
+      seq(
+        $.begin_Verbatim,
+        optional($.opt_text_group),
+        repeat($.verbatim_token),
+        $.end_Verbatim
+      ),
+      seq(
+        $.begin_Verbatim_star,
+        optional($.opt_text_group),
+        repeat($.verbatim_token),
+        $.end_Verbatim_star
+      ),
+      seq(
+        $.begin_BVerbatim,
+        optional($.opt_text_group),
+        repeat($.verbatim_token),
+        $.end_BVerbatim
+      ),
+      seq(
+        $.begin_BVerbatim_star,
+        optional($.opt_text_group),
+        repeat($.verbatim_token),
+        $.end_BVerbatim_star
+      ),
+      seq(
+        $.begin_LVerbatim,
+        optional($.opt_text_group),
+        repeat($.verbatim_token),
+        $.end_LVerbatim
+      ),
+      seq(
+        $.begin_LVerbatim_star,
+        optional($.opt_text_group),
+        repeat($.verbatim_token),
+        $.end_LVerbatim_star
+      )
+    ),
+
     escaped: $ => seq(
       $.escape,
       /[^()\[\]]/
@@ -333,6 +476,7 @@ module.exports = grammar({
     comment_char: $ => '%',
     text: $ => /[^\\{}$&#^_~%\[\]]+/,
     number: $ => /[0-9]+/,
+    verbatim_token: $ => /(\n|.)/,
 
     magic: $ => /\s*!T[eE]X\s+.*/,
     comment_text: $ => /.*/
