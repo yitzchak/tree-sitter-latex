@@ -3951,7 +3951,7 @@ static TSLexMode ts_lex_modes[STATE_COUNT] = {
   [273] = {.lex_state = 4},
   [274] = {.lex_state = 4},
   [275] = {.lex_state = 4},
-  [276] = {.lex_state = 4},
+  [276] = {.lex_state = 0},
   [277] = {.lex_state = 4},
   [278] = {.lex_state = 4},
   [279] = {.lex_state = 4},
@@ -8454,8 +8454,9 @@ static uint16_t ts_parse_table[STATE_COUNT][SYMBOL_COUNT] = {
     [sym_text] = ACTIONS(617),
   },
   [276] = {
-    [sym_text_group] = STATE(325),
-    [sym_begin_group] = ACTIONS(91),
+    [sym_opt_text_group] = STATE(325),
+    [sym_begin_opt] = STATE(44),
+    [anon_sym_LBRACK] = ACTIONS(89),
   },
   [277] = {
     [sym_text_group] = STATE(326),

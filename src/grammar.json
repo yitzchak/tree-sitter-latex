@@ -738,7 +738,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "text_group"
+          "name": "opt_text_group"
         }
       ]
     },
@@ -2314,21 +2314,9 @@
       "type": "STRING",
       "value": "_"
     },
-    "space": {
-      "type": "PATTERN",
-      "value": "[ \\t]"
-    },
-    "letter": {
-      "type": "PATTERN",
-      "value": "[a-zA-Z]"
-    },
     "name": {
       "type": "PATTERN",
       "value": "[a-zA-Z]+"
-    },
-    "other": {
-      "type": "PATTERN",
-      "value": "[^\\\\{}$&\\n#^_ \\ta-zA-Z~%]"
     },
     "active_char": {
       "type": "STRING",

@@ -160,73 +160,244 @@ module.exports = grammar({
       )
     ),
 
-    begin_align: $ => seq($.begin_token,  $.begin_group, 'align', $.end_group),
+    begin_align: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'align',
+      $.end_group
+    ),
 
-    end_align: $ => seq($.end_token,  $.begin_group, 'align', $.end_group),
+    end_align: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'align',
+      $.end_group
+    ),
 
-    begin_align_star: $ => seq($.begin_token,  $.begin_group, 'align*', $.end_group),
+    begin_align_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'align*',
+      $.end_group
+    ),
 
-    end_align_star: $ => seq($.end_token,  $.begin_group, 'align*', $.end_group),
+    end_align_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'align*',
+      $.end_group
+    ),
 
-    begin_alignat: $ => seq($.begin_token,  $.begin_group, 'alignat', $.end_group, $.text_group),
+    begin_alignat: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'alignat',
+      $.end_group,
+      $.opt_text_group),
 
-    end_alignat: $ => seq($.end_token,  $.begin_group, 'alignat', $.end_group),
+    end_alignat: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'alignat',
+      $.end_group
+    ),
 
-    begin_alignat_star: $ => seq($.begin_token,  $.begin_group, 'alignat*', $.end_group, $.text_group),
+    begin_alignat_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'alignat*',
+      $.end_group,
+      $.text_group
+    ),
 
-    end_alignat_star: $ => seq($.end_token,  $.begin_group, 'alignat*', $.end_group),
+    end_alignat_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'alignat*',
+      $.end_group
+    ),
 
-    begin_eqnarray: $ => seq($.begin_token,  $.begin_group, 'eqnarray', $.end_group),
+    begin_eqnarray: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'eqnarray',
+      $.end_group
+    ),
 
-    end_eqnarray: $ => seq($.end_token,  $.begin_group, 'eqnarray', $.end_group),
+    end_eqnarray: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'eqnarray',
+      $.end_group
+    ),
 
-    begin_eqnarray_star: $ => seq($.begin_token,  $.begin_group, 'eqnarray*', $.end_group),
+    begin_eqnarray_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'eqnarray*',
+      $.end_group
+    ),
 
-    end_eqnarray_star: $ => seq($.end_token,  $.begin_group, 'eqnarray*', $.end_group),
+    end_eqnarray_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'eqnarray*',
+      $.end_group
+    ),
 
-    begin_equation: $ => seq($.begin_token,  $.begin_group, 'equation', $.end_group),
+    begin_equation: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'equation',
+      $.end_group
+    ),
 
-    end_equation: $ => seq($.end_token,  $.begin_group, 'equation', $.end_group),
+    end_equation: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'equation',
+      $.end_group
+    ),
 
-    begin_equation_star: $ => seq($.begin_token,  $.begin_group, 'equation*', $.end_group),
+    begin_equation_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'equation*',
+      $.end_group
+    ),
 
-    end_equation_star: $ => seq($.end_token,  $.begin_group, 'equation*', $.end_group),
+    end_equation_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'equation*',
+      $.end_group
+    ),
 
-    begin_flalign: $ => seq($.begin_token,  $.begin_group, 'flalign', $.end_group),
+    begin_flalign: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'flalign',
+      $.end_group
+    ),
 
-    end_flalign: $ => seq($.end_token,  $.begin_group, 'flalign', $.end_group),
+    end_flalign: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'flalign',
+      $.end_group
+    ),
 
-    begin_flalign_star: $ => seq($.begin_token,  $.begin_group, 'flalign*', $.end_group),
+    begin_flalign_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'flalign*',
+      $.end_group
+    ),
 
-    end_flalign_star: $ => seq($.end_token,  $.begin_group, 'flalign*', $.end_group),
+    end_flalign_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'flalign*',
+      $.end_group
+    ),
 
-    begin_gather: $ => seq($.begin_token,  $.begin_group, 'gather', $.end_group),
+    begin_gather: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'gather',
+      $.end_group
+    ),
 
-    end_gather: $ => seq($.end_token,  $.begin_group, 'gather', $.end_group),
+    end_gather: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'gather',
+      $.end_group
+    ),
 
-    begin_gather_star: $ => seq($.begin_token,  $.begin_group, 'gather*', $.end_group),
+    begin_gather_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'gather*',
+      $.end_group
+    ),
 
-    end_gather_star: $ => seq($.end_token,  $.begin_group, 'gather*', $.end_group),
+    end_gather_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'gather*',
+      $.end_group
+    ),
 
-    begin_multline: $ => seq($.begin_token,  $.begin_group, 'multline', $.end_group),
+    begin_multline: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'multline',
+      $.end_group
+    ),
 
-    end_multline: $ => seq($.end_token,  $.begin_group, 'multline', $.end_group),
+    end_multline: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'multline',
+      $.end_group
+    ),
 
-    begin_multline_star: $ => seq($.begin_token,  $.begin_group, 'multline*', $.end_group),
+    begin_multline_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'multline*',
+      $.end_group
+    ),
 
-    end_multline_star: $ => seq($.end_token,  $.begin_group, 'multline*', $.end_group),
+    end_multline_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'multline*',
+      $.end_group
+    ),
 
-    begin_split: $ => seq($.begin_token,  $.begin_group, 'split', $.end_group),
+    begin_split: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'split',
+      $.end_group
+    ),
 
-    end_split: $ => seq($.end_token,  $.begin_group, 'split', $.end_group),
+    end_split: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'split',
+      $.end_group
+    ),
 
-    begin_split_star: $ => seq($.begin_token,  $.begin_group, 'split*', $.end_group),
+    begin_split_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'split*',
+      $.end_group
+    ),
 
-    end_split_star: $ => seq($.end_token,  $.begin_group, 'split*', $.end_group),
+    end_split_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'split*',
+      $.end_group
+    ),
 
-    begin_math: $ => seq($.begin_token,  $.begin_group, 'math', $.end_group),
+    begin_math: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'math',
+      $.end_group
+    ),
 
-    end_math: $ => seq($.end_token,  $.begin_group, 'math', $.end_group),
+    end_math: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'math',
+      $.end_group
+    ),
 
     begin_verbatim: $ => seq(
       $.begin_token,
@@ -242,84 +413,84 @@ module.exports = grammar({
       $.end_group
     ),
 
-    begin_Verbatim: $ => seq(
+    begin_Verbatim: $ => seq( // Verbatim from fancyvrb package
       $.begin_token,
       $.begin_group,
       'Verbatim',
       $.end_group
     ),
 
-    end_Verbatim: $ => seq(
+    end_Verbatim: $ => seq( // Verbatim from fancyvrb package
       $.end_token,
       $.begin_group,
       'Verbatim',
       $.end_group
     ),
 
-    begin_Verbatim_star: $ => seq(
+    begin_Verbatim_star: $ => seq( // Verbatim* from fancyvrb package
       $.begin_token,
       $.begin_group,
       'Verbatim*',
       $.end_group
     ),
 
-    end_Verbatim_star: $ => seq(
+    end_Verbatim_star: $ => seq( // Verbatim* from fancyvrb package
       $.end_token,
       $.begin_group,
       'Verbatim*',
       $.end_group
     ),
 
-    begin_BVerbatim: $ => seq(
+    begin_BVerbatim: $ => seq( // BVerbatim from fancyvrb package
       $.begin_token,
       $.begin_group,
       'BVerbatim',
       $.end_group
     ),
 
-    end_BVerbatim: $ => seq(
+    end_BVerbatim: $ => seq( // BVerbatim from fancyvrb package
       $.end_token,
       $.begin_group,
       'BVerbatim',
       $.end_group
     ),
 
-    begin_BVerbatim_star: $ => seq(
+    begin_BVerbatim_star: $ => seq( // BVerbatim* from fancyvrb package
       $.begin_token,
       $.begin_group,
       'BVerbatim*',
       $.end_group
     ),
 
-    end_BVerbatim_star: $ => seq(
+    end_BVerbatim_star: $ => seq( // BVerbatim* from fancyvrb package
       $.end_token,
       $.begin_group,
       'BVerbatim*',
       $.end_group
     ),
 
-    begin_LVerbatim: $ => seq(
+    begin_LVerbatim: $ => seq( // LVerbatim from fancyvrb package
       $.begin_token,
       $.begin_group,
       'LVerbatim',
       $.end_group
     ),
 
-    end_LVerbatim: $ => seq(
+    end_LVerbatim: $ => seq( // LVerbatim from fancyvrb package
       $.end_token,
       $.begin_group,
       'LVerbatim',
       $.end_group
     ),
 
-    begin_LVerbatim_star: $ => seq(
+    begin_LVerbatim_star: $ => seq( // LVerbatim* from fancyvrb package
       $.begin_token,
       $.begin_group,
       'LVerbatim*',
       $.end_group
     ),
 
-    end_LVerbatim_star: $ => seq(
+    end_LVerbatim_star: $ => seq( // LVerbatim* from fancyvrb package
       $.end_token,
       $.begin_group,
       'LVerbatim*',
@@ -332,37 +503,37 @@ module.exports = grammar({
         repeat($.verbatim_token),
         $.end_verbatim
       ),
-      seq(
+      seq( // Verbatim from fancyvrb package
         $.begin_Verbatim,
         optional($.opt_text_group),
         repeat($.verbatim_token),
         $.end_Verbatim
       ),
-      seq(
+      seq( // Verbatim* from fancyvrb package
         $.begin_Verbatim_star,
         optional($.opt_text_group),
         repeat($.verbatim_token),
         $.end_Verbatim_star
       ),
-      seq(
+      seq( // BVerbatim from fancyvrb package
         $.begin_BVerbatim,
         optional($.opt_text_group),
         repeat($.verbatim_token),
         $.end_BVerbatim
       ),
-      seq(
+      seq( // BVerbatim* from fancyvrb package
         $.begin_BVerbatim_star,
         optional($.opt_text_group),
         repeat($.verbatim_token),
         $.end_BVerbatim_star
       ),
-      seq(
+      seq( // LVerbatim from fancyvrb package
         $.begin_LVerbatim,
         optional($.opt_text_group),
         repeat($.verbatim_token),
         $.end_LVerbatim
       ),
-      seq(
+      seq( //* LVerbatim from fancyvrb package
         $.begin_LVerbatim_star,
         optional($.opt_text_group),
         repeat($.verbatim_token),
@@ -468,10 +639,10 @@ module.exports = grammar({
     superscript: $ => '^',
     subscript: $ => '_',
     //ignored_character: //,
-    space: $ => /[ \t]/,
-    letter: $ => /[a-zA-Z]/,
+    // space: $ => /[ \t]/,
+    // letter: $ => /[a-zA-Z]/,
     name: $ => /[a-zA-Z]+/,
-    other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
+    // other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
     active_char: $ => '~',
     comment_char: $ => '%',
     text: $ => /[^\\{}$&#^_~%\[\]]+/,
