@@ -497,6 +497,34 @@ module.exports = grammar({
       $.end_group
     ),
 
+    begin_lstlisting: $ => seq( // lstlisting from listing package
+      $.begin_token,
+      $.begin_group,
+      'lstlisting',
+      $.end_group
+    ),
+
+    end_lstlisting: $ => seq( // lstlisting from listing package
+      $.end_token,
+      $.begin_group,
+      'lstlisting',
+      $.end_group
+    ),
+
+    begin_minted: $ => seq( // minted from minted package
+      $.begin_token,
+      $.begin_group,
+      'lstlisting',
+      $.end_group
+    ),
+
+    end_minted: $ => seq( // minted from minted package
+      $.end_token,
+      $.begin_group,
+      'minted',
+      $.end_group
+    ),
+
     verbatim_environment: $ => choice(
       seq(
         $.begin_verbatim,
@@ -533,11 +561,23 @@ module.exports = grammar({
         repeat($.verbatim_token),
         $.end_LVerbatim
       ),
-      seq( //* LVerbatim from fancyvrb package
+      seq( // LVerbatim* from fancyvrb package
         $.begin_LVerbatim_star,
         optional($.opt_text_group),
         repeat($.verbatim_token),
         $.end_LVerbatim_star
+      ),
+      seq( // lstlisting from listing package
+        $.begin_lstlisting,
+        optional($.opt_text_group),
+        repeat($.verbatim_token),
+        $.end_lstlisting
+      ),
+      seq( // minted from minted package
+        $.begin_minted,
+        $.text_group,
+        repeat($.verbatim_token),
+        $.end_minted
       )
     ),
 
@@ -556,18 +596,18 @@ module.exports = grammar({
       $.token
     ),
 
-    begin: $ => seq($.begin_token, $.text_group),
+    begin: $ => seq($.begin_token, $.simple_text_group),
 
     begin_token: $ => seq($.escape, "begin"),
 
-    end: $ => seq($.end_token, $.text_group),
+    end: $ => seq($.end_token, $.simple_text_group),
 
     end_token: $ => seq($.escape, "end"),
 
     documentclass: $ => seq(
       $.documentclass_token,
       optional($.opt_text_group),
-      $.text_group
+      $.simple_text_group
     ),
 
     documentclass_token: $ => seq($.escape, "documentclass"),
@@ -575,7 +615,7 @@ module.exports = grammar({
     usepackage: $ => seq(
       $.usepackage_token,
       optional($.opt_text_group),
-      $.text_group
+      $.simple_text_group
     ),
 
     usepackage_token: $ => seq($.escape, "usepackage"),
@@ -603,6 +643,10 @@ module.exports = grammar({
 
     text_group: $ => seq(
       $.begin_group, repeat($.text_mode), $.end_group
+    ),
+
+    simple_text_group: $ => seq(
+      $.begin_group, $.text, $.end_group
     ),
 
     opt_text_group: $ => seq(
