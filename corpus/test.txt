@@ -4,7 +4,8 @@ Plain text
 fubar
 ---
 
-(document (text_mode (text)))
+(document
+  (text))
 
 ==================
 Single command
@@ -12,7 +13,10 @@ Single command
 fubar\quux wibble
 ---
 
-(document (text_mode (text)) (text_mode (command (token (escape) (name)))) (text_mode (text)))
+(document
+  (text)
+  (command (token))
+  (text))
 
 ==================
 Single command with arguments
@@ -20,4 +24,36 @@ Single command with arguments
 fubar\quux[opt]{bar} wibble
 ---
 
-(document (text_mode (text)) (text_mode (command (token (escape) (name)))) (text_mode (opt_text_group (begin_opt) (text_mode (text)) (end_opt))) (text_mode (text_group (begin_group) (text_mode (text)) (end_group))) (text_mode (text)))
+(document
+  (text)
+  (command (token))
+  (opt_text_group (begin_opt) (text) (end_opt))
+  (text_group (begin_group) (text) (end_group))
+  (text))
+
+===================
+Hello world
+==================
+\documentclass[12pt]{article}
+\begin{document}
+Hello world!
+$Hello world!$ %math mode
+\end{document}
+------------
+
+(document
+  (command
+    (documentclass
+      (documentclass_token)
+      (opt_text_group (begin_opt) (text) (end_opt))
+      (simple_text_group (begin_group) (text) (end_group))))
+  (text)
+  (text_environment
+    (begin (begin_token)
+      (simple_text_group (begin_group) (text) (end_group)))
+    (text)
+    (inline_math (math_shift) (text) (math_shift))
+    (text)
+    (comment (comment_char) (comment_text))
+    (text)
+    (end (end_token) (simple_text_group (begin_group) (text) (end_group)))))
