@@ -5,7 +5,8 @@ fubar
 ---
 
 (document
-  (text))
+  (text_mode
+    (text)))
 
 ==================
 Single command
@@ -14,9 +15,10 @@ fubar\quux wibble
 ---
 
 (document
-  (text)
-  (command (token))
-  (text))
+  (text_mode
+    (text)
+    (command (token))
+    (text)))
 
 ==================
 Single command with arguments
@@ -25,11 +27,12 @@ fubar\quux[opt]{bar} wibble
 ---
 
 (document
-  (text)
-  (command (token))
-  (opt_text_group (begin_opt) (text) (end_opt))
-  (text_group (begin_group) (text) (end_group))
-  (text))
+  (text_mode
+    (text)
+    (command (token))
+    (opt_text_group (begin_opt) (text) (end_opt))
+    (text_group (begin_group) (text) (end_group))
+    (text)))
 
 ===================
 Hello world
@@ -37,23 +40,31 @@ Hello world
 \documentclass[12pt]{article}
 \begin{document}
 Hello world!
-$Hello world!$ %math mode
+$\tag{Hello world!}x^2$ %math mode
 \end{document}
 ------------
 
 (document
-  (command
-    (documentclass
-      (documentclass_token)
-      (opt_text_group (begin_opt) (text) (end_opt))
-      (simple_text_group (begin_group) (text) (end_group))))
-  (text)
-  (text_environment
-    (begin (begin_token)
-      (simple_text_group (begin_group) (text) (end_group)))
+  (text_mode
+    (command
+      (documentclass
+        (documentclass_token)
+        (opt_text_group (begin_opt) (text) (end_opt))
+        (simple_text_group (begin_group) (text) (end_group))))
     (text)
-    (inline_math (math_shift) (text) (math_shift))
-    (text)
-    (comment (comment_char) (comment_text))
-    (text)
-    (end (end_token) (simple_text_group (begin_group) (text) (end_group)))))
+    (text_environment
+      (begin (begin_token)
+        (simple_text_group (begin_group) (text) (end_group)))
+      (text)
+      (inline_math
+        (math_shift)
+        (math_mode
+          (tag (tag_token) (math_text_group (begin_group) (text_mode (text)) (end_group)))
+          (text)
+          (superscript)
+          (text))
+        (math_shift))
+      (text)
+      (comment (comment_char) (comment_text))
+      (text)
+      (end (end_token) (simple_text_group (begin_group) (text) (end_group))))))

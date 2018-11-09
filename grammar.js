@@ -2,7 +2,7 @@ module.exports = grammar({
   name: 'latex',
 
   rules: {
-    document: $ => repeat($._text_mode),
+    document: $ => optional($.text_mode),
 
     _text_mode: $ => choice(
       $.active_char,
@@ -22,6 +22,8 @@ module.exports = grammar({
       $.comment
     ),
 
+    text_mode: $ => repeat1($._text_mode),
+
     _math_mode: $ => choice(
       $.active_char,
       $.alignment_tab,
@@ -34,8 +36,11 @@ module.exports = grammar({
       $.escaped,
       $.math_group,
       $.opt_math_group,
+      $.tag,
       $.comment
     ),
+
+    math_mode: $ => prec.left(2, repeat1($._math_mode)),
 
     parameter: $ => seq(
       $.parameter_char, $.number
@@ -52,92 +57,92 @@ module.exports = grammar({
     display_math: $ => choice(
       seq(
         $.math_shift, $.math_shift,
-        repeat($._math_mode),
+        $.math_mode,
         $.math_shift, $.math_shift
       ),
       seq(
         $._escape, '[',
-        repeat($._math_mode),
+        $.math_mode,
         $._escape, ']'
       ),
       seq( // AMS align
         $.begin_align,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_align
       ),
       seq( // AMS align*
         $.begin_align_star,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_align_star
       ),
       seq( // AMS alignat
         $.begin_alignat,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_alignat
       ),
       seq( // AMS alignat*
         $.begin_alignat_star,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_alignat_star
       ),
       seq(
         $.begin_eqnarray,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_eqnarray
       ),
       seq(
         $.begin_eqnarray_star,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_eqnarray_star
       ),
       seq(
         $.begin_equation,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_equation
       ),
       seq(
         $.begin_equation_star,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_equation_star
       ),
       seq(
         $.begin_flalign,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_flalign
       ),
       seq(
         $.begin_flalign_star,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_flalign_star
       ),
       seq( // AMS gather
         $.begin_gather,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_gather
       ),
       seq( // AMS gather*
         $.begin_gather_star,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_gather_star
       ),
       seq( // AMS multline
         $.begin_multline,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_multline
       ),
       seq( // AMS multline*
         $.begin_multline_star,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_multline_star
       ),
       seq( // AMS split
         $.begin_split,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_split
       ),
       seq( // AMS split*
         $.begin_split_star,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_split_star
       )
     ),
@@ -145,17 +150,17 @@ module.exports = grammar({
     inline_math: $ => choice(
       seq(
         $.math_shift,
-        repeat1($._math_mode), // This has to be repeat1 or $$ will not work for display math
+        $.math_mode, // This has to be repeat1 or $$ will not work for display math
         $.math_shift
       ),
       seq(
         $._escape, '(',
-        repeat($._math_mode),
+        $.math_mode,
         $._escape, ')'
       ),
       seq(
         $.begin_math,
-        repeat($._math_mode),
+        $.math_mode,
         $.end_math
       )
     ),
@@ -525,6 +530,10 @@ module.exports = grammar({
       $.end_group
     ),
 
+    tag: $ => seq($.tag_token, $.math_text_group),
+
+    tag_token: $ => seq($._escape, 'tag'),
+
     verbatim_environment: $ => choice(
       seq(
         $.begin_verbatim,
@@ -650,7 +659,7 @@ module.exports = grammar({
     ),
 
     opt_text_group: $ => seq(
-      $.begin_opt, repeat($._text_mode), $.end_opt
+      $.begin_opt, repeat($._math_mode), $.end_opt
     ),
 
     math_group: $ => seq(
@@ -659,6 +668,10 @@ module.exports = grammar({
 
     opt_math_group: $ => seq(
       $.begin_opt, repeat($._math_mode), $.end_opt
+    ),
+
+    math_text_group: $ => seq(
+      $.begin_group, optional($.text_mode), $.end_group
     ),
 
     token: $ => seq($._escape, $._name),
