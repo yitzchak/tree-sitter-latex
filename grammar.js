@@ -19,10 +19,31 @@ module.exports = grammar({
       $.escaped,
       $.text_group,
       $.opt_text_group,
+      $.at_group,
       $.comment
     ),
 
     text_mode: $ => repeat1($._text_mode),
+
+    _at_text_mode: $ => choice(
+      $.active_char,
+      $.alignment_tab,
+      $.parameter,
+      $.subscript,
+      $.superscript,
+      $.text,
+      $.display_math,
+      $.inline_math,
+      $.verbatim_environment,
+      $.text_environment,
+      $.at_command,
+      $.escaped,
+      $.at_text_group,
+      $.opt_at_text_group,
+      $.comment
+    ),
+
+    at_group: $ => seq($.makeatletter, repeat($._at_text_mode), $.makeatother),
 
     _math_mode: $ => choice(
       $.active_char,
@@ -605,6 +626,16 @@ module.exports = grammar({
       $.token
     ),
 
+    at_command: $ => choice(
+      $.catcode,
+      $.documentclass,
+      $.include,
+      $.section,
+      $.storage,
+      $.usepackage,
+      $.at_token
+    ),
+
     begin: $ => seq($.begin_token, $.simple_text_group),
 
     begin_token: $ => seq($._escape, "begin"),
@@ -650,8 +681,20 @@ module.exports = grammar({
 
     catcode_token: $ => seq($._escape, /k?catcode`/),
 
+    makeatletter: $ => $.makeatletter_token,
+
+    makeatletter_token: $ => seq($._escape, 'makeatletter'),
+
+    makeatother: $ => $.makeatother_token,
+
+    makeatother_token: $ => seq($._escape, 'makeatother'),
+
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
+    ),
+
+    at_text_group: $ => seq(
+      $.begin_group, repeat($._at_text_mode), $.end_group
     ),
 
     simple_text_group: $ => seq(
@@ -659,7 +702,11 @@ module.exports = grammar({
     ),
 
     opt_text_group: $ => seq(
-      $.begin_opt, repeat($._math_mode), $.end_opt
+      $.begin_opt, repeat($._text_mode), $.end_opt
+    ),
+
+    opt_at_text_group: $ => seq(
+      $.begin_opt, repeat($._at_text_mode), $.end_opt
     ),
 
     math_group: $ => seq(
@@ -675,6 +722,8 @@ module.exports = grammar({
     ),
 
     token: $ => seq($._escape, $._name),
+
+    at_token: $ => seq($._escape, $._at_name),
 
     comment: $ => seq(
       $.comment_char,
@@ -699,6 +748,7 @@ module.exports = grammar({
     // space: $ => /[ \t]/,
     // letter: $ => /[a-zA-Z]/,
     _name: $ => /[a-zA-Z]+/,
+    _at_name: $ => /[a-zA-Z@]+/,
     // other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
     active_char: $ => '~',
     comment_char: $ => '%',

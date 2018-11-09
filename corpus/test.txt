@@ -68,3 +68,19 @@ $\tag{Hello world!}x^2$ %math mode
       (comment (comment_char) (comment_text))
       (text)
       (end (end_token) (simple_text_group (begin_group) (text) (end_group))))))
+
+======
+@ group
+======
+\wibble@quux\makeatletter\foo@bar\makeatother\gronk@baffle
+--------
+
+(document
+  (text_mode
+    (command (token))
+    (text)
+    (at_group
+      (makeatletter (makeatletter_token))
+      (at_command (at_token))
+      (makeatother (makeatother_token)))
+    (command (token)) (text)))
