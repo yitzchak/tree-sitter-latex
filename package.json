@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tree-sitter generate && node-gyp build",
-    "parse": "node scripts/parse.js",
-    "test": "tree-sitter test && tree-sitter parse examples --quiet --time"
+    "test": "tree-sitter test"
   },
   "repository": {
     "type": "git",
@@ -24,11 +23,11 @@
   },
   "homepage": "https://github.com/yitzchak/tree-sitter-latex",
   "dependencies": {
-    "nan": "^2.9.2"
+    "nan": "^2.11.1"
   },
   "devDependencies": {
-    "concat-stream": "^1.6.0",
-    "tree-sitter": "^0.9.2",
-    "tree-sitter-cli": "^0.9.3"
+    "concat-stream": "^1.6.2",
+    "tree-sitter": "^0.13.19",
+    "tree-sitter-cli": "^0.13.10"
   }
 }

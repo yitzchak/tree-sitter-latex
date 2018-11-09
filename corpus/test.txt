@@ -1,0 +1,23 @@
+==================
+Plain text
+==================
+fubar
+---
+
+(document (text_mode (text)))
+
+==================
+Single command
+==================
+fubar\quux wibble
+---
+
+(document (text_mode (text)) (text_mode (command (token (escape) (name)))) (text_mode (text)))
+
+==================
+Single command with arguments
+==================
+fubar\quux[opt]{bar} wibble
+---
+
+(document (text_mode (text)) (text_mode (command (token (escape) (name)))) (text_mode (opt_text_group (begin_opt) (text_mode (text)) (end_opt))) (text_mode (text_group (begin_group) (text_mode (text)) (end_group))) (text_mode (text)))

@@ -2,7 +2,7 @@ module.exports = grammar({
   name: 'latex',
 
   rules: {
-    program: $ => repeat($.text_mode),
+    document: $ => repeat($.text_mode),
 
     text_mode: $ => choice(
       $.active_char,

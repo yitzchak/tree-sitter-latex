@@ -1,7 +1,7 @@
 {
   "name": "latex",
   "rules": {
-    "program": {
+    "document": {
       "type": "REPEAT",
       "content": {
         "type": "SYMBOL",
