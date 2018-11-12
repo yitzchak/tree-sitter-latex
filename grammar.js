@@ -8,7 +8,11 @@ module.exports = grammar({
       $.active_char,
       $.alignment_tab,
       $.parameter,
-      $.subscript,
+      // Underscore produces an error by default in LaTeX text mode. Some
+      // some package define underscore to produce \tex­tun­der­score. We assume
+      // that this has been done since underscore is never actually subscript
+      // in text mode.
+      alias($.subscript, 'text'),
       $.superscript,
       $.text,
       $.display_math,
@@ -29,7 +33,11 @@ module.exports = grammar({
       $.active_char,
       $.alignment_tab,
       $.parameter,
-      $.subscript,
+      // Underscore produces an error by default in LaTeX text mode. Some
+      // some package define underscore to produce \tex­tun­der­score. We assume
+      // that this has been done since underscore is never actually subscript
+      // in text mode.
+      alias($.subscript, 'text'),
       $.superscript,
       $.text,
       $.display_math,
@@ -82,10 +90,26 @@ module.exports = grammar({
         $.math_shift, $.math_shift
       ),
       seq(
-        $._escape, '[',
+        $.begin_display_math,
         $.math_mode,
-        $._escape, ']'
+        $.end_display_math
       ),
+      seq(
+        $.begin_displaymath,
+        $.math_mode,
+        $.end_displaymath
+      ),
+      seq(
+        $.begin_eqnarray,
+        $.math_mode,
+        $.end_eqnarray
+      ),
+      seq(
+        $.begin_eqnarray_star,
+        $.math_mode,
+        $.end_eqnarray_star
+      ),
+      // amsmath
       seq( // AMS align
         $.begin_align,
         $.math_mode,
@@ -98,23 +122,15 @@ module.exports = grammar({
       ),
       seq( // AMS alignat
         $.begin_alignat,
+        $.text_group,
         $.math_mode,
         $.end_alignat
       ),
       seq( // AMS alignat*
         $.begin_alignat_star,
+        $.text_group,
         $.math_mode,
         $.end_alignat_star
-      ),
-      seq(
-        $.begin_eqnarray,
-        $.math_mode,
-        $.end_eqnarray
-      ),
-      seq(
-        $.begin_eqnarray_star,
-        $.math_mode,
-        $.end_eqnarray_star
       ),
       seq(
         $.begin_equation,
@@ -146,15 +162,15 @@ module.exports = grammar({
         $.math_mode,
         $.end_gather_star
       ),
-      seq( // AMS multline
-        $.begin_multline,
+      seq( // AMS multiline
+        $.begin_multiline,
         $.math_mode,
-        $.end_multline
+        $.end_multiline
       ),
-      seq( // AMS multline*
-        $.begin_multline_star,
+      seq( // AMS multiline*
+        $.begin_multiline_star,
         $.math_mode,
-        $.end_multline_star
+        $.end_multiline_star
       ),
       seq( // AMS split
         $.begin_split,
@@ -165,6 +181,63 @@ module.exports = grammar({
         $.begin_split_star,
         $.math_mode,
         $.end_split_star
+      ),
+      // breqn environments
+      seq(
+        $.begin_dmath,
+        optional($.opt_text_group),
+        $._end_of_line,
+        $.math_mode,
+        $.end_dmath
+      ),
+      seq(
+        $.begin_dmath_star,
+        optional($.opt_text_group),
+        $._end_of_line,
+        $.math_mode,
+        $.end_dmath_star
+      ),
+      seq(
+        $.begin_dseries,
+        optional($.opt_text_group),
+        $._end_of_line,
+        $.math_mode,
+        $.end_dseries
+      ),
+      seq(
+        $.begin_dseries_star,
+        optional($.opt_text_group),
+        $._end_of_line,
+        $.math_mode,
+        $.end_dseries_star
+      ),
+      seq(
+        $.begin_dgroup,
+        optional($.opt_text_group),
+        $._end_of_line,
+        $.math_mode,
+        $.end_dgroup
+      ),
+      seq(
+        $.begin_dgroup_star,
+        optional($.opt_text_group),
+        $._end_of_line,
+        $.math_mode,
+        $.end_dgroup_star
+      ),
+      seq(
+        $.begin_darray,
+        optional($.opt_text_group),
+        $._end_of_line,
+        $.math_mode,
+        $.end_darray
+      ),
+      seq(
+        $.begin_darray_star,
+        optional($.opt_text_group),
+        $._end_of_line,
+        $.math_mode,
+        $.end_darray_star
       )
     ),
 
@@ -175,9 +248,9 @@ module.exports = grammar({
         $.math_shift
       ),
       seq(
-        $._escape, '(',
+        $.begin_inline_math,
         $.math_mode,
-        $._escape, ')'
+        $.end_inline_math
       ),
       seq(
         $.begin_math,
@@ -185,6 +258,14 @@ module.exports = grammar({
         $.end_math
       )
     ),
+
+    begin_display_math: $ => seq($._escape, '['),
+
+    end_display_math: $ => seq($._escape, ']'),
+
+    begin_inline_math: $ => seq($._escape, '('),
+
+    end_inline_math: $ => seq($._escape, ')'),
 
     begin_align: $ => seq(
       $.begin_token,
@@ -218,8 +299,7 @@ module.exports = grammar({
       $.begin_token,
       $.begin_group,
       'alignat',
-      $.end_group,
-      $.opt_text_group),
+      $.end_group),
 
     end_alignat: $ => seq(
       $.end_token,
@@ -232,14 +312,139 @@ module.exports = grammar({
       $.begin_token,
       $.begin_group,
       'alignat*',
-      $.end_group,
-      $.text_group
+      $.end_group
     ),
 
     end_alignat_star: $ => seq(
       $.end_token,
       $.begin_group,
       'alignat*',
+      $.end_group
+    ),
+
+    begin_displaymath: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'displaymath',
+      $.end_group
+    ),
+
+    end_displaymath: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'displaymath',
+      $.end_group
+    ),
+
+    begin_dmath: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'dmath',
+      $.end_group
+    ),
+
+    end_dmath: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'dmath',
+      $.end_group
+    ),
+
+    begin_dmath_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'dmath*',
+      $.end_group
+    ),
+
+    end_dmath_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'dmath*',
+      $.end_group
+    ),
+
+    begin_dseries: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'dseries',
+      $.end_group
+    ),
+
+    end_dseries: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'dseries',
+      $.end_group
+    ),
+
+    begin_dseries_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'dseries*',
+      $.end_group
+    ),
+
+    end_dseries_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'dseries*',
+      $.end_group
+    ),
+
+    begin_dgroup: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'dgroup',
+      $.end_group
+    ),
+
+    end_dgroup: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'dgroup',
+      $.end_group
+    ),
+
+    begin_dgroup_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'dgroup*',
+      $.end_group
+    ),
+
+    end_dgroup_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'dgroup*',
+      $.end_group
+    ),
+
+    begin_darray: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'darray',
+      $.end_group
+    ),
+
+    end_darray: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'darray',
+      $.end_group
+    ),
+
+    begin_darray_star: $ => seq(
+      $.begin_token,
+      $.begin_group,
+      'darray*',
+      $.end_group
+    ),
+
+    end_darray_star: $ => seq(
+      $.end_token,
+      $.begin_group,
+      'darray*',
       $.end_group
     ),
 
@@ -355,31 +560,31 @@ module.exports = grammar({
       $.end_group
     ),
 
-    begin_multline: $ => seq(
+    begin_multiline: $ => seq(
       $.begin_token,
       $.begin_group,
-      'multline',
+      'multiline',
       $.end_group
     ),
 
-    end_multline: $ => seq(
+    end_multiline: $ => seq(
       $.end_token,
       $.begin_group,
-      'multline',
+      'multiline',
       $.end_group
     ),
 
-    begin_multline_star: $ => seq(
+    begin_multiline_star: $ => seq(
       $.begin_token,
       $.begin_group,
-      'multline*',
+      'multiline*',
       $.end_group
     ),
 
-    end_multline_star: $ => seq(
+    end_multiline_star: $ => seq(
       $.end_token,
       $.begin_group,
-      'multline*',
+      'multiline*',
       $.end_group
     ),
 
@@ -540,7 +745,7 @@ module.exports = grammar({
     begin_minted: $ => seq( // minted from minted package
       $.begin_token,
       $.begin_group,
-      'lstlisting',
+      'minted',
       $.end_group
     ),
 
@@ -558,55 +763,55 @@ module.exports = grammar({
     verbatim_environment: $ => choice(
       seq(
         $.begin_verbatim,
-        repeat($.verbatim_token),
+        $.verbatim_text,
         $.end_verbatim
       ),
       seq( // Verbatim from fancyvrb package
         $.begin_Verbatim,
         optional($.opt_text_group),
-        repeat($.verbatim_token),
+        $.verbatim_text,
         $.end_Verbatim
       ),
       seq( // Verbatim* from fancyvrb package
         $.begin_Verbatim_star,
         optional($.opt_text_group),
-        repeat($.verbatim_token),
+        $.verbatim_text,
         $.end_Verbatim_star
       ),
       seq( // BVerbatim from fancyvrb package
         $.begin_BVerbatim,
         optional($.opt_text_group),
-        repeat($.verbatim_token),
+        $.verbatim_text,
         $.end_BVerbatim
       ),
       seq( // BVerbatim* from fancyvrb package
         $.begin_BVerbatim_star,
         optional($.opt_text_group),
-        repeat($.verbatim_token),
+        $.verbatim_text,
         $.end_BVerbatim_star
       ),
       seq( // LVerbatim from fancyvrb package
         $.begin_LVerbatim,
         optional($.opt_text_group),
-        repeat($.verbatim_token),
+        $.verbatim_text,
         $.end_LVerbatim
       ),
       seq( // LVerbatim* from fancyvrb package
         $.begin_LVerbatim_star,
         optional($.opt_text_group),
-        repeat($.verbatim_token),
+        $.verbatim_text,
         $.end_LVerbatim_star
       ),
       seq( // lstlisting from listing package
         $.begin_lstlisting,
         optional($.opt_text_group),
-        repeat($.verbatim_token),
+        $.verbatim_text,
         $.end_lstlisting
       ),
       seq( // minted from minted package
         $.begin_minted,
         $.text_group,
-        repeat($.verbatim_token),
+        $.verbatim_text,
         $.end_minted
       )
     ),
@@ -733,6 +938,8 @@ module.exports = grammar({
       )
     ),
 
+    verbatim_text: $ => repeat1($._verbatim_token),
+
     _escape: $ => '\\',
     begin_group: $ => '{',
     end_group: $ => '}',
@@ -740,7 +947,7 @@ module.exports = grammar({
     end_opt: $ => ']',
     math_shift: $ => '$',
     alignment_tab: $ => '&',
-    end_of_line: $ => '\n',
+    _end_of_line: $ => '\n',
     parameter_char: $ => '#',
     superscript: $ => '^',
     subscript: $ => '_',
@@ -754,7 +961,7 @@ module.exports = grammar({
     comment_char: $ => '%',
     text: $ => /[^\\{}$&#^_~%\[\]]+/,
     number: $ => /[0-9]+/,
-    verbatim_token: $ => /(\n|.)/,
+    _verbatim_token: $ => /(\n|.)/,
 
     magic: $ => /\s*!T[eE]X\s+.*/,
     comment_text: $ => /.*/

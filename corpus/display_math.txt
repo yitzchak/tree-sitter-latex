@@ -1,0 +1,481 @@
+=============
+TeX display math
+=============
+foo$$bar$$quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (math_shift)
+      (math_shift)
+      (math_mode (text))
+      (math_shift)
+      (math_shift))
+    (text)))
+
+==================
+LaTeX display math
+==================
+foo\[bar\]quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_display_math)
+      (math_mode (text))
+      (end_display_math))
+    (text)))
+
+=======================
+LaTeX displaymath environment
+=======================
+foo
+\begin{displaymath}
+bar
+\end{displaymath}
+quux
+-----------------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_displaymath (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_displaymath (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+LaTeX eqnarray environment
+=============
+foo
+\begin{eqnarray}
+bar
+\end{eqnarray}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_eqnarray (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_eqnarray (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+LaTeX eqnarray* environment
+=============
+foo
+\begin{eqnarray*}
+bar
+\end{eqnarray*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_eqnarray_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_eqnarray_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath align environment
+=============
+foo
+\begin{align}
+bar
+\end{align}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_align (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_align (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath align* environment
+=============
+foo
+\begin{align*}
+bar
+\end{align*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_align_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_align_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath alignat environment
+=============
+foo
+\begin{alignat}{2}
+bar
+\end{alignat}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_alignat (begin_token) (begin_group) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (math_mode (text))
+      (end_alignat (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath alignat* environment
+=============
+foo
+\begin{alignat*}{2}
+bar
+\end{alignat*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_alignat_star (begin_token) (begin_group) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (math_mode (text))
+      (end_alignat_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath equation environment
+=============
+foo
+\begin{equation}
+bar
+\end{equation}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_equation (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_equation (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath equation* environment
+=============
+foo
+\begin{equation*}
+bar
+\end{equation*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_equation_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_equation_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath flalign environment
+=============
+foo
+\begin{flalign}
+bar
+\end{flalign}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_flalign (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_flalign (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath flalign* environment
+=============
+foo
+\begin{flalign*}
+bar
+\end{flalign*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_flalign_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_flalign_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath gather environment
+=============
+foo
+\begin{gather}
+bar
+\end{gather}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_gather (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_gather (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath gather* environment
+=============
+foo
+\begin{gather*}
+bar
+\end{gather*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_gather_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_gather_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath multiline environment
+=============
+foo
+\begin{multiline}
+bar
+\end{multiline}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_multiline (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_multiline (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath multiline* environment
+=============
+foo
+\begin{multiline*}
+bar
+\end{multiline*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_multiline_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_multiline_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath split environment
+=============
+foo
+\begin{split}
+bar
+\end{split}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_split (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_split (end_token) (begin_group) (end_group)))
+    (text)))
+
+=============
+amsmath split* environment
+=============
+foo
+\begin{split*}
+bar
+\end{split*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_split_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_split_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=========================
+breqn dmath environment
+=========================
+foo
+\begin{dmath}
+bar
+\end{dmath}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_dmath (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_dmath (end_token) (begin_group) (end_group)))
+    (text)))
+
+==========================
+breqn dmath* environment
+==========================
+foo
+\begin{dmath*}
+bar
+\end{dmath*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_dmath_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_dmath_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=========================
+breqn dseries environment
+=========================
+foo
+\begin{dseries}
+bar
+\end{dseries}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_dseries (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_dseries (end_token) (begin_group) (end_group)))
+    (text)))
+
+==========================
+breqn dseries* environment
+==========================
+foo
+\begin{dseries*}
+bar
+\end{dseries*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_dseries_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_dseries_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=========================
+breqn dgroup environment
+=========================
+foo
+\begin{dgroup}
+bar
+\end{dgroup}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_dgroup (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_dgroup (end_token) (begin_group) (end_group)))
+    (text)))
+
+==========================
+breqn group* environment
+==========================
+foo
+\begin{dgroup*}
+bar
+\end{dgroup*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_dgroup_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_dgroup_star (end_token) (begin_group) (end_group)))
+    (text)))
+
+=========================
+breqn darray environment
+=========================
+foo
+\begin{darray}
+bar
+\end{darray}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_darray (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_darray (end_token) (begin_group) (end_group)))
+    (text)))
+
+==========================
+breqn darray* environment
+==========================
+foo
+\begin{darray*}
+bar
+\end{darray*}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (display_math
+      (begin_darray_star (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_darray_star (end_token) (begin_group) (end_group)))
+    (text)))

@@ -1,0 +1,63 @@
+=============
+Active char
+=============
+foo~bar
+-------------
+(document
+  (text_mode
+    (text)
+    (active_char)
+    (text)))
+
+=============
+Alignment tab
+=============
+foo&bar
+-------------
+(document
+  (text_mode
+    (text)
+    (alignment_tab)
+    (text)))
+
+=============
+Parameter
+=============
+foo#1bar
+-------------
+(document
+  (text_mode
+    (text)
+    (parameter
+      (parameter_char)
+      (number))
+    (text)))
+
+=============
+Subscript
+=============
+foo_bar
+-------------
+(document
+  (text_mode
+    (text)
+    (text)
+    (text)))
+
+=============
+text environment
+=============
+foo
+\begin{wibble}
+bar
+\end{wibble}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (text_environment
+      (begin (begin_token) (simple_text_group (begin_group) (text) (end_group)))
+      (text)
+      (end (end_token) (simple_text_group (begin_group) (text) (end_group))))
+  (text)))

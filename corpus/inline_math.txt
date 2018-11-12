@@ -1,0 +1,45 @@
+=============
+TeX inline math
+=============
+foo$bar$quux
+-------------
+(document
+  (text_mode
+    (text)
+    (inline_math
+      (math_shift)
+      (math_mode (text))
+      (math_shift))
+    (text)))
+
+=============
+LaTeX inline math
+=============
+foo\(bar\)quux
+-------------
+(document
+  (text_mode
+    (text)
+    (inline_math
+      (begin_inline_math)
+      (math_mode (text))
+      (end_inline_math))
+    (text)))
+
+=============
+math environment
+=============
+foo
+\begin{math}
+bar
+\end{math}
+quux
+-------------
+(document
+  (text_mode
+    (text)
+    (inline_math
+      (begin_math (begin_token) (begin_group) (end_group))
+      (math_mode (text))
+      (end_math (end_token) (begin_group) (end_group)))
+    (text)))
