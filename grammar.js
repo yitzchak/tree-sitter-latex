@@ -315,9 +315,10 @@ module.exports = grammar({
     comment: $ => seq(
       $.comment_char,
       choice(
-        $.magic,
+        $.magic_text,
         $.comment_text
-      )
+      ),
+      $._end_of_line
     ),
 
     verbatim_text: $ => repeat1($._verbatim_token),
@@ -345,7 +346,7 @@ module.exports = grammar({
     number: $ => /[0-9]+/,
     _verbatim_token: $ => /(\n|.)/,
 
-    magic: $ => /\s*!T[eE]X\s+.*/,
+    magic_text: $ => /\s*!T[eE]X\s+.*/,
     comment_text: $ => /.*/
   }
 })

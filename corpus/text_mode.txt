@@ -1,3 +1,39 @@
+==================
+Plain text
+==================
+fubar
+---
+
+(document
+  (text_mode
+    (text)))
+
+==================
+Single command
+==================
+fubar\quux wibble
+---
+
+(document
+  (text_mode
+    (text)
+    (command (token))
+    (text)))
+
+==================
+Single command with arguments
+==================
+fubar\quux[opt]{bar} wibble
+---
+
+(document
+  (text_mode
+    (text)
+    (command (token))
+    (opt_text_group (begin_opt) (text) (end_opt))
+    (text_group (begin_group) (text) (end_group))
+    (text)))
+
 =============
 Active char
 =============
@@ -45,6 +81,45 @@ foo_bar
     (text)))
 
 =============
+Escaped
+=============
+foo\^bar
+-------------
+(document
+  (text_mode
+    (text)
+    (escaped)
+    (text)))
+
+=============
+Text group
+=============
+foo{bar}wibble
+-------------
+(document
+  (text_mode
+    (text)
+    (text_group
+      (begin_group)
+      (text)
+      (end_group))
+    (text)))
+
+=============
+Optional Text group
+=============
+foo[bar]wibble
+-------------
+(document
+  (text_mode
+    (text)
+    (opt_text_group
+      (begin_opt)
+      (text)
+      (end_opt))
+    (text)))
+
+=============
 text environment
 =============
 foo
@@ -61,3 +136,19 @@ quux
       (text)
       (end (end_token) (env_name (begin_group) (text) (end_group))))
   (text)))
+
+===========
+comment
+===========
+foo % bar
+
+-----------
+(document (text_mode (text) (comment (comment_char) (comment_text))))
+
+===========
+magic comment
+===========
+foo %!TeX bar=wibble
+
+-----------
+(document (text_mode (text) (comment (comment_char) (magic_text))))

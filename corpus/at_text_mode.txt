@@ -1,0 +1,55 @@
+=================
+@ sign not letter
+=================
+foo\bar@wibble
+----------------
+(document
+  (text_mode
+    (text)
+    (command (token))
+    (text)))
+
+=================
+@ sign is letter
+=================
+\makeatletter foo\bar@wibble\makeatother
+----------------
+(document
+  (text_mode
+    (at_group
+      (makeatletter (makeatletter_token))
+      (text)
+      (at_command (at_token))
+      (makeatother (makeatother_token)))))
+
+==============================
+@ sign is letter in text group
+==============================
+\makeatletter{foo\bar@wibble}\makeatother
+----------------
+(document
+  (text_mode
+    (at_group
+      (makeatletter (makeatletter_token))
+      (at_text_group
+        (begin_group)
+        (text)
+        (at_command (at_token))
+        (end_group))
+      (makeatother (makeatother_token)))))
+
+==============================
+@ sign is letter in optional text group
+==============================
+\makeatletter[foo\bar@wibble]\makeatother
+----------------
+(document
+  (text_mode
+    (at_group
+      (makeatletter (makeatletter_token))
+      (opt_at_text_group
+        (begin_opt)
+        (text)
+        (at_command (at_token))
+        (end_opt))
+      (makeatother (makeatother_token)))))

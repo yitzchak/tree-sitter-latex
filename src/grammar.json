@@ -1311,13 +1311,17 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "magic"
+              "name": "magic_text"
             },
             {
               "type": "SYMBOL",
               "name": "comment_text"
             }
           ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_end_of_line"
         }
       ]
     },
@@ -1400,7 +1404,7 @@
       "type": "PATTERN",
       "value": "(\\n|.)"
     },
-    "magic": {
+    "magic_text": {
       "type": "PATTERN",
       "value": "\\s*!T[eE]X\\s+.*"
     },
