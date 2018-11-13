@@ -18,7 +18,7 @@ module.exports = grammar({
       $._display_math,
       $._inline_math,
       $.verbatim_env,
-      $.text_environment,
+      $.text_env,
       $.command,
       $.escaped,
       $.text_group,
@@ -43,7 +43,7 @@ module.exports = grammar({
       $._display_math,
       $._inline_math,
       $.verbatim_env,
-      $.text_environment,
+      $.text_env,
       $.at_command,
       $.escaped,
       $.at_text_group,
@@ -75,7 +75,7 @@ module.exports = grammar({
       $.parameter_char, $.number
     ),
 
-    text_environment: $ => seq(
+    text_env: $ => seq(
       $.begin, repeat($._text_mode), $.end
     ),
 

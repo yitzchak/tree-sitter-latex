@@ -59,7 +59,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "text_environment"
+          "name": "text_env"
         },
         {
           "type": "SYMBOL",
@@ -140,7 +140,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "text_environment"
+          "name": "text_env"
         },
         {
           "type": "SYMBOL",
@@ -265,7 +265,7 @@
         }
       ]
     },
-    "text_environment": {
+    "text_env": {
       "type": "SEQ",
       "members": [
         {

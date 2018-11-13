@@ -52,7 +52,7 @@ $\tag{Hello world!}x^2$ %math mode
         (opt_text_group (begin_opt) (text) (end_opt))
         (simple_text_group (begin_group) (text) (end_group))))
     (text)
-    (text_environment
+    (text_env
       (begin (begin_token)
         (env_name (begin_group) (text) (end_group)))
       (text)
