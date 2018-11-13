@@ -55,7 +55,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "verbatim_environment"
+          "name": "verbatim_env"
         },
         {
           "type": "SYMBOL",
@@ -136,7 +136,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "verbatim_environment"
+          "name": "verbatim_env"
         },
         {
           "type": "SYMBOL",
@@ -623,300 +623,6 @@
       "type": "STRING",
       "value": "math"
     },
-    "begin_verbatim": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "begin_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "verbatim"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "end_verbatim": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "end_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "verbatim"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "begin_Verbatim": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "begin_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "Verbatim"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "end_Verbatim": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "end_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "Verbatim"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "begin_Verbatim_star": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "begin_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "Verbatim*"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "end_Verbatim_star": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "end_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "Verbatim*"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "begin_BVerbatim": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "begin_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "BVerbatim"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "end_BVerbatim": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "end_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "BVerbatim"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "begin_BVerbatim_star": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "begin_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "BVerbatim*"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "end_BVerbatim_star": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "end_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "BVerbatim*"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "begin_LVerbatim": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "begin_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "LVerbatim"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "end_LVerbatim": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "end_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "LVerbatim"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "begin_LVerbatim_star": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "begin_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "LVerbatim*"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "end_LVerbatim_star": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "end_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "LVerbatim*"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
     "begin_lstlisting": {
       "type": "SEQ",
       "members": [
@@ -1027,251 +733,97 @@
         }
       ]
     },
-    "verbatim_environment": {
-      "type": "CHOICE",
+    "verbatim_env": {
+      "type": "SEQ",
       "members": [
         {
-          "type": "SEQ",
+          "type": "SYMBOL",
+          "name": "verbatim_begin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "verbatim_text"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "verbatim_end"
+        }
+      ]
+    },
+    "verbatim_begin": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "verbatim_env_group"
+        },
+        {
+          "type": "CHOICE",
           "members": [
             {
               "type": "SYMBOL",
-              "name": "begin_verbatim"
+              "name": "opt_text_group"
             },
             {
-              "type": "SYMBOL",
-              "name": "verbatim_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_verbatim"
+              "type": "BLANK"
             }
           ]
         },
         {
-          "type": "SEQ",
+          "type": "CHOICE",
           "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_Verbatim"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "opt_text_group"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "verbatim_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_Verbatim"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_Verbatim_star"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "opt_text_group"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "verbatim_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_Verbatim_star"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_BVerbatim"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "opt_text_group"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "verbatim_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_BVerbatim"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_BVerbatim_star"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "opt_text_group"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "verbatim_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_BVerbatim_star"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_LVerbatim"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "opt_text_group"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "verbatim_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_LVerbatim"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_LVerbatim_star"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "opt_text_group"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "verbatim_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_LVerbatim_star"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_lstlisting"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "opt_text_group"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "verbatim_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_lstlisting"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_minted"
-            },
             {
               "type": "SYMBOL",
               "name": "text_group"
             },
             {
-              "type": "SYMBOL",
-              "name": "verbatim_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_minted"
+              "type": "BLANK"
             }
           ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_end_of_line"
         }
       ]
+    },
+    "verbatim_end": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "end_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "verbatim_env_group"
+        }
+      ]
+    },
+    "verbatim_env_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "verbatim_env_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "verbatim_env_name": {
+      "type": "PATTERN",
+      "value": "(verbatim|[BL]?Verbatim\\*?|lstlisting|minted)"
     },
     "escaped": {
       "type": "SEQ",

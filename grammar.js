@@ -17,7 +17,7 @@ module.exports = grammar({
       $.text,
       $._display_math,
       $._inline_math,
-      $.verbatim_environment,
+      $.verbatim_env,
       $.text_environment,
       $.command,
       $.escaped,
@@ -42,7 +42,7 @@ module.exports = grammar({
       $.text,
       $._display_math,
       $._inline_math,
-      $.verbatim_environment,
+      $.verbatim_env,
       $.text_environment,
       $.at_command,
       $.escaped,
@@ -170,104 +170,6 @@ module.exports = grammar({
 
     inline_math_env_name: $ => 'math',
 
-    begin_verbatim: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'verbatim',
-      $.end_group
-    ),
-
-    end_verbatim: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'verbatim',
-      $.end_group
-    ),
-
-    begin_Verbatim: $ => seq( // Verbatim from fancyvrb package
-      $.begin_token,
-      $.begin_group,
-      'Verbatim',
-      $.end_group
-    ),
-
-    end_Verbatim: $ => seq( // Verbatim from fancyvrb package
-      $.end_token,
-      $.begin_group,
-      'Verbatim',
-      $.end_group
-    ),
-
-    begin_Verbatim_star: $ => seq( // Verbatim* from fancyvrb package
-      $.begin_token,
-      $.begin_group,
-      'Verbatim*',
-      $.end_group
-    ),
-
-    end_Verbatim_star: $ => seq( // Verbatim* from fancyvrb package
-      $.end_token,
-      $.begin_group,
-      'Verbatim*',
-      $.end_group
-    ),
-
-    begin_BVerbatim: $ => seq( // BVerbatim from fancyvrb package
-      $.begin_token,
-      $.begin_group,
-      'BVerbatim',
-      $.end_group
-    ),
-
-    end_BVerbatim: $ => seq( // BVerbatim from fancyvrb package
-      $.end_token,
-      $.begin_group,
-      'BVerbatim',
-      $.end_group
-    ),
-
-    begin_BVerbatim_star: $ => seq( // BVerbatim* from fancyvrb package
-      $.begin_token,
-      $.begin_group,
-      'BVerbatim*',
-      $.end_group
-    ),
-
-    end_BVerbatim_star: $ => seq( // BVerbatim* from fancyvrb package
-      $.end_token,
-      $.begin_group,
-      'BVerbatim*',
-      $.end_group
-    ),
-
-    begin_LVerbatim: $ => seq( // LVerbatim from fancyvrb package
-      $.begin_token,
-      $.begin_group,
-      'LVerbatim',
-      $.end_group
-    ),
-
-    end_LVerbatim: $ => seq( // LVerbatim from fancyvrb package
-      $.end_token,
-      $.begin_group,
-      'LVerbatim',
-      $.end_group
-    ),
-
-    begin_LVerbatim_star: $ => seq( // LVerbatim* from fancyvrb package
-      $.begin_token,
-      $.begin_group,
-      'LVerbatim*',
-      $.end_group
-    ),
-
-    end_LVerbatim_star: $ => seq( // LVerbatim* from fancyvrb package
-      $.end_token,
-      $.begin_group,
-      'LVerbatim*',
-      $.end_group
-    ),
-
     begin_lstlisting: $ => seq( // lstlisting from listing package
       $.begin_token,
       $.begin_group,
@@ -300,61 +202,28 @@ module.exports = grammar({
 
     tag_token: $ => seq($._escape, 'tag'),
 
-    verbatim_environment: $ => choice(
-      seq(
-        $.begin_verbatim,
-        $.verbatim_text,
-        $.end_verbatim
-      ),
-      seq( // Verbatim from fancyvrb package
-        $.begin_Verbatim,
-        optional($.opt_text_group),
-        $.verbatim_text,
-        $.end_Verbatim
-      ),
-      seq( // Verbatim* from fancyvrb package
-        $.begin_Verbatim_star,
-        optional($.opt_text_group),
-        $.verbatim_text,
-        $.end_Verbatim_star
-      ),
-      seq( // BVerbatim from fancyvrb package
-        $.begin_BVerbatim,
-        optional($.opt_text_group),
-        $.verbatim_text,
-        $.end_BVerbatim
-      ),
-      seq( // BVerbatim* from fancyvrb package
-        $.begin_BVerbatim_star,
-        optional($.opt_text_group),
-        $.verbatim_text,
-        $.end_BVerbatim_star
-      ),
-      seq( // LVerbatim from fancyvrb package
-        $.begin_LVerbatim,
-        optional($.opt_text_group),
-        $.verbatim_text,
-        $.end_LVerbatim
-      ),
-      seq( // LVerbatim* from fancyvrb package
-        $.begin_LVerbatim_star,
-        optional($.opt_text_group),
-        $.verbatim_text,
-        $.end_LVerbatim_star
-      ),
-      seq( // lstlisting from listing package
-        $.begin_lstlisting,
-        optional($.opt_text_group),
-        $.verbatim_text,
-        $.end_lstlisting
-      ),
-      seq( // minted from minted package
-        $.begin_minted,
-        $.text_group,
-        $.verbatim_text,
-        $.end_minted
-      )
+    verbatim_env: $ => seq(
+      $.verbatim_begin,
+      $.verbatim_text,
+      $.verbatim_end
     ),
+
+    verbatim_begin: $ => seq(
+      $.begin_token,
+      $.verbatim_env_group,
+      optional($.opt_text_group),
+      optional($.text_group),
+      $._end_of_line
+    ),
+
+    verbatim_end: $ => seq(
+      $.end_token,
+      $.verbatim_env_group
+    ),
+
+    verbatim_env_group: $ => seq($.begin_group, $.verbatim_env_name, $.end_group),
+
+    verbatim_env_name: $ => /(verbatim|[BL]?Verbatim\*?|lstlisting|minted)/,
 
     escaped: $ => seq(
       $._escape,
