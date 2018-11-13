@@ -163,3 +163,16 @@ documentclass
         (documentclass_token)
         (opt_text_group (begin_opt) (text) (end_opt))
         (class_name (begin_group) (text) (end_group))))))
+
+======================
+usepackage
+======================
+\usepackage[foo]{bar}
+-------------------
+(document
+  (text_mode
+    (command
+    (usepackage
+      (usepackage_token)
+      (opt_text_group (begin_opt) (text) (end_opt))
+      (package_name (begin_group) (text) (end_group))))))

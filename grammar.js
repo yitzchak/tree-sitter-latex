@@ -207,6 +207,7 @@ module.exports = grammar({
 
     command: $ => choice(
       $.catcode,
+      $.emph,
       $.documentclass,
       $.include,
       $.section,
@@ -217,6 +218,7 @@ module.exports = grammar({
 
     at_command: $ => choice(
       $.catcode,
+      $.emph,
       $.documentclass,
       $.include,
       $.section,
@@ -227,11 +229,11 @@ module.exports = grammar({
 
     begin: $ => seq($.begin_token, alias($.simple_text_group, 'env_name')),
 
-    begin_token: $ => seq($._escape, "begin"),
+    begin_token: $ => seq($._escape, 'begin'),
 
     end: $ => seq($.end_token, alias($.simple_text_group, 'env_name')),
 
-    end_token: $ => seq($._escape, "end"),
+    end_token: $ => seq($._escape, 'end'),
 
     documentclass: $ => seq(
       $.documentclass_token,
@@ -239,15 +241,15 @@ module.exports = grammar({
       alias($.simple_text_group, 'class_name')
     ),
 
-    documentclass_token: $ => seq($._escape, "documentclass"),
+    documentclass_token: $ => seq($._escape, 'documentclass'),
 
     usepackage: $ => seq(
       $.usepackage_token,
       optional($.opt_text_group),
-      $.simple_text_group
+      alias($.simple_text_group, 'package_name')
     ),
 
-    usepackage_token: $ => seq($._escape, "usepackage"),
+    usepackage_token: $ => seq($._escape, 'usepackage'),
 
     include: $ => seq($.include_token, $.text_group),
 
@@ -269,6 +271,10 @@ module.exports = grammar({
     ),
 
     catcode_token: $ => seq($._escape, /k?catcode`/),
+
+    emph: $ => seq($.emph_token, $.text_group),
+
+    emph_token: $ => seq($._escape, 'emph'),
 
     makeatletter: $ => $.makeatletter_token,
 

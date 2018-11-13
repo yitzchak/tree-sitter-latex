@@ -767,6 +767,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "emph"
+        },
+        {
+          "type": "SYMBOL",
           "name": "documentclass"
         },
         {
@@ -797,6 +801,10 @@
         {
           "type": "SYMBOL",
           "name": "catcode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "emph"
         },
         {
           "type": "SYMBOL",
@@ -949,8 +957,13 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "simple_text_group"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "simple_text_group"
+          },
+          "named": false,
+          "value": "package_name"
         }
       ]
     },
@@ -1079,6 +1092,32 @@
         {
           "type": "PATTERN",
           "value": "k?catcode`"
+        }
+      ]
+    },
+    "emph": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "emph_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "emph_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "emph"
         }
       ]
     },
