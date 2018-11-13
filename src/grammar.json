@@ -906,8 +906,13 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "simple_text_group"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "simple_text_group"
+          },
+          "named": false,
+          "value": "class_name"
         }
       ]
     },

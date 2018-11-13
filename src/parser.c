@@ -12,10 +12,10 @@
 #define LANGUAGE_VERSION 9
 #define STATE_COUNT 198
 #define SYMBOL_COUNT 114
-#define ALIAS_COUNT 2
+#define ALIAS_COUNT 3
 #define TOKEN_COUNT 39
 #define EXTERNAL_TOKEN_COUNT 0
-#define MAX_ALIAS_SEQUENCE_LENGTH 2
+#define MAX_ALIAS_SEQUENCE_LENGTH 3
 
 enum {
   anon_sym_LBRACK = 1,
@@ -131,8 +131,9 @@ enum {
   aux_sym_at_group_repeat1 = 111,
   aux_sym_math_mode_repeat1 = 112,
   aux_sym_verbatim_text_repeat1 = 113,
-  anon_alias_sym_env_name = 114,
-  anon_alias_sym_text = 115,
+  anon_alias_sym_class_name = 114,
+  anon_alias_sym_env_name = 115,
+  anon_alias_sym_text = 116,
 };
 
 static const char *ts_symbol_names[] = {
@@ -250,6 +251,7 @@ static const char *ts_symbol_names[] = {
   [aux_sym_at_group_repeat1] = "at_group_repeat1",
   [aux_sym_math_mode_repeat1] = "math_mode_repeat1",
   [aux_sym_verbatim_text_repeat1] = "verbatim_text_repeat1",
+  [anon_alias_sym_class_name] = "class_name",
   [anon_alias_sym_env_name] = "env_name",
   [anon_alias_sym_text] = "text",
 };
@@ -711,6 +713,10 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .visible = false,
     .named = false,
   },
+  [anon_alias_sym_class_name] = {
+    .visible = true,
+    .named = false,
+  },
   [anon_alias_sym_env_name] = {
     .visible = true,
     .named = false,
@@ -721,12 +727,18 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
   },
 };
 
-static TSSymbol ts_alias_sequences[3][MAX_ALIAS_SEQUENCE_LENGTH] = {
+static TSSymbol ts_alias_sequences[5][MAX_ALIAS_SEQUENCE_LENGTH] = {
   [1] = {
     [0] = anon_alias_sym_text,
   },
   [2] = {
     [1] = anon_alias_sym_env_name,
+  },
+  [3] = {
+    [1] = anon_alias_sym_class_name,
+  },
+  [4] = {
+    [2] = anon_alias_sym_class_name,
   },
 };
 
@@ -10489,7 +10501,7 @@ static TSParseActionEntry ts_parse_actions[] = {
   [197] = {.count = 1, .reusable = true}, SHIFT(133),
   [199] = {.count = 1, .reusable = true}, REDUCE(sym_begin, 2, .alias_sequence_id = 2),
   [201] = {.count = 1, .reusable = true}, SHIFT(127),
-  [203] = {.count = 1, .reusable = true}, REDUCE(sym_documentclass, 2),
+  [203] = {.count = 1, .reusable = true}, REDUCE(sym_documentclass, 2, .alias_sequence_id = 3),
   [205] = {.count = 1, .reusable = true}, REDUCE(sym_usepackage, 2),
   [207] = {.count = 1, .reusable = true}, REDUCE(sym_include, 2),
   [209] = {.count = 1, .reusable = true}, REDUCE(sym_section, 2),
@@ -10568,7 +10580,7 @@ static TSParseActionEntry ts_parse_actions[] = {
   [373] = {.count = 1, .reusable = true}, SHIFT(178),
   [375] = {.count = 1, .reusable = true}, REDUCE(sym_verbatim_begin, 3),
   [377] = {.count = 1, .reusable = true}, SHIFT(179),
-  [379] = {.count = 1, .reusable = true}, REDUCE(sym_documentclass, 3),
+  [379] = {.count = 1, .reusable = true}, REDUCE(sym_documentclass, 3, .alias_sequence_id = 4),
   [381] = {.count = 1, .reusable = true}, REDUCE(sym_usepackage, 3),
   [383] = {.count = 1, .reusable = true}, REDUCE(sym_section, 3),
   [385] = {.count = 1, .reusable = true}, SHIFT(181),

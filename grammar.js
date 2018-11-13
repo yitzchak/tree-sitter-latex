@@ -236,7 +236,7 @@ module.exports = grammar({
     documentclass: $ => seq(
       $.documentclass_token,
       optional($.opt_text_group),
-      $.simple_text_group
+      alias($.simple_text_group, 'class_name')
     ),
 
     documentclass_token: $ => seq($._escape, "documentclass"),

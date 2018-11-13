@@ -150,3 +150,16 @@ magic comment
 foo %!TeX bar=wibble
 -----------
 (document (text_mode (text) (comment (comment_char) (magic_text))))
+
+=============
+documentclass
+=============
+\documentclass[foo]{bar}
+----------------
+(document
+  (text_mode
+    (command
+      (documentclass
+        (documentclass_token)
+        (opt_text_group (begin_opt) (text) (end_opt))
+        (class_name (begin_group) (text) (end_group))))))
