@@ -56,7 +56,7 @@ $\tag{Hello world!}x^2$ %math mode
       (begin (begin_token)
         (env_name (begin_group) (text) (end_group)))
       (text)
-      (inline_math
+      (tex_inline_math
         (math_shift)
         (math_mode
           (tag (tag_token) (math_text_group (begin_group) (text_mode (text)) (end_group)))

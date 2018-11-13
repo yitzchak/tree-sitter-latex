@@ -16,7 +16,7 @@ module.exports = grammar({
       $.superscript,
       $.text,
       $._display_math,
-      $.inline_math,
+      $._inline_math,
       $.verbatim_environment,
       $.text_environment,
       $.command,
@@ -41,7 +41,7 @@ module.exports = grammar({
       $.superscript,
       $.text,
       $._display_math,
-      $.inline_math,
+      $._inline_math,
       $.verbatim_environment,
       $.text_environment,
       $.at_command,
@@ -89,24 +89,6 @@ module.exports = grammar({
       $.display_math_env
     ),
 
-    inline_math: $ => choice(
-      seq(
-        $.math_shift,
-        $.math_mode, // This has to be repeat1 or $$ will not work for display math
-        $.math_shift
-      ),
-      seq(
-        $.begin_inline_math,
-        $.math_mode,
-        $.end_inline_math
-      ),
-      seq(
-        $.begin_math,
-        $.math_mode,
-        $.end_math
-      )
-    ),
-
     tex_display_math: $ => seq(
       $.math_shift, $.math_shift,
       $.math_mode,
@@ -150,19 +132,43 @@ module.exports = grammar({
 
     display_math_env_name: $ => /(displaymath|eqnarray\*?|align\*?|alignat\*?|equation\*?|flalign\*?|gather\*?|multiline\*?|split\*?|dmath\*?|dseries\*?|dgroup\*?|darray\*?)/,
 
-    begin_math: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'math',
-      $.end_group
+    _inline_math: $ => choice(
+      $.tex_inline_math,
+      $.latex_inline_math,
+      $.inline_math_env
     ),
 
-    end_math: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'math',
-      $.end_group
+    tex_inline_math: $ => seq(
+      $.math_shift,
+      $.math_mode,
+      $.math_shift
     ),
+
+    latex_inline_math: $ => seq(
+      $.begin_inline_math,
+      $.math_mode,
+      $.end_inline_math
+    ),
+
+    inline_math_env: $ => seq(
+      $.inline_math_begin,
+      $.math_mode,
+      $.inline_math_end
+    ),
+
+    inline_math_begin: $ => seq(
+      $.begin_token,
+      $.inline_math_env_group
+    ),
+
+    inline_math_end: $ => seq(
+      $.end_token,
+      $.inline_math_env_group
+    ),
+
+    inline_math_env_group: $ => seq($.begin_group, $.inline_math_env_name, $.end_group),
+
+    inline_math_env_name: $ => 'math',
 
     begin_verbatim: $ => seq(
       $.begin_token,

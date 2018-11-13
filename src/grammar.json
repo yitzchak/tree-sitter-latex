@@ -51,7 +51,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "inline_math"
+          "name": "_inline_math"
         },
         {
           "type": "SYMBOL",
@@ -132,7 +132,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "inline_math"
+          "name": "_inline_math"
         },
         {
           "type": "SYMBOL",
@@ -322,62 +322,6 @@
         }
       ]
     },
-    "inline_math": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "math_shift"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "math_mode"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "math_shift"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_inline_math"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "math_mode"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_inline_math"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "begin_math"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "math_mode"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "end_math"
-            }
-          ]
-        }
-      ]
-    },
     "tex_display_math": {
       "type": "SEQ",
       "members": [
@@ -564,7 +508,75 @@
       "type": "PATTERN",
       "value": "(displaymath|eqnarray\\*?|align\\*?|alignat\\*?|equation\\*?|flalign\\*?|gather\\*?|multiline\\*?|split\\*?|dmath\\*?|dseries\\*?|dgroup\\*?|darray\\*?)"
     },
-    "begin_math": {
+    "_inline_math": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "tex_inline_math"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "latex_inline_math"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "inline_math_env"
+        }
+      ]
+    },
+    "tex_inline_math": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        }
+      ]
+    },
+    "latex_inline_math": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_inline_math"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_inline_math"
+        }
+      ]
+    },
+    "inline_math_env": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "inline_math_begin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "inline_math_end"
+        }
+      ]
+    },
+    "inline_math_begin": {
       "type": "SEQ",
       "members": [
         {
@@ -573,19 +585,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "STRING",
-          "value": "math"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
+          "name": "inline_math_env_group"
         }
       ]
     },
-    "end_math": {
+    "inline_math_end": {
       "type": "SEQ",
       "members": [
         {
@@ -594,17 +598,30 @@
         },
         {
           "type": "SYMBOL",
+          "name": "inline_math_env_group"
+        }
+      ]
+    },
+    "inline_math_env_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
           "name": "begin_group"
         },
         {
-          "type": "STRING",
-          "value": "math"
+          "type": "SYMBOL",
+          "name": "inline_math_env_name"
         },
         {
           "type": "SYMBOL",
           "name": "end_group"
         }
       ]
+    },
+    "inline_math_env_name": {
+      "type": "STRING",
+      "value": "math"
     },
     "begin_verbatim": {
       "type": "SEQ",
