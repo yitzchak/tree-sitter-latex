@@ -57,7 +57,7 @@ quux
   (text_mode
     (text)
     (text_environment
-      (begin (begin_token) (simple_text_group (begin_group) (text) (end_group)))
+      (begin (begin_token) (env_name (begin_group) (text) (end_group)))
       (text)
-      (end (end_token) (simple_text_group (begin_group) (text) (end_group))))
+      (end (end_token) (env_name (begin_group) (text) (end_group))))
   (text)))

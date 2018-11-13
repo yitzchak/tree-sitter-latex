@@ -15,7 +15,7 @@ module.exports = grammar({
       alias($.subscript, 'text'),
       $.superscript,
       $.text,
-      $.display_math,
+      $._display_math,
       $.inline_math,
       $.verbatim_environment,
       $.text_environment,
@@ -40,7 +40,7 @@ module.exports = grammar({
       alias($.subscript, 'text'),
       $.superscript,
       $.text,
-      $.display_math,
+      $._display_math,
       $.inline_math,
       $.verbatim_environment,
       $.text_environment,
@@ -83,162 +83,10 @@ module.exports = grammar({
       $.begin, repeat($._math_mode), $.end
     ),
 
-    display_math: $ => choice(
-      seq(
-        $.math_shift, $.math_shift,
-        $.math_mode,
-        $.math_shift, $.math_shift
-      ),
-      seq(
-        $.begin_display_math,
-        $.math_mode,
-        $.end_display_math
-      ),
-      seq(
-        $.begin_displaymath,
-        $.math_mode,
-        $.end_displaymath
-      ),
-      seq(
-        $.begin_eqnarray,
-        $.math_mode,
-        $.end_eqnarray
-      ),
-      seq(
-        $.begin_eqnarray_star,
-        $.math_mode,
-        $.end_eqnarray_star
-      ),
-      // amsmath
-      seq( // AMS align
-        $.begin_align,
-        $.math_mode,
-        $.end_align
-      ),
-      seq( // AMS align*
-        $.begin_align_star,
-        $.math_mode,
-        $.end_align_star
-      ),
-      seq( // AMS alignat
-        $.begin_alignat,
-        $.text_group,
-        $.math_mode,
-        $.end_alignat
-      ),
-      seq( // AMS alignat*
-        $.begin_alignat_star,
-        $.text_group,
-        $.math_mode,
-        $.end_alignat_star
-      ),
-      seq(
-        $.begin_equation,
-        $.math_mode,
-        $.end_equation
-      ),
-      seq(
-        $.begin_equation_star,
-        $.math_mode,
-        $.end_equation_star
-      ),
-      seq(
-        $.begin_flalign,
-        $.math_mode,
-        $.end_flalign
-      ),
-      seq(
-        $.begin_flalign_star,
-        $.math_mode,
-        $.end_flalign_star
-      ),
-      seq( // AMS gather
-        $.begin_gather,
-        $.math_mode,
-        $.end_gather
-      ),
-      seq( // AMS gather*
-        $.begin_gather_star,
-        $.math_mode,
-        $.end_gather_star
-      ),
-      seq( // AMS multiline
-        $.begin_multiline,
-        $.math_mode,
-        $.end_multiline
-      ),
-      seq( // AMS multiline*
-        $.begin_multiline_star,
-        $.math_mode,
-        $.end_multiline_star
-      ),
-      seq( // AMS split
-        $.begin_split,
-        $.math_mode,
-        $.end_split
-      ),
-      seq( // AMS split*
-        $.begin_split_star,
-        $.math_mode,
-        $.end_split_star
-      ),
-      // breqn environments
-      seq(
-        $.begin_dmath,
-        optional($.opt_text_group),
-        $._end_of_line,
-        $.math_mode,
-        $.end_dmath
-      ),
-      seq(
-        $.begin_dmath_star,
-        optional($.opt_text_group),
-        $._end_of_line,
-        $.math_mode,
-        $.end_dmath_star
-      ),
-      seq(
-        $.begin_dseries,
-        optional($.opt_text_group),
-        $._end_of_line,
-        $.math_mode,
-        $.end_dseries
-      ),
-      seq(
-        $.begin_dseries_star,
-        optional($.opt_text_group),
-        $._end_of_line,
-        $.math_mode,
-        $.end_dseries_star
-      ),
-      seq(
-        $.begin_dgroup,
-        optional($.opt_text_group),
-        $._end_of_line,
-        $.math_mode,
-        $.end_dgroup
-      ),
-      seq(
-        $.begin_dgroup_star,
-        optional($.opt_text_group),
-        $._end_of_line,
-        $.math_mode,
-        $.end_dgroup_star
-      ),
-      seq(
-        $.begin_darray,
-        optional($.opt_text_group),
-        $._end_of_line,
-        $.math_mode,
-        $.end_darray
-      ),
-      seq(
-        $.begin_darray_star,
-        optional($.opt_text_group),
-        $._end_of_line,
-        $.math_mode,
-        $.end_darray_star
-      )
+    _display_math: $ => choice(
+      $.tex_display_math,
+      $.latex_display_math,
+      $.display_math_env
     ),
 
     inline_math: $ => choice(
@@ -259,6 +107,18 @@ module.exports = grammar({
       )
     ),
 
+    tex_display_math: $ => seq(
+      $.math_shift, $.math_shift,
+      $.math_mode,
+      $.math_shift, $.math_shift
+    ),
+
+    latex_display_math: $ => seq(
+      $.begin_display_math,
+      $.math_mode,
+      $.end_display_math
+    ),
+
     begin_display_math: $ => seq($._escape, '['),
 
     end_display_math: $ => seq($._escape, ']'),
@@ -267,354 +127,28 @@ module.exports = grammar({
 
     end_inline_math: $ => seq($._escape, ')'),
 
-    begin_align: $ => seq(
+    display_math_env: $ => seq(
+      $.display_math_begin,
+      $.math_mode,
+      $.display_math_end
+    ),
+
+    display_math_begin: $ => seq(
       $.begin_token,
-      $.begin_group,
-      'align',
-      $.end_group
+      $.display_math_env_group,
+      optional($.opt_text_group),
+      optional($.text_group),
+      $._end_of_line
     ),
 
-    end_align: $ => seq(
+    display_math_end: $ => seq(
       $.end_token,
-      $.begin_group,
-      'align',
-      $.end_group
+      $.display_math_env_group
     ),
 
-    begin_align_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'align*',
-      $.end_group
-    ),
+    display_math_env_group: $ => seq($.begin_group, $.display_math_env_name, $.end_group),
 
-    end_align_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'align*',
-      $.end_group
-    ),
-
-    begin_alignat: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'alignat',
-      $.end_group),
-
-    end_alignat: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'alignat',
-      $.end_group
-    ),
-
-    begin_alignat_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'alignat*',
-      $.end_group
-    ),
-
-    end_alignat_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'alignat*',
-      $.end_group
-    ),
-
-    begin_displaymath: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'displaymath',
-      $.end_group
-    ),
-
-    end_displaymath: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'displaymath',
-      $.end_group
-    ),
-
-    begin_dmath: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'dmath',
-      $.end_group
-    ),
-
-    end_dmath: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'dmath',
-      $.end_group
-    ),
-
-    begin_dmath_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'dmath*',
-      $.end_group
-    ),
-
-    end_dmath_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'dmath*',
-      $.end_group
-    ),
-
-    begin_dseries: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'dseries',
-      $.end_group
-    ),
-
-    end_dseries: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'dseries',
-      $.end_group
-    ),
-
-    begin_dseries_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'dseries*',
-      $.end_group
-    ),
-
-    end_dseries_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'dseries*',
-      $.end_group
-    ),
-
-    begin_dgroup: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'dgroup',
-      $.end_group
-    ),
-
-    end_dgroup: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'dgroup',
-      $.end_group
-    ),
-
-    begin_dgroup_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'dgroup*',
-      $.end_group
-    ),
-
-    end_dgroup_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'dgroup*',
-      $.end_group
-    ),
-
-    begin_darray: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'darray',
-      $.end_group
-    ),
-
-    end_darray: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'darray',
-      $.end_group
-    ),
-
-    begin_darray_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'darray*',
-      $.end_group
-    ),
-
-    end_darray_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'darray*',
-      $.end_group
-    ),
-
-    begin_eqnarray: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'eqnarray',
-      $.end_group
-    ),
-
-    end_eqnarray: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'eqnarray',
-      $.end_group
-    ),
-
-    begin_eqnarray_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'eqnarray*',
-      $.end_group
-    ),
-
-    end_eqnarray_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'eqnarray*',
-      $.end_group
-    ),
-
-    begin_equation: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'equation',
-      $.end_group
-    ),
-
-    end_equation: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'equation',
-      $.end_group
-    ),
-
-    begin_equation_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'equation*',
-      $.end_group
-    ),
-
-    end_equation_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'equation*',
-      $.end_group
-    ),
-
-    begin_flalign: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'flalign',
-      $.end_group
-    ),
-
-    end_flalign: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'flalign',
-      $.end_group
-    ),
-
-    begin_flalign_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'flalign*',
-      $.end_group
-    ),
-
-    end_flalign_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'flalign*',
-      $.end_group
-    ),
-
-    begin_gather: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'gather',
-      $.end_group
-    ),
-
-    end_gather: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'gather',
-      $.end_group
-    ),
-
-    begin_gather_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'gather*',
-      $.end_group
-    ),
-
-    end_gather_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'gather*',
-      $.end_group
-    ),
-
-    begin_multiline: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'multiline',
-      $.end_group
-    ),
-
-    end_multiline: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'multiline',
-      $.end_group
-    ),
-
-    begin_multiline_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'multiline*',
-      $.end_group
-    ),
-
-    end_multiline_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'multiline*',
-      $.end_group
-    ),
-
-    begin_split: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'split',
-      $.end_group
-    ),
-
-    end_split: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'split',
-      $.end_group
-    ),
-
-    begin_split_star: $ => seq(
-      $.begin_token,
-      $.begin_group,
-      'split*',
-      $.end_group
-    ),
-
-    end_split_star: $ => seq(
-      $.end_token,
-      $.begin_group,
-      'split*',
-      $.end_group
-    ),
+    display_math_env_name: $ => /(displaymath|eqnarray\*?|align\*?|alignat\*?|equation\*?|flalign\*?|gather\*?|multiline\*?|split\*?|dmath\*?|dseries\*?|dgroup\*?|darray\*?)/,
 
     begin_math: $ => seq(
       $.begin_token,
@@ -841,11 +375,11 @@ module.exports = grammar({
       $.at_token
     ),
 
-    begin: $ => seq($.begin_token, $.simple_text_group),
+    begin: $ => seq($.begin_token, alias($.simple_text_group, 'env_name')),
 
     begin_token: $ => seq($._escape, "begin"),
 
-    end: $ => seq($.end_token, $.simple_text_group),
+    end: $ => seq($.end_token, alias($.simple_text_group, 'env_name')),
 
     end_token: $ => seq($._escape, "end"),
 

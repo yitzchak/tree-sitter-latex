@@ -54,7 +54,7 @@ $\tag{Hello world!}x^2$ %math mode
     (text)
     (text_environment
       (begin (begin_token)
-        (simple_text_group (begin_group) (text) (end_group)))
+        (env_name (begin_group) (text) (end_group)))
       (text)
       (inline_math
         (math_shift)
@@ -67,7 +67,7 @@ $\tag{Hello world!}x^2$ %math mode
       (text)
       (comment (comment_char) (comment_text))
       (text)
-      (end (end_token) (simple_text_group (begin_group) (text) (end_group))))))
+      (end (end_token) (env_name (begin_group) (text) (end_group))))))
 
 ======
 @ group

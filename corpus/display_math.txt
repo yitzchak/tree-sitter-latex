@@ -6,7 +6,7 @@ foo$$bar$$quux
 (document
   (text_mode
     (text)
-    (display_math
+    (tex_display_math
       (math_shift)
       (math_shift)
       (math_mode (text))
@@ -22,7 +22,7 @@ foo\[bar\]quux
 (document
   (text_mode
     (text)
-    (display_math
+    (latex_display_math
       (begin_display_math)
       (math_mode (text))
       (end_display_math))
@@ -40,10 +40,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_displaymath (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_displaymath (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -58,10 +58,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_eqnarray (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_eqnarray (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -76,10 +76,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_eqnarray_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_eqnarray_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -94,10 +94,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_align (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_align (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -112,10 +112,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_align_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_align_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -130,11 +130,13 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_alignat (begin_token) (begin_group) (end_group))
-      (text_group (begin_group) (text) (end_group))
+    (display_math_env
+      (display_math_begin
+        (begin_token)
+        (display_math_env_group (begin_group) (display_math_env_name) (end_group))
+        (text_group (begin_group) (text) (end_group)))
       (math_mode (text))
-      (end_alignat (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -149,12 +151,14 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_alignat_star (begin_token) (begin_group) (end_group))
-      (text_group (begin_group) (text) (end_group))
-      (math_mode (text))
-      (end_alignat_star (end_token) (begin_group) (end_group)))
-    (text)))
+    (display_math_env
+    (display_math_begin
+      (begin_token)
+      (display_math_env_group (begin_group) (display_math_env_name) (end_group))
+      (text_group (begin_group) (text) (end_group)))
+    (math_mode (text))
+    (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text)))
 
 =============
 amsmath equation environment
@@ -168,10 +172,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_equation (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_equation (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -186,10 +190,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_equation_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_equation_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -204,10 +208,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_flalign (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_flalign (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -222,10 +226,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_flalign_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_flalign_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -240,10 +244,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_gather (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_gather (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -258,10 +262,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_gather_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_gather_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -276,10 +280,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_multiline (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_multiline (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -294,10 +298,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_multiline_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_multiline_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -312,10 +316,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_split (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_split (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -330,10 +334,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_split_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_split_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =========================
@@ -348,10 +352,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_dmath (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_dmath (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 ==========================
@@ -366,10 +370,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_dmath_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_dmath_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =========================
@@ -384,10 +388,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_dseries (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_dseries (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 ==========================
@@ -402,10 +406,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_dseries_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_dseries_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =========================
@@ -420,10 +424,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_dgroup (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_dgroup (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 ==========================
@@ -438,10 +442,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_dgroup_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_dgroup_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =========================
@@ -456,10 +460,10 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_darray (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_darray (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 ==========================
@@ -474,8 +478,8 @@ quux
 (document
   (text_mode
     (text)
-    (display_math
-      (begin_darray_star (begin_token) (begin_group) (end_group))
+    (display_math_env
+      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
       (math_mode (text))
-      (end_darray_star (end_token) (begin_group) (end_group)))
+      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
