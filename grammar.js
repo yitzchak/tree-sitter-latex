@@ -170,34 +170,6 @@ module.exports = grammar({
 
     inline_math_env_name: $ => 'math',
 
-    begin_lstlisting: $ => seq( // lstlisting from listing package
-      $.begin_token,
-      $.begin_group,
-      'lstlisting',
-      $.end_group
-    ),
-
-    end_lstlisting: $ => seq( // lstlisting from listing package
-      $.end_token,
-      $.begin_group,
-      'lstlisting',
-      $.end_group
-    ),
-
-    begin_minted: $ => seq( // minted from minted package
-      $.begin_token,
-      $.begin_group,
-      'minted',
-      $.end_group
-    ),
-
-    end_minted: $ => seq( // minted from minted package
-      $.end_token,
-      $.begin_group,
-      'minted',
-      $.end_group
-    ),
-
     tag: $ => seq($.tag_token, $.math_text_group),
 
     tag_token: $ => seq($._escape, 'tag'),
@@ -217,6 +189,7 @@ module.exports = grammar({
     ),
 
     verbatim_end: $ => seq(
+      $._end_of_line,
       $.end_token,
       $.verbatim_env_group
     ),
