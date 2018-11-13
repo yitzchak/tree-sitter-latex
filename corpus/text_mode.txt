@@ -141,7 +141,6 @@ quux
 comment
 ===========
 foo % bar
-
 -----------
 (document (text_mode (text) (comment (comment_char) (comment_text))))
 
@@ -149,6 +148,5 @@ foo % bar
 magic comment
 ===========
 foo %!TeX bar=wibble
-
 -----------
 (document (text_mode (text) (comment (comment_char) (magic_text))))

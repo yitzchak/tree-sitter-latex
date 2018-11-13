@@ -1318,10 +1318,6 @@
               "name": "comment_text"
             }
           ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_end_of_line"
         }
       ]
     },
@@ -1413,12 +1409,7 @@
       "value": ".*"
     }
   },
-  "extras": [
-    {
-      "type": "PATTERN",
-      "value": "\\s"
-    }
-  ],
+  "extras": [],
   "conflicts": [],
   "externals": [],
   "inline": []

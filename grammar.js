@@ -1,6 +1,8 @@
 module.exports = grammar({
   name: 'latex',
 
+  extras: $ => [],
+
   rules: {
     document: $ => optional($.text_mode),
 
@@ -317,8 +319,7 @@ module.exports = grammar({
       choice(
         $.magic_text,
         $.comment_text
-      ),
-      $._end_of_line
+      )
     ),
 
     verbatim_text: $ => repeat1($._verbatim_token),
