@@ -202,3 +202,25 @@ foo\textbf{bar}wibble
     (text)
     (command (textbf (textbf_token) (text_group (begin_group) (text) (end_group))))
     (text)))
+
+=====================
+textit
+=====================
+foo\textit{bar}wibble
+---------------------
+(document
+  (text_mode
+    (text)
+    (command (textit (textit_token) (text_group (begin_group) (text) (end_group))))
+    (text)))
+
+=====================
+texttt
+=====================
+foo\texttt{bar}wibble
+---------------------
+(document
+  (text_mode
+    (text)
+    (command (texttt (texttt_token) (text_group (begin_group) (text) (end_group))))
+    (text)))

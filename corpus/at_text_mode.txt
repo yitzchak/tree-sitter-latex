@@ -16,10 +16,10 @@ foo\bar@wibble
 ----------------
 (document
   (text_mode
-    (at_group
+    (text_mode_at
       (makeatletter (makeatletter_token))
       (text)
-      (at_command (at_token))
+      (command_at (token_at))
       (makeatother (makeatother_token)))))
 
 ==============================
@@ -29,12 +29,12 @@ foo\bar@wibble
 ----------------
 (document
   (text_mode
-    (at_group
+    (text_mode_at
       (makeatletter (makeatletter_token))
-      (at_text_group
+      (text_group_at
         (begin_group)
         (text)
-        (at_command (at_token))
+        (command_at (token_at))
         (end_group))
       (makeatother (makeatother_token)))))
 
@@ -45,11 +45,11 @@ foo\bar@wibble
 ----------------
 (document
   (text_mode
-    (at_group
+    (text_mode_at
       (makeatletter (makeatletter_token))
-      (opt_at_text_group
+      (opt_text_group_at
         (begin_opt)
         (text)
-        (at_command (at_token))
+        (command_at (token_at))
         (end_opt))
       (makeatother (makeatother_token)))))

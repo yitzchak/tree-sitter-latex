@@ -28,12 +28,12 @@ module.exports = grammar({
       $.escaped,
       $.text_group,
       $.opt_text_group,
-      $.at_group
+      $.text_mode_at
     ),
 
     text_mode: $ => repeat1($._text_mode),
 
-    _at_text_mode: $ => choice(
+    _text_mode_at: $ => choice(
       $.active_char,
       $.alignment_tab,
       $.parameter,
@@ -48,13 +48,13 @@ module.exports = grammar({
       $._inline_math,
       $.verbatim_env,
       $.text_env,
-      $.at_command,
+      $.command_at,
       $.escaped,
-      $.at_text_group,
-      $.opt_at_text_group
+      $.text_group_at,
+      $.opt_text_group_at
     ),
 
-    at_group: $ => seq($.makeatletter, repeat($._at_text_mode), $.makeatother),
+    text_mode_at: $ => seq($.makeatletter, repeat($._text_mode_at), $.makeatother),
 
     _math_mode: $ => choice(
       $.active_char,
@@ -211,6 +211,8 @@ module.exports = grammar({
       $.catcode,
       $.emph,
       $.textbf,
+      $.textit,
+      $.texttt,
       $.documentclass,
       $.include,
       $.section,
@@ -219,16 +221,18 @@ module.exports = grammar({
       $.token
     ),
 
-    at_command: $ => choice(
+    command_at: $ => choice(
       $.catcode,
-      $.emph,
-      $.textbf,
+      $.emph_at,
+      $.textbf_at,
+      $.textit_at,
+      $.texttt_at,
       $.documentclass,
       $.include,
       $.section,
       $.storage,
       $.usepackage,
-      $.at_token
+      $.token_at
     ),
 
     begin: $ => seq($.begin_token, alias($.simple_text_group, 'env_name')),
@@ -278,11 +282,33 @@ module.exports = grammar({
 
     emph: $ => seq($.emph_token, $.text_group),
 
+    emph_at: $ => seq($.emph_token, $.text_group_at),
+
     emph_token: $ => seq($._escape, 'emph'),
+
+    footnote: $ => seq($.footnote_token, $.opt_text_group, $.text_group),
+
+    footnote_at: $ => seq($.footnote_token, $.opt_text_group_at, $.text_group_at),
+
+    footnote_token: $ => seq($._escape, 'footnote'),
 
     textbf: $ => seq($.textbf_token, $.text_group),
 
+    textbf_at: $ => seq($.textbf_token, $.text_group_at),
+
     textbf_token: $ => seq($._escape, 'textbf'),
+
+    textit: $ => seq($.textit_token, $.text_group),
+
+    textit_at: $ => seq($.textit_token, $.text_group_at),
+
+    textit_token: $ => seq($._escape, 'textit'),
+
+    texttt: $ => seq($.texttt_token, $.text_group),
+
+    texttt_at: $ => seq($.texttt_token, $.text_group_at),
+
+    texttt_token: $ => seq($._escape, 'texttt'),
 
     makeatletter: $ => $.makeatletter_token,
 
@@ -296,8 +322,8 @@ module.exports = grammar({
       $.begin_group, repeat($._text_mode), $.end_group
     ),
 
-    at_text_group: $ => seq(
-      $.begin_group, repeat($._at_text_mode), $.end_group
+    text_group_at: $ => seq(
+      $.begin_group, repeat($._text_mode_at), $.end_group
     ),
 
     simple_text_group: $ => seq(
@@ -308,8 +334,8 @@ module.exports = grammar({
       $.begin_opt, repeat($._text_mode), $.end_opt
     ),
 
-    opt_at_text_group: $ => seq(
-      $.begin_opt, repeat($._at_text_mode), $.end_opt
+    opt_text_group_at: $ => seq(
+      $.begin_opt, repeat($._text_mode_at), $.end_opt
     ),
 
     math_group: $ => seq(
@@ -326,7 +352,7 @@ module.exports = grammar({
 
     token: $ => seq($._escape, $._name),
 
-    at_token: $ => seq($._escape, $._at_name),
+    token_at: $ => seq($._escape, $._at_name),
 
     magic_comment: $ => /%\s*!T[eE]X\s+.*/,
 
