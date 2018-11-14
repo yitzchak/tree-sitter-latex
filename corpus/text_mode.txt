@@ -142,14 +142,18 @@ comment
 ===========
 foo % bar
 -----------
-(document (text_mode (text) (comment (comment_char) (comment_text))))
+(document
+  (text_mode (text))
+  (comment))
 
 ===========
 magic comment
 ===========
 foo %!TeX bar=wibble
 -----------
-(document (text_mode (text) (comment (comment_char) (magic_text))))
+(document
+  (text_mode (text))
+  (magic_comment))
 
 =============
 documentclass
@@ -176,3 +180,25 @@ usepackage
       (usepackage_token)
       (opt_text_group (begin_opt) (text) (end_opt))
       (package_name (begin_group) (text) (end_group))))))
+
+=====================
+emph
+=====================
+foo\emph{bar}wibble
+---------------------
+(document
+  (text_mode
+    (text)
+    (command (emph (emph_token) (text_group (begin_group) (text) (end_group))))
+    (text)))
+
+=====================
+textbf
+=====================
+foo\textbf{bar}wibble
+---------------------
+(document
+  (text_mode
+    (text)
+    (command (textbf (textbf_token) (text_group (begin_group) (text) (end_group))))
+    (text)))

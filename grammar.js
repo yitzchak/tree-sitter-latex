@@ -1,7 +1,10 @@
 module.exports = grammar({
   name: 'latex',
 
-  extras: $ => [],
+  extras: $ => [
+    $.magic_comment,
+    $.comment
+  ],
 
   rules: {
     document: $ => optional($.text_mode),
@@ -25,8 +28,7 @@ module.exports = grammar({
       $.escaped,
       $.text_group,
       $.opt_text_group,
-      $.at_group,
-      $.comment
+      $.at_group
     ),
 
     text_mode: $ => repeat1($._text_mode),
@@ -49,8 +51,7 @@ module.exports = grammar({
       $.at_command,
       $.escaped,
       $.at_text_group,
-      $.opt_at_text_group,
-      $.comment
+      $.opt_at_text_group
     ),
 
     at_group: $ => seq($.makeatletter, repeat($._at_text_mode), $.makeatother),
@@ -67,8 +68,7 @@ module.exports = grammar({
       $.escaped,
       $.math_group,
       $.opt_math_group,
-      $.tag,
-      $.comment
+      $.tag
     ),
 
     math_mode: $ => prec.left(2, repeat1($._math_mode)),
@@ -178,7 +178,7 @@ module.exports = grammar({
 
     verbatim_env: $ => seq(
       $.verbatim_begin,
-      $.verbatim_text,
+      optional($.verbatim_text),
       $.verbatim_end
     ),
 
@@ -191,10 +191,12 @@ module.exports = grammar({
     ),
 
     verbatim_end: $ => seq(
-      $._end_of_line,
+      // $._end_of_line,
       $.end_token,
       $.verbatim_env_group
     ),
+
+    verbatim_text: $ => repeat1(seq(repeat(/./), $._end_of_line)),
 
     verbatim_env_group: $ => seq($.begin_group, $.verbatim_env_name, $.end_group),
 
@@ -208,6 +210,7 @@ module.exports = grammar({
     command: $ => choice(
       $.catcode,
       $.emph,
+      $.textbf,
       $.documentclass,
       $.include,
       $.section,
@@ -219,6 +222,7 @@ module.exports = grammar({
     at_command: $ => choice(
       $.catcode,
       $.emph,
+      $.textbf,
       $.documentclass,
       $.include,
       $.section,
@@ -276,6 +280,10 @@ module.exports = grammar({
 
     emph_token: $ => seq($._escape, 'emph'),
 
+    textbf: $ => seq($.textbf_token, $.text_group),
+
+    textbf_token: $ => seq($._escape, 'textbf'),
+
     makeatletter: $ => $.makeatletter_token,
 
     makeatletter_token: $ => seq($._escape, 'makeatletter'),
@@ -320,15 +328,11 @@ module.exports = grammar({
 
     at_token: $ => seq($._escape, $._at_name),
 
-    comment: $ => seq(
-      $.comment_char,
-      choice(
-        $.magic_text,
-        $.comment_text
-      )
-    ),
+    magic_comment: $ => /%\s*!T[eE]X\s+.*/,
 
-    verbatim_text: $ => repeat1($._verbatim_token),
+    comment: $ => /%.*/,
+
+    // verbatim_text: $ => seq(/.*/, $._end_of_line),
 
     _escape: $ => '\\',
     begin_group: $ => '{',
@@ -348,12 +352,9 @@ module.exports = grammar({
     _at_name: $ => /[a-zA-Z@]+/,
     // other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
     active_char: $ => '~',
-    comment_char: $ => '%',
+    // comment_char: $ => '%',
     text: $ => /[^\\{}$&#^_~%\[\]]+/,
     number: $ => /[0-9]+/,
-    _verbatim_token: $ => /(\n|.)/,
-
-    magic_text: $ => /\s*!T[eE]X\s+.*/,
-    comment_text: $ => /.*/
+    // _verbatim_token: $ => /.*/,
   }
 })

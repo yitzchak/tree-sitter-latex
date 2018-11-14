@@ -183,3 +183,38 @@ quux
       (verbatim_text)
       (verbatim_end (end_token) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
     (text)))
+
+======================
+empty verbatim environment
+======================
+foo
+\begin{verbatim}
+\end{verbatim}
+quux
+----------------------
+(document
+  (text_mode
+    (text)
+    (verbatim_env
+      (verbatim_begin (begin_token) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group)))
+      (verbatim_end (end_token) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (text)))
+
+======================
+multiline verbatim environment
+======================
+foo
+\begin{verbatim}
+bar
+wibble
+\end{verbatim}
+quux
+----------------------
+(document
+  (text_mode
+    (text)
+    (verbatim_env
+      (verbatim_begin (begin_token) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group)))
+      (verbatim_text)
+      (verbatim_end (end_token) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (text)))

@@ -80,10 +80,6 @@
         {
           "type": "SYMBOL",
           "name": "at_group"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "comment"
         }
       ]
     },
@@ -157,10 +153,6 @@
         {
           "type": "SYMBOL",
           "name": "opt_at_text_group"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "comment"
         }
       ]
     },
@@ -234,10 +226,6 @@
         {
           "type": "SYMBOL",
           "name": "tag"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "comment"
         }
       ]
     },
@@ -657,8 +645,16 @@
           "name": "verbatim_begin"
         },
         {
-          "type": "SYMBOL",
-          "name": "verbatim_text"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "verbatim_text"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "SYMBOL",
@@ -712,10 +708,6 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_end_of_line"
-        },
-        {
-          "type": "SYMBOL",
           "name": "end_token"
         },
         {
@@ -723,6 +715,25 @@
           "name": "verbatim_env_group"
         }
       ]
+    },
+    "verbatim_text": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "PATTERN",
+              "value": "."
+            }
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_end_of_line"
+          }
+        ]
+      }
     },
     "verbatim_env_group": {
       "type": "SEQ",
@@ -771,6 +782,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "textbf"
+        },
+        {
+          "type": "SYMBOL",
           "name": "documentclass"
         },
         {
@@ -805,6 +820,10 @@
         {
           "type": "SYMBOL",
           "name": "emph"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "textbf"
         },
         {
           "type": "SYMBOL",
@@ -1121,6 +1140,32 @@
         }
       ]
     },
+    "textbf": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "textbf_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "textbf_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "textbf"
+        }
+      ]
+    },
     "makeatletter": {
       "type": "SYMBOL",
       "name": "makeatletter_token"
@@ -1343,34 +1388,13 @@
         }
       ]
     },
-    "comment": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "comment_char"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "magic_text"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "comment_text"
-            }
-          ]
-        }
-      ]
+    "magic_comment": {
+      "type": "PATTERN",
+      "value": "%\\s*!T[eE]X\\s+.*"
     },
-    "verbatim_text": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "SYMBOL",
-        "name": "_verbatim_token"
-      }
+    "comment": {
+      "type": "PATTERN",
+      "value": "%.*"
     },
     "_escape": {
       "type": "STRING",
@@ -1428,10 +1452,6 @@
       "type": "STRING",
       "value": "~"
     },
-    "comment_char": {
-      "type": "STRING",
-      "value": "%"
-    },
     "text": {
       "type": "PATTERN",
       "value": "[^\\\\{}$&#^_~%\\[\\]]+"
@@ -1439,21 +1459,18 @@
     "number": {
       "type": "PATTERN",
       "value": "[0-9]+"
-    },
-    "_verbatim_token": {
-      "type": "PATTERN",
-      "value": "(\\n|.)"
-    },
-    "magic_text": {
-      "type": "PATTERN",
-      "value": "\\s*!T[eE]X\\s+.*"
-    },
-    "comment_text": {
-      "type": "PATTERN",
-      "value": ".*"
     }
   },
-  "extras": [],
+  "extras": [
+    {
+      "type": "SYMBOL",
+      "name": "magic_comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "comment"
+    }
+  ],
   "conflicts": [],
   "externals": [],
   "inline": []
