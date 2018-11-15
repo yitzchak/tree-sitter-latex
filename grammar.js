@@ -107,7 +107,7 @@ module.exports = grammar({
     math_mode_at: $ => prec.left(2, repeat1($._math_mode_at)),
 
     parameter: $ => seq(
-      $.parameter_char, $.number
+      repeat1($.parameter_char), $.number
     ),
 
     text_env: $ => seq(
