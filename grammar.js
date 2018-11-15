@@ -36,7 +36,7 @@ module.exports = grammar({
       $.text_env,
       $.text_group,
       $.opt_text_group,
-      $.text_mode_at,
+      $.text_mode_at_region,
       $.emph,
       $.textbf,
       $.textit,
@@ -55,7 +55,7 @@ module.exports = grammar({
       $._text_mode_common,
       $._display_math_at,
       $._inline_math_at,
-      $.text_env,
+      $.text_env_at,
       $.text_group_at,
       $.opt_text_group_at,
       $.emph_at,
@@ -70,12 +70,18 @@ module.exports = grammar({
       $.token_at
     ),
 
-    text_mode_at: $ => seq($.makeatletter, repeat($._text_mode_at), $.makeatother),
+    text_mode_at: $ => prec.left(2, repeat1($._text_mode_at)),
 
-    _math_mode: $ => choice(
+    text_mode_at_region: $ => seq($.makeatletter, optional($.text_mode_at), $.makeatother),
+
+    _math_mode_common: $ => choice(
       $._common,
       $.subscript,
       $.superscript,
+    ),
+
+    _math_mode: $ => choice(
+      $._math_mode_common,
       $.math_env,
       $.math_group,
       $.opt_math_group,
@@ -88,9 +94,7 @@ module.exports = grammar({
     math_mode: $ => prec.left(2, repeat1($._math_mode)),
 
     _math_mode_at: $ => choice(
-      $._common,
-      $.subscript,
-      $.superscript,
+      $._math_mode_common,
       $.math_env_at,
       $.math_group_at,
       $.opt_math_group_at,
@@ -435,7 +439,7 @@ module.exports = grammar({
 
     token: $ => seq($._escape, $._name),
 
-    token_at: $ => seq($._escape, $._at_name),
+    token_at: $ => seq($._escape, $._name_at),
 
     magic_comment: $ => /%\s*!T[eE]X\s+.*/,
 
@@ -458,7 +462,7 @@ module.exports = grammar({
     // space: $ => /[ \t]/,
     // letter: $ => /[a-zA-Z]/,
     _name: $ => /[a-zA-Z]+/,
-    _at_name: $ => /[a-zA-Z@]+/,
+    _name_at: $ => /[a-zA-Z@]+/,
     // other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
     active_char: $ => '~',
     // comment_char: $ => '%',

@@ -1,41 +1,40 @@
 =================
 @ sign not letter
 =================
-foo\bar@wibble
+\bar@wibble
 ----------------
 (document
   (text_mode
-    (text)
     (token)
     (text)))
 
 =================
 @ sign is letter
 =================
-\makeatletter foo\bar@wibble\makeatother
+\makeatletter\bar@wibble\makeatother
 ----------------
 (document
   (text_mode
-    (text_mode_at
+    (text_mode_at_region
       (makeatletter (makeatletter_token))
-      (text)
-      (token_at)
+      (text_mode_at
+        (token_at))
       (makeatother (makeatother_token)))))
 
 ==============================
 @ sign is letter in text group
 ==============================
-\makeatletter{foo\bar@wibble}\makeatother
+\makeatletter{\bar@wibble}\makeatother
 ----------------
 (document
   (text_mode
-    (text_mode_at
+    (text_mode_at_region
       (makeatletter (makeatletter_token))
-      (text_group_at
-        (begin_group)
-        (text)
-        (token_at)
-        (end_group))
+      (text_mode_at
+        (text_group_at
+          (begin_group)
+          (token_at)
+          (end_group)))
       (makeatother (makeatother_token)))))
 
 ==============================
@@ -45,11 +44,12 @@ foo\bar@wibble
 ----------------
 (document
   (text_mode
-    (text_mode_at
+    (text_mode_at_region
       (makeatletter (makeatletter_token))
-      (opt_text_group_at
-        (begin_opt)
-        (text)
-        (token_at)
-        (end_opt))
+      (text_mode_at
+        (opt_text_group_at
+          (begin_opt)
+          (text)
+          (token_at)
+          (end_opt)))
       (makeatother (makeatother_token)))))

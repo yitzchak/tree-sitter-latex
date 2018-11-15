@@ -102,7 +102,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "text_mode_at"
+          "name": "text_mode_at_region"
         },
         {
           "type": "SYMBOL",
@@ -170,7 +170,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "text_env"
+          "name": "text_env_at"
         },
         {
           "type": "SYMBOL",
@@ -223,6 +223,17 @@
       ]
     },
     "text_mode_at": {
+      "type": "PREC_LEFT",
+      "value": 2,
+      "content": {
+        "type": "REPEAT1",
+        "content": {
+          "type": "SYMBOL",
+          "name": "_text_mode_at"
+        }
+      }
+    },
+    "text_mode_at_region": {
       "type": "SEQ",
       "members": [
         {
@@ -230,11 +241,16 @@
           "name": "makeatletter"
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_text_mode_at"
-          }
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "text_mode_at"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "SYMBOL",
@@ -242,7 +258,7 @@
         }
       ]
     },
-    "_math_mode": {
+    "_math_mode_common": {
       "type": "CHOICE",
       "members": [
         {
@@ -256,6 +272,15 @@
         {
           "type": "SYMBOL",
           "name": "superscript"
+        }
+      ]
+    },
+    "_math_mode": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_math_mode_common"
         },
         {
           "type": "SYMBOL",
@@ -303,15 +328,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_common"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "subscript"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "superscript"
+          "name": "_math_mode_common"
         },
         {
           "type": "SYMBOL",
@@ -1913,7 +1930,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_at_name"
+          "name": "_name_at"
         }
       ]
     },
@@ -1973,7 +1990,7 @@
       "type": "PATTERN",
       "value": "[a-zA-Z]+"
     },
-    "_at_name": {
+    "_name_at": {
       "type": "PATTERN",
       "value": "[a-zA-Z@]+"
     },
