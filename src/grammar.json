@@ -13,7 +13,7 @@
         }
       ]
     },
-    "_text_mode": {
+    "_common": {
       "type": "CHOICE",
       "members": [
         {
@@ -29,6 +29,27 @@
           "name": "parameter"
         },
         {
+          "type": "SYMBOL",
+          "name": "text"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "escaped"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "catcode"
+        }
+      ]
+    },
+    "_text_mode_common": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_common"
+        },
+        {
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
@@ -38,12 +59,26 @@
           "value": "text"
         },
         {
-          "type": "SYMBOL",
-          "name": "superscript"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "superscript"
+          },
+          "named": false,
+          "value": "text"
         },
         {
           "type": "SYMBOL",
-          "name": "text"
+          "name": "verbatim_env"
+        }
+      ]
+    },
+    "_text_mode": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_text_mode_common"
         },
         {
           "type": "SYMBOL",
@@ -55,19 +90,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "verbatim_env"
-        },
-        {
-          "type": "SYMBOL",
           "name": "text_env"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "command"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "escaped"
         },
         {
           "type": "SYMBOL",
@@ -80,6 +103,46 @@
         {
           "type": "SYMBOL",
           "name": "text_mode_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "emph"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "textbf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "textit"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "texttt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "documentclass"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "include"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "section"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "storage"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "usepackage"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "token"
         }
       ]
     },
@@ -95,32 +158,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "active_char"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "alignment_tab"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "parameter"
-        },
-        {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "subscript"
-          },
-          "named": false,
-          "value": "text"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "superscript"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "text"
+          "name": "_text_mode_common"
         },
         {
           "type": "SYMBOL",
@@ -132,19 +170,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "verbatim_env"
-        },
-        {
-          "type": "SYMBOL",
           "name": "text_env"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "command_at"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "escaped"
         },
         {
           "type": "SYMBOL",
@@ -153,6 +179,46 @@
         {
           "type": "SYMBOL",
           "name": "opt_text_group_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "emph_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "textbf_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "textit_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "texttt_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "documentclass"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "include_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "section_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "storage"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "usepackage"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "token_at"
         }
       ]
     },
@@ -181,15 +247,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "active_char"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "alignment_tab"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "parameter"
+          "name": "_common"
         },
         {
           "type": "SYMBOL",
@@ -201,19 +259,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "text"
-        },
-        {
-          "type": "SYMBOL",
           "name": "math_environment"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "command"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "escaped"
         },
         {
           "type": "SYMBOL",
@@ -222,6 +268,18 @@
         {
           "type": "SYMBOL",
           "name": "opt_math_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "include"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "storage"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "token"
         },
         {
           "type": "SYMBOL",
@@ -769,104 +827,6 @@
         }
       ]
     },
-    "command": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "catcode"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "emph"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textbf"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textit"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "texttt"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "documentclass"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "include"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "section"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "storage"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "usepackage"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "token"
-        }
-      ]
-    },
-    "command_at": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "catcode"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "emph_at"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textbf_at"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textit_at"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "texttt_at"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "documentclass"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "include"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "section"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "storage"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "usepackage"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "token_at"
-        }
-      ]
-    },
     "begin": {
       "type": "SEQ",
       "members": [
@@ -1028,6 +988,19 @@
         }
       ]
     },
+    "include_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "include_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group_at"
+        }
+      ]
+    },
     "include_token": {
       "type": "SEQ",
       "members": [
@@ -1063,6 +1036,31 @@
         {
           "type": "SYMBOL",
           "name": "text_group"
+        }
+      ]
+    },
+    "section_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "section_token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "opt_text_group_at"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group_at"
         }
       ]
     },

@@ -9,65 +9,79 @@ module.exports = grammar({
   rules: {
     document: $ => optional($.text_mode),
 
-    _text_mode: $ => choice(
+    _common: $ => choice(
       $.active_char,
       $.alignment_tab,
       $.parameter,
+      $.text,
+      $.escaped,
+      $.catcode
+    ),
+
+    _text_mode_common: $ => choice(
+      $._common,
       // Underscore produces an error by default in LaTeX text mode. Some
       // some package define underscore to produce \tex­tun­der­score. We assume
       // that this has been done since underscore is never actually subscript
       // in text mode.
       alias($.subscript, 'text'),
-      $.superscript,
-      $.text,
+      alias($.superscript, 'text'),
+      $.verbatim_env
+    ),
+
+    _text_mode: $ => choice(
+      $._text_mode_common,
       $._display_math,
       $._inline_math,
-      $.verbatim_env,
       $.text_env,
-      $.command,
-      $.escaped,
       $.text_group,
       $.opt_text_group,
-      $.text_mode_at
+      $.text_mode_at,
+      $.emph,
+      $.textbf,
+      $.textit,
+      $.texttt,
+      $.documentclass,
+      $.include,
+      $.section,
+      $.storage,
+      $.usepackage,
+      $.token
     ),
 
     text_mode: $ => repeat1($._text_mode),
 
     _text_mode_at: $ => choice(
-      $.active_char,
-      $.alignment_tab,
-      $.parameter,
-      // Underscore produces an error by default in LaTeX text mode. Some
-      // some package define underscore to produce \tex­tun­der­score. We assume
-      // that this has been done since underscore is never actually subscript
-      // in text mode.
-      alias($.subscript, 'text'),
-      $.superscript,
-      $.text,
+      $._text_mode_common,
       $._display_math,
       $._inline_math,
-      $.verbatim_env,
       $.text_env,
-      $.command_at,
-      $.escaped,
       $.text_group_at,
-      $.opt_text_group_at
+      $.opt_text_group_at,
+      $.emph_at,
+      $.textbf_at,
+      $.textit_at,
+      $.texttt_at,
+      $.documentclass,
+      $.include_at,
+      $.section_at,
+      $.storage,
+      $.usepackage,
+      $.token_at
     ),
 
     text_mode_at: $ => seq($.makeatletter, repeat($._text_mode_at), $.makeatother),
 
     _math_mode: $ => choice(
-      $.active_char,
-      $.alignment_tab,
-      $.parameter,
+      $._common,
       $.subscript,
       $.superscript,
-      $.text,
       $.math_environment,
-      $.command,
-      $.escaped,
       $.math_group,
       $.opt_math_group,
+      $.include,
+      $.storage,
+      $.token,
       $.tag
     ),
 
@@ -207,34 +221,6 @@ module.exports = grammar({
       /[^()\[\]]/
     ),
 
-    command: $ => choice(
-      $.catcode,
-      $.emph,
-      $.textbf,
-      $.textit,
-      $.texttt,
-      $.documentclass,
-      $.include,
-      $.section,
-      $.storage,
-      $.usepackage,
-      $.token
-    ),
-
-    command_at: $ => choice(
-      $.catcode,
-      $.emph_at,
-      $.textbf_at,
-      $.textit_at,
-      $.texttt_at,
-      $.documentclass,
-      $.include,
-      $.section,
-      $.storage,
-      $.usepackage,
-      $.token_at
-    ),
-
     begin: $ => seq($.begin_token, alias($.simple_text_group, 'env_name')),
 
     begin_token: $ => seq($._escape, 'begin'),
@@ -261,9 +247,13 @@ module.exports = grammar({
 
     include: $ => seq($.include_token, $.text_group),
 
+    include_at: $ => seq($.include_token, $.text_group_at),
+
     include_token: $ => seq($._escape, /include|input/),
 
     section: $ => seq($.section_token, optional($.opt_text_group), $.text_group),
+
+    section_at: $ => seq($.section_token, optional($.opt_text_group_at), $.text_group_at),
 
     section_token: $ => seq(
       $._escape,

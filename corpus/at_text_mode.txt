@@ -6,7 +6,7 @@ foo\bar@wibble
 (document
   (text_mode
     (text)
-    (command (token))
+    (token)
     (text)))
 
 =================
@@ -19,7 +19,7 @@ foo\bar@wibble
     (text_mode_at
       (makeatletter (makeatletter_token))
       (text)
-      (command_at (token_at))
+      (token_at)
       (makeatother (makeatother_token)))))
 
 ==============================
@@ -34,7 +34,7 @@ foo\bar@wibble
       (text_group_at
         (begin_group)
         (text)
-        (command_at (token_at))
+        (token_at)
         (end_group))
       (makeatother (makeatother_token)))))
 
@@ -50,6 +50,6 @@ foo\bar@wibble
       (opt_text_group_at
         (begin_opt)
         (text)
-        (command_at (token_at))
+        (token_at)
         (end_opt))
       (makeatother (makeatother_token)))))

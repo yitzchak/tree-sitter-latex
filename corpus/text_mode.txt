@@ -17,7 +17,7 @@ fubar\quux wibble
 (document
   (text_mode
     (text)
-    (command (token))
+    (token)
     (text)))
 
 ==================
@@ -29,7 +29,7 @@ fubar\quux[opt]{bar} wibble
 (document
   (text_mode
     (text)
-    (command (token))
+    (token)
     (opt_text_group (begin_opt) (text) (end_opt))
     (text_group (begin_group) (text) (end_group))
     (text)))
@@ -162,11 +162,10 @@ documentclass
 ----------------
 (document
   (text_mode
-    (command
-      (documentclass
-        (documentclass_token)
-        (opt_text_group (begin_opt) (text) (end_opt))
-        (class_name (begin_group) (text) (end_group))))))
+    (documentclass
+      (documentclass_token)
+      (opt_text_group (begin_opt) (text) (end_opt))
+      (class_name (begin_group) (text) (end_group)))))
 
 ======================
 usepackage
@@ -175,11 +174,10 @@ usepackage
 -------------------
 (document
   (text_mode
-    (command
     (usepackage
       (usepackage_token)
       (opt_text_group (begin_opt) (text) (end_opt))
-      (package_name (begin_group) (text) (end_group))))))
+      (package_name (begin_group) (text) (end_group)))))
 
 =====================
 emph
@@ -189,7 +187,7 @@ foo\emph{bar}wibble
 (document
   (text_mode
     (text)
-    (command (emph (emph_token) (text_group (begin_group) (text) (end_group))))
+    (emph (emph_token) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -200,7 +198,7 @@ foo\textbf{bar}wibble
 (document
   (text_mode
     (text)
-    (command (textbf (textbf_token) (text_group (begin_group) (text) (end_group))))
+    (textbf (textbf_token) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -211,7 +209,7 @@ foo\textit{bar}wibble
 (document
   (text_mode
     (text)
-    (command (textit (textit_token) (text_group (begin_group) (text) (end_group))))
+    (textit (textit_token) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -222,5 +220,5 @@ foo\texttt{bar}wibble
 (document
   (text_mode
     (text)
-    (command (texttt (texttt_token) (text_group (begin_group) (text) (end_group))))
+    (texttt (texttt_token) (text_group (begin_group) (text) (end_group)))
     (text)))
