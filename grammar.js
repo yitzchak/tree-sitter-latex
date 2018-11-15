@@ -53,8 +53,8 @@ module.exports = grammar({
 
     _text_mode_at: $ => choice(
       $._text_mode_common,
-      $._display_math,
-      $._inline_math,
+      $._display_math_at,
+      $._inline_math_at,
       $.text_env,
       $.text_group_at,
       $.opt_text_group_at,
@@ -76,7 +76,7 @@ module.exports = grammar({
       $._common,
       $.subscript,
       $.superscript,
-      $.math_environment,
+      $.math_env,
       $.math_group,
       $.opt_math_group,
       $.include,
@@ -87,6 +87,21 @@ module.exports = grammar({
 
     math_mode: $ => prec.left(2, repeat1($._math_mode)),
 
+    _math_mode_at: $ => choice(
+      $._common,
+      $.subscript,
+      $.superscript,
+      $.math_env_at,
+      $.math_group_at,
+      $.opt_math_group_at,
+      $.include_at,
+      $.storage,
+      $.token_at,
+      $.tag_at
+    ),
+
+    math_mode_at: $ => prec.left(2, repeat1($._math_mode_at)),
+
     parameter: $ => seq(
       $.parameter_char, $.number
     ),
@@ -95,8 +110,16 @@ module.exports = grammar({
       $.begin, repeat($._text_mode), $.end
     ),
 
-    math_environment: $ => seq(
+    text_env_at: $ => seq(
+      $.begin, repeat($._text_mode_at), $.end
+    ),
+
+    math_env: $ => seq(
       $.begin, repeat($._math_mode), $.end
+    ),
+
+    math_env_at: $ => seq(
+      $.begin, repeat($._math_mode_at), $.end
     ),
 
     _display_math: $ => choice(
@@ -105,15 +128,33 @@ module.exports = grammar({
       $.display_math_env
     ),
 
+    _display_math_at: $ => choice(
+      $.tex_display_math_at,
+      $.latex_display_math_at,
+      $.display_math_env_at
+    ),
+
     tex_display_math: $ => seq(
       $.math_shift, $.math_shift,
       $.math_mode,
       $.math_shift, $.math_shift
     ),
 
+    tex_display_math_at: $ => seq(
+      $.math_shift, $.math_shift,
+      $.math_mode_at,
+      $.math_shift, $.math_shift
+    ),
+
     latex_display_math: $ => seq(
       $.begin_display_math,
       $.math_mode,
+      $.end_display_math
+    ),
+
+    latex_display_math_at: $ => seq(
+      $.begin_display_math,
+      $.math_mode_at,
       $.end_display_math
     ),
 
@@ -131,11 +172,25 @@ module.exports = grammar({
       $.display_math_end
     ),
 
+    display_math_env_at: $ => seq(
+      alias($.display_math_begin_at, 'display_math_begin'),
+      $.math_mode_at,
+      $.display_math_end
+    ),
+
     display_math_begin: $ => seq(
       $.begin_token,
       $.display_math_env_group,
       optional($.opt_text_group),
       optional($.text_group),
+      $._end_of_line
+    ),
+
+    display_math_begin_at: $ => seq(
+      $.begin_token,
+      $.display_math_env_group,
+      optional($.opt_text_group_at),
+      optional($.text_group_at),
       $._end_of_line
     ),
 
@@ -154,9 +209,21 @@ module.exports = grammar({
       $.inline_math_env
     ),
 
+    _inline_math_at: $ => choice(
+      $.tex_inline_math_at,
+      $.latex_inline_math_at,
+      $.inline_math_env_at
+    ),
+
     tex_inline_math: $ => seq(
       $.math_shift,
       $.math_mode,
+      $.math_shift
+    ),
+
+    tex_inline_math_at: $ => seq(
+      $.math_shift,
+      $.math_mode_at,
       $.math_shift
     ),
 
@@ -166,9 +233,21 @@ module.exports = grammar({
       $.end_inline_math
     ),
 
+    latex_inline_math_at: $ => seq(
+      $.begin_inline_math,
+      $.math_mode_at,
+      $.end_inline_math
+    ),
+
     inline_math_env: $ => seq(
       $.inline_math_begin,
       $.math_mode,
+      $.inline_math_end
+    ),
+
+    inline_math_env_at: $ => seq(
+      $.inline_math_begin,
+      $.math_mode_at,
       $.inline_math_end
     ),
 
@@ -187,6 +266,8 @@ module.exports = grammar({
     inline_math_env_name: $ => 'math',
 
     tag: $ => seq($.tag_token, $.math_text_group),
+
+    tag_at: $ => seq($.tag_token, $.math_text_group_at),
 
     tag_token: $ => seq($._escape, 'tag'),
 
@@ -332,12 +413,24 @@ module.exports = grammar({
       $.begin_group, repeat($._math_mode), $.end_group
     ),
 
+    math_group_at: $ => seq(
+      $.begin_group, repeat($._math_mode_at), $.end_group
+    ),
+
     opt_math_group: $ => seq(
       $.begin_opt, repeat($._math_mode), $.end_opt
     ),
 
+    opt_math_group_at: $ => seq(
+      $.begin_opt, repeat($._math_mode_at), $.end_opt
+    ),
+
     math_text_group: $ => seq(
       $.begin_group, optional($.text_mode), $.end_group
+    ),
+
+    math_text_group_at: $ => seq(
+      $.begin_group, optional($.text_mode_at), $.end_group
     ),
 
     token: $ => seq($._escape, $._name),

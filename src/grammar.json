@@ -162,11 +162,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_display_math"
+          "name": "_display_math_at"
         },
         {
           "type": "SYMBOL",
-          "name": "_inline_math"
+          "name": "_inline_math_at"
         },
         {
           "type": "SYMBOL",
@@ -259,7 +259,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "math_environment"
+          "name": "math_env"
         },
         {
           "type": "SYMBOL",
@@ -298,6 +298,62 @@
         }
       }
     },
+    "_math_mode_at": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_common"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "subscript"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "superscript"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_env_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_group_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "opt_math_group_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "include_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "storage"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "token_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tag_at"
+        }
+      ]
+    },
+    "math_mode_at": {
+      "type": "PREC_LEFT",
+      "value": 2,
+      "content": {
+        "type": "REPEAT1",
+        "content": {
+          "type": "SYMBOL",
+          "name": "_math_mode_at"
+        }
+      }
+    },
     "parameter": {
       "type": "SEQ",
       "members": [
@@ -331,7 +387,27 @@
         }
       ]
     },
-    "math_environment": {
+    "text_env_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_text_mode_at"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end"
+        }
+      ]
+    },
+    "math_env": {
       "type": "SEQ",
       "members": [
         {
@@ -343,6 +419,26 @@
           "content": {
             "type": "SYMBOL",
             "name": "_math_mode"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end"
+        }
+      ]
+    },
+    "math_env_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_math_mode_at"
           }
         },
         {
@@ -365,6 +461,23 @@
         {
           "type": "SYMBOL",
           "name": "display_math_env"
+        }
+      ]
+    },
+    "_display_math_at": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "tex_display_math_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "latex_display_math_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "display_math_env_at"
         }
       ]
     },
@@ -393,6 +506,31 @@
         }
       ]
     },
+    "tex_display_math_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        }
+      ]
+    },
     "latex_display_math": {
       "type": "SEQ",
       "members": [
@@ -403,6 +541,23 @@
         {
           "type": "SYMBOL",
           "name": "math_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_display_math"
+        }
+      ]
+    },
+    "latex_display_math_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_display_math"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode_at"
         },
         {
           "type": "SYMBOL",
@@ -479,6 +634,28 @@
         }
       ]
     },
+    "display_math_env_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "display_math_begin_at"
+          },
+          "named": false,
+          "value": "display_math_begin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "display_math_end"
+        }
+      ]
+    },
     "display_math_begin": {
       "type": "SEQ",
       "members": [
@@ -508,6 +685,47 @@
             {
               "type": "SYMBOL",
               "name": "text_group"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_end_of_line"
+        }
+      ]
+    },
+    "display_math_begin_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "display_math_env_group"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "opt_text_group_at"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "text_group_at"
             },
             {
               "type": "BLANK"
@@ -571,6 +789,23 @@
         }
       ]
     },
+    "_inline_math_at": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "tex_inline_math_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "latex_inline_math_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "inline_math_env_at"
+        }
+      ]
+    },
     "tex_inline_math": {
       "type": "SEQ",
       "members": [
@@ -581,6 +816,23 @@
         {
           "type": "SYMBOL",
           "name": "math_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        }
+      ]
+    },
+    "tex_inline_math_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "math_shift"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode_at"
         },
         {
           "type": "SYMBOL",
@@ -605,6 +857,23 @@
         }
       ]
     },
+    "latex_inline_math_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_inline_math"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_inline_math"
+        }
+      ]
+    },
     "inline_math_env": {
       "type": "SEQ",
       "members": [
@@ -615,6 +884,23 @@
         {
           "type": "SYMBOL",
           "name": "math_mode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "inline_math_end"
+        }
+      ]
+    },
+    "inline_math_env_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "inline_math_begin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_mode_at"
         },
         {
           "type": "SYMBOL",
@@ -679,6 +965,19 @@
         {
           "type": "SYMBOL",
           "name": "math_text_group"
+        }
+      ]
+    },
+    "tag_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "tag_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_text_group_at"
         }
       ]
     },
@@ -1482,6 +1781,26 @@
         }
       ]
     },
+    "math_group_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_math_mode_at"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
     "opt_math_group": {
       "type": "SEQ",
       "members": [
@@ -1494,6 +1813,26 @@
           "content": {
             "type": "SYMBOL",
             "name": "_math_mode"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_opt"
+        }
+      ]
+    },
+    "opt_math_group_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_opt"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_math_mode_at"
           }
         },
         {
@@ -1515,6 +1854,31 @@
             {
               "type": "SYMBOL",
               "name": "text_mode"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "math_text_group_at": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "text_mode_at"
             },
             {
               "type": "BLANK"
