@@ -299,7 +299,7 @@ module.exports = grammar({
 
     verbatim_env_group: $ => seq($.begin_group, $.verbatim_env_name, $.end_group),
 
-    verbatim_env_name: $ => /(verbatim|[BL]?Verbatim\*?|lstlisting|minted)/,
+    verbatim_env_name: $ => /(verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt)/,
 
     escaped: $ => seq(
       $._escape,
