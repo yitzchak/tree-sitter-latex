@@ -97,20 +97,14 @@ struct Scanner {
 
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
-    if (valid_symbols[VERB_BODY])
+    if (valid_symbols[VERB_DELIM]) {
+      return (start_delim == 0) ?
+        scan_start_verb_delim(lexer) :
+        scan_end_verb_delim(lexer);
+    }
+    else if (start_delim != 0 && valid_symbols[VERB_BODY])
     {
       return scan_verb_body(lexer);
-    }
-    else if (valid_symbols[VERB_DELIM])
-    {
-      if (start_delim == 0)
-      {
-        return scan_start_verb_delim(lexer);
-      }
-      else
-      {
-        return scan_end_verb_delim(lexer);
-      }
     }
 
     return false;
