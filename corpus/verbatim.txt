@@ -222,14 +222,18 @@ quux
 ======================
 inline verbatim
 ======================
-\verb+foo+
-\verb\foo\
-\verb+foo
+text
+\verb+foo+bar
 \verb  +foo+
+\verb\foo\bar
+\verb+foo
+text
 ----------------------
 (document
   (text_mode
+    (text)
+    (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)
     (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)
     (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)
     (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim))
-    (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim))))
+    (text)))

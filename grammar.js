@@ -37,7 +37,9 @@ module.exports = grammar({
 
     inline_verbatim: $ => seq($.verb_token, $.verb_delim, $.verb_body, $.verb_delim),
 
-    verb_token: $ => seq($._escape, 'verb'),
+    verb_token: $ => seq($._escape, 'verb', optional($._whitespace)),
+
+    _whitespace: $ => repeat1(/[\s\t]/),
 
     _text_mode: $ => choice(
       $._text_mode_common,

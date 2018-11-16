@@ -53,11 +53,18 @@ struct Scanner {
 
   bool scan_end_verb_delim(TSLexer *lexer)
   {
-    if (lexer->lookahead == start_delim || lexer->lookahead == '\n')
+    if (lexer->lookahead == start_delim)
     {
       lexer->advance(lexer, false);
       lexer->mark_end(lexer);
       lexer->result_symbol = VERB_DELIM;
+      start_delim = 0;
+      return true;
+    }
+    else if (lexer->lookahead == '\n')
+    {
+      lexer->mark_end(lexer);
+      lexer->result_symbol = VERB_DELIM; // don't eat the newline (for consistency)
       start_delim = 0;
       return true;
     }

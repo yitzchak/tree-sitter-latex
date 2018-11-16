@@ -108,8 +108,27 @@
         {
           "type": "STRING",
           "value": "verb"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_whitespace"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
+    },
+    "_whitespace": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "PATTERN",
+        "value": "[\\s\\t]"
+      }
     },
     "_text_mode": {
       "type": "CHOICE",
