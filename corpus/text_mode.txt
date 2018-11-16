@@ -271,10 +271,13 @@ sections
 =====================
 \section{foo}
 \section*{bar}
+\subsection  *  {wibble}
 ---------------------
 
 (document
   (text_mode
+    (section (section_token) (text_group (begin_group) (text) (end_group)))
+    (text)
     (section (section_token) (text_group (begin_group) (text) (end_group)))
     (text)
     (section (section_token) (text_group (begin_group) (text) (end_group)))))
