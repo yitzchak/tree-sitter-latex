@@ -265,3 +265,16 @@ foo\footnote[10]{bar}wibble
       (opt_text_group (begin_opt) (text) (end_opt))
       (text_group (begin_group) (text) (end_group)))
     (text)))
+
+=====================
+sections
+=====================
+\section{foo}
+\section*{bar}
+---------------------
+
+(document
+  (text_mode
+    (section (section_token) (text_group (begin_group) (text) (end_group)))
+    (text)
+    (section (section_token) (text_group (begin_group) (text) (end_group)))))

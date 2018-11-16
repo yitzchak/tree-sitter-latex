@@ -1,4 +1,10 @@
-const named_command = ($, name) => seq($._escape, name, optional($._whitespace))
+const named_command = ($, name, starred=false) => {
+  if (starred) {
+    return seq($._escape, name, optional($._whitespace), optional('*'), optional($._whitespace))
+  } else {
+    return seq($._escape, name, optional($._whitespace))
+  }
+}
 
 const command_options = ($) => optional(seq($.opt_text_group, optional($._whitespace)))
 const command_options_at = ($) => optional(seq($.opt_text_group_at, optional($._whitespace)))
@@ -356,20 +362,19 @@ module.exports = grammar({
 
     include_at: $ => seq($.include_token, $.text_group_at),
 
-    include_token: $ => seq($._escape, /include|input/),
+    include_token: $ => named_command($, /include|input/),
 
     section: $ => seq($.section_token, command_options($), $.text_group),
 
     section_at: $ => seq($.section_token, command_options_at($), $.text_group_at),
 
-    section_token: $ => seq(
-      $._escape,
-      /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/
+    section_token: $ => named_command(
+      $, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/, true
     ),
 
     storage: $ => $.storage_token,
 
-    storage_token: $ => seq($._escape, /[egx]?def/),
+    storage_token: $ => named_command($, /[egx]?def/),
 
     catcode: $ => seq(
       $.catcode_token, $.escaped, '=', $.number
