@@ -34,6 +34,34 @@ fubar\quux[opt]{bar} wibble
     (text_group (begin_group) (text) (end_group))
     (text)))
 
+==================
+Single command with spaces
+==================
+fubar\quux  {bar} wibble
+---
+
+(document
+  (text_mode
+    (text)
+    (token)
+    (text_group (begin_group) (text) (end_group))
+    (text)))
+
+
+==================
+Single command with arguments and spaces (TODO: Resolve design choice)
+==================
+fubar\quux  [opt]  {bar} wibble
+---
+
+(document
+  (text_mode
+    (text)
+    (token)
+    (opt_text_group (begin_opt) (text) (end_opt)) (text)
+    (text_group (begin_group) (text) (end_group))
+    (text)))
+
 =============
 Active char
 =============
@@ -60,13 +88,13 @@ foo&bar
 Parameter
 =============
 foo#1bar
+foo##1bar
 -------------
 (document
   (text_mode
     (text)
-    (parameter
-      (parameter_char)
-      (number))
+    (parameter (parameter_char) (number)) (text)
+    (parameter (parameter_char) (parameter_char) (number))
     (text)))
 
 =============
@@ -221,4 +249,19 @@ foo\texttt{bar}wibble
   (text_mode
     (text)
     (texttt (texttt_token) (text_group (begin_group) (text) (end_group)))
+    (text)))
+
+=====================
+footnote
+=====================
+foo\footnote{bar}wibble
+foo\footnote[10]{bar}wibble
+---------------------
+(document
+  (text_mode
+    (text)
+    (footnote (footnote_token) (text_group (begin_group) (text) (end_group))) (text)
+    (footnote (footnote_token)
+      (opt_text_group (begin_opt) (text) (end_opt))
+      (text_group (begin_group) (text) (end_group)))
     (text)))
