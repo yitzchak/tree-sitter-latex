@@ -106,20 +106,8 @@
           "name": "_escape"
         },
         {
-          "type": "STRING",
-          "value": "verb"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "*"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "PATTERN",
+          "value": "verb\\*?"
         }
       ]
     },
