@@ -124,11 +124,8 @@
       ]
     },
     "_whitespace": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "PATTERN",
-        "value": "[\\s\\t]"
-      }
+      "type": "PATTERN",
+      "value": "[ \\t]+"
     },
     "_text_mode": {
       "type": "CHOICE",
@@ -2438,10 +2435,6 @@
     "subscript": {
       "type": "STRING",
       "value": "_"
-    },
-    "_whitespace": {
-      "type": "PATTERN",
-      "value": "[ \\t]+"
     },
     "_name": {
       "type": "PATTERN",
