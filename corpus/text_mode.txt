@@ -88,13 +88,13 @@ foo&bar
 Parameter
 =============
 foo#1bar
+foo##1bar
 -------------
 (document
   (text_mode
     (text)
-    (parameter
-      (parameter_char)
-      (number))
+    (parameter (parameter_char) (number)) (text)
+    (parameter (parameter_char) (parameter_char) (number))
     (text)))
 
 =============
