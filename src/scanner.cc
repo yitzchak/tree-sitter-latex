@@ -21,76 +21,55 @@ enum TokenType {
 struct Scanner {
   char start_delim = 0;
 
-
   Scanner() {}
 
-
-  unsigned serialize(char *buffer)
-  {
+  unsigned serialize(char *buffer) {
     return 0;
   }
 
-
   void deserialize(const char *buffer, unsigned length) {}
 
-
-  bool scan_start_verb_delim(TSLexer *lexer)
-  {
+  bool scan_start_verb_delim(TSLexer *lexer) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
-    switch (lexer->lookahead)
-    {
-      case '\n':
-      case 0:
-        return false;
-      default:
-        start_delim = lexer->lookahead;
-        lexer->advance(lexer, false);
-        lexer->mark_end(lexer);
-        lexer->result_symbol = VERB_DELIM;
-        return true;
+    if (lexer->lookahead && lexer->lookahead != '\n') {
+      start_delim = lexer->lookahead;
+      lexer->advance(lexer, false);
+      lexer->mark_end(lexer);
+      lexer->result_symbol = VERB_DELIM;
+      return true;
     }
+
+    return false;
   }
 
-  bool scan_end_verb_delim(TSLexer *lexer)
-  {
-    if (lexer->lookahead == start_delim)
-    {
+  bool scan_end_verb_delim(TSLexer *lexer) {
+    if (lexer->lookahead == start_delim) {
       lexer->advance(lexer, false);
       lexer->mark_end(lexer);
       lexer->result_symbol = VERB_DELIM;
       start_delim = 0;
       return true;
     }
-    else if (lexer->lookahead == '\n')
-    {
+
+    if (lexer->lookahead == '\n') {
       lexer->mark_end(lexer);
       lexer->result_symbol = VERB_DELIM; // don't eat the newline (for consistency)
       start_delim = 0;
       return true;
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
 
-  bool scan_verb_body(TSLexer *lexer)
-  {
-    while (lexer->lookahead)
-    {
-      if (lexer->lookahead == start_delim || lexer->lookahead == '\n')
-      {
-        break;
-      }
-      else
-      {
-        lexer->advance(lexer, false);
-      }
+  bool scan_verb_body(TSLexer *lexer) {
+    while (lexer->lookahead && lexer->lookahead != start_delim && lexer->lookahead != '\n') {
+      lexer->advance(lexer, false);
     }
 
     lexer->mark_end(lexer);
     lexer->result_symbol = VERB_BODY;
+
     return true;
   }
 
@@ -98,13 +77,12 @@ struct Scanner {
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
     if (valid_symbols[VERB_DELIM]) {
-      return (start_delim == 0) ?
-        scan_start_verb_delim(lexer) :
-        scan_end_verb_delim(lexer);
+      return (start_delim) ?
+        scan_end_verb_delim(lexer) :
+        scan_start_verb_delim(lexer);
     }
 
-    if (start_delim != 0 && valid_symbols[VERB_BODY])
-    {
+    if (start_delim && valid_symbols[VERB_BODY]) {
       return scan_verb_body(lexer);
     }
 
@@ -121,33 +99,26 @@ struct Scanner {
 
 extern "C" {
 
-void *tree_sitter_latex_external_scanner_create()
-{
+void *tree_sitter_latex_external_scanner_create() {
   return new Scanner();
 }
 
-bool tree_sitter_latex_external_scanner_scan(
-  void *payload, TSLexer *lexer, const bool *valid_symbols
-)
-{
+bool tree_sitter_latex_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   Scanner *scanner = static_cast<Scanner *>(payload);
   return scanner->scan(lexer, valid_symbols);
 }
 
-unsigned tree_sitter_latex_external_scanner_serialize(void *payload, char *buffer)
-{
+unsigned tree_sitter_latex_external_scanner_serialize(void *payload, char *buffer) {
   Scanner *scanner = static_cast<Scanner *>(payload);
   return scanner->serialize(buffer);
 }
 
-void tree_sitter_latex_external_scanner_deserialize(void *payload, const char *buffer, unsigned length)
-{
+void tree_sitter_latex_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
   Scanner *scanner = static_cast<Scanner *>(payload);
   scanner->deserialize(buffer, length);
 }
 
-void tree_sitter_latex_external_scanner_destroy(void *payload)
-{
+void tree_sitter_latex_external_scanner_destroy(void *payload) {
   Scanner *scanner = static_cast<Scanner *>(payload);
   delete scanner;
 }
