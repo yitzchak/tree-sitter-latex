@@ -49,7 +49,7 @@ module.exports = grammar({
       $.inline_verbatim
     ),
 
-    inline_verbatim: $ => seq($.verb_token, $.verb_delim, $.verb_body, $.verb_delim),
+    inline_verbatim: $ => seq($.verb_token, optional('*'), $.verb_delim, $.verb_body, $.verb_delim),
 
     verb_token: $ => seq($._escape, 'verb', optional($._whitespace)),
 

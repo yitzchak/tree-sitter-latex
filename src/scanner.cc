@@ -36,7 +36,7 @@ struct Scanner {
 
   bool scan_start_verb_delim(TSLexer *lexer)
   {
-    while (lexer->lookahead == ' ') lexer->advance(lexer, false);
+    while (lexer->lookahead == ' ') lexer->advance(lexer, true);
     switch (lexer->lookahead)
     {
       case '\n':
