@@ -224,9 +224,9 @@ inline verbatim
 ======================
 text
 \verb+foo+bar
-\verb  +foo+
 \verb\foo\bar
 \verb+foo
+\verb*starred verb* is not what you expect (s is acting as the delim here)
 text
 ----------------------
 (document
@@ -235,5 +235,13 @@ text
     (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)
     (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)
     (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)
-    (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim))
-    (text)))
+    (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)))
+
+======================
+not (quite) inline verbatim
+======================
+\verb  +foo+ the space here is the actual delim, so +foo+ is plain text
+----------------------
+(document
+  (text_mode
+    (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)))

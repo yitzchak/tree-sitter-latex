@@ -36,7 +36,8 @@ struct Scanner {
 
   bool scan_start_verb_delim(TSLexer *lexer)
   {
-    while (lexer->lookahead == ' ') lexer->advance(lexer, false);
+    // NOTE: ' ' (space) is a perfectly valid delim, as is %
+    // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
     switch (lexer->lookahead)
     {
       case '\n':
