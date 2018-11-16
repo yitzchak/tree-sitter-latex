@@ -218,3 +218,18 @@ quux
       (verbatim_text)
       (verbatim_end (end_token) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
     (text)))
+
+======================
+inline verbatim
+======================
+\verb+foo+
+\verb\foo\
+\verb+foo
+\verb  +foo+
+----------------------
+(document
+  (text_mode
+    (inline_verbatim (verb_token) (verb_body)) (text)
+    (inline_verbatim (verb_token) (verb_body)) (text)
+    (inline_verbatim (verb_token) (verb_body))
+    (inline_verbatim (verb_token) (verb_body))))

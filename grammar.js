@@ -1,6 +1,11 @@
 module.exports = grammar({
   name: 'latex',
 
+  externals: $ => [
+    $.verb_body,
+    $.verb_delim
+  ],
+
   extras: $ => [
     $.magic_comment,
     $.comment
@@ -26,8 +31,13 @@ module.exports = grammar({
       // in text mode.
       alias($.subscript, 'text'),
       alias($.superscript, 'text'),
-      $.verbatim_env
+      $.verbatim_env,
+      $.inline_verbatim
     ),
+
+    inline_verbatim: $ => seq($.verb_token, $.verb_body),
+
+    verb_token: $ => seq($._escape, 'verb'),
 
     _text_mode: $ => choice(
       $._text_mode_common,

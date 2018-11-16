@@ -70,6 +70,36 @@
         {
           "type": "SYMBOL",
           "name": "verbatim_env"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "inline_verbatim"
+        }
+      ]
+    },
+    "inline_verbatim": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "verb_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "verb_body"
+        }
+      ]
+    },
+    "verb_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "verb"
         }
       ]
     },
@@ -375,8 +405,11 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "parameter_char"
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "parameter_char"
+          }
         },
         {
           "type": "SYMBOL",
@@ -2018,6 +2051,15 @@
     }
   ],
   "conflicts": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "verb_body"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "verb_delim"
+    }
+  ],
   "inline": []
 }
