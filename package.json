@@ -26,8 +26,6 @@
     "nan": "^2.11.1"
   },
   "devDependencies": {
-    "concat-stream": "^1.6.2",
-    "tree-sitter": "^0.13.19",
     "tree-sitter-cli": "^0.13.10"
   }
 }
