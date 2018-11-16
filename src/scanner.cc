@@ -19,6 +19,9 @@ enum TokenType {
 };
 
 struct Scanner {
+  char start_delim = 0;
+
+
   Scanner() {}
 
 
@@ -31,41 +34,55 @@ struct Scanner {
   void deserialize(const char *buffer, unsigned length) {}
 
 
-  bool scan_verb_body(TSLexer *lexer)
+  bool scan_start_verb_delim(TSLexer *lexer)
   {
     while (lexer->lookahead == ' ') lexer->advance(lexer, false);
-
-    char start_delim;
     switch (lexer->lookahead)
     {
       case '\n':
-      case '\0':
+      case 0:
         return false;
       default:
         start_delim = lexer->lookahead;
         lexer->advance(lexer, false);
-        // lexer->mark_end(lexer);
-        // lexer->result_symbol = VERB_DELIM;
+        lexer->mark_end(lexer);
+        lexer->result_symbol = VERB_DELIM;
+        return true;
     }
+  }
 
+  bool scan_end_verb_delim(TSLexer *lexer)
+  {
+    if (lexer->lookahead == start_delim || lexer->lookahead == '\n')
+    {
+      lexer->advance(lexer, false);
+      lexer->mark_end(lexer);
+      lexer->result_symbol = VERB_DELIM;
+      start_delim = 0;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  bool scan_verb_body(TSLexer *lexer)
+  {
     while (lexer->lookahead)
     {
-      if (lexer->lookahead == start_delim)
+      if (lexer->lookahead == start_delim || lexer->lookahead == '\n')
       {
-        lexer->advance(lexer, false);
-        lexer->mark_end(lexer);
-        lexer->result_symbol = VERB_BODY;
-        return true;
-      } else if (lexer->lookahead == '\n') {
-        lexer->advance(lexer, false);
-        lexer->mark_end(lexer);
-        lexer->result_symbol = VERB_BODY;
-        return true;
-      } else {
+        break;
+      }
+      else
+      {
         lexer->advance(lexer, false);
       }
     }
 
+    lexer->mark_end(lexer);
+    lexer->result_symbol = VERB_BODY;
     return true;
   }
 
@@ -75,6 +92,17 @@ struct Scanner {
     if (valid_symbols[VERB_BODY])
     {
       return scan_verb_body(lexer);
+    }
+    else if (valid_symbols[VERB_DELIM])
+    {
+      if (start_delim == 0)
+      {
+        return scan_start_verb_delim(lexer);
+      }
+      else
+      {
+        return scan_end_verb_delim(lexer);
+      }
     }
 
     return false;

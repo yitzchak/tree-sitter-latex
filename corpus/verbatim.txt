@@ -229,7 +229,7 @@ inline verbatim
 ----------------------
 (document
   (text_mode
-    (inline_verbatim (verb_token) (verb_body)) (text)
-    (inline_verbatim (verb_token) (verb_body)) (text)
-    (inline_verbatim (verb_token) (verb_body))
-    (inline_verbatim (verb_token) (verb_body))))
+    (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)
+    (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim)) (text)
+    (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim))
+    (inline_verbatim (verb_token) (verb_delim) (verb_body) (verb_delim))))

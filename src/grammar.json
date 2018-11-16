@@ -86,7 +86,15 @@
         },
         {
           "type": "SYMBOL",
+          "name": "verb_delim"
+        },
+        {
+          "type": "SYMBOL",
           "name": "verb_body"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "verb_delim"
         }
       ]
     },
