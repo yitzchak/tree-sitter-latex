@@ -36,7 +36,8 @@ struct Scanner {
 
   bool scan_start_verb_delim(TSLexer *lexer)
   {
-    while (lexer->lookahead == ' ') lexer->advance(lexer, true);
+    // NOTE: `*` is not a valid delimiter, but should be gobbled by the main grammar
+    // Also NOTE: ' ' (space) is a perfectly valid delim, as is %
     switch (lexer->lookahead)
     {
       case '\n':
