@@ -102,7 +102,8 @@ struct Scanner {
         scan_start_verb_delim(lexer) :
         scan_end_verb_delim(lexer);
     }
-    else if (start_delim != 0 && valid_symbols[VERB_BODY])
+
+    if (start_delim != 0 && valid_symbols[VERB_BODY])
     {
       return scan_verb_body(lexer);
     }
