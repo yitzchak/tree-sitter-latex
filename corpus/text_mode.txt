@@ -285,11 +285,27 @@ sections
 =====================
 double circumflex
 =====================
-foo ^^J bar
-foo ^^^ bar
+^^af%
+^^az%
 ---------------------
 
 (document
   (text_mode
-    (text) (double_circumflex) (text)
-    (double_circumflex) (text)))
+    (text (double_circumflex))
+    (comment)
+    (text) (text (double_circumflex)) (text))
+  (comment))
+
+=====================
+double circumflex in command
+=====================
+\^^af%
+\^^az%
+\foo^^*bar
+---------------------
+
+(document
+  (text_mode
+    (token (double_circumflex)) (comment) (text)
+    (token (double_circumflex)) (comment) (text) 
+    (token) (text (double_circumflex)) (text)))

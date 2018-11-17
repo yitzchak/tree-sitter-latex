@@ -17,7 +17,8 @@ module.exports = grammar({
 
   externals: $ => [
     $.verb_body,
-    $.verb_delim
+    $.verb_delim,
+    $._control_symbol_body
   ],
 
   extras: $ => [
@@ -73,8 +74,7 @@ module.exports = grammar({
       $.storage,
       $.usepackage,
       $.token,
-      $.footnote,
-      $.double_circumflex
+      $.footnote
     ),
 
     text_mode: $ => repeat1($._text_mode),
@@ -96,8 +96,7 @@ module.exports = grammar({
       $.storage,
       $.usepackage,
       $.token_at,
-      $.footnote_at,
-      $.double_circumflex
+      $.footnote_at
     ),
 
     text_mode_at: $ => prec.left(2, repeat1($._text_mode_at)),
@@ -333,7 +332,7 @@ module.exports = grammar({
 
     escaped: $ => seq(
       $._escape,
-      /[^()\[\]]/
+      $._control_symbol_body
     ),
 
     begin: $ => seq($.begin_token, alias($.simple_text_group, 'env_name')),
@@ -422,7 +421,7 @@ module.exports = grammar({
 
     makeatother_token: $ => named_command($, 'makeatother'),
 
-    double_circumflex: $ => token(/\^\^./),
+    double_circumflex: $ => prec(4, token(/\^\^([0-9a-f][0-9a-f]|.)/)),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
@@ -492,12 +491,12 @@ module.exports = grammar({
     //ignored_character: //,
     _whitespace: $ => /[ \t]+/,
     // letter: $ => /[a-zA-Z]/,
-    _name: $ => /[a-zA-Z]+/,
+    _name: $ => prec(100, repeat1(choice(/[a-zA-Z]+/, $.double_circumflex))),
     _name_at: $ => /[a-zA-Z@]+/,
     // other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
     active_char: $ => '~',
     // comment_char: $ => '%',
-    text: $ => /[^\\{}$&#^_~%\[\]]+/,
+    text: $ => prec(10, repeat1(choice(/[^\\{}$&#^_~%\[\]]+/, $.double_circumflex))),
     number: $ => /[0-9]+/,
     // _verbatim_token: $ => /.*/,
   }

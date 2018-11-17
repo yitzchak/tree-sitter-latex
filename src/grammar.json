@@ -189,10 +189,6 @@
         {
           "type": "SYMBOL",
           "name": "footnote"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "double_circumflex"
         }
       ]
     },
@@ -273,10 +269,6 @@
         {
           "type": "SYMBOL",
           "name": "footnote_at"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "double_circumflex"
         }
       ]
     },
@@ -1310,8 +1302,8 @@
           "name": "_escape"
         },
         {
-          "type": "PATTERN",
-          "value": "[^()\\[\\]]"
+          "type": "SYMBOL",
+          "name": "_control_symbol_body"
         }
       ]
     },
@@ -2164,10 +2156,14 @@
       ]
     },
     "double_circumflex": {
-      "type": "TOKEN",
+      "type": "PREC",
+      "value": 4,
       "content": {
-        "type": "PATTERN",
-        "value": "\\^\\^."
+        "type": "TOKEN",
+        "content": {
+          "type": "PATTERN",
+          "value": "\\^\\^([0-9a-f][0-9a-f]|.)"
+        }
       }
     },
     "text_group": {
@@ -2500,8 +2496,24 @@
       "value": "_"
     },
     "_name": {
-      "type": "PATTERN",
-      "value": "[a-zA-Z]+"
+      "type": "PREC",
+      "value": 100,
+      "content": {
+        "type": "REPEAT1",
+        "content": {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[a-zA-Z]+"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "double_circumflex"
+            }
+          ]
+        }
+      }
     },
     "_name_at": {
       "type": "PATTERN",
@@ -2512,8 +2524,24 @@
       "value": "~"
     },
     "text": {
-      "type": "PATTERN",
-      "value": "[^\\\\{}$&#^_~%\\[\\]]+"
+      "type": "PREC",
+      "value": 10,
+      "content": {
+        "type": "REPEAT1",
+        "content": {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[^\\\\{}$&#^_~%\\[\\]]+"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "double_circumflex"
+            }
+          ]
+        }
+      }
     },
     "number": {
       "type": "PATTERN",
@@ -2539,6 +2567,10 @@
     {
       "type": "SYMBOL",
       "name": "verb_delim"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_control_symbol_body"
     }
   ],
   "inline": []
