@@ -2460,10 +2460,6 @@
       "type": "STRING",
       "value": "]"
     },
-    "math_shift": {
-      "type": "STRING",
-      "value": "$"
-    },
     "alignment_tab": {
       "type": "STRING",
       "value": "&"
@@ -2524,6 +2520,14 @@
     {
       "type": "SYMBOL",
       "name": "verb_delim"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "math_shift"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "end_group"
     }
   ],
   "inline": []

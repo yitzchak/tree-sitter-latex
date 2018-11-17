@@ -17,7 +17,9 @@ module.exports = grammar({
 
   externals: $ => [
     $.verb_body,
-    $.verb_delim
+    $.verb_delim,
+    $.math_shift,
+    $.end_group
   ],
 
   extras: $ => [
@@ -479,7 +481,7 @@ module.exports = grammar({
     end_group: $ => '}',
     begin_opt: $ => '[',
     end_opt: $ => ']',
-    math_shift: $ => '$',
+    // math_shift: $ => '$',
     alignment_tab: $ => '&',
     _end_of_line: $ => '\n',
     parameter_char: $ => '#',

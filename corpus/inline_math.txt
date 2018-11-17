@@ -13,6 +13,41 @@ foo$bar$quux
     (text)))
 
 =============
+TeX unclosed inline math
+=============
+foo { $ bar } quux
+-------------
+
+(document
+  (text_mode
+    (text)
+    (text_group (begin_group)
+      (text) (tex_inline_math
+        (math_shift)
+        (math_mode (text))
+        (math_shift))
+    (end_group))
+    (text)))
+
+=============
+TeX unclosed inline math alt
+=============
+foo { $ bar {} wiggle } quux
+-------------
+
+(document
+  (text_mode (text)
+  (text_group
+    (begin_group)
+    (text)
+    (tex_inline_math
+      (math_shift)
+      (math_mode (text) (math_group (begin_group) (end_group)) (text))
+      (math_shift))
+    (end_group))
+  (text)))
+
+=============
 LaTeX inline math
 =============
 foo\(bar\)quux

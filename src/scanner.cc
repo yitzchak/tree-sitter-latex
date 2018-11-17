@@ -15,7 +15,9 @@ using std::string;
 
 enum TokenType {
   VERB_BODY,
-  VERB_DELIM
+  VERB_DELIM,
+  MATH_SHIFT,
+  END_GROUP
 };
 
 struct Scanner {
@@ -82,6 +84,24 @@ struct Scanner {
   }
 
 
+  bool scan_math_shift(TSLexer *lexer, const bool *valid_symbols) {
+    switch (lexer->lookahead) {
+      case '$':
+        lexer->advance(lexer, false);
+        lexer->mark_end(lexer);
+        lexer->result_symbol = MATH_SHIFT;
+        return true;
+      case '}':
+        if (valid_symbols[END_GROUP]) return false;
+        lexer->mark_end(lexer);
+        lexer->result_symbol = MATH_SHIFT;
+        return true;
+      default:
+        return false;
+    }
+  }
+
+
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
     if (valid_symbols[VERB_DELIM]) {
@@ -92,6 +112,10 @@ struct Scanner {
 
     if (start_delim && valid_symbols[VERB_BODY]) {
       return scan_verb_body(lexer);
+    }
+
+    if (valid_symbols[MATH_SHIFT]) {
+      return scan_math_shift(lexer, valid_symbols);
     }
 
     return false;
