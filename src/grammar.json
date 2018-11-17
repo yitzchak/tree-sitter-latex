@@ -1449,30 +1449,29 @@
           ]
         },
         {
-          "type": "PATTERN",
-          "value": "!T[eE]X"
+          "type": "SYMBOL",
+          "name": "magic_tag"
         },
         {
           "type": "SYMBOL",
           "name": "_space"
         },
         {
-          "type": "PATTERN",
-          "value": ".*"
+          "type": "REPEAT",
+          "content": {
+            "type": "PATTERN",
+            "value": "."
+          }
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "eol"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "eol"
         }
       ]
+    },
+    "magic_tag": {
+      "type": "PATTERN",
+      "value": "!T[eE]X"
     },
     "comment": {
       "type": "SEQ",
@@ -1494,20 +1493,15 @@
           ]
         },
         {
-          "type": "PATTERN",
-          "value": ".*"
+          "type": "REPEAT",
+          "content": {
+            "type": "PATTERN",
+            "value": "."
+          }
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "eol"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "eol"
         }
       ]
     },

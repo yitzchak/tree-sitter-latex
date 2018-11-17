@@ -104,10 +104,6 @@ module.exports = grammar({
 
     inline_verbatim: $ => seq($.verb_token, $.verb_delim, $.verb_body, $.verb_delim),
 
-    // verb_token: $ => seq($._escape, /verb\*?/), // whitespace is _not_ gobbled here
-
-    // _whitespace: $ => repeat1(/[\s\t]/),
-
     _text_mode: $ => choice(
       $._common,
       // Underscore produces an error by default in LaTeX text mode. Some
@@ -332,9 +328,25 @@ module.exports = grammar({
       $.begin_group, optional($.text_mode), $.end_group
     ),
 
-    magic_comment: $ => seq($.comment_char, optional($._space), /!T[eE]X/, $._space, /.*/, optional($.eol)),
+    magic_comment: $ => seq(
+      $.comment_char,
+      optional($._space),
+      $.magic_tag,
+      $._space,
+      repeat(/./),
+      // This really needs to be EOL or EOF
+      $.eol
+    ),
 
-    comment: $ => seq($.comment_char, optional($._space), /.*/, optional($.eol)),
+    magic_tag: $ => /!T[eE]X/,
+
+    comment: $ => seq(
+      $.comment_char,
+      optional($._space),
+      repeat(/./),
+      // This really needs to be EOL or EOF
+      $.eol
+    ),
 
     begin_opt: $ => '[',
     end_opt: $ => ']',
