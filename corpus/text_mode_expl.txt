@@ -1,7 +1,7 @@
 =================
-@ sign not letter
+: sign not letter
 =================
-\bar@wibble
+\bar:wibble
 ----------------
 (document
   (text_mode
@@ -9,54 +9,54 @@
     (text)))
 
 =================
-@ sign is letter
+: sign is letter
 =================
-\makeatletter\bar@wibble\makeatother
+\ExplSyntaxOn\bar:wibble\ExplSyntaxOff
 ----------------
 (document
   (text_mode
-    (makeatletter (makeatletter_token))
+    (explsyntaxon (explsyntaxon_token))
     (token)
-    (makeatother (makeatother_token))))
+    (explsyntaxoff (explsyntaxoff_token))))
 
 ==============================
-@ sign is letter in text group
+: sign is letter in text group
 ==============================
-\makeatletter{\bar@wibble}\makeatother
+\ExplSyntaxOn{\bar:wibble}\ExplSyntaxOff
 ----------------
 (document
   (text_mode
-    (makeatletter (makeatletter_token))
+    (explsyntaxon (explsyntaxon_token))
     (text_group
       (begin_group)
       (token)
       (end_group))
-    (makeatother (makeatother_token))))
+    (explsyntaxoff (explsyntaxoff_token))))
 
 ==============================
-@ sign is letter in optional text group
+: sign is letter in optional text group
 ==============================
-\makeatletter[foo\bar@wibble]\makeatother
+\ExplSyntaxOn[foo\bar:wibble]\ExplSyntaxOff
 ----------------
 (document
   (text_mode
-    (makeatletter (makeatletter_token))
+    (explsyntaxon (explsyntaxon_token))
     (opt_text_group
       (begin_opt)
       (text)
       (token)
       (end_opt))
-    (makeatother (makeatother_token))))
+    (explsyntaxoff (explsyntaxoff_token))))
 
 ============================
-@ sign is letter then other
+: sign is letter then other
 =============================
-\makeatletter\bar@wibble\makeatother\quux@gronk
+\ExplSyntaxOn\bar:wibble\ExplSyntaxOff\quux:gronk
 ----------------
 (document
   (text_mode
-    (makeatletter (makeatletter_token))
+    (explsyntaxon (explsyntaxon_token))
     (token)
-    (makeatother (makeatother_token))
+    (explsyntaxoff (explsyntaxoff_token))
     (token)
     (text)))
