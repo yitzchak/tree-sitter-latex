@@ -56,3 +56,37 @@ foo { $$ bar \} foo } quux
       (implicit_math_shift))
     (end_group))
   (text)))
+
+=============
+TeX unclosed group in math
+=============
+foo $ { bar $ baz
+-------------
+
+(document
+  (text_mode
+    (text)
+    (tex_inline_math
+      (inline_math_shift)
+      (math_mode (text) (math_group (begin_group) (text) (MISSING)))
+      (inline_math_shift))
+    (text)))
+
+=============
+TeX unmatched close group in math
+=============
+foo $ bar } $ baz
+-------------
+
+(document
+  (text_mode
+    (text)
+    (tex_inline_math
+      (inline_math_shift)
+      (math_mode (text))
+      (implicit_math_shift))
+      (ERROR (end_group))
+      (tex_inline_math
+        (inline_math_shift)
+        (math_mode (text))
+        (MISSING))))

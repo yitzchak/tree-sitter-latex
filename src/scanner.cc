@@ -85,34 +85,37 @@ struct Scanner {
     return true;
   }
 
-  bool scan_math_shift_end(TSLexer *lexer, const bool *valid_symbols) {
-    if (lexer->lookahead == '}' && !valid_symbols[END_GROUP]) {
+  bool scan_end_math_shift(TSLexer *lexer, const bool *valid_symbols) {
+    if (lexer->lookahead == '}') {
+      if (valid_symbols[END_GROUP]) return false;
       lexer->mark_end(lexer);
       lexer->result_symbol = IMPLICIT_MATH_SHIFT;
       return true;
-    } else if (lexer->lookahead == '$') {
+    }
 
+    if (lexer->lookahead != '$') return false;
+
+    lexer->advance(lexer, false);
+
+    if (valid_symbols[INLINE_MATH_SHIFT]) {
+      lexer->mark_end(lexer);
+      lexer->result_symbol = INLINE_MATH_SHIFT;
+      return true;
+    }
+
+    if (lexer->lookahead == '$') {
       lexer->advance(lexer, false);
-      if (valid_symbols[INLINE_MATH_SHIFT]) {
-        lexer->mark_end(lexer);
-        lexer->result_symbol = INLINE_MATH_SHIFT;
-        return true;
-      }
-
-      if (lexer->lookahead == '$') {
-        lexer->advance(lexer, false);
-        lexer->mark_end(lexer);
-        lexer->result_symbol = DISPLAY_MATH_SHIFT;
-        return true;
-      }
-
+      lexer->mark_end(lexer);
+      lexer->result_symbol = DISPLAY_MATH_SHIFT;
+      return true;
     }
 
     return false;
   }
 
-  bool scan_math_shift(TSLexer *lexer) {
+  bool scan_start_math_shift(TSLexer *lexer, const bool *valid_symbols) {
     if (lexer->lookahead != '$') return false;
+
     lexer->advance(lexer, false);
 
     if (lexer->lookahead == '$') {
@@ -122,6 +125,8 @@ struct Scanner {
       return true;
     }
 
+    if (valid_symbols[DISPLAY_MATH_SHIFT]) return false;
+
     lexer->mark_end(lexer);
     lexer->result_symbol = INLINE_MATH_SHIFT;
     return true;
@@ -129,6 +134,14 @@ struct Scanner {
 
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
+    if (valid_symbols[IMPLICIT_MATH_SHIFT]) { // this will be true when we can close with normal $ too
+      return scan_end_math_shift(lexer, valid_symbols);
+    }
+
+    if (valid_symbols[DISPLAY_MATH_SHIFT] || valid_symbols[INLINE_MATH_SHIFT]) {
+      return scan_start_math_shift(lexer, valid_symbols);
+    }
+
     if (valid_symbols[VERB_DELIM]) {
       return (start_delim) ?
         scan_end_verb_delim(lexer) :
@@ -138,16 +151,6 @@ struct Scanner {
     if (start_delim && valid_symbols[VERB_BODY]) {
       return scan_verb_body(lexer);
     }
-
-    if (valid_symbols[IMPLICIT_MATH_SHIFT]) {
-      return scan_math_shift_end(lexer, valid_symbols);
-    }
-
-    if (valid_symbols[DISPLAY_MATH_SHIFT] || valid_symbols[INLINE_MATH_SHIFT]) {
-      return scan_math_shift(lexer);
-    }
-
-
 
     return false;
   }
