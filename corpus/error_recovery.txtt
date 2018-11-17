@@ -90,3 +90,16 @@ foo $ bar } $ baz
         (inline_math_shift)
         (math_mode (text))
         (MISSING))))
+
+=============
+TeX empty display math (TODO: Decide on best action here)
+=============
+foo$$$$quux
+-------------
+(document
+  (text_mode
+    (text)
+    (tex_display_math
+      (display_math_shift)
+      (display_math_shift))
+    (text)))
