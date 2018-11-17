@@ -85,17 +85,31 @@ struct Scanner {
     return true;
   }
 
-
-  bool scan_implicit_math_shift(TSLexer *lexer, const bool *valid_symbols) {
+  bool scan_math_shift_end(TSLexer *lexer, const bool *valid_symbols) {
     if (lexer->lookahead == '}' && !valid_symbols[END_GROUP]) {
       lexer->mark_end(lexer);
       lexer->result_symbol = IMPLICIT_MATH_SHIFT;
       return true;
+    } else if (lexer->lookahead == '$') {
+
+      lexer->advance(lexer, false);
+      if (valid_symbols[INLINE_MATH_SHIFT]) {
+        lexer->mark_end(lexer);
+        lexer->result_symbol = INLINE_MATH_SHIFT;
+        return true;
+      }
+
+      if (lexer->lookahead == '$') {
+        lexer->advance(lexer, false);
+        lexer->mark_end(lexer);
+        lexer->result_symbol = DISPLAY_MATH_SHIFT;
+        return true;
+      }
+
     }
 
     return false;
   }
-
 
   bool scan_math_shift(TSLexer *lexer) {
     if (lexer->lookahead != '$') return false;
@@ -113,7 +127,6 @@ struct Scanner {
     return true;
   }
 
-
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
     if (valid_symbols[VERB_DELIM]) {
@@ -126,13 +139,15 @@ struct Scanner {
       return scan_verb_body(lexer);
     }
 
+    if (valid_symbols[IMPLICIT_MATH_SHIFT]) {
+      return scan_math_shift_end(lexer, valid_symbols);
+    }
+
     if (valid_symbols[DISPLAY_MATH_SHIFT] || valid_symbols[INLINE_MATH_SHIFT]) {
       return scan_math_shift(lexer);
     }
 
-    if (valid_symbols[IMPLICIT_MATH_SHIFT]) {
-      return scan_implicit_math_shift(lexer, valid_symbols);
-    }
+
 
     return false;
   }

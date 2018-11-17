@@ -9,27 +9,8 @@ foo$$bar$$quux
     (tex_display_math
       (display_math_shift)
       (math_mode (text))
-      (math_shift)
-      (math_shift))
+      (display_math_shift))
     (text)))
-
-=============
-TeX unclosed display math
-=============
-foo { $$ bar \} foo } quux
--------------
-
-(document
-  (text_mode (text)
-  (text_group
-    (begin_group)
-    (text)
-    (tex_display_math
-      (display_math_shift)
-      (math_mode (text) (escaped) (text))
-      (implicit_math_shift))
-    (end_group))
-  (text)))
 
 ==================
 LaTeX display math

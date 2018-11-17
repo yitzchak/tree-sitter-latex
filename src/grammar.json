@@ -552,74 +552,70 @@
       ]
     },
     "tex_display_math": {
-      "type": "PREC",
-      "value": 1,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "display_math_shift"
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "math_mode"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "math_shift"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "math_shift"
-                  }
-                ]
-              },
-              {
-                "type": "SYMBOL",
-                "name": "implicit_math_shift"
-              }
-            ]
-          }
-        ]
-      }
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "display_math_shift"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "math_mode"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "display_math_shift"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "implicit_math_shift"
+            }
+          ]
+        }
+      ]
     },
     "tex_display_math_at": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "math_shift"
+          "name": "display_math_shift"
         },
         {
-          "type": "SYMBOL",
-          "name": "math_shift"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "math_mode_at"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
-          "type": "SYMBOL",
-          "name": "math_mode_at"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "math_shift"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "math_shift"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "display_math_shift"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "implicit_math_shift"
+            }
+          ]
         }
       ]
     },
@@ -1004,7 +1000,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "math_shift"
+              "name": "inline_math_shift"
             },
             {
               "type": "SYMBOL",
@@ -1019,15 +1015,32 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "math_shift"
+          "name": "inline_math_shift"
         },
         {
-          "type": "SYMBOL",
-          "name": "math_mode_at"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "math_mode_at"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
-          "type": "SYMBOL",
-          "name": "math_shift"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "inline_math_shift"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "implicit_math_shift"
+            }
+          ]
         }
       ]
     },
