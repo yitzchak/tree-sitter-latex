@@ -78,6 +78,7 @@ module.exports = grammar({
     $.usepackage_token,
     $.verb_body,
     $.verb_delim,
+    $.verb_line,
     $.verb_token
   ],
 
@@ -265,7 +266,7 @@ module.exports = grammar({
       $.verbatim_env_group
     ),
 
-    verbatim_text: $ => repeat1(seq(repeat(/./), $.eol)),
+    verbatim_text: $ => repeat1(alias($.verb_line, '_verb_line')),
 
     verbatim_env_group: $ => seq($.begin_group, $.verbatim_env_name, $.end_group),
 

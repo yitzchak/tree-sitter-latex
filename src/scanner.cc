@@ -53,6 +53,7 @@ enum TokenType {
   USEPACKAGE_TOKEN,
   VERB_BODY,
   VERB_DELIM,
+  VERB_LINE,
   VERB_TOKEN
 };
 
@@ -273,6 +274,21 @@ struct Scanner {
     return true;
   }
 
+  bool scan_verb_line(TSLexer *lexer) {
+    while (lexer->lookahead && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+      lexer->advance(lexer, false);
+    }
+
+    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+      lexer->advance(lexer, false);
+    }
+
+    lexer->mark_end(lexer);
+    lexer->result_symbol = VERB_LINE;
+
+    return true;
+  }
+
   bool scan_token_or_escaped(TSLexer *lexer) {
     string name;
 
@@ -357,6 +373,11 @@ struct Scanner {
 
     if (start_delim && valid_symbols[VERB_BODY]) {
       return scan_verb_body(lexer);
+    }
+
+    // This is a kludge. Verbatim environments actually detect the corrent \end
+    if (valid_symbols[VERB_LINE] && get_catcode(lexer->lookahead) != ESCAPE_CATEGORY) {
+      return scan_verb_line(lexer);
     }
 
     return false;
