@@ -111,17 +111,6 @@ struct Scanner {
       return scan_implicit_math_shift(lexer, valid_symbols);
     }
 
-    if (valid_symbols[END_GROUP]) {
-      if (lexer->lookahead == '}') {
-        lexer->advance(lexer, false);
-        lexer->mark_end(lexer);
-        lexer->result_symbol = END_GROUP;
-        return true;
-      }
-
-      return false;
-    }
-
     return false;
   }
 
