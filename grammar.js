@@ -1,12 +1,39 @@
-const named_command = ($, name, starred=false) => {
-  if (starred) {
-    return seq($._escape, name, repeat($.space), optional('*'), repeat($.space))
-  } else {
-    return seq($._escape, name, repeat($.space))
+function command ($, token, options = {}) {
+  const args = [token]
+
+  if (options.star) {
+    args.push(optional($._space))
+    args.push(optional('*'))
   }
+
+  for (let i = options.opt || 0; i > 0; i--) {
+    args.push(optional($._space))
+    args.push(optional($.opt_text_group))
+  }
+
+  if (options.simple) {
+    args.push(optional($._space))
+    args.push(alias($.simple_text_group, options.simple))
+  }
+
+  for (let i = options.text || 0; i > 0; i--) {
+    args.push(optional($._space))
+    args.push($.text_group)
+  }
+
+  for (let i = options.math_text || 0; i > 0; i--) {
+    args.push(optional($._space))
+    args.push($.math_text_group)
+  }
+
+  if (args.length === 1) {
+    args.push(optional($._space))
+  }
+
+  return seq.apply(null, args)
 }
 
-const command_options = ($) => optional(seq($.opt_text_group, repeat($.space)))
+const command_options = ($) => optional(seq($.opt_text_group, repeat($._space)))
 
 const env_options = ($) => command_options($)
 
@@ -14,6 +41,8 @@ module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
+    $._space,
+    $.active_char,
     $.alignment_tab,
     $.begin_display_math,
     $.begin_group,
@@ -38,7 +67,6 @@ module.exports = grammar({
     $.math_shift,
     $.parameter_char,
     $.section_token,
-    $.space,
     $.storage_token,
     $.subscript,
     $.superscript,
@@ -53,15 +81,14 @@ module.exports = grammar({
     $.verb_token
   ],
 
-  extras: $ => [
-    $.magic_comment,
-    $.comment
-  ],
+  extras: $ => [],
 
   rules: {
     document: $ => optional($.text_mode),
 
     _common: $ => choice(
+      $.magic_comment,
+      $.comment,
       $.active_char,
       $.alignment_tab,
       $.parameter,
@@ -104,7 +131,7 @@ module.exports = grammar({
       $.section,
       $.storage,
       $.usepackage,
-      $.token,
+      command($, $.token),
       $.footnote
     ),
 
@@ -119,7 +146,7 @@ module.exports = grammar({
       $.opt_math_group,
       $.include,
       $.storage,
-      $.token,
+      command($, $.token),
       $.tag
     ),
 
@@ -154,14 +181,6 @@ module.exports = grammar({
       $.math_mode,
       $.end_display_math
     ),
-
-    // begin_display_math: $ => named_command($, '['),
-    //
-    // end_display_math: $ => named_command($, ']'),
-
-    // begin_inline_math: $ => named_command($, '('),
-    //
-    // end_inline_math: $ => named_command($, ')'),
 
     display_math_env: $ => seq(
       $.display_math_begin,
@@ -224,9 +243,7 @@ module.exports = grammar({
 
     inline_math_env_name: $ => 'math',
 
-    tag: $ => seq($.tag_token, $.math_text_group),
-
-    // tag_token: $ => named_command($, 'tag'),
+    tag: $ => command($, $.tag_token, { math_text: 1 }),
 
     verbatim_env: $ => seq(
       $.verbatim_begin,
@@ -254,74 +271,41 @@ module.exports = grammar({
 
     verbatim_env_name: $ => /(verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt)/,
 
-    // escaped: $ => seq(
-    //   $._escape,
-    //   /[^()\[\]]/
-    // ),
+    begin: $ => command($, $.begin_token, { simple: 'env_name' }),
 
-    begin: $ => seq($.begin_token, alias($.simple_text_group, 'env_name')),
+    end: $ => command($, $.end_token, { simple: 'env_name' }),
 
-    // begin_token: $ => named_command($, 'begin'),
+    documentclass: $ => command($, $.documentclass_token, { opt: 1, simple: 'class_name' }),
 
-    end: $ => seq($.end_token, alias($.simple_text_group, 'env_name')),
+    usepackage: $ => command($, $.usepackage_token, { opt: 1, simple: 'package_name' }),
 
-    // end_token: $ => named_command($, 'end'),
+    include: $ => command($, $.include_token, { text: 1 }),
 
-    documentclass: $ => seq(
-      $.documentclass_token,
-      command_options($),
-      alias($.simple_text_group, 'class_name')
-    ),
+    section: $ => command($, $.section_token, { text: 1, opt: 1, star: true }),
 
-    // documentclass_token: $ => named_command($, 'documentclass'),
-
-    usepackage: $ => seq(
-      $.usepackage_token,
-      command_options($),
-      alias($.simple_text_group, 'package_name')
-    ),
-
-    // usepackage_token: $ => named_command($, 'usepackage'),
-
-    include: $ => seq($.include_token, $.text_group),
-
-    // include_token: $ => named_command($, /include|input/),
-
-    section: $ => seq($.section_token, command_options($), $.text_group),
-
-    // section_token: $ => named_command(
-    //   $, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/, true
-    // ),
-
-    storage: $ => $.storage_token,
-
-    // storage_token: $ => named_command($, /[egx]?def/),
+    storage: $ => command($, $.storage_token),
 
     catcode: $ => seq(
       $.catcode_token, $.escaped, '=', $.number
     ),
 
-    // catcode_token: $ => seq($._escape, /k?catcode`/),
+    emph: $ => command($, $.emph_token, { text: 1 }),
 
-    emph: $ => seq($.emph_token, $.text_group),
+    footnote: $ => command($, $.footnote_token, { text: 1, opt: 1 }),
 
-    footnote: $ => seq($.footnote_token, command_options($), $.text_group),
+    textbf: $ => command($, $.textbf_token, { text: 1 }),
 
-    // footnote_token: $ => named_command($, 'footnote'),
+    textit: $ => command($, $.textit_token, { text: 1 }),
 
-    textbf: $ => seq($.textbf_token, $.text_group),
+    texttt: $ => command($, $.texttt_token, { text: 1 }),
 
-    textit: $ => seq($.textit_token, $.text_group),
+    makeatletter: $ => command($, $.makeatletter_token),
 
-    texttt: $ => seq($.texttt_token, $.text_group),
+    makeatother: $ => command($, $.makeatother_token),
 
-    makeatletter: $ => $.makeatletter_token,
+    explsyntaxon: $ => command($, $.explsyntaxon_token),
 
-    makeatother: $ => $.makeatother_token,
-
-    explsyntaxon: $ => $.explsyntaxon_token,
-
-    explsyntaxoff: $ => $.explsyntaxoff_token,
+    explsyntaxoff: $ => command($, $.explsyntaxoff_token),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
@@ -347,15 +331,12 @@ module.exports = grammar({
       $.begin_group, optional($.text_mode), $.end_group
     ),
 
-    magic_comment: $ => /\s*!T[eE]X\s+.*/,
+    magic_comment: $ => seq($.comment_char, optional($._space), /!T[eE]X/, $._space, /.*/, optional($.eol)),
 
-    comment: $ => /%.*/,
+    comment: $ => seq($.comment_char, optional($._space), /.*/, optional($.eol)),
 
     begin_opt: $ => '[',
     end_opt: $ => ']',
-    // eol: $ => '\n',
-    _name: $ => /[a-zA-Z]+/,
-    active_char: $ => '~',
     text: $ => /[^\\{}$&#^_~%\[\]]+/,
     number: $ => /[0-9]+/,
   }
