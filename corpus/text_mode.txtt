@@ -171,8 +171,9 @@ comment
 foo % bar
 -----------
 (document
-  (text_mode (text))
-  (comment))
+  (text_mode
+    (text)
+    (comment (comment_char))))
 
 ===========
 magic comment
