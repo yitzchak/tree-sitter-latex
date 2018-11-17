@@ -24,10 +24,13 @@ struct Scanner {
   Scanner() {}
 
   unsigned serialize(char *buffer) {
+    buffer[0] = start_delim;
     return 0;
   }
 
-  void deserialize(const char *buffer, unsigned length) {}
+  void deserialize(const char *buffer, unsigned length) {
+    start_delim = buffer[0];
+  }
 
   bool scan_start_verb_delim(TSLexer *lexer) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
