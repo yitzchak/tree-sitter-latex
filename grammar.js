@@ -73,7 +73,8 @@ module.exports = grammar({
       $.storage,
       $.usepackage,
       $.token,
-      $.footnote
+      $.footnote,
+      $.double_circumflex
     ),
 
     text_mode: $ => repeat1($._text_mode),
@@ -95,7 +96,8 @@ module.exports = grammar({
       $.storage,
       $.usepackage,
       $.token_at,
-      $.footnote_at
+      $.footnote_at,
+      $.double_circumflex
     ),
 
     text_mode_at: $ => prec.left(2, repeat1($._text_mode_at)),
@@ -419,6 +421,8 @@ module.exports = grammar({
     makeatother: $ => $.makeatother_token,
 
     makeatother_token: $ => named_command($, 'makeatother'),
+
+    double_circumflex: $ => token(/\^\^./),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group

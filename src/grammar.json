@@ -189,6 +189,10 @@
         {
           "type": "SYMBOL",
           "name": "footnote"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "double_circumflex"
         }
       ]
     },
@@ -269,6 +273,10 @@
         {
           "type": "SYMBOL",
           "name": "footnote_at"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "double_circumflex"
         }
       ]
     },
@@ -2154,6 +2162,13 @@
           ]
         }
       ]
+    },
+    "double_circumflex": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "\\^\\^."
+      }
     },
     "text_group": {
       "type": "SEQ",

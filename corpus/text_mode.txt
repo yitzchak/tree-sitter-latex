@@ -281,3 +281,15 @@ sections
     (section (section_token) (text_group (begin_group) (text) (end_group)))
     (text)
     (section (section_token) (text_group (begin_group) (text) (end_group)))))
+
+=====================
+double circumflex
+=====================
+foo ^^J bar
+foo ^^^ bar
+---------------------
+
+(document
+  (text_mode
+    (text) (double_circumflex) (text)
+    (double_circumflex) (text)))
