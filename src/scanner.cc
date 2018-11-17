@@ -29,7 +29,11 @@ struct Scanner {
   }
 
   void deserialize(const char *buffer, unsigned length) {
-    if (length == 0) return; // or get a segmentation fault
+    if (length == 0) {
+      start_delim = 0;
+      return;
+    };
+
     start_delim = buffer[0];
   }
 
