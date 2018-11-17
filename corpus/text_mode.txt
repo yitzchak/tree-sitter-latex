@@ -291,21 +291,19 @@ double circumflex
 
 (document
   (text_mode
-    (text (double_circumflex))
-    (comment)
-    (text) (text (double_circumflex)) (text))
-  (comment))
+    (text) (comment) (text)
+    (text) (text)) (comment))
 
 =====================
 double circumflex in command
 =====================
 \^^af%
 \^^az%
-\foo^^*bar
+\foo^^*bar%
 ---------------------
 
 (document
   (text_mode
     (token (double_circumflex)) (comment) (text)
-    (token (double_circumflex)) (comment) (text) 
-    (token) (text (double_circumflex)) (text)))
+    (token (double_circumflex)) (comment) (text)
+    (token (double_circumflex))) (comment))

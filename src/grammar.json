@@ -2496,7 +2496,7 @@
       "value": "_"
     },
     "_name": {
-      "type": "PREC",
+      "type": "PREC_RIGHT",
       "value": 100,
       "content": {
         "type": "REPEAT1",
@@ -2508,8 +2508,12 @@
               "value": "[a-zA-Z]+"
             },
             {
-              "type": "SYMBOL",
-              "name": "double_circumflex"
+              "type": "PREC",
+              "value": 1000,
+              "content": {
+                "type": "SYMBOL",
+                "name": "double_circumflex"
+              }
             }
           ]
         }
@@ -2524,8 +2528,8 @@
       "value": "~"
     },
     "text": {
-      "type": "PREC",
-      "value": 10,
+      "type": "PREC_LEFT",
+      "value": 0,
       "content": {
         "type": "REPEAT1",
         "content": {
@@ -2536,8 +2540,8 @@
               "value": "[^\\\\{}$&#^_~%\\[\\]]+"
             },
             {
-              "type": "SYMBOL",
-              "name": "double_circumflex"
+              "type": "PATTERN",
+              "value": "\\^\\^([0-9a-f][0-9a-f]|.)"
             }
           ]
         }
