@@ -16,6 +16,8 @@ using std::string;
 using std::map;
 
 enum TokenType {
+  _SPACE,
+  ACTIVE_CHAR,
   ALIGNMENT_TAB,
   BEGIN_DISPLAY_MATH,
   BEGIN_GROUP,
@@ -40,7 +42,6 @@ enum TokenType {
   MATH_SHIFT,
   PARAMETER_CHAR,
   SECTION_TOKEN,
-  SPACE,
   STORAGE_TOKEN,
   SUBSCRIPT,
   SUPERSCRIPT,
@@ -56,26 +57,47 @@ enum TokenType {
 };
 
 enum Category {
-  ESCAPE,
-  BEGIN,
-  END,
-  SHIFT,
-  ALIGNMENT,
-  EOL_CAT,
-  PARAMETER,
-  SUPERSCRIPT_CAT,
-  SUBSCRIPT_CAT,
-  IGNORED,
-  SPACE_CAT,
-  LETTER,
-  OTHER,
-  ACTIVE,
-  COMMENT,
-  INVALID
+  ESCAPE_CATEGORY,
+  BEGIN_CATEGORY,
+  END_CATEGORY,
+  MATH_SHIFT_CATEGORY,
+  ALIGNMENT_TAB_CATEGORY,
+  EOL_CATEGORY,
+  PARAMETER_CATEGORY,
+  SUPERSCRIPT_CATEGORY,
+  SUBSCRIPT_CATEGORY,
+  IGNORED_CATEGORY,
+  SPACE_CATEGORY,
+  LETTER_CATEGORY,
+  OTHER_CATEGORY,
+  ACTIVE_CHAR_CATEGORY,
+  COMMENT_CATEGORY,
+  INVALID_CATEGORY
+};
+
+struct CategoryDescription {
+  Category category;
+  TokenType type;
+  bool repeat;
 };
 
 struct Scanner {
   char start_delim = 0;
+
+  vector<CategoryDescription> category_descriptions = {
+    {ACTIVE_CHAR_CATEGORY, ACTIVE_CHAR, false},
+    {ALIGNMENT_TAB_CATEGORY, ALIGNMENT_TAB, false},
+    {BEGIN_CATEGORY, BEGIN_GROUP, false},
+    {COMMENT_CATEGORY, COMMENT_CHAR, false},
+    {END_CATEGORY, END_GROUP, false},
+    {EOL_CATEGORY, EOL, false},
+    {PARAMETER_CATEGORY, PARAMETER_CHAR, false},
+    {MATH_SHIFT_CATEGORY, MATH_SHIFT, false},
+    {SPACE_CATEGORY, _SPACE, true},
+    {SUBSCRIPT_CATEGORY, SUBSCRIPT, false},
+    {SUPERSCRIPT_CATEGORY, SUPERSCRIPT, false}
+  };
+
   map<string, TokenType> tokens = {
     {"(", BEGIN_INLINE_MATH},
     {")", END_INLINE_MATH},
@@ -96,6 +118,7 @@ struct Scanner {
     {"makeatletter", MAKEATLETTER_TOKEN},
     {"makeatother", MAKEATOTHER_TOKEN},
     {"section", SECTION_TOKEN},
+    {"subsection", SECTION_TOKEN},
     {"tag", TAG_TOKEN},
     {"textbf", TEXTBF_TOKEN},
     {"textit", TEXTIT_TOKEN},
@@ -103,74 +126,75 @@ struct Scanner {
     {"usepackage", USEPACKAGE_TOKEN},
     {"verb", VERB_TOKEN}
   };
+
   map<char, Category> catcodes = {
-    {'\\',   ESCAPE},
-    {'{',    BEGIN},
-    {'}',    END},
-    {'$',    SHIFT},
-    {'&',    ALIGNMENT},
-    {'\n',   EOL_CAT},
-    {'#',    PARAMETER},
-    {'^',    SUPERSCRIPT_CAT},
-    {'_',    SUBSCRIPT_CAT},
-    {'\0',   IGNORED},
-    {' ',    SPACE_CAT},
-    {'\t',   SPACE_CAT},
-    {'A',    LETTER},
-    {'B',    LETTER},
-    {'C',    LETTER},
-    {'D',    LETTER},
-    {'E',    LETTER},
-    {'F',    LETTER},
-    {'G',    LETTER},
-    {'H',    LETTER},
-    {'I',    LETTER},
-    {'J',    LETTER},
-    {'K',    LETTER},
-    {'L',    LETTER},
-    {'M',    LETTER},
-    {'N',    LETTER},
-    {'O',    LETTER},
-    {'P',    LETTER},
-    {'Q',    LETTER},
-    {'R',    LETTER},
-    {'S',    LETTER},
-    {'T',    LETTER},
-    {'U',    LETTER},
-    {'V',    LETTER},
-    {'W',    LETTER},
-    {'X',    LETTER},
-    {'Y',    LETTER},
-    {'Z',    LETTER},
-    {'a',    LETTER},
-    {'b',    LETTER},
-    {'c',    LETTER},
-    {'d',    LETTER},
-    {'e',    LETTER},
-    {'f',    LETTER},
-    {'g',    LETTER},
-    {'h',    LETTER},
-    {'i',    LETTER},
-    {'j',    LETTER},
-    {'k',    LETTER},
-    {'l',    LETTER},
-    {'m',    LETTER},
-    {'n',    LETTER},
-    {'o',    LETTER},
-    {'p',    LETTER},
-    {'q',    LETTER},
-    {'r',    LETTER},
-    {'s',    LETTER},
-    {'t',    LETTER},
-    {'u',    LETTER},
-    {'v',    LETTER},
-    {'w',    LETTER},
-    {'x',    LETTER},
-    {'y',    LETTER},
-    {'z',    LETTER},
-    {'~',    ACTIVE},
-    {'%',    COMMENT},
-    {'\x7f', INVALID}
+    {'\\',   ESCAPE_CATEGORY},
+    {'{',    BEGIN_CATEGORY},
+    {'}',    END_CATEGORY},
+    {'$',    MATH_SHIFT_CATEGORY},
+    {'&',    ALIGNMENT_TAB_CATEGORY},
+    {'\n',   EOL_CATEGORY},
+    {'#',    PARAMETER_CATEGORY},
+    {'^',    SUPERSCRIPT_CATEGORY},
+    {'_',    SUBSCRIPT_CATEGORY},
+    {'\0',   IGNORED_CATEGORY},
+    {' ',    SPACE_CATEGORY},
+    {'\t',   SPACE_CATEGORY},
+    {'A',    LETTER_CATEGORY},
+    {'B',    LETTER_CATEGORY},
+    {'C',    LETTER_CATEGORY},
+    {'D',    LETTER_CATEGORY},
+    {'E',    LETTER_CATEGORY},
+    {'F',    LETTER_CATEGORY},
+    {'G',    LETTER_CATEGORY},
+    {'H',    LETTER_CATEGORY},
+    {'I',    LETTER_CATEGORY},
+    {'J',    LETTER_CATEGORY},
+    {'K',    LETTER_CATEGORY},
+    {'L',    LETTER_CATEGORY},
+    {'M',    LETTER_CATEGORY},
+    {'N',    LETTER_CATEGORY},
+    {'O',    LETTER_CATEGORY},
+    {'P',    LETTER_CATEGORY},
+    {'Q',    LETTER_CATEGORY},
+    {'R',    LETTER_CATEGORY},
+    {'S',    LETTER_CATEGORY},
+    {'T',    LETTER_CATEGORY},
+    {'U',    LETTER_CATEGORY},
+    {'V',    LETTER_CATEGORY},
+    {'W',    LETTER_CATEGORY},
+    {'X',    LETTER_CATEGORY},
+    {'Y',    LETTER_CATEGORY},
+    {'Z',    LETTER_CATEGORY},
+    {'a',    LETTER_CATEGORY},
+    {'b',    LETTER_CATEGORY},
+    {'c',    LETTER_CATEGORY},
+    {'d',    LETTER_CATEGORY},
+    {'e',    LETTER_CATEGORY},
+    {'f',    LETTER_CATEGORY},
+    {'g',    LETTER_CATEGORY},
+    {'h',    LETTER_CATEGORY},
+    {'i',    LETTER_CATEGORY},
+    {'j',    LETTER_CATEGORY},
+    {'k',    LETTER_CATEGORY},
+    {'l',    LETTER_CATEGORY},
+    {'m',    LETTER_CATEGORY},
+    {'n',    LETTER_CATEGORY},
+    {'o',    LETTER_CATEGORY},
+    {'p',    LETTER_CATEGORY},
+    {'q',    LETTER_CATEGORY},
+    {'r',    LETTER_CATEGORY},
+    {'s',    LETTER_CATEGORY},
+    {'t',    LETTER_CATEGORY},
+    {'u',    LETTER_CATEGORY},
+    {'v',    LETTER_CATEGORY},
+    {'w',    LETTER_CATEGORY},
+    {'x',    LETTER_CATEGORY},
+    {'y',    LETTER_CATEGORY},
+    {'z',    LETTER_CATEGORY},
+    {'~',    ACTIVE_CHAR_CATEGORY},
+    {'%',    COMMENT_CATEGORY},
+    {'\x7f', INVALID_CATEGORY}
   };
 
   Scanner() {}
@@ -179,12 +203,12 @@ struct Scanner {
     auto it = catcodes.find(key);
 
     return (it == catcodes.end()) ?
-      OTHER :
+      OTHER_CATEGORY :
       it->second;
   }
 
   void set_catcode(char key, Category code) {
-    if (code == OTHER) {
+    if (code == OTHER_CATEGORY) {
       catcodes.erase(key);
     } else {
       catcodes[key] = code;
@@ -249,86 +273,16 @@ struct Scanner {
     return true;
   }
 
-  bool scan_parameter_char(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = PARAMETER_CHAR;
-    return true;
-  }
-
-  bool scan_subscript(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = SUBSCRIPT;
-    return true;
-  }
-
-  bool scan_superscript(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = SUPERSCRIPT;
-    return true;
-  }
-
-  bool scan_math_shift(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = MATH_SHIFT;
-    return true;
-  }
-
-  bool scan_alignment_tab(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = ALIGNMENT_TAB;
-    return true;
-  }
-
-  bool scan_space(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = SPACE;
-    return true;
-  }
-
-  bool scan_begin_group(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = BEGIN_GROUP;
-    return true;
-  }
-
-  bool scan_end_group(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = END_GROUP;
-    return true;
-  }
-
-  bool scan_comment_char(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = COMMENT_CHAR;
-    return true;
-  }
-
-  bool scan_eol(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = EOL;
-    return true;
-  }
-
   bool scan_token_or_escaped(TSLexer *lexer) {
     string name;
 
     lexer->advance(lexer, false);
 
     switch (get_catcode(lexer->lookahead)) {
-      case IGNORED:
+      case IGNORED_CATEGORY:
         return false;
-      case LETTER:
-        while (get_catcode(lexer->lookahead) == LETTER) {
+      case LETTER_CATEGORY:
+        while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
           name += lexer->lookahead;
           lexer->advance(lexer, false);
         }
@@ -350,68 +304,49 @@ struct Scanner {
 
     switch (lexer->result_symbol) {
       case EXPLSYNTAXOFF_TOKEN:
-        set_catcode('_', OTHER);
-        set_catcode(':', OTHER);
+        set_catcode('_', SUBSCRIPT_CATEGORY);
+        set_catcode(':', OTHER_CATEGORY);
         break;
       case EXPLSYNTAXON_TOKEN:
-        set_catcode('_', LETTER);
-        set_catcode(':', LETTER);
+        set_catcode('_', LETTER_CATEGORY);
+        set_catcode(':', LETTER_CATEGORY);
         break;
       case MAKEATOTHER_TOKEN:
-        set_catcode('@', OTHER);
+        set_catcode('@', OTHER_CATEGORY);
         break;
       case MAKEATLETTER_TOKEN:
-        set_catcode('@', LETTER);
+        set_catcode('@', LETTER_CATEGORY);
         break;
     }
 
     return true;
   }
 
+  bool scan_category(TSLexer *lexer, CategoryDescription desc) {
+    lexer->advance(lexer, false);
+
+    if (desc.repeat) {
+      while (get_catcode(lexer->lookahead) == desc.category) {
+        lexer->advance(lexer, false);
+      }
+    }
+
+    lexer->mark_end(lexer);
+    lexer->result_symbol = desc.type;
+
+    return true;
+  }
+
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
-    if (valid_symbols[PARAMETER_CHAR] && get_catcode(lexer->lookahead) == PARAMETER) {
-      return scan_parameter_char(lexer);
+    for (auto it = category_descriptions.begin(); it != category_descriptions.end(); it++) {
+      if (valid_symbols[it->type] && get_catcode(lexer->lookahead) == it->category) {
+        return scan_category(lexer, *it);
+      }
     }
 
-    if (valid_symbols[COMMENT_CHAR] && get_catcode(lexer->lookahead) == COMMENT) {
-      return scan_comment_char(lexer);
-    }
-
-    if (valid_symbols[MATH_SHIFT] && get_catcode(lexer->lookahead) == SHIFT) {
-      return scan_math_shift(lexer);
-    }
-
-    if (valid_symbols[ALIGNMENT_TAB] && get_catcode(lexer->lookahead) == ALIGNMENT) {
-      return scan_alignment_tab(lexer);
-    }
-
-    if (valid_symbols[SPACE] && get_catcode(lexer->lookahead) == SPACE_CAT) {
-      return scan_space(lexer);
-    }
-
-    if (valid_symbols[SUBSCRIPT] && get_catcode(lexer->lookahead) == SUBSCRIPT_CAT) {
-      return scan_subscript(lexer);
-    }
-
-    if (valid_symbols[SUPERSCRIPT] && get_catcode(lexer->lookahead) == SUPERSCRIPT_CAT) {
-      return scan_subscript(lexer);
-    }
-
-    if (valid_symbols[TOKEN] && get_catcode(lexer->lookahead) == ESCAPE) {
+    if (valid_symbols[TOKEN] && get_catcode(lexer->lookahead) == ESCAPE_CATEGORY) {
       return scan_token_or_escaped(lexer);
-    }
-
-    if (valid_symbols[BEGIN_GROUP] && get_catcode(lexer->lookahead) == BEGIN) {
-      return scan_begin_group(lexer);
-    }
-
-    if (valid_symbols[END_GROUP] && get_catcode(lexer->lookahead) == END) {
-      return scan_end_group(lexer);
-    }
-
-    if (valid_symbols[EOL] && get_catcode(lexer->lookahead) == EOL_CAT) {
-      return scan_eol(lexer);
     }
 
     if (valid_symbols[VERB_DELIM]) {
