@@ -12,6 +12,20 @@ foo$$bar$$quux
       (display_math_shift))
     (text)))
 
+=============
+TeX empty display math
+=============
+foo$$$$quux
+-------------
+(document
+  (text_mode
+    (text)
+    (tex_display_math
+      (display_math_shift)
+      (display_math_shift))
+    (text)))
+
+
 ==================
 LaTeX display math
 ==================
