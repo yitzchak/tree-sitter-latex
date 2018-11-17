@@ -567,12 +567,26 @@
           "name": "math_mode"
         },
         {
-          "type": "SYMBOL",
-          "name": "math_shift"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "math_shift"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "math_shift"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "math_shift"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "implicit_math_shift"
+            }
+          ]
         }
       ]
     },
@@ -966,12 +980,35 @@
           "name": "math_shift"
         },
         {
-          "type": "SYMBOL",
-          "name": "math_mode"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "math_shift"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "math_mode"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "math_shift"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "implicit_math_shift"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "implicit_math_shift"
+            }
+          ]
         }
       ]
     },
@@ -2460,6 +2497,10 @@
       "type": "STRING",
       "value": "]"
     },
+    "math_shift": {
+      "type": "STRING",
+      "value": "$"
+    },
     "alignment_tab": {
       "type": "STRING",
       "value": "&"
@@ -2523,7 +2564,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "math_shift"
+      "name": "implicit_math_shift"
     },
     {
       "type": "SYMBOL",

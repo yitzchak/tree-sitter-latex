@@ -18,7 +18,7 @@ module.exports = grammar({
   externals: $ => [
     $.verb_body,
     $.verb_delim,
-    $.math_shift,
+    $.implicit_math_shift,
     $.end_group
   ],
 
@@ -171,7 +171,7 @@ module.exports = grammar({
     tex_display_math: $ => seq(
       $.math_shift, $.math_shift,
       $.math_mode,
-      $.math_shift, $.math_shift
+      choice(seq($.math_shift, $.math_shift), $.implicit_math_shift)
     ),
 
     tex_display_math_at: $ => seq(
@@ -251,8 +251,10 @@ module.exports = grammar({
 
     tex_inline_math: $ => seq(
       $.math_shift,
-      $.math_mode,
-      $.math_shift
+      choice(
+        seq($.math_mode, choice($.math_shift, $.implicit_math_shift)),
+        $.implicit_math_shift
+      )
     ),
 
     tex_inline_math_at: $ => seq(
@@ -481,7 +483,7 @@ module.exports = grammar({
     end_group: $ => '}',
     begin_opt: $ => '[',
     end_opt: $ => ']',
-    // math_shift: $ => '$',
+    math_shift: $ => '$',
     alignment_tab: $ => '&',
     _end_of_line: $ => '\n',
     parameter_char: $ => '#',
