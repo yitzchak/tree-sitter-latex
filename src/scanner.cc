@@ -17,6 +17,8 @@ enum TokenType {
   VERB_BODY,
   VERB_DELIM,
   IMPLICIT_MATH_SHIFT,
+  DISPLAY_MATH_SHIFT,
+  INLINE_MATH_SHIFT,
   END_GROUP
 };
 
@@ -95,6 +97,23 @@ struct Scanner {
   }
 
 
+  bool scan_math_shift(TSLexer *lexer) {
+    if (lexer->lookahead != '$') return false;
+    lexer->advance(lexer, false);
+
+    if (lexer->lookahead == '$') {
+      lexer->advance(lexer, false);
+      lexer->mark_end(lexer);
+      lexer->result_symbol = DISPLAY_MATH_SHIFT;
+      return true;
+    }
+
+    lexer->mark_end(lexer);
+    lexer->result_symbol = INLINE_MATH_SHIFT;
+    return true;
+  }
+
+
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
     if (valid_symbols[VERB_DELIM]) {
@@ -105,6 +124,10 @@ struct Scanner {
 
     if (start_delim && valid_symbols[VERB_BODY]) {
       return scan_verb_body(lexer);
+    }
+
+    if (valid_symbols[DISPLAY_MATH_SHIFT] || valid_symbols[INLINE_MATH_SHIFT]) {
+      return scan_math_shift(lexer);
     }
 
     if (valid_symbols[IMPLICIT_MATH_SHIFT]) {

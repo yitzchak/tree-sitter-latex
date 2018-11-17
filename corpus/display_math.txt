@@ -7,8 +7,7 @@ foo$$bar$$quux
   (text_mode
     (text)
     (tex_display_math
-      (math_shift)
-      (math_shift)
+      (display_math_shift)
       (math_mode (text))
       (math_shift)
       (math_shift))
@@ -26,7 +25,7 @@ foo { $$ bar \} foo } quux
     (begin_group)
     (text)
     (tex_display_math
-      (math_shift) (math_shift)
+      (display_math_shift)
       (math_mode (text) (escaped) (text))
       (implicit_math_shift))
     (end_group))

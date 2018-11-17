@@ -7,7 +7,7 @@ foo$bar$quux
   (text_mode
     (text)
     (tex_inline_math
-      (math_shift)
+      (inline_math_shift)
       (math_mode (text))
       (math_shift))
     (text)))
@@ -16,7 +16,8 @@ foo$bar$quux
 TeX unclosed inline math
 =============
 foo { $ bar } quux
-foo { $ bar {} wiggle } quux
+foo { $ bar {} wibble } quux
+foo { $ bar \} wibble } quux
 -------------
 
 (document
@@ -25,7 +26,7 @@ foo { $ bar {} wiggle } quux
     (text_group
       (begin_group)
       (text) (tex_inline_math
-        (math_shift)
+        (inline_math_shift)
         (math_mode (text))
         (implicit_math_shift))
       (end_group))
@@ -34,10 +35,40 @@ foo { $ bar {} wiggle } quux
       (begin_group)
       (text)
       (tex_inline_math
-        (math_shift)
+        (inline_math_shift)
         (math_mode (text) (math_group (begin_group) (end_group)) (text))
         (implicit_math_shift))
       (end_group))
+    (text)
+    (text_group
+      (begin_group)
+      (text) (tex_inline_math
+        (inline_math_shift)
+        (math_mode
+          (text)
+          (escaped)
+          (text))
+        (implicit_math_shift))
+      (end_group))
+      (text)))
+
+=============
+TeX consecutive inline math
+=============
+foo$bar$$baz$wibble
+-------------
+
+(document
+  (text_mode
+    (text)
+    (tex_inline_math
+      (inline_math_shift)
+      (math_mode (text))
+      (math_shift))
+    (tex_inline_math
+      (inline_math_shift)
+      (math_mode (text))
+      (math_shift))
     (text)))
 
 =============
