@@ -12,13 +12,16 @@ const command_options_at = ($) => optional(seq($.opt_text_group_at, optional($._
 const env_options = ($) => command_options($)
 const env_options_at = ($) => command_options_at($)
 
+const PREC = {
+  DOUBLE_CIRCUMFLEX: 1
+}
+
 module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
     $.verb_body,
-    $.verb_delim,
-    $._control_symbol_body
+    $.verb_delim
   ],
 
   extras: $ => [
@@ -335,6 +338,8 @@ module.exports = grammar({
       $._control_symbol_body
     ),
 
+    _control_symbol_body: $ => choice($.double_circumflex, /[^a-zA-Z]/),
+
     begin: $ => seq($.begin_token, alias($.simple_text_group, 'env_name')),
 
     begin_token: $ => named_command($, 'begin'),
@@ -421,7 +426,7 @@ module.exports = grammar({
 
     makeatother_token: $ => named_command($, 'makeatother'),
 
-    double_circumflex: $ => prec(4, token(/\^\^([0-9a-f][0-9a-f]|.)/)),
+    double_circumflex: $ => prec(PREC.DOUBLE_CIRCUMFLEX, token(/\^\^([0-9a-f][0-9a-f]|.)/)),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
@@ -491,12 +496,12 @@ module.exports = grammar({
     //ignored_character: //,
     _whitespace: $ => /[ \t]+/,
     // letter: $ => /[a-zA-Z]/,
-    _name: $ => prec.right(100, repeat1(choice(/[a-zA-Z]+/, prec(1000, $.double_circumflex)))),
+    _name: $ => /[a-zA-Z]+/,
     _name_at: $ => /[a-zA-Z@]+/,
     // other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
     active_char: $ => '~',
     // comment_char: $ => '%',
-    text: $ => prec.left(repeat1(choice(/[^\\{}$&#^_~%\[\]]+/, /\^\^([0-9a-f][0-9a-f]|.)/))),
+    text: $ => prec.left(repeat1(choice(/[^\\{}$&#^_~%\[\]]+/, $.double_circumflex))),
     number: $ => /[0-9]+/,
     // _verbatim_token: $ => /.*/,
   }

@@ -1307,6 +1307,19 @@
         }
       ]
     },
+    "_control_symbol_body": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "double_circumflex"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[^a-zA-Z]"
+        }
+      ]
+    },
     "begin": {
       "type": "SEQ",
       "members": [
@@ -2157,7 +2170,7 @@
     },
     "double_circumflex": {
       "type": "PREC",
-      "value": 4,
+      "value": 1,
       "content": {
         "type": "TOKEN",
         "content": {
@@ -2496,28 +2509,8 @@
       "value": "_"
     },
     "_name": {
-      "type": "PREC_RIGHT",
-      "value": 100,
-      "content": {
-        "type": "REPEAT1",
-        "content": {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "PATTERN",
-              "value": "[a-zA-Z]+"
-            },
-            {
-              "type": "PREC",
-              "value": 1000,
-              "content": {
-                "type": "SYMBOL",
-                "name": "double_circumflex"
-              }
-            }
-          ]
-        }
-      }
+      "type": "PATTERN",
+      "value": "[a-zA-Z]+"
     },
     "_name_at": {
       "type": "PATTERN",
@@ -2540,8 +2533,8 @@
               "value": "[^\\\\{}$&#^_~%\\[\\]]+"
             },
             {
-              "type": "PATTERN",
-              "value": "\\^\\^([0-9a-f][0-9a-f]|.)"
+              "type": "SYMBOL",
+              "name": "double_circumflex"
             }
           ]
         }
@@ -2571,10 +2564,6 @@
     {
       "type": "SYMBOL",
       "name": "verb_delim"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_control_symbol_body"
     }
   ],
   "inline": []
