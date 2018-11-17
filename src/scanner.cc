@@ -25,10 +25,11 @@ struct Scanner {
 
   unsigned serialize(char *buffer) {
     buffer[0] = start_delim;
-    return 0;
+    return 1;
   }
 
   void deserialize(const char *buffer, unsigned length) {
+    if (length == 0) return; // or get a segmentation fault
     start_delim = buffer[0];
   }
 
