@@ -33,7 +33,7 @@ struct Scanner {
       start_delim = 0;
       return;
     };
-    
+
     start_delim = buffer[0];
   }
 
