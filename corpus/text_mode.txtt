@@ -169,19 +169,23 @@ quux
 comment
 ===========
 foo % bar
+
 -----------
 (document
-  (text_mode (text))
-  (comment))
+  (text_mode
+    (text)
+    (comment (comment_char) (eol))))
 
 ===========
 magic comment
 ===========
 foo %!TeX bar=wibble
+
 -----------
 (document
-  (text_mode (text))
-  (magic_comment))
+  (text_mode
+    (text)
+    (magic_comment (comment_char) (magic_tag) (eol))))
 
 =============
 documentclass

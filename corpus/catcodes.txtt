@@ -1,0 +1,183 @@
+================================
+[makeatletter] @ sign not letter
+================================
+\bar@wibble
+--------------------------------
+(document
+  (text_mode
+    (token)
+    (text)))
+
+=================================
+[makeatletter] @ sign is letter
+=================================
+\makeatletter\bar@wibble\makeatother
+---------------------------------
+(document
+  (text_mode
+    (makeatletter (makeatletter_token))
+    (token)
+    (makeatother (makeatother_token))))
+
+==============================
+[makeatletter] @ sign is letter in text group
+==============================
+\makeatletter{\bar@wibble}\makeatother
+----------------
+(document
+  (text_mode
+    (makeatletter (makeatletter_token))
+    (text_group
+      (begin_group)
+      (token)
+      (end_group))
+    (makeatother (makeatother_token))))
+
+==============================
+[makeatletter] @ sign is letter in optional text group
+==============================
+\makeatletter[foo\bar@wibble]\makeatother
+----------------
+(document
+  (text_mode
+    (makeatletter (makeatletter_token))
+    (opt_text_group
+      (begin_opt)
+      (text)
+      (token)
+      (end_opt))
+    (makeatother (makeatother_token))))
+
+============================
+[makeatletter] @ sign is letter then other
+=============================
+\makeatletter\bar@wibble\makeatother\quux@gronk
+----------------
+(document
+  (text_mode
+    (makeatletter (makeatletter_token))
+    (token)
+    (makeatother (makeatother_token))
+    (token)
+    (text)))
+
+=================
+[ExplSyntaxOn] colon/undersore is not letter
+=================
+\bar:wibble_wobble
+----------------
+(document
+  (text_mode
+    (token)
+    (text)
+    (text)
+    (text)))
+
+=================
+[ExplSyntaxOn] colon/undersore is letter
+=================
+\ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff
+----------------
+(document
+  (text_mode
+    (explsyntaxon (explsyntaxon_token))
+    (token)
+    (explsyntaxoff (explsyntaxoff_token))))
+
+=================
+[ProvidesExplPackage] colon/undersore is letter
+=================
+\ProvidesExplPackage{foo}{bar}{wibble}{wobble}
+\bar:wibble_wobble\ExplSyntaxOff
+----------------
+(document
+  (text_mode
+    (providesexplpackage
+      (providesexplpackage_token)
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group)))
+    (text)
+    (token)
+    (explsyntaxoff (explsyntaxoff_token))))
+
+==============================
+[ExplSyntaxOn] colon/undersore is letter in text group
+==============================
+\ExplSyntaxOn{\bar:wibble_wobble}\ExplSyntaxOff
+----------------
+(document
+  (text_mode
+    (explsyntaxon (explsyntaxon_token))
+    (text_group
+      (begin_group)
+      (token)
+      (end_group))
+    (explsyntaxoff (explsyntaxoff_token))))
+
+==============================
+[ExplSyntaxOn] colon/undersore is letter in optional text group
+==============================
+\ExplSyntaxOn[foo\bar:wibble_wobble]\ExplSyntaxOff
+----------------
+(document
+  (text_mode
+    (explsyntaxon (explsyntaxon_token))
+    (opt_text_group
+      (begin_opt)
+      (text)
+      (token)
+      (end_opt))
+    (explsyntaxoff (explsyntaxoff_token))))
+
+============================
+[ExplSyntaxOn] colon/undersore is letter then other
+=============================
+\ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
+----------------
+(document
+  (text_mode
+    (explsyntaxon (explsyntaxon_token))
+    (token)
+    (explsyntaxoff (explsyntaxoff_token))
+    (token)
+    (text)
+    (text)
+    (text)))
+
+==============================
+[ExplSyntaxOn/makeatletter] Nested regions
+==============================
+\ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\makeatother\ExplSyntaxOff\zap@zip:nil_zil
+----------------
+(document
+  (text_mode
+    (explsyntaxon (explsyntaxon_token))
+    (token)
+    (text)
+    (makeatletter (makeatletter_token))
+    (token)
+    (makeatother (makeatother_token))
+    (explsyntaxoff (explsyntaxoff_token))
+    (token)
+    (text)
+    (text)
+    (text)))
+    
+===============================================
+[ExplSyntaxOn/makeatletter] Interleaved regions
+===============================================
+\ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\ExplSyntaxOff\zap@zip\makeatother
+-----------------------------------------------
+(document
+  (text_mode
+    (explsyntaxon (explsyntaxon_token))
+    (token)
+    (text)
+    (makeatletter (makeatletter_token))
+    (token)
+    (explsyntaxoff (explsyntaxoff_token))
+    (token)
+    (makeatother (makeatother_token))))
+    
