@@ -404,10 +404,10 @@ struct Scanner {
     return true;
   }
 
-  bool scan_math_shift(TSLexer *lexer) {
+  bool scan_math_shift(TSLexer *lexer, const bool *valid_symbols) {
     lexer->advance(lexer, false);
 
-    if (get_catcode(lexer->lookahead) == MATH_SHIFT_CATEGORY) {
+    if (valid_symbols[MATH_SHIFT_DISPLAY] && get_catcode(lexer->lookahead) == MATH_SHIFT_CATEGORY) {
       lexer->advance(lexer, false);
       lexer->result_symbol = MATH_SHIFT_DISPLAY;
     } else {
@@ -428,7 +428,7 @@ struct Scanner {
     }
 
     if ((valid_symbols[MATH_SHIFT_INLINE] || valid_symbols[MATH_SHIFT_DISPLAY]) && code == MATH_SHIFT_CATEGORY) {
-      return scan_math_shift(lexer);
+      return scan_math_shift(lexer, valid_symbols);
     }
 
     for (auto it = category_descriptions.begin(); it != category_descriptions.end(); it++) {

@@ -13,28 +13,25 @@ foo$bar$quux
     (text)))
 
 =============
-Misplaced inline math shift inside display math
+TeX consecutive inline math
 =============
-foo$$bar$wibble$$quux
+foo$bar$$wibble$quux
 -------------
 (document
   (text_mode
     (text)
-    (tex_display_math
-      (math_shift_display)
-      (math_mode (text))
-      (MISSING))
     (tex_inline_math
       (math_shift_inline)
       (math_mode (text))
-      (MISSING))
-    (tex_display_math
-      (math_shift_display)
+      (math_shift_inline))
+    (tex_inline_math
+      (math_shift_inline)
       (math_mode (text))
-      (MISSING))))
+      (math_shift_inline))
+    (text)))
 
 ===============================
-Dangling display math math inside text group
+Dangling inline math math inside text group
 ================================
 {foo$bar}
 --------------------------------

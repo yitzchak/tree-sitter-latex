@@ -376,8 +376,16 @@
           "name": "math_shift_display"
         },
         {
-          "type": "SYMBOL",
-          "name": "math_mode"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "math_mode"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "SYMBOL",

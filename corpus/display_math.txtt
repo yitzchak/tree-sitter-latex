@@ -13,21 +13,21 @@ foo$$bar$$quux
     (text)))
 
 =============
-Misplaced display math shift inside inline math
+Misplaced inline math shift inside display math
 =============
-foo$bar$$wibble$quux
+foo$$bar$wibble$$quux
 -------------
 (document
   (text_mode
     (text)
-    (tex_inline_math
-      (math_shift_inline)
-      (math_mode (text))
-      (MISSING))
     (tex_display_math
       (math_shift_display)
       (math_mode (text))
       (MISSING))
+    (tex_inline_math
+      (math_shift_inline)
+      (math_mode (text))
+      (math_shift_inline))
     (tex_inline_math
       (math_shift_inline)
       (math_mode (text))
@@ -48,6 +48,19 @@ Dangling display math math inside text group
         (math_mode (text))
         (MISSING))
       (end_group))))
+
+============
+TeX empty display math
+=============
+foo$$$$quux
+-------------
+(document
+  (text_mode
+    (text)
+    (tex_display_math
+      (math_shift_display)
+      (math_shift_display))
+    (text)))
 
 ==================
 LaTeX display math

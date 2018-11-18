@@ -176,7 +176,7 @@ module.exports = grammar({
 
     tex_display_math: $ => seq(
       $.math_shift_display,
-      $.math_mode,
+      optional($.math_mode),
       $.math_shift_display
     ),
 
