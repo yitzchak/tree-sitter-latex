@@ -265,7 +265,7 @@ struct Scanner {
   bool scan_start_verb_delim(TSLexer *lexer) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
-    if (lexer->lookahead && lexer->lookahead != '\n') {
+    if (lexer->lookahead && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
       lexer->mark_end(lexer);
@@ -285,7 +285,7 @@ struct Scanner {
       return true;
     }
 
-    if (lexer->lookahead == '\n') {
+    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
       lexer->mark_end(lexer);
       lexer->result_symbol = VERB_DELIM; // don't eat the newline (for consistency)
       start_delim = 0;
@@ -296,7 +296,7 @@ struct Scanner {
   }
 
   bool scan_verb_body(TSLexer *lexer) {
-    while (lexer->lookahead && lexer->lookahead != start_delim && lexer->lookahead != '\n') {
+    while (lexer->lookahead && lexer->lookahead != start_delim && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
