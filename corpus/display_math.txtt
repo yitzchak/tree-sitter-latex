@@ -7,12 +7,47 @@ foo$$bar$$quux
   (text_mode
     (text)
     (tex_display_math
-      (math_shift)
-      (math_shift)
+      (math_shift_display)
       (math_mode (text))
-      (math_shift)
-      (math_shift))
+      (math_shift_display))
     (text)))
+
+=============
+Misplaced display math shift inside inline math
+=============
+foo$bar$$wibble$quux
+-------------
+(document
+  (text_mode
+    (text)
+    (tex_inline_math
+      (math_shift_inline)
+      (math_mode (text))
+      (MISSING))
+    (tex_display_math
+      (math_shift_display)
+      (math_mode (text))
+      (MISSING))
+    (tex_inline_math
+      (math_shift_inline)
+      (math_mode (text))
+      (MISSING))))
+
+===============================
+Dangling display math math inside text group
+================================
+{foo$$bar}
+--------------------------------
+(document
+  (text_mode
+    (text_group
+      (begin_group)
+      (text)
+      (tex_display_math
+        (math_shift_display)
+        (math_mode (text))
+        (MISSING))
+      (end_group))))
 
 ==================
 LaTeX display math
