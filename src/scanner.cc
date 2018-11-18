@@ -198,6 +198,8 @@ struct Scanner {
     {'\x7f', INVALID_CATEGORY}
   };
 
+  map<char, Category> saved_catcodes;
+
   Scanner() {}
 
   Category get_catcode(char key) {
@@ -213,6 +215,20 @@ struct Scanner {
       catcodes.erase(key);
     } else {
       catcodes[key] = code;
+    }
+  }
+
+  void push_catcode(char key, Category code) {
+    saved_catcodes[key] = get_catcode(key);
+    set_catcode(key, code);
+  }
+
+  void pop_catcode(char key) {
+    auto it = saved_catcodes.find(key);
+
+    if (it != saved_catcodes.end()) {
+      set_catcode(key, it->second);
+      saved_catcodes.erase(key);
     }
   }
 
@@ -320,12 +336,28 @@ struct Scanner {
 
     switch (lexer->result_symbol) {
       case EXPLSYNTAXOFF_TOKEN:
-        set_catcode('_', SUBSCRIPT_CATEGORY);
-        set_catcode(':', OTHER_CATEGORY);
+        pop_catcode('\t');
+        pop_catcode(' ');
+        pop_catcode('"');
+        pop_catcode('&');
+        pop_catcode(':');
+        pop_catcode('^');
+        pop_catcode('_');
+        pop_catcode('|');
+        pop_catcode('~');
+        // pop_catcode('\n');
         break;
       case EXPLSYNTAXON_TOKEN:
-        set_catcode('_', LETTER_CATEGORY);
-        set_catcode(':', LETTER_CATEGORY);
+        push_catcode('\t', IGNORED_CATEGORY);
+        push_catcode(' ',  IGNORED_CATEGORY);
+        push_catcode('"',  OTHER_CATEGORY);
+        push_catcode('&',  ALIGNMENT_TAB_CATEGORY);
+        push_catcode(':',  LETTER_CATEGORY);
+        push_catcode('^',  SUPERSCRIPT_CATEGORY);
+        push_catcode('_',  LETTER_CATEGORY);
+        push_catcode('|',  OTHER_CATEGORY);
+        push_catcode('~',  SPACE_CATEGORY);
+        // set_catcode('\n', IGNORED_CATEGORY);
         break;
       case MAKEATOTHER_TOKEN:
         set_catcode('@', OTHER_CATEGORY);
