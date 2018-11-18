@@ -84,6 +84,24 @@
     (token)
     (explsyntaxoff (explsyntaxoff_token))))
 
+=================
+[ProvidesExplPackage] colon/undersore is letter
+=================
+\ProvidesExplPackage{foo}{bar}{wibble}{wobble}
+\bar:wibble_wobble\ExplSyntaxOff
+----------------
+(document
+  (text_mode
+    (providesexplpackage
+      (providesexplpackage_token)
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group)))
+    (text)
+    (token)
+    (explsyntaxoff (explsyntaxoff_token))))
+
 ==============================
 [ExplSyntaxOn] colon/undersore is letter in text group
 ==============================

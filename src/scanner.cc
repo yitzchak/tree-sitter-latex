@@ -41,6 +41,9 @@ enum TokenType {
   MAKEATOTHER_TOKEN,
   MATH_SHIFT,
   PARAMETER_CHAR,
+  PROVIDESEXPLCLASS_TOKEN,
+  PROVIDESEXPLFILE_TOKEN,
+  PROVIDESEXPLPACKAGE_TOKEN,
   SECTION_TOKEN,
   STORAGE_TOKEN,
   SUBSCRIPT,
@@ -118,6 +121,9 @@ struct Scanner {
     {"kcatcode", CATCODE_TOKEN},
     {"makeatletter", MAKEATLETTER_TOKEN},
     {"makeatother", MAKEATOTHER_TOKEN},
+    {"ProvidesExplClass", PROVIDESEXPLCLASS_TOKEN},
+    {"ProvidesExplFile", PROVIDESEXPLFILE_TOKEN},
+    {"ProvidesExplPackage", PROVIDESEXPLPACKAGE_TOKEN},
     {"section", SECTION_TOKEN},
     {"subsection", SECTION_TOKEN},
     {"tag", TAG_TOKEN},
@@ -348,6 +354,9 @@ struct Scanner {
         // pop_catcode('\n');
         break;
       case EXPLSYNTAXON_TOKEN:
+      case PROVIDESEXPLCLASS_TOKEN:
+      case PROVIDESEXPLFILE_TOKEN:
+      case PROVIDESEXPLPACKAGE_TOKEN:
         push_catcode('\t', IGNORED_CATEGORY);
         push_catcode(' ',  IGNORED_CATEGORY);
         push_catcode('"',  OTHER_CATEGORY);

@@ -66,6 +66,9 @@ module.exports = grammar({
     $.makeatother_token,
     $.math_shift,
     $.parameter_char,
+    $.providesexplclass_token,
+    $.providesexplfile_token,
+    $.providesexplpackage_token,
     $.section_token,
     $.storage_token,
     $.subscript,
@@ -123,6 +126,9 @@ module.exports = grammar({
       $.textbf,
       $.textit,
       $.texttt,
+      $.providesexplclass,
+      $.providesexplfile,
+      $.providesexplpackage,
       $.documentclass,
       $.include,
       $.section,
@@ -277,6 +283,12 @@ module.exports = grammar({
     usepackage: $ => command($, $.usepackage_token, { opt: 1, simple: 'package_name' }),
 
     include: $ => command($, $.include_token, { text: 1 }),
+
+    providesexplclass: $ => command($, $.providesexplclass_token, { text: 4 }),
+
+    providesexplfile: $ => command($, $.providesexplfile_token, { text: 4 }),
+
+    providesexplpackage: $ => command($, $.providesexplpackage_token, { text: 4 }),
 
     section: $ => command($, $.section_token, { text: 1, opt: 1, star: true }),
 
