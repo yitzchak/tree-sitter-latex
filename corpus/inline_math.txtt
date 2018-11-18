@@ -7,9 +7,9 @@ foo$bar$quux
   (text_mode
     (text)
     (tex_inline_math
-      (math_shift_inline)
+      (inline_math_shift)
       (math_mode (text))
-      (math_shift_inline))
+      (inline_math_shift))
     (text)))
 
 =============
@@ -21,13 +21,13 @@ foo$bar$$wibble$quux
   (text_mode
     (text)
     (tex_inline_math
-      (math_shift_inline)
+      (inline_math_shift)
       (math_mode (text))
-      (math_shift_inline))
+      (inline_math_shift))
     (tex_inline_math
-      (math_shift_inline)
+      (inline_math_shift)
       (math_mode (text))
-      (math_shift_inline))
+      (inline_math_shift))
     (text)))
 
 ===============================
@@ -41,7 +41,7 @@ Dangling inline math math inside text group
       (begin_group)
       (text)
       (tex_inline_math
-        (math_shift_inline)
+        (inline_math_shift)
         (math_mode (text))
         (MISSING))
       (end_group))))

@@ -373,7 +373,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "math_shift_display"
+          "name": "display_math_shift"
         },
         {
           "type": "CHOICE",
@@ -389,7 +389,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "math_shift_display"
+          "name": "display_math_shift"
         }
       ]
     },
@@ -536,7 +536,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "math_shift_inline"
+          "name": "inline_math_shift"
         },
         {
           "type": "SYMBOL",
@@ -544,7 +544,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "math_shift_inline"
+          "name": "inline_math_shift"
         }
       ]
     },
@@ -1794,6 +1794,10 @@
     },
     {
       "type": "SYMBOL",
+      "name": "display_math_shift"
+    },
+    {
+      "type": "SYMBOL",
       "name": "documentclass_token"
     },
     {
@@ -1842,19 +1846,15 @@
     },
     {
       "type": "SYMBOL",
+      "name": "inline_math_shift"
+    },
+    {
+      "type": "SYMBOL",
       "name": "makeatletter_token"
     },
     {
       "type": "SYMBOL",
       "name": "makeatother_token"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "math_shift_display"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "math_shift_inline"
     },
     {
       "type": "SYMBOL",

@@ -50,6 +50,7 @@ module.exports = grammar({
     $.begin_token,
     $.catcode_token,
     $.comment_char,
+    $.display_math_shift,
     $.documentclass_token,
     $.emph_token,
     $.end_display_math,
@@ -62,10 +63,9 @@ module.exports = grammar({
     $.explsyntaxon_token,
     $.footnote_token,
     $.include_token,
+    $.inline_math_shift,
     $.makeatletter_token,
     $.makeatother_token,
-    $.math_shift_display,
-    $.math_shift_inline,
     $.parameter_char,
     $.providesexplclass_token,
     $.providesexplfile_token,
@@ -175,9 +175,9 @@ module.exports = grammar({
     ),
 
     tex_display_math: $ => seq(
-      $.math_shift_display,
+      $.display_math_shift,
       optional($.math_mode),
-      $.math_shift_display
+      $.display_math_shift
     ),
 
     latex_display_math: $ => seq(
@@ -216,9 +216,9 @@ module.exports = grammar({
     ),
 
     tex_inline_math: $ => seq(
-      $.math_shift_inline,
+      $.inline_math_shift,
       $.math_mode,
-      $.math_shift_inline
+      $.inline_math_shift
     ),
 
     latex_inline_math: $ => seq(

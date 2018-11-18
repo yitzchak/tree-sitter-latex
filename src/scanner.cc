@@ -25,6 +25,7 @@ enum TokenType {
   BEGIN_TOKEN,
   CATCODE_TOKEN,
   COMMENT_CHAR,
+  DISPLAY_MATH_SHIFT,
   DOCUMENTCLASS_TOKEN,
   EMPH_TOKEN,
   END_DISPLAY_MATH,
@@ -37,10 +38,9 @@ enum TokenType {
   EXPLSYNTAXON_TOKEN,
   FOOTNOTE_TOKEN,
   INCLUDE_TOKEN,
+  INLINE_MATH_SHIFT,
   MAKEATLETTER_TOKEN,
   MAKEATOTHER_TOKEN,
-  MATH_SHIFT_DISPLAY,
-  MATH_SHIFT_INLINE,
   PARAMETER_CHAR,
   PROVIDESEXPLCLASS_TOKEN,
   PROVIDESEXPLFILE_TOKEN,
@@ -407,16 +407,16 @@ struct Scanner {
   bool scan_math_shift(TSLexer *lexer, const bool *valid_symbols) {
     lexer->advance(lexer, false);
 
-    if (valid_symbols[MATH_SHIFT_DISPLAY] && get_catcode(lexer->lookahead) == MATH_SHIFT_CATEGORY) {
+    if (valid_symbols[DISPLAY_MATH_SHIFT] && get_catcode(lexer->lookahead) == MATH_SHIFT_CATEGORY) {
       lexer->advance(lexer, false);
-      lexer->result_symbol = MATH_SHIFT_DISPLAY;
+      lexer->result_symbol = DISPLAY_MATH_SHIFT;
     } else {
-      lexer->result_symbol = MATH_SHIFT_INLINE;
+      lexer->result_symbol = INLINE_MATH_SHIFT;
     }
 
     lexer->mark_end(lexer);
 
-    return true;
+    return valid_symbols[lexer->result_symbol];
   }
 
   bool scan(TSLexer *lexer, const bool *valid_symbols)
@@ -427,7 +427,7 @@ struct Scanner {
       return scan_token_or_escaped(lexer);
     }
 
-    if ((valid_symbols[MATH_SHIFT_INLINE] || valid_symbols[MATH_SHIFT_DISPLAY]) && code == MATH_SHIFT_CATEGORY) {
+    if ((valid_symbols[INLINE_MATH_SHIFT] || valid_symbols[DISPLAY_MATH_SHIFT]) && code == MATH_SHIFT_CATEGORY) {
       return scan_math_shift(lexer, valid_symbols);
     }
 
