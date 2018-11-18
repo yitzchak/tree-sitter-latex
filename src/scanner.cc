@@ -410,13 +410,17 @@ struct Scanner {
     if (valid_symbols[DISPLAY_MATH_SHIFT] && get_catcode(lexer->lookahead) == MATH_SHIFT_CATEGORY) {
       lexer->advance(lexer, false);
       lexer->result_symbol = DISPLAY_MATH_SHIFT;
-    } else {
-      lexer->result_symbol = INLINE_MATH_SHIFT;
+      lexer->mark_end(lexer);
+      return true;
     }
 
-    lexer->mark_end(lexer);
+    if (valid_symbols[INLINE_MATH_SHIFT]) {
+      lexer->result_symbol = INLINE_MATH_SHIFT;
+      lexer->mark_end(lexer);
+      return true;
+    }
 
-    return valid_symbols[lexer->result_symbol];
+    return false;
   }
 
   bool scan(TSLexer *lexer, const bool *valid_symbols)
