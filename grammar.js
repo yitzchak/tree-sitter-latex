@@ -1,3 +1,35 @@
+function begin_env ($, options = {}) {
+  const args = [
+    $.begin_token,
+    options.name_group || $.name_group
+  ]
+
+  for (let i = options.opt || 0; i > 0; i--) {
+    args.push(optional($._space))
+    args.push(optional($.opt_text_group))
+  }
+
+  for (let i = options.text || 0; i > 0; i--) {
+    args.push(optional($._space))
+    args.push(optional($.text_group))
+  }
+
+  if (options.eol) {
+    args.push($.eol)
+  }
+
+  return seq.apply(null, args)
+}
+
+function end_env ($, options = {}) {
+  const args = [
+    $.end_token,
+    options.name_group || $.name_group
+  ]
+
+  return seq.apply(null, args)
+}
+
 function command ($, token, options = {}) {
   const args = [token]
 
@@ -32,10 +64,6 @@ function command ($, token, options = {}) {
 
   return seq.apply(null, args)
 }
-
-const command_options = ($) => optional(seq($.opt_text_group, repeat($._space)))
-
-const env_options = ($) => command_options($)
 
 module.exports = grammar({
   name: 'latex',
@@ -197,18 +225,16 @@ module.exports = grammar({
       $.display_math_end
     ),
 
-    display_math_begin: $ => seq(
-      $.begin_token,
-      $.display_math_env_group,
-      env_options($),
-      optional($.text_group),
-      $.eol
-    ),
+    display_math_begin: $ => begin_env($, {
+      name_group: $.display_math_env_group,
+      opt: 1,
+      text: 1,
+      eol: true
+    }),
 
-    display_math_end: $ => seq(
-      $.end_token,
-      $.display_math_env_group
-    ),
+    display_math_end: $ => end_env($, {
+      name_group: $.display_math_env_group
+    }),
 
     display_math_env_group: $ => seq($.begin_group, $.display_math_env_name, $.end_group),
 
@@ -256,27 +282,24 @@ module.exports = grammar({
       $.verbatim_end
     ),
 
-    verbatim_begin: $ => seq(
-      $.begin_token,
-      $.verbatim_env_group,
-      env_options($),
-      optional($.text_group),
-      $.eol
-    ),
+    verbatim_begin: $ => begin_env($, {
+      name_group: $.verbatim_env_group,
+      opt: 1,
+      text: 1,
+      eol: true
+    }),
 
-    verbatim_end: $ => seq(
-      // $.eol,
-      $.end_token,
-      $.verbatim_env_group
-    ),
+    verbatim_end: $ => end_env($, {
+      name_group: $.verbatim_env_group
+    }),
 
     verbatim_text: $ => repeat1(alias($.verb_line, '_verb_line')),
 
     verbatim_env_group: $ => seq($.begin_group, $.verbatim_env_name, $.end_group),
 
-    begin: $ => command($, $.begin_token, { name: 1 }),
+    begin: $ => begin_env($),
 
-    end: $ => command($, $.end_token, { name: 1 }),
+    end: $ => end_env($),
 
     documentclass: $ => command($, $.documentclass_token, { opt: 1, name: 1 }),
 
