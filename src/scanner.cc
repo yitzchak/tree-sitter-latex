@@ -220,7 +220,13 @@ struct Scanner {
   Category get_catcode(char key) {
     auto it = catcodes.find(key);
 
-    return (it == catcodes.end()) ?
+    if (it != catcodes.end()) {
+      return it->second;
+    }
+
+    it = saved_catcodes.find(key);
+
+    return (it == saved_catcodes.end()) ?
       OTHER_CATEGORY :
       it->second;
   }
