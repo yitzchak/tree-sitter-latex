@@ -217,19 +217,19 @@ module.exports = grammar({
 
     tex_inline_math: $ => seq(
       $.inline_math_shift,
-      $.math_mode,
+      optional($.math_mode),
       $.inline_math_shift
     ),
 
     latex_inline_math: $ => seq(
       $.begin_inline_math,
-      $.math_mode,
+      optional($.math_mode),
       $.end_inline_math
     ),
 
     inline_math_env: $ => seq(
       $.inline_math_begin,
-      $.math_mode,
+      optional($.math_mode),
       $.inline_math_end
     ),
 

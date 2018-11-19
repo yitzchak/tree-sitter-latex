@@ -539,8 +539,16 @@
           "name": "inline_math_shift"
         },
         {
-          "type": "SYMBOL",
-          "name": "math_mode"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "math_mode"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "SYMBOL",
