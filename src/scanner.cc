@@ -92,6 +92,8 @@ struct CategoryDescription {
 };
 
 struct Scanner {
+  static const int CATCODE_TABLE_SIZE = 128;
+
   int32_t start_delim = 0;
 
   vector<CategoryDescription> category_descriptions = {
@@ -188,93 +190,107 @@ struct Scanner {
     {"verb", VERB_TOKEN}
   };
 
-  map<char, Category> catcodes = {
-    {'\\',   ESCAPE_CATEGORY},
-    {'{',    BEGIN_CATEGORY},
-    {'}',    END_CATEGORY},
-    {'$',    MATH_SHIFT_CATEGORY},
-    {'&',    ALIGNMENT_TAB_CATEGORY},
-    {'\n',   EOL_CATEGORY},
-    {'#',    PARAMETER_CATEGORY},
-    {'^',    SUPERSCRIPT_CATEGORY},
-    {'_',    SUBSCRIPT_CATEGORY},
-    {'\0',   IGNORED_CATEGORY},
-    {' ',    SPACE_CATEGORY},
-    {'\t',   SPACE_CATEGORY},
-    {'A',    LETTER_CATEGORY},
-    {'B',    LETTER_CATEGORY},
-    {'C',    LETTER_CATEGORY},
-    {'D',    LETTER_CATEGORY},
-    {'E',    LETTER_CATEGORY},
-    {'F',    LETTER_CATEGORY},
-    {'G',    LETTER_CATEGORY},
-    {'H',    LETTER_CATEGORY},
-    {'I',    LETTER_CATEGORY},
-    {'J',    LETTER_CATEGORY},
-    {'K',    LETTER_CATEGORY},
-    {'L',    LETTER_CATEGORY},
-    {'M',    LETTER_CATEGORY},
-    {'N',    LETTER_CATEGORY},
-    {'O',    LETTER_CATEGORY},
-    {'P',    LETTER_CATEGORY},
-    {'Q',    LETTER_CATEGORY},
-    {'R',    LETTER_CATEGORY},
-    {'S',    LETTER_CATEGORY},
-    {'T',    LETTER_CATEGORY},
-    {'U',    LETTER_CATEGORY},
-    {'V',    LETTER_CATEGORY},
-    {'W',    LETTER_CATEGORY},
-    {'X',    LETTER_CATEGORY},
-    {'Y',    LETTER_CATEGORY},
-    {'Z',    LETTER_CATEGORY},
-    {'a',    LETTER_CATEGORY},
-    {'b',    LETTER_CATEGORY},
-    {'c',    LETTER_CATEGORY},
-    {'d',    LETTER_CATEGORY},
-    {'e',    LETTER_CATEGORY},
-    {'f',    LETTER_CATEGORY},
-    {'g',    LETTER_CATEGORY},
-    {'h',    LETTER_CATEGORY},
-    {'i',    LETTER_CATEGORY},
-    {'j',    LETTER_CATEGORY},
-    {'k',    LETTER_CATEGORY},
-    {'l',    LETTER_CATEGORY},
-    {'m',    LETTER_CATEGORY},
-    {'n',    LETTER_CATEGORY},
-    {'o',    LETTER_CATEGORY},
-    {'p',    LETTER_CATEGORY},
-    {'q',    LETTER_CATEGORY},
-    {'r',    LETTER_CATEGORY},
-    {'s',    LETTER_CATEGORY},
-    {'t',    LETTER_CATEGORY},
-    {'u',    LETTER_CATEGORY},
-    {'v',    LETTER_CATEGORY},
-    {'w',    LETTER_CATEGORY},
-    {'x',    LETTER_CATEGORY},
-    {'y',    LETTER_CATEGORY},
-    {'z',    LETTER_CATEGORY},
-    {'~',    ACTIVE_CHAR_CATEGORY},
-    {'%',    COMMENT_CATEGORY},
-    {'\x7f', INVALID_CATEGORY}
-  };
+  Category catcode_table[CATCODE_TABLE_SIZE];
+
+  map<char, Category> overflow_catcodes;
 
   map<char, Category> saved_catcodes;
 
-  Scanner() {}
+  Scanner() {
+    for (int i = 0; i < CATCODE_TABLE_SIZE; i++) {
+      catcode_table[i] = OTHER_CATEGORY;
+    }
+
+    set_catcode('\\', ESCAPE_CATEGORY);
+    set_catcode('{', BEGIN_CATEGORY);
+    set_catcode('}', END_CATEGORY);
+    set_catcode('$', MATH_SHIFT_CATEGORY);
+    set_catcode('&', ALIGNMENT_TAB_CATEGORY);
+    set_catcode('\n', EOL_CATEGORY);
+    set_catcode('#', PARAMETER_CATEGORY);
+    set_catcode('^', SUPERSCRIPT_CATEGORY);
+    set_catcode('_', SUBSCRIPT_CATEGORY);
+    set_catcode('\0', IGNORED_CATEGORY);
+    set_catcode(' ', SPACE_CATEGORY);
+    set_catcode('\t', SPACE_CATEGORY);
+    set_catcode('A', LETTER_CATEGORY);
+    set_catcode('B', LETTER_CATEGORY);
+    set_catcode('C', LETTER_CATEGORY);
+    set_catcode('D', LETTER_CATEGORY);
+    set_catcode('E', LETTER_CATEGORY);
+    set_catcode('F', LETTER_CATEGORY);
+    set_catcode('G', LETTER_CATEGORY);
+    set_catcode('H', LETTER_CATEGORY);
+    set_catcode('I', LETTER_CATEGORY);
+    set_catcode('J', LETTER_CATEGORY);
+    set_catcode('K', LETTER_CATEGORY);
+    set_catcode('L', LETTER_CATEGORY);
+    set_catcode('M', LETTER_CATEGORY);
+    set_catcode('N', LETTER_CATEGORY);
+    set_catcode('O', LETTER_CATEGORY);
+    set_catcode('P', LETTER_CATEGORY);
+    set_catcode('Q', LETTER_CATEGORY);
+    set_catcode('R', LETTER_CATEGORY);
+    set_catcode('S', LETTER_CATEGORY);
+    set_catcode('T', LETTER_CATEGORY);
+    set_catcode('U', LETTER_CATEGORY);
+    set_catcode('V', LETTER_CATEGORY);
+    set_catcode('W', LETTER_CATEGORY);
+    set_catcode('X', LETTER_CATEGORY);
+    set_catcode('Y', LETTER_CATEGORY);
+    set_catcode('Z', LETTER_CATEGORY);
+    set_catcode('a', LETTER_CATEGORY);
+    set_catcode('b', LETTER_CATEGORY);
+    set_catcode('c', LETTER_CATEGORY);
+    set_catcode('d', LETTER_CATEGORY);
+    set_catcode('e', LETTER_CATEGORY);
+    set_catcode('f', LETTER_CATEGORY);
+    set_catcode('g', LETTER_CATEGORY);
+    set_catcode('h', LETTER_CATEGORY);
+    set_catcode('i', LETTER_CATEGORY);
+    set_catcode('j', LETTER_CATEGORY);
+    set_catcode('k', LETTER_CATEGORY);
+    set_catcode('l', LETTER_CATEGORY);
+    set_catcode('m', LETTER_CATEGORY);
+    set_catcode('n', LETTER_CATEGORY);
+    set_catcode('o', LETTER_CATEGORY);
+    set_catcode('p', LETTER_CATEGORY);
+    set_catcode('q', LETTER_CATEGORY);
+    set_catcode('r', LETTER_CATEGORY);
+    set_catcode('s', LETTER_CATEGORY);
+    set_catcode('t', LETTER_CATEGORY);
+    set_catcode('u', LETTER_CATEGORY);
+    set_catcode('v', LETTER_CATEGORY);
+    set_catcode('w', LETTER_CATEGORY);
+    set_catcode('x', LETTER_CATEGORY);
+    set_catcode('y', LETTER_CATEGORY);
+    set_catcode('z', LETTER_CATEGORY);
+    set_catcode('~', ACTIVE_CHAR_CATEGORY);
+    set_catcode('%', COMMENT_CATEGORY);
+    set_catcode('\x7f', INVALID_CATEGORY);
+  }
 
   Category get_catcode(char key) {
-    auto it = catcodes.find(key);
+    if (key < CATCODE_TABLE_SIZE) {
+      return catcode_table[key];
+    }
 
-    return (it == catcodes.end()) ?
+    auto it = overflow_catcodes.find(key);
+
+    return (it == overflow_catcodes.end()) ?
       OTHER_CATEGORY :
       it->second;
   }
 
   void set_catcode(char key, Category code) {
+    if (key < CATCODE_TABLE_SIZE) {
+      catcode_table[key] = code;
+    }
+
     if (code == OTHER_CATEGORY) {
-      catcodes.erase(key);
+      overflow_catcodes.erase(key);
     } else {
-      catcodes[key] = code;
+      overflow_catcodes[key] = code;
     }
   }
 
