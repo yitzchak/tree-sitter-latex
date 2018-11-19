@@ -36,16 +36,18 @@
 ==============================
 [makeatletter] @ sign is letter in optional text group
 ==============================
-\makeatletter[foo\bar@wibble]\makeatother
+\makeatletter\usepackage[foo\bar@wibble]{foo}\makeatother
 ----------------
 (document
   (text_mode
     (makeatletter (makeatletter_token))
-    (opt_text_group
-      (begin_opt)
-      (text)
-      (token)
-      (end_opt))
+    (usepackage (usepackage_token)
+      (opt_text_group
+        (begin_opt)
+        (text)
+        (token)
+        (end_opt))
+      (name_group (begin_group) (name) (end_group)))
     (makeatother (makeatother_token))))
 
 ============================
@@ -119,16 +121,18 @@
 ==============================
 [ExplSyntaxOn] colon/undersore is letter in optional text group
 ==============================
-\ExplSyntaxOn[foo\bar:wibble_wobble]\ExplSyntaxOff
+\ExplSyntaxOn\usepackage[foo\bar:wibble_wobble]{foo}\ExplSyntaxOff
 ----------------
 (document
   (text_mode
     (explsyntaxon (explsyntaxon_token))
-    (opt_text_group
-      (begin_opt)
-      (text)
-      (token)
-      (end_opt))
+    (usepackage (usepackage_token)
+      (opt_text_group
+        (begin_opt)
+        (text)
+        (token)
+        (end_opt))
+      (name_group (begin_group) (name) (end_group)))
     (explsyntaxoff (explsyntaxoff_token))))
 
 ============================
@@ -164,7 +168,7 @@
     (text)
     (text)
     (text)))
-    
+
 ===============================================
 [ExplSyntaxOn/makeatletter] Interleaved regions
 ===============================================
@@ -180,4 +184,3 @@
     (explsyntaxoff (explsyntaxoff_token))
     (token)
     (makeatother (makeatother_token))))
-    

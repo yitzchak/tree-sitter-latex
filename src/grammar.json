@@ -137,8 +137,30 @@
           "name": "text_group"
         },
         {
-          "type": "SYMBOL",
-          "name": "opt_text_group"
+          "type": "PREC",
+          "value": -1,
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "begin_opt"
+            },
+            "named": false,
+            "value": "text"
+          }
+        },
+        {
+          "type": "PREC",
+          "value": -1,
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "end_opt"
+            },
+            "named": false,
+            "value": "text"
+          }
         },
         {
           "type": "SYMBOL",
@@ -246,8 +268,30 @@
           "name": "math_group"
         },
         {
-          "type": "SYMBOL",
-          "name": "opt_math_group"
+          "type": "PREC",
+          "value": -1,
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "begin_opt"
+            },
+            "named": false,
+            "value": "text"
+          }
+        },
+        {
+          "type": "PREC",
+          "value": -1,
+          "content": {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "end_opt"
+            },
+            "named": false,
+            "value": "text"
+          }
         },
         {
           "type": "SYMBOL",

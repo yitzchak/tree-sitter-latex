@@ -23,14 +23,13 @@ fubar\quux wibble
 ==================
 Single command with arguments
 ==================
-fubar\quux[opt]{bar} wibble
+fubar\quux{bar} wibble
 ---
 
 (document
   (text_mode
     (text)
     (token)
-    (opt_text_group (begin_opt) (text) (end_opt))
     (text_group (begin_group) (text) (end_group))
     (text)))
 
@@ -51,14 +50,13 @@ fubar\quux  {bar} wibble
 ==================
 Single command with arguments and spaces (TODO: Resolve design choice)
 ==================
-fubar\quux  [opt]  {bar} wibble
+fubar\quux  {bar} wibble
 ---
 
 (document
   (text_mode
     (text)
     (token)
-    (opt_text_group (begin_opt) (text) (end_opt)) (text)
     (text_group (begin_group) (text) (end_group))
     (text)))
 
@@ -131,20 +129,6 @@ foo{bar}wibble
       (begin_group)
       (text)
       (end_group))
-    (text)))
-
-=============
-Optional Text group
-=============
-foo[bar]wibble
--------------
-(document
-  (text_mode
-    (text)
-    (opt_text_group
-      (begin_opt)
-      (text)
-      (end_opt))
     (text)))
 
 =============
