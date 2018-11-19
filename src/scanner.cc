@@ -25,6 +25,7 @@ enum TokenType {
   BEGIN_TOKEN,
   CATCODE_TOKEN,
   COMMENT_CHAR,
+  DISPLAY_MATH_ENV_NAME,
   DISPLAY_MATH_SHIFT,
   DOCUMENTCLASS_TOKEN,
   EMPH_TOKEN,
@@ -38,9 +39,11 @@ enum TokenType {
   EXPLSYNTAXON_TOKEN,
   FOOTNOTE_TOKEN,
   INCLUDE_TOKEN,
+  INLINE_MATH_ENV_NAME,
   INLINE_MATH_SHIFT,
   MAKEATLETTER_TOKEN,
   MAKEATOTHER_TOKEN,
+  NAME,
   PARAMETER_CHAR,
   PROVIDESEXPLCLASS_TOKEN,
   PROVIDESEXPLFILE_TOKEN,
@@ -50,6 +53,7 @@ enum TokenType {
   SUBSCRIPT,
   SUPERSCRIPT,
   TAG_TOKEN,
+  TEXT,
   TEXTBF_TOKEN,
   TEXTIT_TOKEN,
   TEXTTT_TOKEN,
@@ -58,7 +62,8 @@ enum TokenType {
   VERB_BODY,
   VERB_DELIM,
   VERB_LINE,
-  VERB_TOKEN
+  VERB_TOKEN,
+  VERBATIM_ENV_NAME,
 };
 
 enum Category {
@@ -101,6 +106,45 @@ struct Scanner {
     {SPACE_CATEGORY, _SPACE, true},
     {SUBSCRIPT_CATEGORY, SUBSCRIPT, false},
     {SUPERSCRIPT_CATEGORY, SUPERSCRIPT, false}
+  };
+
+  map<string, TokenType> names = {
+    {"align", DISPLAY_MATH_ENV_NAME},
+    {"align*", DISPLAY_MATH_ENV_NAME},
+    {"alignat", DISPLAY_MATH_ENV_NAME},
+    {"alignat*", DISPLAY_MATH_ENV_NAME},
+    {"altt", VERBATIM_ENV_NAME},
+    {"BVerbatim", VERBATIM_ENV_NAME},
+    {"BVerbatim*", VERBATIM_ENV_NAME},
+    {"darray", DISPLAY_MATH_ENV_NAME},
+    {"darray*", DISPLAY_MATH_ENV_NAME},
+    {"dgroup", DISPLAY_MATH_ENV_NAME},
+    {"dgroup*", DISPLAY_MATH_ENV_NAME},
+    {"displaymath", DISPLAY_MATH_ENV_NAME},
+    {"dmath", DISPLAY_MATH_ENV_NAME},
+    {"dmath*", DISPLAY_MATH_ENV_NAME},
+    {"dseries", DISPLAY_MATH_ENV_NAME},
+    {"dseries*", DISPLAY_MATH_ENV_NAME},
+    {"eqnarray", DISPLAY_MATH_ENV_NAME},
+    {"eqnarray*", DISPLAY_MATH_ENV_NAME},
+    {"equation", DISPLAY_MATH_ENV_NAME},
+    {"equation*", DISPLAY_MATH_ENV_NAME},
+    {"flalign", DISPLAY_MATH_ENV_NAME},
+    {"flalign*", DISPLAY_MATH_ENV_NAME},
+    {"gather", DISPLAY_MATH_ENV_NAME},
+    {"gather*", DISPLAY_MATH_ENV_NAME},
+    {"lstlisting", VERBATIM_ENV_NAME},
+    {"LVerbatim", VERBATIM_ENV_NAME},
+    {"LVerbatim*", VERBATIM_ENV_NAME},
+    {"math", INLINE_MATH_ENV_NAME},
+    {"minted", VERBATIM_ENV_NAME},
+    {"multiline", DISPLAY_MATH_ENV_NAME},
+    {"multiline*", DISPLAY_MATH_ENV_NAME},
+    {"split", DISPLAY_MATH_ENV_NAME},
+    {"split*", DISPLAY_MATH_ENV_NAME},
+    {"verbatim", VERBATIM_ENV_NAME},
+    {"Verbatim", VERBATIM_ENV_NAME},
+    {"Verbatim*", VERBATIM_ENV_NAME}
   };
 
   map<string, TokenType> tokens = {
@@ -485,6 +529,50 @@ struct Scanner {
     return false;
   }
 
+  bool is_text(char val) {
+    if (val == '[' || val == ']') return false;
+
+    Category code = get_catcode(val);
+
+    return code == SPACE_CATEGORY || code == EOL_CATEGORY ||
+      code == LETTER_CATEGORY || code == OTHER_CATEGORY;
+  }
+
+  bool scan_text(TSLexer *lexer) {
+    while (is_text(lexer->lookahead)) {
+      lexer->advance(lexer, false);
+    }
+
+    lexer->result_symbol = TEXT;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool is_name(char val) {
+    Category code = get_catcode(val);
+
+    return code == LETTER_CATEGORY || code == OTHER_CATEGORY;
+  }
+
+  bool scan_name(TSLexer *lexer, const bool *valid_symbols) {
+    string name;
+
+    while (is_name(lexer->lookahead)) {
+      name += lexer->lookahead;
+      lexer->advance(lexer, false);
+    }
+
+    auto it = names.find(name);
+
+    lexer->result_symbol = (it != names.end() && valid_symbols[it->second]) ?
+      it->second : NAME;
+
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
     Category code = get_catcode(lexer->lookahead);
@@ -501,6 +589,14 @@ struct Scanner {
       if (valid_symbols[it->type] && code == it->category) {
         return scan_category(lexer, *it);
       }
+    }
+
+    if (valid_symbols[NAME] && is_name(lexer->lookahead)) {
+      return scan_name(lexer, valid_symbols);
+    }
+
+    if (valid_symbols[TEXT] && is_text(lexer->lookahead)) {
+      return scan_text(lexer);
     }
 
     if (valid_symbols[VERB_DELIM]) {

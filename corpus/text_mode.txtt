@@ -160,9 +160,9 @@ quux
   (text_mode
     (text)
     (text_env
-      (begin (begin_token) (env_name (begin_group) (text) (end_group)))
+      (begin (begin_token) (name_group (begin_group) (name) (end_group)))
       (text)
-      (end (end_token) (env_name (begin_group) (text) (end_group))))
+      (end (end_token) (name_group (begin_group) (name) (end_group))))
   (text)))
 
 ===========
@@ -197,7 +197,7 @@ documentclass
     (documentclass
       (documentclass_token)
       (opt_text_group (begin_opt) (text) (end_opt))
-      (class_name (begin_group) (text) (end_group)))))
+      (name_group (begin_group) (name) (end_group)))))
 
 ======================
 usepackage
@@ -209,7 +209,7 @@ usepackage
     (usepackage
       (usepackage_token)
       (opt_text_group (begin_opt) (text) (end_opt))
-      (package_name (begin_group) (text) (end_group)))))
+      (name_group (begin_group) (name) (end_group)))))
 
 =====================
 emph
