@@ -7,10 +7,59 @@ foo$bar$quux
   (text_mode
     (text)
     (tex_inline_math
-      (math_shift)
+      (inline_math_shift)
       (math_mode (text))
-      (math_shift))
+      (inline_math_shift))
     (text)))
+
+=============
+TeX consecutive inline math
+=============
+foo$bar$$wibble$quux
+-------------
+(document
+  (text_mode
+    (text)
+    (tex_inline_math
+      (inline_math_shift)
+      (math_mode (text))
+      (inline_math_shift))
+    (tex_inline_math
+      (inline_math_shift)
+      (math_mode (text))
+      (inline_math_shift))
+    (text)))
+
+===============================
+Dangling inline math math inside text group
+================================
+{foo$bar}
+--------------------------------
+(document
+  (text_mode
+    (text_group
+      (begin_group)
+      (text)
+      (tex_inline_math
+        (inline_math_shift)
+        (math_mode (text))
+        (MISSING))
+      (end_group))))
+
+===============================
+Dangling inline math math with no math text inside text group
+================================
+{foo$}
+--------------------------------
+(document
+  (text_mode
+    (text_group
+      (begin_group)
+      (text)
+      (tex_inline_math
+        (inline_math_shift)
+        (MISSING))
+      (end_group))))
 
 =============
 LaTeX inline math

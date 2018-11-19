@@ -1,0 +1,88 @@
+=============
+TeX unclosed inline math
+=============
+foo { $ bar } quux
+foo { $ bar {} wibble } quux
+foo { $ bar \} wibble } quux
+-------------
+
+(document
+  (text_mode
+    (text)
+    (text_group
+      (begin_group)
+      (text) (tex_inline_math
+        (inline_math_shift)
+        (math_mode (text))
+        (MISSING))
+      (end_group))
+    (text)
+    (text_group
+      (begin_group)
+      (text)
+      (tex_inline_math
+        (inline_math_shift)
+        (math_mode (text) (math_group (begin_group) (end_group)) (text))
+        (MISSING))
+      (end_group))
+    (text)
+    (text_group
+      (begin_group)
+      (text) (tex_inline_math
+        (inline_math_shift)
+        (math_mode
+          (text)
+          (escaped)
+          (text))
+        (MISSING))
+      (end_group))
+      (text)))
+
+=============
+TeX unclosed display math
+=============
+foo { $$ bar \} foo } quux
+-------------
+
+(document
+  (text_mode (text)
+  (text_group
+    (begin_group)
+    (text)
+    (tex_display_math
+      (display_math_shift)
+      (math_mode (text) (escaped) (text))
+      (MISSING))
+    (end_group))
+  (text)))
+
+=============
+TeX unclosed group in math
+=============
+foo $ { bar $ baz
+-------------
+
+(document
+  (text_mode
+    (text)
+    (tex_inline_math
+      (inline_math_shift)
+      (math_mode (text) (math_group (begin_group) (text) (MISSING)))
+      (inline_math_shift))
+    (text)))
+
+=============
+TeX unmatched close group in math
+=============
+foo $ bar } $ baz
+-------------
+
+(document
+  (text_mode
+    (text)
+    (tex_inline_math
+      (inline_math_shift)
+      (math_mode (text))
+      (ERROR (end_group))
+      (inline_math_shift))
+    (text)))

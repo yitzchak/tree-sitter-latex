@@ -25,6 +25,7 @@ enum TokenType {
   BEGIN_TOKEN,
   CATCODE_TOKEN,
   COMMENT_CHAR,
+  DISPLAY_MATH_SHIFT,
   DOCUMENTCLASS_TOKEN,
   EMPH_TOKEN,
   END_DISPLAY_MATH,
@@ -37,9 +38,9 @@ enum TokenType {
   EXPLSYNTAXON_TOKEN,
   FOOTNOTE_TOKEN,
   INCLUDE_TOKEN,
+  INLINE_MATH_SHIFT,
   MAKEATLETTER_TOKEN,
   MAKEATOTHER_TOKEN,
-  MATH_SHIFT,
   PARAMETER_CHAR,
   PROVIDESEXPLCLASS_TOKEN,
   PROVIDESEXPLFILE_TOKEN,
@@ -96,7 +97,7 @@ struct Scanner {
     {END_CATEGORY, END_GROUP, false},
     {EOL_CATEGORY, EOL, false},
     {PARAMETER_CATEGORY, PARAMETER_CHAR, false},
-    {MATH_SHIFT_CATEGORY, MATH_SHIFT, false},
+    // {MATH_SHIFT_CATEGORY, MATH_SHIFT, false},
     {SPACE_CATEGORY, _SPACE, true},
     {SUBSCRIPT_CATEGORY, SUBSCRIPT, false},
     {SUPERSCRIPT_CATEGORY, SUPERSCRIPT, false}
@@ -264,7 +265,7 @@ struct Scanner {
   bool scan_start_verb_delim(TSLexer *lexer) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
-    if (lexer->lookahead && lexer->lookahead != '\n') {
+    if (lexer->lookahead && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
       lexer->mark_end(lexer);
@@ -284,7 +285,7 @@ struct Scanner {
       return true;
     }
 
-    if (lexer->lookahead == '\n') {
+    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
       lexer->mark_end(lexer);
       lexer->result_symbol = VERB_DELIM; // don't eat the newline (for consistency)
       start_delim = 0;
@@ -295,7 +296,7 @@ struct Scanner {
   }
 
   bool scan_verb_body(TSLexer *lexer) {
-    while (lexer->lookahead && lexer->lookahead != start_delim && lexer->lookahead != '\n') {
+    while (lexer->lookahead && lexer->lookahead != start_delim && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -403,16 +404,41 @@ struct Scanner {
     return true;
   }
 
-  bool scan(TSLexer *lexer, const bool *valid_symbols)
-  {
-    for (auto it = category_descriptions.begin(); it != category_descriptions.end(); it++) {
-      if (valid_symbols[it->type] && get_catcode(lexer->lookahead) == it->category) {
-        return scan_category(lexer, *it);
-      }
+  bool scan_math_shift(TSLexer *lexer, const bool *valid_symbols) {
+    lexer->advance(lexer, false);
+
+    if (valid_symbols[DISPLAY_MATH_SHIFT] && get_catcode(lexer->lookahead) == MATH_SHIFT_CATEGORY) {
+      lexer->advance(lexer, false);
+      lexer->result_symbol = DISPLAY_MATH_SHIFT;
+      lexer->mark_end(lexer);
+      return true;
     }
 
-    if (valid_symbols[TOKEN] && get_catcode(lexer->lookahead) == ESCAPE_CATEGORY) {
+    if (valid_symbols[INLINE_MATH_SHIFT]) {
+      lexer->result_symbol = INLINE_MATH_SHIFT;
+      lexer->mark_end(lexer);
+      return true;
+    }
+
+    return false;
+  }
+
+  bool scan(TSLexer *lexer, const bool *valid_symbols)
+  {
+    Category code = get_catcode(lexer->lookahead);
+
+    if (valid_symbols[TOKEN] && code == ESCAPE_CATEGORY) {
       return scan_token_or_escaped(lexer);
+    }
+
+    if ((valid_symbols[INLINE_MATH_SHIFT] || valid_symbols[DISPLAY_MATH_SHIFT]) && code == MATH_SHIFT_CATEGORY) {
+      return scan_math_shift(lexer, valid_symbols);
+    }
+
+    for (auto it = category_descriptions.begin(); it != category_descriptions.end(); it++) {
+      if (valid_symbols[it->type] && code == it->category) {
+        return scan_category(lexer, *it);
+      }
     }
 
     if (valid_symbols[VERB_DELIM]) {
@@ -426,7 +452,7 @@ struct Scanner {
     }
 
     // This is a kludge. Verbatim environments actually detect the corrent \end
-    if (valid_symbols[VERB_LINE] && get_catcode(lexer->lookahead) != ESCAPE_CATEGORY) {
+    if (valid_symbols[VERB_LINE] && code != ESCAPE_CATEGORY) {
       return scan_verb_line(lexer);
     }
 
