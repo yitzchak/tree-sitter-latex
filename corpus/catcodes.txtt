@@ -64,7 +64,7 @@
     (text)))
 
 =================
-[ExplSyntaxOn] colon/undersore is not letter
+[ExplSyntaxOn] colon/underscore is not letter
 =================
 \bar:wibble_wobble
 ----------------
@@ -76,7 +76,7 @@
     (text)))
 
 =================
-[ExplSyntaxOn] colon/undersore is letter
+[ExplSyntaxOn] colon/underscore is letter
 =================
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff
 ----------------
@@ -87,7 +87,7 @@
     (explsyntaxoff (explsyntaxoff_token))))
 
 =================
-[ProvidesExplPackage] colon/undersore is letter
+[ProvidesExplPackage] colon/underscore is letter
 =================
 \ProvidesExplPackage{foo}{bar}{wibble}{wobble}
 \bar:wibble_wobble\ExplSyntaxOff
@@ -105,7 +105,7 @@
     (explsyntaxoff (explsyntaxoff_token))))
 
 ==============================
-[ExplSyntaxOn] colon/undersore is letter in text group
+[ExplSyntaxOn] colon/underscore is letter in text group
 ==============================
 \ExplSyntaxOn{\bar:wibble_wobble}\ExplSyntaxOff
 ----------------
@@ -119,7 +119,7 @@
     (explsyntaxoff (explsyntaxoff_token))))
 
 ==============================
-[ExplSyntaxOn] colon/undersore is letter in optional text group
+[ExplSyntaxOn] colon/underscore is letter in optional text group
 ==============================
 \ExplSyntaxOn\usepackage[foo\bar:wibble_wobble]{foo}\ExplSyntaxOff
 ----------------
@@ -136,7 +136,7 @@
     (explsyntaxoff (explsyntaxoff_token))))
 
 ============================
-[ExplSyntaxOn] colon/undersore is letter then other
+[ExplSyntaxOn] colon/underscore is letter then other
 =============================
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
 ----------------
