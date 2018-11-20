@@ -269,3 +269,17 @@ sections
     (section (section_token) (text_group (begin_group) (text) (end_group)))
     (text)
     (section (section_token) (text_group (begin_group) (text) (end_group)))))
+
+=================
+Square brackets do not trigger opt_text_group
+================
+foo[bar]wibble
+---------------
+(document (text_mode (text) (text) (text) (text) (text)))
+
+=================
+Allow unmatch square brackets
+================
+foo[bar
+---------------
+(document (text_mode (text) (text) (text)))
