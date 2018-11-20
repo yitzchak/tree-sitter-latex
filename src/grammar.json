@@ -564,16 +564,8 @@
           "name": "begin_inline_math"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "math_mode"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "math_mode"
         },
         {
           "type": "SYMBOL",
@@ -589,16 +581,8 @@
           "name": "inline_math_begin"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "math_mode"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "math_mode"
         },
         {
           "type": "SYMBOL",
