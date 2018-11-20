@@ -16,54 +16,29 @@ using std::string;
 using std::map;
 
 enum TokenType {
+  _ESCAPE,
+  _NON_LETTER_OR_OTHER,
   _SPACE,
+  _TOKEN_END,
   ACTIVE_CHAR,
   ALIGNMENT_TAB,
-  BEGIN_DISPLAY_MATH,
   BEGIN_GROUP,
-  BEGIN_INLINE_MATH,
-  BEGIN_TOKEN,
-  CATCODE_TOKEN,
   COMMENT_CHAR,
   DISPLAY_MATH_ENV_NAME,
   DISPLAY_MATH_SHIFT,
-  DOCUMENTCLASS_TOKEN,
-  EMPH_TOKEN,
-  END_DISPLAY_MATH,
   END_GROUP,
-  END_INLINE_MATH,
-  END_TOKEN,
   EOL,
-  ESCAPED,
-  EXPLSYNTAXOFF_TOKEN,
-  EXPLSYNTAXON_TOKEN,
-  FOOTNOTE_TOKEN,
-  INCLUDE_TOKEN,
   INLINE_MATH_ENV_NAME,
   INLINE_MATH_SHIFT,
-  MAKEATLETTER_TOKEN,
-  MAKEATOTHER_TOKEN,
   NAME,
   PARAMETER_CHAR,
-  PROVIDESEXPLCLASS_TOKEN,
-  PROVIDESEXPLFILE_TOKEN,
-  PROVIDESEXPLPACKAGE_TOKEN,
-  SECTION_TOKEN,
-  STORAGE_TOKEN,
   SUBSCRIPT,
   SUPERSCRIPT,
-  TAG_TOKEN,
   TEXT,
-  TEXTBF_TOKEN,
-  TEXTIT_TOKEN,
-  TEXTTT_TOKEN,
-  TOKEN,
-  USEPACKAGE_TOKEN,
   VERB_BODY,
   VERB_DELIM,
   VERB_LINE,
-  VERB_TOKEN,
-  VERBATIM_ENV_NAME,
+  VERBATIM_ENV_NAME
 };
 
 enum Category {
@@ -147,47 +122,6 @@ struct Scanner {
     {"verbatim", VERBATIM_ENV_NAME},
     {"Verbatim", VERBATIM_ENV_NAME},
     {"Verbatim*", VERBATIM_ENV_NAME}
-  };
-
-  map<string, TokenType> tokens = {
-    {"(", BEGIN_INLINE_MATH},
-    {")", END_INLINE_MATH},
-    {"[", BEGIN_DISPLAY_MATH},
-    {"]", END_DISPLAY_MATH},
-    {"addchap", SECTION_TOKEN},
-    {"addpart", SECTION_TOKEN},
-    {"addsec", SECTION_TOKEN},
-    {"begin", BEGIN_TOKEN},
-    {"catcode", CATCODE_TOKEN},
-    {"chapter", SECTION_TOKEN},
-    {"def", STORAGE_TOKEN},
-    {"documentclass", DOCUMENTCLASS_TOKEN},
-    {"emph", EMPH_TOKEN},
-    {"end", END_TOKEN},
-    {"ExplSyntaxOff", EXPLSYNTAXOFF_TOKEN},
-    {"ExplSyntaxOn", EXPLSYNTAXON_TOKEN},
-    {"footnote", FOOTNOTE_TOKEN},
-    {"include", INCLUDE_TOKEN},
-    {"input", INCLUDE_TOKEN},
-    {"kcatcode", CATCODE_TOKEN},
-    {"makeatletter", MAKEATLETTER_TOKEN},
-    {"makeatother", MAKEATOTHER_TOKEN},
-    {"minisec", SECTION_TOKEN},
-    {"paragraph", SECTION_TOKEN},
-    {"part", SECTION_TOKEN},
-    {"ProvidesExplClass", PROVIDESEXPLCLASS_TOKEN},
-    {"ProvidesExplFile", PROVIDESEXPLFILE_TOKEN},
-    {"ProvidesExplPackage", PROVIDESEXPLPACKAGE_TOKEN},
-    {"section", SECTION_TOKEN},
-    {"subparagraph", SECTION_TOKEN},
-    {"subsection", SECTION_TOKEN},
-    {"subsubsection", SECTION_TOKEN},
-    {"tag", TAG_TOKEN},
-    {"textbf", TEXTBF_TOKEN},
-    {"textit", TEXTIT_TOKEN},
-    {"texttt", TEXTTT_TOKEN},
-    {"usepackage", USEPACKAGE_TOKEN},
-    {"verb", VERB_TOKEN}
   };
 
   vector<Category> catcode_table;
@@ -471,73 +405,73 @@ struct Scanner {
     return true;
   }
 
-  bool scan_token_or_escaped(TSLexer *lexer) {
-    string name;
-
-    lexer->advance(lexer, false);
-
-    switch (get_catcode(lexer->lookahead)) {
-      case IGNORED_CATEGORY:
-        return false;
-      case LETTER_CATEGORY:
-        while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
-          name += lexer->lookahead;
-          lexer->advance(lexer, false);
-        }
-        lexer->mark_end(lexer);
-        lexer->result_symbol = TOKEN;
-        break;
-      default:
-        name += lexer->lookahead;
-        lexer->advance(lexer, false);
-        lexer->mark_end(lexer);
-        lexer->result_symbol = ESCAPED;
-    }
-
-    auto it = tokens.find(name);
-
-    if (it != tokens.end()) {
-      lexer->result_symbol = it->second;
-    }
-
-    switch (lexer->result_symbol) {
-      case EXPLSYNTAXOFF_TOKEN:
-        pop_catcode('\t');
-        pop_catcode(' ');
-        pop_catcode('"');
-        pop_catcode('&');
-        pop_catcode(':');
-        pop_catcode('^');
-        pop_catcode('_');
-        pop_catcode('|');
-        pop_catcode('~');
-        // pop_catcode('\n');
-        break;
-      case EXPLSYNTAXON_TOKEN:
-      case PROVIDESEXPLCLASS_TOKEN:
-      case PROVIDESEXPLFILE_TOKEN:
-      case PROVIDESEXPLPACKAGE_TOKEN:
-        push_catcode('\t', IGNORED_CATEGORY);
-        push_catcode(' ',  IGNORED_CATEGORY);
-        push_catcode('"',  OTHER_CATEGORY);
-        push_catcode('&',  ALIGNMENT_TAB_CATEGORY);
-        push_catcode(':',  LETTER_CATEGORY);
-        push_catcode('^',  SUPERSCRIPT_CATEGORY);
-        push_catcode('_',  LETTER_CATEGORY);
-        push_catcode('|',  OTHER_CATEGORY);
-        push_catcode('~',  SPACE_CATEGORY);
-        // set_catcode('\n', IGNORED_CATEGORY);
-        break;
-      case MAKEATOTHER_TOKEN:
-        set_catcode('@', OTHER_CATEGORY);
-        break;
-      case MAKEATLETTER_TOKEN:
-        set_catcode('@', LETTER_CATEGORY);
-        break;
-    }
-
-    return true;
-  }
+  // bool scan_token_or_escaped(TSLexer *lexer) {
+  //   string name;
+  //
+  //   lexer->advance(lexer, false);
+  //
+  //   switch (get_catcode(lexer->lookahead)) {
+  //     case IGNORED_CATEGORY:
+  //       return false;
+  //     case LETTER_CATEGORY:
+  //       while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
+  //         name += lexer->lookahead;
+  //         lexer->advance(lexer, false);
+  //       }
+  //       lexer->mark_end(lexer);
+  //       lexer->result_symbol = TOKEN;
+  //       break;
+  //     default:
+  //       name += lexer->lookahead;
+  //       lexer->advance(lexer, false);
+  //       lexer->mark_end(lexer);
+  //       lexer->result_symbol = ESCAPED;
+  //   }
+  //
+  //   auto it = tokens.find(name);
+  //
+  //   if (it != tokens.end()) {
+  //     lexer->result_symbol = it->second;
+  //   }
+  //
+  //   switch (lexer->result_symbol) {
+  //     case EXPLSYNTAXOFF_TOKEN:
+  //       pop_catcode('\t');
+  //       pop_catcode(' ');
+  //       pop_catcode('"');
+  //       pop_catcode('&');
+  //       pop_catcode(':');
+  //       pop_catcode('^');
+  //       pop_catcode('_');
+  //       pop_catcode('|');
+  //       pop_catcode('~');
+  //       // pop_catcode('\n');
+  //       break;
+  //     case EXPLSYNTAXON_TOKEN:
+  //     case PROVIDESEXPLCLASS_TOKEN:
+  //     case PROVIDESEXPLFILE_TOKEN:
+  //     case PROVIDESEXPLPACKAGE_TOKEN:
+  //       push_catcode('\t', IGNORED_CATEGORY);
+  //       push_catcode(' ',  IGNORED_CATEGORY);
+  //       push_catcode('"',  OTHER_CATEGORY);
+  //       push_catcode('&',  ALIGNMENT_TAB_CATEGORY);
+  //       push_catcode(':',  LETTER_CATEGORY);
+  //       push_catcode('^',  SUPERSCRIPT_CATEGORY);
+  //       push_catcode('_',  LETTER_CATEGORY);
+  //       push_catcode('|',  OTHER_CATEGORY);
+  //       push_catcode('~',  SPACE_CATEGORY);
+  //       // set_catcode('\n', IGNORED_CATEGORY);
+  //       break;
+  //     case MAKEATOTHER_TOKEN:
+  //       set_catcode('@', OTHER_CATEGORY);
+  //       break;
+  //     case MAKEATLETTER_TOKEN:
+  //       set_catcode('@', LETTER_CATEGORY);
+  //       break;
+  //   }
+  //
+  //   return true;
+  // }
 
   bool scan_category(TSLexer *lexer, CategoryDescription desc) {
     lexer->advance(lexer, false);
@@ -617,12 +551,52 @@ struct Scanner {
     return true;
   }
 
+  // bool scan_makeatletter(TSLexer *lexer) {
+  //   string word;
+  //
+  //   while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
+  //     lexer->advance(lexer, false);
+  //   }
+  //
+  //   if (word == "makeatother") {
+  //     lexer->result_symbol = _MAKEATLETTER_WORD;
+  //     lexer->mark_end(lexer);
+  //     return true;
+  //   }
+  //
+  //   return false;
+  // }
+
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
     Category code = get_catcode(lexer->lookahead);
 
-    if (valid_symbols[TOKEN] && code == ESCAPE_CATEGORY) {
-      return scan_token_or_escaped(lexer);
+    // if (valid_symbols[TOKEN] && code == ESCAPE_CATEGORY) {
+    //   return scan_token_or_escaped(lexer);
+    // }
+
+    if (valid_symbols[_ESCAPE] && code == ESCAPE_CATEGORY) {
+      lexer->advance(lexer, false);
+      lexer->result_symbol = _ESCAPE;
+      lexer->mark_end(lexer);
+      return true;
+    }
+
+    // if (valid_symbols[_MAKEATLETTER_WORD] && get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
+    //   return scan_makeatletter(lexer);
+    // }
+
+    if (valid_symbols[_NON_LETTER_OR_OTHER] && code != LETTER_CATEGORY && code != OTHER_CATEGORY) {
+      lexer->advance(lexer, false);
+      lexer->result_symbol = _NON_LETTER_OR_OTHER;
+      lexer->mark_end(lexer);
+      return true;
+    }
+
+    if (valid_symbols[_TOKEN_END] && code != LETTER_CATEGORY) {
+      lexer->result_symbol = _TOKEN_END;
+      lexer->mark_end(lexer);
+      return true;
     }
 
     if ((valid_symbols[INLINE_MATH_SHIFT] || valid_symbols[DISPLAY_MATH_SHIFT]) && code == MATH_SHIFT_CATEGORY) {

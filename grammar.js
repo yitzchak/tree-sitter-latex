@@ -69,53 +69,28 @@ module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
+    $._escape,
+    $._non_letter_or_other,
     $._space,
+    $._token_end,
     $.active_char,
     $.alignment_tab,
-    $.begin_display_math,
     $.begin_group,
-    $.begin_inline_math,
-    $.begin_token,
-    $.catcode_token,
     $.comment_char,
     $.display_math_env_name,
     $.display_math_shift,
-    $.documentclass_token,
-    $.emph_token,
-    $.end_display_math,
     $.end_group,
-    $.end_inline_math,
-    $.end_token,
     $.eol,
-    $.escaped,
-    $.explsyntaxoff_token,
-    $.explsyntaxon_token,
-    $.footnote_token,
-    $.include_token,
     $.inline_math_env_name,
     $.inline_math_shift,
-    $.makeatletter_token,
-    $.makeatother_token,
     $.name,
     $.parameter_char,
-    $.providesexplclass_token,
-    $.providesexplfile_token,
-    $.providesexplpackage_token,
-    $.section_token,
-    $.storage_token,
     $.subscript,
     $.superscript,
-    $.tag_token,
     $.text,
-    $.textbf_token,
-    $.textit_token,
-    $.texttt_token,
-    $.token,
-    $.usepackage_token,
     $.verb_body,
     $.verb_delim,
     $.verb_line,
-    $.verb_token,
     $.verbatim_env_name
   ],
 
@@ -140,6 +115,8 @@ module.exports = grammar({
     ),
 
     inline_verbatim: $ => seq($.verb_token, $.verb_delim, $.verb_body, $.verb_delim),
+
+    verb_token: $ => seq($._escape, 'verb', $._token_end),
 
     _text_mode: $ => choice(
       $._common,
@@ -223,6 +200,10 @@ module.exports = grammar({
       $.end_display_math
     ),
 
+    begin_display_math: $ => seq($._escape, '['),
+
+    end_display_math: $ => seq($._escape, ']'),
+
     display_math_env: $ => seq(
       $.display_math_begin,
       $.math_mode,
@@ -260,6 +241,10 @@ module.exports = grammar({
       $.end_inline_math
     ),
 
+    begin_inline_math: $ => seq($._escape, '('),
+
+    end_inline_math: $ => seq($._escape, ')'),
+
     inline_math_env: $ => seq(
       $.inline_math_begin,
       optional($.math_mode),
@@ -279,6 +264,8 @@ module.exports = grammar({
     inline_math_env_group: $ => seq($.begin_group, $.inline_math_env_name, $.end_group),
 
     tag: $ => command($, $.tag_token, { math_text: 1 }),
+
+    tag_token: $ => seq($._escape, 'tag', $._token_end),
 
     verbatim_env: $ => seq(
       $.verbatim_begin,
@@ -303,45 +290,87 @@ module.exports = grammar({
 
     begin: $ => begin_env($),
 
+    begin_token: $ => seq($._escape, 'begin', $._token_end),
+
     end: $ => end_env($),
+
+    end_token: $ => seq($._escape, 'end', $._token_end),
 
     documentclass: $ => command($, $.documentclass_token, { opt: 1, name: 1 }),
 
+    documentclass_token: $ => seq($._escape, 'documentclass', $._token_end),
+
     usepackage: $ => command($, $.usepackage_token, { opt: 1, name: 1 }),
+
+    usepackage_token: $ => seq($._escape, 'usepackage', $._token_end),
 
     include: $ => command($, $.include_token, { text: 1 }),
 
+    include_token: $ => seq($._escape, /include|input/, $._token_end),
+
     providesexplclass: $ => command($, $.providesexplclass_token, { text: 4 }),
+
+    providesexplclass_token: $ => seq($._escape, 'ProvidesExplClass', $._token_end),
 
     providesexplfile: $ => command($, $.providesexplfile_token, { text: 4 }),
 
+    providesexplfile_token: $ => seq($._escape, 'ProvidesExplFile', $._token_end),
+
     providesexplpackage: $ => command($, $.providesexplpackage_token, { text: 4 }),
+
+    providesexplpackage_token: $ => seq($._escape, 'ProvidesExplPackage', $._token_end),
 
     section: $ => command($, $.section_token, { text: 1, opt: 1, star: true }),
 
+    section_token: $ => seq($._escape, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/, $._token_end),
+
     storage: $ => command($, $.storage_token),
+
+    storage_token: $ => seq($._escape, /[egx]?def/, $._token_end),
 
     catcode: $ => seq(
       $.catcode_token, $.escaped, '=', $.number
     ),
 
+    catcode_token: $ => seq($._escape, /k?catcode`/, $._token_end),
+
     emph: $ => command($, $.emph_token, { text: 1 }),
+
+    emph_token: $ => seq($._escape, 'emph', $._token_end),
 
     footnote: $ => command($, $.footnote_token, { text: 1, opt: 1 }),
 
+    footnote_token: $ => seq($._escape, 'footnote', $._token_end),
+
     textbf: $ => command($, $.textbf_token, { text: 1 }),
+
+    textbf_token: $ => seq($._escape, 'textbf', $._token_end),
 
     textit: $ => command($, $.textit_token, { text: 1 }),
 
+    textit_token: $ => seq($._escape, 'textit', $._token_end),
+
     texttt: $ => command($, $.texttt_token, { text: 1 }),
+
+    texttt_token: $ => seq($._escape, 'texttt', $._token_end),
 
     makeatletter: $ => command($, $.makeatletter_token),
 
+    makeatletter_token: $ => seq($._escape, 'makeatletter', $._token_end),
+
     makeatother: $ => command($, $.makeatother_token),
+
+    makeatother_token: $ => seq($._escape, 'makeatother', $._token_end),
+
+    explsyntaxon_token: $ => seq($._escape, 'makeatother', $._token_end),
 
     explsyntaxon: $ => command($, $.explsyntaxon_token),
 
+    explsyntaxon_token: $ => seq($._escape, 'ExplSyntaxOn', $._token_end),
+
     explsyntaxoff: $ => command($, $.explsyntaxoff_token),
+
+    explsyntaxoff_token: $ => seq($._escape, 'ExplSyntaxOff', $._token_end),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
@@ -389,6 +418,8 @@ module.exports = grammar({
 
     begin_opt: $ => '[',
     end_opt: $ => ']',
+    token: $ => seq($._escape, repeat1(/./), $._token_end),
+    escaped: $ => seq($._escape, $._non_letter_or_other),
     number: $ => /[0-9]+/,
   }
 })
