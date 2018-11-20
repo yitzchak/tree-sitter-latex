@@ -193,9 +193,9 @@ struct Scanner {
 
   vector<Category> catcode_table;
 
-  map<char, Category> overflow_catcodes;
+  map<int32_t, Category> overflow_catcodes;
 
-  map<char, Category> saved_catcodes;
+  map<int32_t, Category> saved_catcodes;
 
   Scanner() {
     catcode_table.resize(MIN_CATCODE_TABLE_SIZE, OTHER_CATEGORY);
@@ -269,8 +269,8 @@ struct Scanner {
     set_catcode('\x7f', INVALID_CATEGORY);
   }
 
-  Category get_catcode(char key) {
-    if (key < catcode_table.size()) {
+  Category get_catcode(int32_t key) {
+    if (key > -1 && key < catcode_table.size()) {
       return catcode_table[key];
     }
 
@@ -281,8 +281,8 @@ struct Scanner {
       it->second;
   }
 
-  void set_catcode(char key, Category code) {
-    if (key < catcode_table.size()) {
+  void set_catcode(int32_t key, Category code) {
+    if (key > -1 && key < catcode_table.size()) {
       catcode_table[key] = code;
     } else if (key < MAX_CATCODE_TABLE_SIZE) {
       catcode_table.resize(key + 1, OTHER_CATEGORY);
@@ -294,12 +294,12 @@ struct Scanner {
     }
   }
 
-  void push_catcode(char key, Category code) {
+  void push_catcode(int32_t key, Category code) {
     saved_catcodes[key] = get_catcode(key);
     set_catcode(key, code);
   }
 
-  void pop_catcode(char key) {
+  void pop_catcode(int32_t key) {
     auto it = saved_catcodes.find(key);
 
     if (it != saved_catcodes.end()) {
@@ -309,8 +309,10 @@ struct Scanner {
   }
 
   unsigned serialize(char *buffer) {
+    const size_t ch_size = sizeof(int32_t);
+
     // First save the verbatim delimiter
-    std::memcpy(&buffer[0], &start_delim, sizeof(start_delim));
+    std::memcpy(&buffer[0], &start_delim, ch_size);
 
     // Next store the catcodes map as [char, char] pairs
     unsigned num_serialized = 0;
@@ -318,16 +320,18 @@ struct Scanner {
 
     // TODO: Check for overflow (probably never going to happen though)
 
-    for (size_t ch = 0; ch < catcode_table.size(); ch++) {
+    for (int32_t ch = 0; ch < catcode_table.size(); ch++) {
       if (catcode_table[ch] != OTHER_CATEGORY) {
-        buffer[i++] = ch;  // character
+        std::memcpy(&buffer[i], &ch, ch_size); // character
+        i += ch_size;
         buffer[i++] = static_cast<char>(catcode_table[ch]); // catcode
         num_serialized++;
       }
     }
 
     for (auto it = overflow_catcodes.begin(); it != overflow_catcodes.end(); ++it) {
-      buffer[i++] = it->first;  // character
+      std::memcpy(&buffer[i], &it->first, ch_size); // character
+      i += ch_size;
       buffer[i++] = static_cast<char>(it->second); // catcode
       num_serialized++;
     }
@@ -341,7 +345,8 @@ struct Scanner {
     num_serialized = 0;
 
     for (auto it = saved_catcodes.begin(); it != saved_catcodes.end(); ++it) {
-      buffer[i++] = it->first;
+      std::memcpy(&buffer[i], &it->first, ch_size); // character
+      i += ch_size;
       buffer[i++] = static_cast<char>(it->second);
       num_serialized++;
     }
@@ -358,8 +363,10 @@ struct Scanner {
       return;
     };
 
+    const size_t ch_size = sizeof(int32_t);
+
     // Retrieve the verbatim start delimiter
-    std::memcpy(&start_delim, &buffer[0], sizeof(start_delim));
+    std::memcpy(&start_delim, &buffer[0], ch_size);
 
     // Reset all current char-catcode pairs
     catcode_table.clear();
@@ -373,7 +380,9 @@ struct Scanner {
     unsigned i = sizeof(start_delim) + sizeof(num_serialized);
     unsigned set = 0;
     while (set < num_serialized) {
-      char character = buffer[i++];
+      int32_t character;
+      std::memcpy(&character, &buffer[i], ch_size);
+      i += ch_size;
       Category cat = static_cast<Category>(buffer[i++]);
       set_catcode(character, cat);
       set += 1;
@@ -387,7 +396,9 @@ struct Scanner {
     i += sizeof(num_serialized);
     set = 0;
     while (set < num_serialized) {
-      char character = buffer[i++];
+      int32_t character;
+      std::memcpy(&character, &buffer[i], ch_size);
+      i += ch_size;
       Category cat = static_cast<Category>(buffer[i++]);
       saved_catcodes[character] = cat;
       set += 1;
