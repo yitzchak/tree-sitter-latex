@@ -70,28 +70,30 @@ module.exports = grammar({
 
   externals: $ => [
     $._escape,
+    $._explsyntaxoff_word,
+    $._explsyntaxon_word,
+    $._makeatletter_word,
+    $._makeatother_word,
     $._non_letter_or_other,
+    $._providesexplclass_word,
+    $._providesexplfile_word,
+    $._providesexplpackage_word,
     $._space,
     $._token_end,
     $.active_char,
     $.alignment_tab,
     $.begin_group,
     $.comment_char,
-    $.display_math_env_name,
     $.display_math_shift,
     $.end_group,
     $.eol,
-    $.inline_math_env_name,
     $.inline_math_shift,
-    $.name,
     $.parameter_char,
     $.subscript,
     $.superscript,
-    $.text,
     $.verb_body,
     $.verb_delim,
-    $.verb_line,
-    $.verbatim_env_name
+    $.verb_line
   ],
 
   extras: $ => [],
@@ -223,6 +225,8 @@ module.exports = grammar({
 
     display_math_env_group: $ => seq($.begin_group, $.display_math_env_name, $.end_group),
 
+    display_math_env_name: $ => /(displaymath|eqnarray\*?|align\*?|alignat\*?|equation\*?|flalign\*?|gather\*?|multiline\*?|split\*?|dmath\*?|dseries\*?|dgroup\*?|darray\*?)/,
+
     _inline_math: $ => choice(
       $.tex_inline_math,
       $.latex_inline_math,
@@ -263,6 +267,8 @@ module.exports = grammar({
 
     inline_math_env_group: $ => seq($.begin_group, $.inline_math_env_name, $.end_group),
 
+    inline_math_env_name: $ => 'math',
+
     tag: $ => command($, $.tag_token, { math_text: 1 }),
 
     tag_token: $ => seq($._escape, 'tag', $._token_end),
@@ -288,6 +294,8 @@ module.exports = grammar({
 
     verbatim_env_group: $ => seq($.begin_group, $.verbatim_env_name, $.end_group),
 
+    verbatim_env_name: $ => /(verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt)/,
+
     begin: $ => begin_env($),
 
     begin_token: $ => seq($._escape, 'begin', $._token_end),
@@ -310,15 +318,15 @@ module.exports = grammar({
 
     providesexplclass: $ => command($, $.providesexplclass_token, { text: 4 }),
 
-    providesexplclass_token: $ => seq($._escape, 'ProvidesExplClass', $._token_end),
+    providesexplclass_token: $ => seq($._escape, $._providesexplclass_word, $._token_end),
 
     providesexplfile: $ => command($, $.providesexplfile_token, { text: 4 }),
 
-    providesexplfile_token: $ => seq($._escape, 'ProvidesExplFile', $._token_end),
+    providesexplfile_token: $ => seq($._escape, $._providesexplfile_word, $._token_end),
 
     providesexplpackage: $ => command($, $.providesexplpackage_token, { text: 4 }),
 
-    providesexplpackage_token: $ => seq($._escape, 'ProvidesExplPackage', $._token_end),
+    providesexplpackage_token: $ => seq($._escape, $._providesexplpackage_word, $._token_end),
 
     section: $ => command($, $.section_token, { text: 1, opt: 1, star: true }),
 
@@ -356,28 +364,26 @@ module.exports = grammar({
 
     makeatletter: $ => command($, $.makeatletter_token),
 
-    makeatletter_token: $ => seq($._escape, 'makeatletter', $._token_end),
+    makeatletter_token: $ => seq($._escape, $._makeatletter_word, $._token_end),
 
     makeatother: $ => command($, $.makeatother_token),
 
-    makeatother_token: $ => seq($._escape, 'makeatother', $._token_end),
-
-    explsyntaxon_token: $ => seq($._escape, 'makeatother', $._token_end),
+    makeatother_token: $ => seq($._escape, $._makeatother_word, $._token_end),
 
     explsyntaxon: $ => command($, $.explsyntaxon_token),
 
-    explsyntaxon_token: $ => seq($._escape, 'ExplSyntaxOn', $._token_end),
+    explsyntaxon_token: $ => seq($._escape, $._explsyntaxon_word, $._token_end),
 
     explsyntaxoff: $ => command($, $.explsyntaxoff_token),
 
-    explsyntaxoff_token: $ => seq($._escape, 'ExplSyntaxOff', $._token_end),
+    explsyntaxoff_token: $ => seq($._escape, $._explsyntaxoff_word, $._token_end),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
     ),
 
     name_group: $ => seq(
-      $.begin_group, $.name, $.end_group
+      $.begin_group, alias($.text, 'name'), $.end_group
     ),
 
     opt_text_group: $ => seq(
@@ -418,6 +424,7 @@ module.exports = grammar({
 
     begin_opt: $ => '[',
     end_opt: $ => ']',
+    text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
     token: $ => seq($._escape, repeat1(/./), $._token_end),
     escaped: $ => seq($._escape, $._non_letter_or_other),
     number: $ => /[0-9]+/,

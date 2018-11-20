@@ -609,6 +609,10 @@
         }
       ]
     },
+    "display_math_env_name": {
+      "type": "PATTERN",
+      "value": "(displaymath|eqnarray\\*?|align\\*?|alignat\\*?|equation\\*?|flalign\\*?|gather\\*?|multiline\\*?|split\\*?|dmath\\*?|dseries\\*?|dgroup\\*?|darray\\*?)"
+    },
     "_inline_math": {
       "type": "CHOICE",
       "members": [
@@ -769,6 +773,10 @@
           "name": "end_group"
         }
       ]
+    },
+    "inline_math_env_name": {
+      "type": "STRING",
+      "value": "math"
     },
     "tag": {
       "type": "SEQ",
@@ -943,6 +951,10 @@
           "name": "end_group"
         }
       ]
+    },
+    "verbatim_env_name": {
+      "type": "PATTERN",
+      "value": "(verbatim|[BL]?Verbatim\\*?|lstlisting|minted|alltt)"
     },
     "begin": {
       "type": "SEQ",
@@ -1259,8 +1271,8 @@
           "name": "_escape"
         },
         {
-          "type": "STRING",
-          "value": "ProvidesExplClass"
+          "type": "SYMBOL",
+          "name": "_providesexplclass_word"
         },
         {
           "type": "SYMBOL",
@@ -1349,8 +1361,8 @@
           "name": "_escape"
         },
         {
-          "type": "STRING",
-          "value": "ProvidesExplFile"
+          "type": "SYMBOL",
+          "name": "_providesexplfile_word"
         },
         {
           "type": "SYMBOL",
@@ -1439,8 +1451,8 @@
           "name": "_escape"
         },
         {
-          "type": "STRING",
-          "value": "ProvidesExplPackage"
+          "type": "SYMBOL",
+          "name": "_providesexplpackage_word"
         },
         {
           "type": "SYMBOL",
@@ -1877,8 +1889,8 @@
           "name": "_escape"
         },
         {
-          "type": "STRING",
-          "value": "makeatletter"
+          "type": "SYMBOL",
+          "name": "_makeatletter_word"
         },
         {
           "type": "SYMBOL",
@@ -1915,25 +1927,8 @@
           "name": "_escape"
         },
         {
-          "type": "STRING",
-          "value": "makeatother"
-        },
-        {
           "type": "SYMBOL",
-          "name": "_token_end"
-        }
-      ]
-    },
-    "explsyntaxon_token": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_escape"
-        },
-        {
-          "type": "STRING",
-          "value": "ExplSyntaxOn"
+          "name": "_makeatother_word"
         },
         {
           "type": "SYMBOL",
@@ -1959,6 +1954,23 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "explsyntaxon_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_explsyntaxon_word"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
         }
       ]
     },
@@ -1991,8 +2003,8 @@
           "name": "_escape"
         },
         {
-          "type": "STRING",
-          "value": "ExplSyntaxOff"
+          "type": "SYMBOL",
+          "name": "_explsyntaxoff_word"
         },
         {
           "type": "SYMBOL",
@@ -2028,8 +2040,13 @@
           "name": "begin_group"
         },
         {
-          "type": "SYMBOL",
-          "name": "name"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "text"
+          },
+          "named": false,
+          "value": "name"
         },
         {
           "type": "SYMBOL",
@@ -2206,6 +2223,17 @@
       "type": "STRING",
       "value": "]"
     },
+    "text": {
+      "type": "PREC_LEFT",
+      "value": -1,
+      "content": {
+        "type": "REPEAT1",
+        "content": {
+          "type": "PATTERN",
+          "value": "[^\\]\\[]"
+        }
+      }
+    },
     "token": {
       "type": "SEQ",
       "members": [
@@ -2253,7 +2281,35 @@
     },
     {
       "type": "SYMBOL",
+      "name": "_explsyntaxoff_word"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_explsyntaxon_word"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_makeatletter_word"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_makeatother_word"
+    },
+    {
+      "type": "SYMBOL",
       "name": "_non_letter_or_other"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_providesexplclass_word"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_providesexplfile_word"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_providesexplpackage_word"
     },
     {
       "type": "SYMBOL",
@@ -2281,10 +2337,6 @@
     },
     {
       "type": "SYMBOL",
-      "name": "display_math_env_name"
-    },
-    {
-      "type": "SYMBOL",
       "name": "display_math_shift"
     },
     {
@@ -2297,15 +2349,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "inline_math_env_name"
-    },
-    {
-      "type": "SYMBOL",
       "name": "inline_math_shift"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "name"
     },
     {
       "type": "SYMBOL",
@@ -2321,10 +2365,6 @@
     },
     {
       "type": "SYMBOL",
-      "name": "text"
-    },
-    {
-      "type": "SYMBOL",
       "name": "verb_body"
     },
     {
@@ -2334,10 +2374,6 @@
     {
       "type": "SYMBOL",
       "name": "verb_line"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "verbatim_env_name"
     }
   ],
   "inline": []

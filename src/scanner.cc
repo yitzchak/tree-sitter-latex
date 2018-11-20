@@ -17,28 +17,30 @@ using std::map;
 
 enum TokenType {
   _ESCAPE,
+  _EXPLSYNTAXOFF_WORD,
+  _EXPLSYNTAXON_WORD,
+  _MAKEATLETTER_WORD,
+  _MAKEATOTHER_WORD,
   _NON_LETTER_OR_OTHER,
+  _PROVIDESEXPLCLASS_WORD,
+  _PROVIDESEXPLFILE_WORD,
+  _PROVIDESEXPLPACKAGE_WORD,
   _SPACE,
   _TOKEN_END,
   ACTIVE_CHAR,
   ALIGNMENT_TAB,
   BEGIN_GROUP,
   COMMENT_CHAR,
-  DISPLAY_MATH_ENV_NAME,
   DISPLAY_MATH_SHIFT,
   END_GROUP,
   EOL,
-  INLINE_MATH_ENV_NAME,
   INLINE_MATH_SHIFT,
-  NAME,
   PARAMETER_CHAR,
   SUBSCRIPT,
   SUPERSCRIPT,
-  TEXT,
   VERB_BODY,
   VERB_DELIM,
-  VERB_LINE,
-  VERBATIM_ENV_NAME
+  VERB_LINE
 };
 
 enum Category {
@@ -70,8 +72,6 @@ struct Scanner {
   static const int MIN_CATCODE_TABLE_SIZE = 128;
   static const int MAX_CATCODE_TABLE_SIZE = 256;
 
-  int32_t start_delim = 0;
-
   vector<CategoryDescription> category_descriptions = {
     {ACTIVE_CHAR_CATEGORY, ACTIVE_CHAR, false},
     {ALIGNMENT_TAB_CATEGORY, ALIGNMENT_TAB, false},
@@ -85,49 +85,19 @@ struct Scanner {
     {SUPERSCRIPT_CATEGORY, SUPERSCRIPT, false}
   };
 
-  map<string, TokenType> names = {
-    {"align", DISPLAY_MATH_ENV_NAME},
-    {"align*", DISPLAY_MATH_ENV_NAME},
-    {"alignat", DISPLAY_MATH_ENV_NAME},
-    {"alignat*", DISPLAY_MATH_ENV_NAME},
-    {"altt", VERBATIM_ENV_NAME},
-    {"BVerbatim", VERBATIM_ENV_NAME},
-    {"BVerbatim*", VERBATIM_ENV_NAME},
-    {"darray", DISPLAY_MATH_ENV_NAME},
-    {"darray*", DISPLAY_MATH_ENV_NAME},
-    {"dgroup", DISPLAY_MATH_ENV_NAME},
-    {"dgroup*", DISPLAY_MATH_ENV_NAME},
-    {"displaymath", DISPLAY_MATH_ENV_NAME},
-    {"dmath", DISPLAY_MATH_ENV_NAME},
-    {"dmath*", DISPLAY_MATH_ENV_NAME},
-    {"dseries", DISPLAY_MATH_ENV_NAME},
-    {"dseries*", DISPLAY_MATH_ENV_NAME},
-    {"eqnarray", DISPLAY_MATH_ENV_NAME},
-    {"eqnarray*", DISPLAY_MATH_ENV_NAME},
-    {"equation", DISPLAY_MATH_ENV_NAME},
-    {"equation*", DISPLAY_MATH_ENV_NAME},
-    {"flalign", DISPLAY_MATH_ENV_NAME},
-    {"flalign*", DISPLAY_MATH_ENV_NAME},
-    {"gather", DISPLAY_MATH_ENV_NAME},
-    {"gather*", DISPLAY_MATH_ENV_NAME},
-    {"lstlisting", VERBATIM_ENV_NAME},
-    {"LVerbatim", VERBATIM_ENV_NAME},
-    {"LVerbatim*", VERBATIM_ENV_NAME},
-    {"math", INLINE_MATH_ENV_NAME},
-    {"minted", VERBATIM_ENV_NAME},
-    {"multiline", DISPLAY_MATH_ENV_NAME},
-    {"multiline*", DISPLAY_MATH_ENV_NAME},
-    {"split", DISPLAY_MATH_ENV_NAME},
-    {"split*", DISPLAY_MATH_ENV_NAME},
-    {"verbatim", VERBATIM_ENV_NAME},
-    {"Verbatim", VERBATIM_ENV_NAME},
-    {"Verbatim*", VERBATIM_ENV_NAME}
+  map<string, TokenType> words = {
+    {"ExplSyntaxOff", _EXPLSYNTAXOFF_WORD},
+    {"ExplSyntaxOn", _EXPLSYNTAXON_WORD},
+    {"makeatletter", _MAKEATLETTER_WORD},
+    {"makeatother", _MAKEATOTHER_WORD},
+    {"ProvidesExplClass", _PROVIDESEXPLCLASS_WORD},
+    {"ProvidesExplFile", _PROVIDESEXPLFILE_WORD},
+    {"ProvidesExplPackage", _PROVIDESEXPLPACKAGE_WORD}
   };
 
+  int32_t start_delim = 0;
   vector<Category> catcode_table;
-
   map<int32_t, Category> overflow_catcodes;
-
   map<int32_t, Category> saved_catcodes;
 
   Scanner() {}
@@ -405,74 +375,6 @@ struct Scanner {
     return true;
   }
 
-  // bool scan_token_or_escaped(TSLexer *lexer) {
-  //   string name;
-  //
-  //   lexer->advance(lexer, false);
-  //
-  //   switch (get_catcode(lexer->lookahead)) {
-  //     case IGNORED_CATEGORY:
-  //       return false;
-  //     case LETTER_CATEGORY:
-  //       while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
-  //         name += lexer->lookahead;
-  //         lexer->advance(lexer, false);
-  //       }
-  //       lexer->mark_end(lexer);
-  //       lexer->result_symbol = TOKEN;
-  //       break;
-  //     default:
-  //       name += lexer->lookahead;
-  //       lexer->advance(lexer, false);
-  //       lexer->mark_end(lexer);
-  //       lexer->result_symbol = ESCAPED;
-  //   }
-  //
-  //   auto it = tokens.find(name);
-  //
-  //   if (it != tokens.end()) {
-  //     lexer->result_symbol = it->second;
-  //   }
-  //
-  //   switch (lexer->result_symbol) {
-  //     case EXPLSYNTAXOFF_TOKEN:
-  //       pop_catcode('\t');
-  //       pop_catcode(' ');
-  //       pop_catcode('"');
-  //       pop_catcode('&');
-  //       pop_catcode(':');
-  //       pop_catcode('^');
-  //       pop_catcode('_');
-  //       pop_catcode('|');
-  //       pop_catcode('~');
-  //       // pop_catcode('\n');
-  //       break;
-  //     case EXPLSYNTAXON_TOKEN:
-  //     case PROVIDESEXPLCLASS_TOKEN:
-  //     case PROVIDESEXPLFILE_TOKEN:
-  //     case PROVIDESEXPLPACKAGE_TOKEN:
-  //       push_catcode('\t', IGNORED_CATEGORY);
-  //       push_catcode(' ',  IGNORED_CATEGORY);
-  //       push_catcode('"',  OTHER_CATEGORY);
-  //       push_catcode('&',  ALIGNMENT_TAB_CATEGORY);
-  //       push_catcode(':',  LETTER_CATEGORY);
-  //       push_catcode('^',  SUPERSCRIPT_CATEGORY);
-  //       push_catcode('_',  LETTER_CATEGORY);
-  //       push_catcode('|',  OTHER_CATEGORY);
-  //       push_catcode('~',  SPACE_CATEGORY);
-  //       // set_catcode('\n', IGNORED_CATEGORY);
-  //       break;
-  //     case MAKEATOTHER_TOKEN:
-  //       set_catcode('@', OTHER_CATEGORY);
-  //       break;
-  //     case MAKEATLETTER_TOKEN:
-  //       set_catcode('@', LETTER_CATEGORY);
-  //       break;
-  //   }
-  //
-  //   return true;
-  // }
-
   bool scan_category(TSLexer *lexer, CategoryDescription desc) {
     lexer->advance(lexer, false);
 
@@ -507,73 +409,65 @@ struct Scanner {
     return false;
   }
 
-  bool is_text(char val) {
-    if (val == '[' || val == ']') return false;
+  bool scan_word(TSLexer *lexer) {
+    string word;
 
-    Category code = get_catcode(val);
-
-    return code == SPACE_CATEGORY || code == EOL_CATEGORY ||
-      code == LETTER_CATEGORY || code == OTHER_CATEGORY;
-  }
-
-  bool scan_text(TSLexer *lexer) {
-    while (is_text(lexer->lookahead)) {
+    while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
+      word += lexer->lookahead;
       lexer->advance(lexer, false);
     }
 
-    lexer->result_symbol = TEXT;
-    lexer->mark_end(lexer);
+    auto it = words.find(word);
 
-    return true;
-  }
-
-  bool is_name(char val) {
-    Category code = get_catcode(val);
-
-    return code == LETTER_CATEGORY || code == OTHER_CATEGORY;
-  }
-
-  bool scan_name(TSLexer *lexer, const bool *valid_symbols) {
-    string name;
-
-    while (is_name(lexer->lookahead)) {
-      name += lexer->lookahead;
-      lexer->advance(lexer, false);
+    if (it == words.end()) {
+      return false;
     }
 
-    auto it = names.find(name);
-
-    lexer->result_symbol = (it != names.end() && valid_symbols[it->second]) ?
-      it->second : NAME;
-
+    lexer->result_symbol = it->second;
     lexer->mark_end(lexer);
+
+    switch (lexer->result_symbol) {
+      case _EXPLSYNTAXOFF_WORD:
+        pop_catcode('\t');
+        pop_catcode(' ');
+        pop_catcode('"');
+        pop_catcode('&');
+        pop_catcode(':');
+        pop_catcode('^');
+        pop_catcode('_');
+        pop_catcode('|');
+        pop_catcode('~');
+        // pop_catcode('\n');
+        break;
+      case _EXPLSYNTAXON_WORD:
+      case _PROVIDESEXPLCLASS_WORD:
+      case _PROVIDESEXPLFILE_WORD:
+      case _PROVIDESEXPLPACKAGE_WORD:
+        push_catcode('\t', IGNORED_CATEGORY);
+        push_catcode(' ',  IGNORED_CATEGORY);
+        push_catcode('"',  OTHER_CATEGORY);
+        push_catcode('&',  ALIGNMENT_TAB_CATEGORY);
+        push_catcode(':',  LETTER_CATEGORY);
+        push_catcode('^',  SUPERSCRIPT_CATEGORY);
+        push_catcode('_',  LETTER_CATEGORY);
+        push_catcode('|',  OTHER_CATEGORY);
+        push_catcode('~',  SPACE_CATEGORY);
+        // set_catcode('\n', IGNORED_CATEGORY);
+        break;
+      case _MAKEATOTHER_WORD:
+        set_catcode('@', OTHER_CATEGORY);
+        break;
+      case _MAKEATLETTER_WORD:
+        set_catcode('@', LETTER_CATEGORY);
+        break;
+    }
 
     return true;
   }
-
-  // bool scan_makeatletter(TSLexer *lexer) {
-  //   string word;
-  //
-  //   while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
-  //     lexer->advance(lexer, false);
-  //   }
-  //
-  //   if (word == "makeatother") {
-  //     lexer->result_symbol = _MAKEATLETTER_WORD;
-  //     lexer->mark_end(lexer);
-  //     return true;
-  //   }
-  //
-  //   return false;
-  // }
 
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
     Category code = get_catcode(lexer->lookahead);
-
-    // if (valid_symbols[TOKEN] && code == ESCAPE_CATEGORY) {
-    //   return scan_token_or_escaped(lexer);
-    // }
 
     if (valid_symbols[_ESCAPE] && code == ESCAPE_CATEGORY) {
       lexer->advance(lexer, false);
@@ -582,9 +476,11 @@ struct Scanner {
       return true;
     }
 
-    // if (valid_symbols[_MAKEATLETTER_WORD] && get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
-    //   return scan_makeatletter(lexer);
-    // }
+    if ((valid_symbols[_MAKEATLETTER_WORD] || valid_symbols[_MAKEATOTHER_WORD] ||
+        valid_symbols[_EXPLSYNTAXON_WORD] || valid_symbols[_EXPLSYNTAXOFF_WORD]) &&
+        get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
+      return scan_word(lexer);
+    }
 
     if (valid_symbols[_NON_LETTER_OR_OTHER] && code != LETTER_CATEGORY && code != OTHER_CATEGORY) {
       lexer->advance(lexer, false);
@@ -607,14 +503,6 @@ struct Scanner {
       if (valid_symbols[it->type] && code == it->category) {
         return scan_category(lexer, *it);
       }
-    }
-
-    if (valid_symbols[NAME] && is_name(lexer->lookahead)) {
-      return scan_name(lexer, valid_symbols);
-    }
-
-    if (valid_symbols[TEXT] && is_text(lexer->lookahead)) {
-      return scan_text(lexer);
     }
 
     if (valid_symbols[VERB_DELIM]) {
