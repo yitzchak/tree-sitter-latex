@@ -92,7 +92,8 @@ struct CategoryDescription {
 };
 
 struct Scanner {
-  static const int CATCODE_TABLE_SIZE = 128;
+  static const int MIN_CATCODE_TABLE_SIZE = 128;
+  static const int MAX_CATCODE_TABLE_SIZE = 256;
 
   int32_t start_delim = 0;
 
@@ -190,16 +191,14 @@ struct Scanner {
     {"verb", VERB_TOKEN}
   };
 
-  Category catcode_table[CATCODE_TABLE_SIZE];
+  vector<Category> catcode_table;
 
   map<char, Category> overflow_catcodes;
 
   map<char, Category> saved_catcodes;
 
   Scanner() {
-    for (int i = 0; i < CATCODE_TABLE_SIZE; i++) {
-      catcode_table[i] = OTHER_CATEGORY;
-    }
+    catcode_table.resize(MIN_CATCODE_TABLE_SIZE, OTHER_CATEGORY);
 
     set_catcode('\\', ESCAPE_CATEGORY);
     set_catcode('{', BEGIN_CATEGORY);
@@ -271,7 +270,7 @@ struct Scanner {
   }
 
   Category get_catcode(char key) {
-    if (key < CATCODE_TABLE_SIZE) {
+    if (key < catcode_table.size()) {
       return catcode_table[key];
     }
 
@@ -283,11 +282,12 @@ struct Scanner {
   }
 
   void set_catcode(char key, Category code) {
-    if (key < CATCODE_TABLE_SIZE) {
+    if (key < catcode_table.size()) {
       catcode_table[key] = code;
-    }
-
-    if (code == OTHER_CATEGORY) {
+    } else if (key < MAX_CATCODE_TABLE_SIZE) {
+      catcode_table.resize(key + 1, OTHER_CATEGORY);
+      catcode_table[key] = code;
+    } else if (code == OTHER_CATEGORY) {
       overflow_catcodes.erase(key);
     } else {
       overflow_catcodes[key] = code;
