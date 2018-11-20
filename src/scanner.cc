@@ -313,33 +313,41 @@ struct Scanner {
     std::memcpy(&buffer[0], &start_delim, sizeof(start_delim));
 
     // Next store the catcodes map as [char, char] pairs
-    unsigned num_serealized = 0;
-    unsigned i = sizeof(start_delim) + sizeof(num_serealized);
+    unsigned num_serialized = 0;
+    unsigned i = sizeof(start_delim) + sizeof(num_serialized);
 
     // TODO: Check for overflow (probably never going to happen though)
 
-    for (auto it = catcodes.begin(); it != catcodes.end(); ++it) {
-      buffer[i++] = it->first;  // character
-      buffer[i++] = static_cast<char>(it->second); // catcode
-      num_serealized++;
+    for (size_t ch = 0; ch < catcode_table.size(); ch++) {
+      if (catcode_table[ch] != OTHER_CATEGORY) {
+        buffer[i++] = ch;  // character
+        buffer[i++] = static_cast<char>(catcode_table[ch]); // catcode
+        num_serialized++;
+      }
     }
 
-    std::memcpy(&buffer[sizeof(start_delim)], &num_serealized, sizeof(num_serealized));
+    for (auto it = overflow_catcodes.begin(); it != overflow_catcodes.end(); ++it) {
+      buffer[i++] = it->first;  // character
+      buffer[i++] = static_cast<char>(it->second); // catcode
+      num_serialized++;
+    }
+
+    std::memcpy(&buffer[sizeof(start_delim)], &num_serialized, sizeof(num_serialized));
 
     // Next store the saved_catcodes map as [char, char] pairs
     unsigned saved_cat_count_pos = i;
     i += sizeof(saved_cat_count_pos);
 
-    num_serealized = 0;
+    num_serialized = 0;
 
     for (auto it = saved_catcodes.begin(); it != saved_catcodes.end(); ++it) {
       buffer[i++] = it->first;
       buffer[i++] = static_cast<char>(it->second);
-      num_serealized++;
+      num_serialized++;
     }
 
-    num_serealized = saved_catcodes.size();
-    std::memcpy(&buffer[saved_cat_count_pos], &num_serealized, sizeof(num_serealized));
+    num_serialized = saved_catcodes.size();
+    std::memcpy(&buffer[saved_cat_count_pos], &num_serialized, sizeof(num_serialized));
 
     return i;
   }
@@ -354,29 +362,31 @@ struct Scanner {
     std::memcpy(&start_delim, &buffer[0], sizeof(start_delim));
 
     // Reset all current char-catcode pairs
-    catcodes.clear();
+    catcode_table.clear();
+    catcode_table.resize(MIN_CATCODE_TABLE_SIZE, OTHER_CATEGORY);
+    overflow_catcodes.clear();
 
     // Retrieve the catcode pairs
-    unsigned num_serealized;
-    std::memcpy(&num_serealized, &buffer[sizeof(start_delim)], sizeof(num_serealized));
+    unsigned num_serialized;
+    std::memcpy(&num_serialized, &buffer[sizeof(start_delim)], sizeof(num_serialized));
 
-    unsigned i = sizeof(start_delim) + sizeof(num_serealized);
+    unsigned i = sizeof(start_delim) + sizeof(num_serialized);
     unsigned set = 0;
-    while (set < num_serealized) {
+    while (set < num_serialized) {
       char character = buffer[i++];
       Category cat = static_cast<Category>(buffer[i++]);
-      catcodes[character] = cat;
+      set_catcode(character, cat);
       set += 1;
     }
 
     // Retrieve the saved_catcode pairs
     saved_catcodes.clear();
 
-    std::memcpy(&num_serealized, &buffer[i], sizeof(num_serealized));
+    std::memcpy(&num_serialized, &buffer[i], sizeof(num_serialized));
 
-    i += sizeof(num_serealized);
+    i += sizeof(num_serialized);
     set = 0;
-    while (set < num_serealized) {
+    while (set < num_serialized) {
       char character = buffer[i++];
       Category cat = static_cast<Category>(buffer[i++]);
       saved_catcodes[character] = cat;
