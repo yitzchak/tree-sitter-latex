@@ -36,16 +36,18 @@
 ==============================
 [makeatletter] @ sign is letter in optional text group
 ==============================
-\makeatletter[foo\bar@wibble]\makeatother
+\makeatletter\usepackage[foo\bar@wibble]{foo}\makeatother
 ----------------
 (document
   (text_mode
     (makeatletter (makeatletter_token))
-    (opt_text_group
-      (begin_opt)
-      (text)
-      (token)
-      (end_opt))
+    (usepackage (usepackage_token)
+      (opt_text_group
+        (begin_opt)
+        (text)
+        (token)
+        (end_opt))
+      (name_group (begin_group) (name) (end_group)))
     (makeatother (makeatother_token))))
 
 ============================
@@ -62,7 +64,7 @@
     (text)))
 
 =================
-[ExplSyntaxOn] colon/undersore is not letter
+[ExplSyntaxOn] colon/underscore is not letter
 =================
 \bar:wibble_wobble
 ----------------
@@ -74,7 +76,7 @@
     (text)))
 
 =================
-[ExplSyntaxOn] colon/undersore is letter
+[ExplSyntaxOn] colon/underscore is letter
 =================
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff
 ----------------
@@ -85,7 +87,7 @@
     (explsyntaxoff (explsyntaxoff_token))))
 
 =================
-[ProvidesExplPackage] colon/undersore is letter
+[ProvidesExplPackage] colon/underscore is letter
 =================
 \ProvidesExplPackage{foo}{bar}{wibble}{wobble}
 \bar:wibble_wobble\ExplSyntaxOff
@@ -103,7 +105,7 @@
     (explsyntaxoff (explsyntaxoff_token))))
 
 ==============================
-[ExplSyntaxOn] colon/undersore is letter in text group
+[ExplSyntaxOn] colon/underscore is letter in text group
 ==============================
 \ExplSyntaxOn{\bar:wibble_wobble}\ExplSyntaxOff
 ----------------
@@ -117,22 +119,24 @@
     (explsyntaxoff (explsyntaxoff_token))))
 
 ==============================
-[ExplSyntaxOn] colon/undersore is letter in optional text group
+[ExplSyntaxOn] colon/underscore is letter in optional text group
 ==============================
-\ExplSyntaxOn[foo\bar:wibble_wobble]\ExplSyntaxOff
+\ExplSyntaxOn\usepackage[foo\bar:wibble_wobble]{foo}\ExplSyntaxOff
 ----------------
 (document
   (text_mode
     (explsyntaxon (explsyntaxon_token))
-    (opt_text_group
-      (begin_opt)
-      (text)
-      (token)
-      (end_opt))
+    (usepackage (usepackage_token)
+      (opt_text_group
+        (begin_opt)
+        (text)
+        (token)
+        (end_opt))
+      (name_group (begin_group) (name) (end_group)))
     (explsyntaxoff (explsyntaxoff_token))))
 
 ============================
-[ExplSyntaxOn] colon/undersore is letter then other
+[ExplSyntaxOn] colon/underscore is letter then other
 =============================
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
 ----------------
@@ -164,7 +168,7 @@
     (text)
     (text)
     (text)))
-    
+
 ===============================================
 [ExplSyntaxOn/makeatletter] Interleaved regions
 ===============================================
@@ -180,4 +184,3 @@
     (explsyntaxoff (explsyntaxoff_token))
     (token)
     (makeatother (makeatother_token))))
-    
