@@ -58,6 +58,11 @@ function command ($, token, options = {}) {
     args.push($.math_text_group)
   }
 
+  for (let i = options.text_opt || 0; i > 0; i--) {
+    args.push(optional($._space))
+    args.push(optional($.text_group))
+  }
+
   if (args.length === 1) {
     args.push(optional($._space))
   }
@@ -149,7 +154,13 @@ module.exports = grammar({
       $.storage,
       $.usepackage,
       command($, $.token),
-      $.footnote
+      $.footnote,
+      // hyperref package
+      $.href,
+      $.url,
+      $.hyperbaseurl,
+      $.hyperimage,
+      $.hyperref
     ),
 
     text_mode: $ => repeat1($._text_mode),
@@ -376,6 +387,30 @@ module.exports = grammar({
     explsyntaxoff: $ => command($, $.explsyntaxoff_token),
 
     explsyntaxoff_token: $ => seq($._escape, $._explsyntaxoff_word, $._token_end),
+
+    // hyperref functions
+
+    href: $ => command($, $.href_token, { opt: 1, text: 2 }),
+
+    href_token: $ => seq($._escape, 'href', $._token_end),
+
+    url: $ => command($, $.url_token, { text: 1 }),
+
+    url_token: $ => seq($._escape, /(nolink)?url/, $._token_end),
+
+    hyperbaseurl: $ => command($, $.hyperbaseurl_token, { text: 1 }),
+
+    hyperbaseurl_token: $ => seq($._escape, 'hyperbaseurl', $._token_end),
+
+    hyperimage: $ => command($, $.hyperimage_token, { text: 2 }),
+
+    hyperimage_token: $ => seq($._escape, 'hyperimage', $._token_end),
+
+    hyperref: $ => choice(
+      command($, $.hyperref_token, { text: 4 }),
+      prec(-1, command($, $.hyperref_token, { opt: 1, text: 1 }))),
+
+    hyperref_token: $ => seq($._escape, 'hyperref', $._token_end),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group

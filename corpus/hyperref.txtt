@@ -1,0 +1,83 @@
+=============================
+href command
+=============================
+\href[page=1]{http://foo.bar}{wibble}
+-----------------------------
+(document
+  (text_mode
+    (href
+      (href_token)
+      (opt_text_group (begin_opt) (text) (end_opt))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+=============================
+url command
+=============================
+\url{http://foo.bar}
+-----------------------------
+(document
+  (text_mode
+    (url
+      (url_token)
+      (text_group (begin_group) (text) (end_group)))))
+
+=============================
+nolinkurl command
+=============================
+\nolinkurl{http://foo.bar}
+-----------------------------
+(document
+  (text_mode
+    (url
+      (url_token)
+      (text_group (begin_group) (text) (end_group)))))
+
+=============================
+hyperbaseurl command
+=============================
+\hyperbaseurl{http://foo.bar}
+-----------------------------
+(document
+  (text_mode
+    (hyperbaseurl
+      (hyperbaseurl_token)
+      (text_group (begin_group) (text) (end_group)))))
+
+=============================
+hyperimage command
+=============================
+\hyperimage{http://foo.bar}{wibble}
+-----------------------------
+(document
+  (text_mode
+    (hyperimage
+      (hyperimage_token)
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+=============================
+hyperref command
+=============================
+\hyperref{http://foo.bar}{wibble}{quux}{baz}
+-----------------------------
+(document
+  (text_mode
+    (hyperref
+      (hyperref_token)
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+=============================
+hyperref local command
+=============================
+\hyperref[foo]{wibble}
+-----------------------------
+(document
+  (text_mode
+    (hyperref
+      (hyperref_token)
+      (opt_text_group (begin_opt) (text) (end_opt))
+      (text_group (begin_group) (text) (end_group)))))
