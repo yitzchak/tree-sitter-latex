@@ -207,6 +207,21 @@ foo\emph{bar}wibble
     (text)))
 
 =====================
+emph with a comment before argument
+=====================
+foo\emph%baz
+{bar}wibble
+---------------------
+(document
+  (text_mode
+    (text)
+    (emph
+      (emph_token)
+      (comment (comment_char) (eol))
+      (text_group (begin_group) (text) (end_group)))
+    (text)))
+
+=====================
 textbf
 =====================
 foo\textbf{bar}wibble
