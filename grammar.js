@@ -1,16 +1,16 @@
-function begin_env ($, options = {}) {
+function begin_env_rule ($, options = {}) {
   const args = [
     $.begin_token,
     options.name_group || $.name_group
   ]
 
   for (let i = options.opt || 0; i > 0; i--) {
-    args.push(optional($._space))
+    args.push(optional($._ignored))
     args.push(optional($.opt_text_group))
   }
 
   for (let i = options.text || 0; i > 0; i--) {
-    args.push(optional($._space))
+    args.push(optional($._ignored))
     args.push(optional($.text_group))
   }
 
@@ -21,7 +21,7 @@ function begin_env ($, options = {}) {
   return seq.apply(null, args)
 }
 
-function end_env ($, options = {}) {
+function end_env_rule ($, options = {}) {
   const args = [
     $.end_token,
     options.name_group || $.name_group
@@ -30,36 +30,36 @@ function end_env ($, options = {}) {
   return seq.apply(null, args)
 }
 
-function command ($, token, options = {}) {
+function command_rule ($, token, options = {}) {
   const args = [token]
 
   if (options.star) {
-    args.push(optional($._space))
+    args.push(optional($._ignored))
     args.push(optional('*'))
   }
 
   for (let i = options.opt || 0; i > 0; i--) {
-    args.push(optional($._space))
+    args.push(optional($._ignored))
     args.push(optional($.opt_text_group))
   }
 
   for (let i = options.name || 0; i > 0; i--) {
-    args.push(optional($._space))
+    args.push(optional($._ignored))
     args.push($.name_group)
   }
 
   for (let i = options.text || 0; i > 0; i--) {
-    args.push(optional($._space))
+    args.push(optional($._ignored))
     args.push($.text_group)
   }
 
   for (let i = options.math_text || 0; i > 0; i--) {
-    args.push(optional($._space))
+    args.push(optional($._ignored))
     args.push($.math_text_group)
   }
 
   for (let i = options.text_opt || 0; i > 0; i--) {
-    args.push(optional($._space))
+    args.push(optional($._ignored))
     args.push(optional($.text_group))
   }
 
@@ -68,6 +68,10 @@ function command ($, token, options = {}) {
   }
 
   return seq.apply(null, args)
+}
+
+function token_rule ($, name) {
+  return seq($._escape, name, $._token_end)
 }
 
 module.exports = grammar({
@@ -122,7 +126,7 @@ module.exports = grammar({
 
     inline_verbatim: $ => seq($.verb_token, $.verb_delim, $.verb_body, $.verb_delim),
 
-    verb_token: $ => seq($._escape, 'verb', $._token_end),
+    verb_token: $ => token_rule($, 'verb'),
 
     _text_mode: $ => choice(
       $._common,
@@ -153,7 +157,7 @@ module.exports = grammar({
       $.section,
       $.storage,
       $.usepackage,
-      command($, $.token),
+      command_rule($, $.token),
       $.footnote,
       // hyperref package
       $.href,
@@ -176,7 +180,7 @@ module.exports = grammar({
       // $.opt_math_group,
       $.include,
       $.storage,
-      command($, $.token),
+      command_rule($, $.token),
       $.tag
     ),
 
@@ -222,14 +226,14 @@ module.exports = grammar({
       $.display_math_end
     ),
 
-    display_math_begin: $ => begin_env($, {
+    display_math_begin: $ => begin_env_rule($, {
       name_group: $.display_math_env_group,
       opt: 1,
       text: 1,
       eol: true
     }),
 
-    display_math_end: $ => end_env($, {
+    display_math_end: $ => end_env_rule($, {
       name_group: $.display_math_env_group
     }),
 
@@ -279,9 +283,9 @@ module.exports = grammar({
 
     inline_math_env_name: $ => 'math',
 
-    tag: $ => command($, $.tag_token, { math_text: 1 }),
+    tag: $ => command_rule($, $.tag_token, { math_text: 1 }),
 
-    tag_token: $ => seq($._escape, 'tag', $._token_end),
+    tag_token: $ => token_rule($, 'tag'),
 
     verbatim_env: $ => seq(
       $.verbatim_begin,
@@ -289,14 +293,14 @@ module.exports = grammar({
       $.verbatim_end
     ),
 
-    verbatim_begin: $ => begin_env($, {
+    verbatim_begin: $ => begin_env_rule($, {
       name_group: $.verbatim_env_group,
       opt: 1,
       text: 1,
       eol: true
     }),
 
-    verbatim_end: $ => end_env($, {
+    verbatim_end: $ => end_env_rule($, {
       name_group: $.verbatim_env_group
     }),
 
@@ -306,111 +310,111 @@ module.exports = grammar({
 
     verbatim_env_name: $ => /(verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt)/,
 
-    begin: $ => begin_env($),
+    begin: $ => begin_env_rule($),
 
-    begin_token: $ => seq($._escape, 'begin', $._token_end),
+    begin_token: $ => token_rule($, 'begin'),
 
-    end: $ => end_env($),
+    end: $ => end_env_rule($),
 
-    end_token: $ => seq($._escape, 'end', $._token_end),
+    end_token: $ => token_rule($, 'end'),
 
-    documentclass: $ => command($, $.documentclass_token, { opt: 1, name: 1 }),
+    documentclass: $ => command_rule($, $.documentclass_token, { opt: 1, name: 1 }),
 
-    documentclass_token: $ => seq($._escape, 'documentclass', $._token_end),
+    documentclass_token: $ => token_rule($, 'documentclass'),
 
-    usepackage: $ => command($, $.usepackage_token, { opt: 1, name: 1 }),
+    usepackage: $ => command_rule($, $.usepackage_token, { opt: 1, name: 1 }),
 
-    usepackage_token: $ => seq($._escape, 'usepackage', $._token_end),
+    usepackage_token: $ => token_rule($, 'usepackage'),
 
-    include: $ => command($, $.include_token, { text: 1 }),
+    include: $ => command_rule($, $.include_token, { text: 1 }),
 
-    include_token: $ => seq($._escape, /include|input/, $._token_end),
+    include_token: $ => token_rule($, /include|input/),
 
-    providesexplclass: $ => command($, $.providesexplclass_token, { text: 4 }),
+    providesexplclass: $ => command_rule($, $.providesexplclass_token, { text: 4 }),
 
-    providesexplclass_token: $ => seq($._escape, $._providesexplclass_word, $._token_end),
+    providesexplclass_token: $ => token_rule($, $._providesexplclass_word),
 
-    providesexplfile: $ => command($, $.providesexplfile_token, { text: 4 }),
+    providesexplfile: $ => command_rule($, $.providesexplfile_token, { text: 4 }),
 
-    providesexplfile_token: $ => seq($._escape, $._providesexplfile_word, $._token_end),
+    providesexplfile_token: $ => token_rule($, $._providesexplfile_word),
 
-    providesexplpackage: $ => command($, $.providesexplpackage_token, { text: 4 }),
+    providesexplpackage: $ => command_rule($, $.providesexplpackage_token, { text: 4 }),
 
-    providesexplpackage_token: $ => seq($._escape, $._providesexplpackage_word, $._token_end),
+    providesexplpackage_token: $ => token_rule($, $._providesexplpackage_word),
 
-    section: $ => command($, $.section_token, { text: 1, opt: 1, star: true }),
+    section: $ => command_rule($, $.section_token, { text: 1, opt: 1, star: true }),
 
-    section_token: $ => seq($._escape, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/, $._token_end),
+    section_token: $ => token_rule($, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/),
 
-    storage: $ => command($, $.storage_token),
+    storage: $ => command_rule($, $.storage_token),
 
-    storage_token: $ => seq($._escape, /[egx]?def/, $._token_end),
+    storage_token: $ => token_rule($, /[egx]?def/),
 
     catcode: $ => seq(
       $.catcode_token, $.escaped, '=', $.number
     ),
 
-    catcode_token: $ => seq($._escape, /k?catcode`/, $._token_end),
+    catcode_token: $ => token_rule($, /k?catcode`/),
 
-    emph: $ => command($, $.emph_token, { text: 1 }),
+    emph: $ => command_rule($, $.emph_token, { text: 1 }),
 
-    emph_token: $ => seq($._escape, 'emph', $._token_end),
+    emph_token: $ => token_rule($, 'emph'),
 
-    footnote: $ => command($, $.footnote_token, { text: 1, opt: 1 }),
+    footnote: $ => command_rule($, $.footnote_token, { text: 1, opt: 1 }),
 
-    footnote_token: $ => seq($._escape, 'footnote', $._token_end),
+    footnote_token: $ => token_rule($, 'footnote'),
 
-    textbf: $ => command($, $.textbf_token, { text: 1 }),
+    textbf: $ => command_rule($, $.textbf_token, { text: 1 }),
 
-    textbf_token: $ => seq($._escape, 'textbf', $._token_end),
+    textbf_token: $ => token_rule($, 'textbf'),
 
-    textit: $ => command($, $.textit_token, { text: 1 }),
+    textit: $ => command_rule($, $.textit_token, { text: 1 }),
 
-    textit_token: $ => seq($._escape, 'textit', $._token_end),
+    textit_token: $ => token_rule($, 'textit'),
 
-    texttt: $ => command($, $.texttt_token, { text: 1 }),
+    texttt: $ => command_rule($, $.texttt_token, { text: 1 }),
 
-    texttt_token: $ => seq($._escape, 'texttt', $._token_end),
+    texttt_token: $ => token_rule($, 'texttt'),
 
-    makeatletter: $ => command($, $.makeatletter_token),
+    makeatletter: $ => command_rule($, $.makeatletter_token),
 
-    makeatletter_token: $ => seq($._escape, $._makeatletter_word, $._token_end),
+    makeatletter_token: $ => token_rule($, $._makeatletter_word),
 
-    makeatother: $ => command($, $.makeatother_token),
+    makeatother: $ => command_rule($, $.makeatother_token),
 
-    makeatother_token: $ => seq($._escape, $._makeatother_word, $._token_end),
+    makeatother_token: $ => token_rule($, $._makeatother_word),
 
-    explsyntaxon: $ => command($, $.explsyntaxon_token),
+    explsyntaxon: $ => command_rule($, $.explsyntaxon_token),
 
-    explsyntaxon_token: $ => seq($._escape, $._explsyntaxon_word, $._token_end),
+    explsyntaxon_token: $ => token_rule($, $._explsyntaxon_word),
 
-    explsyntaxoff: $ => command($, $.explsyntaxoff_token),
+    explsyntaxoff: $ => command_rule($, $.explsyntaxoff_token),
 
-    explsyntaxoff_token: $ => seq($._escape, $._explsyntaxoff_word, $._token_end),
+    explsyntaxoff_token: $ => token_rule($, $._explsyntaxoff_word),
 
     // hyperref functions
 
-    href: $ => command($, $.href_token, { opt: 1, text: 2 }),
+    href: $ => command_rule($, $.href_token, { opt: 1, text: 2 }),
 
-    href_token: $ => seq($._escape, 'href', $._token_end),
+    href_token: $ => token_rule($, 'href'),
 
-    url: $ => command($, $.url_token, { text: 1 }),
+    url: $ => command_rule($, $.url_token, { text: 1 }),
 
-    url_token: $ => seq($._escape, /(nolink)?url/, $._token_end),
+    url_token: $ => token_rule($, /(nolink)?url/),
 
-    hyperbaseurl: $ => command($, $.hyperbaseurl_token, { text: 1 }),
+    hyperbaseurl: $ => command_rule($, $.hyperbaseurl_token, { text: 1 }),
 
-    hyperbaseurl_token: $ => seq($._escape, 'hyperbaseurl', $._token_end),
+    hyperbaseurl_token: $ => token_rule($, 'hyperbaseurl'),
 
-    hyperimage: $ => command($, $.hyperimage_token, { text: 2 }),
+    hyperimage: $ => command_rule($, $.hyperimage_token, { text: 2 }),
 
-    hyperimage_token: $ => seq($._escape, 'hyperimage', $._token_end),
+    hyperimage_token: $ => token_rule($, 'hyperimage'),
 
     hyperref: $ => choice(
-      command($, $.hyperref_token, { text: 4 }),
-      prec(-1, command($, $.hyperref_token, { opt: 1, text: 1 }))),
+      command_rule($, $.hyperref_token, { text: 4 }),
+      prec(-1, command_rule($, $.hyperref_token, { opt: 1, text: 1 }))),
 
-    hyperref_token: $ => seq($._escape, 'hyperref', $._token_end),
+    hyperref_token: $ => token_rule($, 'hyperref'),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
@@ -456,11 +460,13 @@ module.exports = grammar({
       $.eol
     ),
 
+    _ignored: $ => prec(-1, repeat1(choice($._space, $.comment, $.magic_comment))),
+
     begin_opt: $ => '[',
     end_opt: $ => ']',
     text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
-    token: $ => seq($._escape, repeat1(/./), $._token_end),
+    token: $ => token_rule($, repeat1(/./)),
     escaped: $ => seq($._escape, $._non_letter_or_other),
-    number: $ => /[0-9]+/,
+    number: $ => /[0-9]+/
   }
 })
