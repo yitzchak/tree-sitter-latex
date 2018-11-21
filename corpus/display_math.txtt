@@ -7,47 +7,10 @@ foo$$bar$$quux
   (text_mode
     (text)
     (tex_display_math
-      (display_math_shift)
+      (math_shift) (math_shift)
       (math_mode (text))
-      (display_math_shift))
+      (math_shift) (math_shift))
     (text)))
-
-=============
-Misplaced inline math shift inside display math
-=============
-foo$$bar$wibble$$quux
--------------
-(document
-  (text_mode
-    (text)
-    (tex_display_math
-      (display_math_shift)
-      (math_mode (text))
-      (MISSING))
-    (tex_inline_math
-      (inline_math_shift)
-      (math_mode (text))
-      (inline_math_shift))
-    (tex_inline_math
-      (inline_math_shift)
-      (math_mode (text))
-      (MISSING))))
-
-===============================
-Dangling display math math inside text group
-================================
-{foo$$bar}
---------------------------------
-(document
-  (text_mode
-    (text_group
-      (begin_group)
-      (text)
-      (tex_display_math
-        (display_math_shift)
-        (math_mode (text))
-        (MISSING))
-      (end_group))))
 
 ============
 TeX empty display math
@@ -58,8 +21,8 @@ foo$$$$quux
   (text_mode
     (text)
     (tex_display_math
-      (display_math_shift)
-      (display_math_shift))
+      (math_shift) (math_shift)
+      (math_shift) (math_shift))
     (text)))
 
 ==================
