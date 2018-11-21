@@ -84,10 +84,9 @@ module.exports = grammar({
     $.alignment_tab,
     $.begin_group,
     $.comment_char,
-    $.display_math_shift,
     $.end_group,
     $.eol,
-    $.inline_math_shift,
+    $.math_shift,
     $.parameter_char,
     $.subscript,
     $.superscript,
@@ -191,9 +190,9 @@ module.exports = grammar({
     ),
 
     tex_display_math: $ => seq(
-      $.display_math_shift,
+      $.math_shift, $.math_shift,
       optional($.math_mode),
-      $.display_math_shift
+      $.math_shift, $.math_shift
     ),
 
     latex_display_math: $ => seq(
@@ -234,9 +233,9 @@ module.exports = grammar({
     ),
 
     tex_inline_math: $ => seq(
-      $.inline_math_shift,
-      optional($.math_mode),
-      $.inline_math_shift
+      $.math_shift,
+      $.math_mode,
+      $.math_shift
     ),
 
     latex_inline_math: $ => seq(

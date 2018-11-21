@@ -31,10 +31,9 @@ enum TokenType {
   ALIGNMENT_TAB,
   BEGIN_GROUP,
   COMMENT_CHAR,
-  DISPLAY_MATH_SHIFT,
   END_GROUP,
   EOL,
-  INLINE_MATH_SHIFT,
+  MATH_SHIFT,
   PARAMETER_CHAR,
   SUBSCRIPT,
   SUPERSCRIPT,
@@ -79,6 +78,7 @@ struct Scanner {
     {COMMENT_CATEGORY, COMMENT_CHAR, false},
     {END_CATEGORY, END_GROUP, false},
     {EOL_CATEGORY, EOL, false},
+    {MATH_SHIFT_CATEGORY, MATH_SHIFT, false},
     {PARAMETER_CATEGORY, PARAMETER_CHAR, false},
     {SPACE_CATEGORY, _SPACE, true},
     {SUBSCRIPT_CATEGORY, SUBSCRIPT, false},
@@ -390,25 +390,6 @@ struct Scanner {
     return true;
   }
 
-  bool scan_math_shift(TSLexer *lexer, const bool *valid_symbols) {
-    lexer->advance(lexer, false);
-
-    if (valid_symbols[DISPLAY_MATH_SHIFT] && get_catcode(lexer->lookahead) == MATH_SHIFT_CATEGORY) {
-      lexer->advance(lexer, false);
-      lexer->result_symbol = DISPLAY_MATH_SHIFT;
-      lexer->mark_end(lexer);
-      return true;
-    }
-
-    if (valid_symbols[INLINE_MATH_SHIFT]) {
-      lexer->result_symbol = INLINE_MATH_SHIFT;
-      lexer->mark_end(lexer);
-      return true;
-    }
-
-    return false;
-  }
-
   bool scan_word(TSLexer *lexer) {
     string word;
 
@@ -493,10 +474,6 @@ struct Scanner {
       lexer->result_symbol = _TOKEN_END;
       lexer->mark_end(lexer);
       return true;
-    }
-
-    if ((valid_symbols[INLINE_MATH_SHIFT] || valid_symbols[DISPLAY_MATH_SHIFT]) && code == MATH_SHIFT_CATEGORY) {
-      return scan_math_shift(lexer, valid_symbols);
     }
 
     for (auto it = category_descriptions.begin(); it != category_descriptions.end(); it++) {
