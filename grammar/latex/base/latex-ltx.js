@@ -80,6 +80,14 @@ module.exports = {
     }
   },
   math: {
+    commands: {
+      mathstyle: {
+        cs: $ => $.cs_mathstyle,
+        parameters: $ => [
+          $._math_parameter
+        ]
+      }
+    },
     environments: {
       array: {
         name: $ => $.env_name_array,
@@ -98,6 +106,12 @@ module.exports = {
       bibitem: {
         cs: $ => $.cs_bibitem,
         parameters: $ => [optional($.brack_group), $._parameter]
+      },
+      emph: {
+        cs: $ => $.cs_emph,
+        parameters: $ => [
+          $._parameter
+        ]
       },
       item: {
         cs: $ => $.cs_item,
@@ -118,6 +132,12 @@ module.exports = {
         parameters: $ => [
           optional($.brack_group),
           alias($.names_group, $.group)
+        ]
+      },
+      textstyle: {
+        cs: $ => $.cs_textstyle,
+        parameters: $ => [
+          $._parameter
         ]
       },
       use: {
