@@ -49,6 +49,13 @@ module.exports = {
           $._parameter
         ]
       },
+      setlength: {
+        cs: $ => $.cs_setlength,
+        parameters: $ => [
+          $._cs_parameter,
+          $._glue_parameter
+        ]
+      },
       verb: {
         cs: $ => $.cs_verb,
         local: true,
@@ -116,6 +123,10 @@ module.exports = {
       item: {
         cs: $ => $.cs_item,
         parameters: $ => [optional($.brack_group)]
+      },
+      newline: {
+        cs: $ => $.cs_newline,
+        parameters: $ => [optional($.star), optional($._glue_brack_parameter)]
       },
       // section is actually in the class file, but it's here in the core for
       // simplicity.

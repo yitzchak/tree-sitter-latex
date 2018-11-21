@@ -508,46 +508,6 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
   }
 
   switch (lexer->lookahead) {
-  case ',':
-    if (valid_symbols[comma]) {
-      return scan_single_char_symbol(lexer, comma);
-    }
-    break;
-  case '*':
-    if (valid_symbols[star]) {
-      return scan_single_char_symbol(lexer, star);
-    }
-    break;
-  case '[':
-    if (valid_symbols[lbrack]) {
-      return scan_single_char_symbol(lexer, lbrack);
-    }
-    break;
-  case ']':
-    if (valid_symbols[rbrack]) {
-      return scan_single_char_symbol(lexer, rbrack);
-    }
-    break;
-  case '(':
-    if (valid_symbols[lparen]) {
-      return scan_single_char_symbol(lexer, lparen);
-    }
-    break;
-  case ')':
-    if (valid_symbols[rparen]) {
-      return scan_single_char_symbol(lexer, rparen);
-    }
-    break;
-  case '=':
-    if (valid_symbols[equals]) {
-      return scan_single_char_symbol(lexer, equals);
-    }
-    break;
-  case '`':
-    if (valid_symbols[backtick]) {
-      return scan_single_char_symbol(lexer, backtick);
-    }
-    break;
   case '\'':
     if (valid_symbols[octal]) {
       return scan_octal(lexer);
@@ -571,18 +531,7 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[decimal]) {
       return scan_decimal(lexer);
     }
-    if (valid_symbols[fixed]) {
-      return scan_fixed(lexer);
-    }
-    break;
   case '+':
-    if (valid_symbols[plus]) {
-      return scan_single_char_symbol(lexer, plus);
-    }
-    if (valid_symbols[fixed]) {
-      return scan_fixed(lexer);
-    }
-    break;
   case '-':
   case '.':
     if (valid_symbols[fixed]) {
@@ -591,22 +540,25 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     break;
   }
 
-  if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
-    string keyword;
+  string keyword;
 
+  if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
     do {
       keyword += lexer->lookahead;
       lexer->advance(lexer, false);
     } while (lexer->lookahead &&
              catcode_table[lexer->lookahead] == LETTER_CATEGORY);
+  } else {
+    keyword += lexer->lookahead;
+    lexer->advance(lexer, false);
+  }
 
-    auto it = keywords.find(keyword);
+  auto it = keywords.find(keyword);
 
-    if (it != keywords.end() && valid_symbols[it->second]) {
-      lexer->result_symbol = it->second;
-      lexer->mark_end(lexer);
-      return true;
-    }
+  if (it != keywords.end() && valid_symbols[it->second]) {
+    lexer->result_symbol = it->second;
+    lexer->mark_end(lexer);
+    return true;
   }
 
   CategoryFlags flags = LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG;

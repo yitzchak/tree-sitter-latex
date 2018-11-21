@@ -19,7 +19,7 @@ module.exports = {
       gls_acr: {
         cs: $ => $.cs_gls_acr,
         parameters: $ => [
-          optional(choice($.star, $.plus)),
+          optional(choice($.star, $.plus_sym)),
           optional($.brack_group),
           $._parameter,
           optional($.brack_group)

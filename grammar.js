@@ -126,10 +126,12 @@ let g = {
     $.cs_newcommand,
     $.cs_newenvironment,
     $.cs_newglossaryentry,
+    $.cs_newline,
     $.cs_nocite,
     $.cs_ref,
     $.cs_refrange,
     $.cs_section,
+    $.cs_setlength,
     $.cs_tag,
     $.cs_textstyle,
     $.cs_url,
@@ -182,10 +184,12 @@ let g = {
     $.lparen,
     $.math_shift_end,
     $.math_shift,
+    $.minus,
     $.name,
     $.octal,
     $.par,
     $.parameter_ref,
+    $.plus_sym,
     $.plus,
     $.r,
     $.rbrack,
@@ -361,7 +365,7 @@ let g = {
 
     _dimension: $ => choice(
       $.dimension,
-      prec.right(-1, seq(optional($.fixed), $.cs))
+      seq(optional($.fixed), $.cs)
     ),
 
     dimension_brack_group: $ => brackGroup($, $._dimension),
@@ -369,6 +373,20 @@ let g = {
     dimension_group: $ => group($, $._dimension),
 
     _dimension_parameter: $ => choice(alias($.dimension_group, $.group), $.cs),
+
+    glue: $ => seq(
+      $._dimension,
+      optional(seq($.minus, $._dimension)),
+      optional(seq($.plus, $._dimension))
+    ),
+
+    glue_group: $ => group($, $.glue),
+
+    _glue_parameter: $ => choice($.cs, alias($.glue_group, $.group)),
+
+    glue_brack_group: $ => brackGroup($, $.glue),
+
+    _glue_brack_parameter: $ => alias($.glue_brack_group, $.brack_group),
 
     fixed_pair: $ => parenGroup($, $.fixed, $.comma, $.fixed),
 
