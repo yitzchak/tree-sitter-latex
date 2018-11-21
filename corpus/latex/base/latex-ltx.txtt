@@ -1088,6 +1088,23 @@ foo
       (group (l) (name) (r)))))
 
 ================================================================================
+figure* environment
+================================================================================
+\begin{figure*}
+foo
+\end{figure*}
+--------------------------------------------------------------------------------
+(document
+  (figure_env
+    (begin
+      (cs)
+      (group (l) (name) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
 document environment
 ================================================================================
 \begin{document}
@@ -1370,3 +1387,131 @@ mathcal
       (cs)
       (group (l) (math) (r)))
     (cs)))
+
+================================================================================
+table environment
+================================================================================
+\begin{table}
+foo
+\end{table}
+--------------------------------------------------------------------------------
+(document
+  (table_env
+    (begin
+      (cs)
+      (group (l) (name) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+table environment with position
+================================================================================
+\begin{table}[pos]
+foo
+\end{table}
+--------------------------------------------------------------------------------
+(document
+  (table_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+table* environment
+================================================================================
+\begin{table*}
+foo
+\end{table*}
+--------------------------------------------------------------------------------
+(document
+  (table_env
+    (begin
+      (cs)
+      (group (l) (name) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+minipage environment
+================================================================================
+\begin{minipage}{3in}
+foo
+\end{minipage}
+--------------------------------------------------------------------------------
+(document
+  (minipage_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (dimension (fixed) (unit)) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+minipage environment with optional parameters
+================================================================================
+\begin{minipage}[wibble][1in][quux]{3in}
+foo
+\end{minipage}
+--------------------------------------------------------------------------------
+(document
+  (minipage_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (dimension (fixed) (unit)) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+picture environment
+================================================================================
+\begin{picture}(1,1)
+  foo
+\end{picture}
+--------------------------------------------------------------------------------
+(document
+  (picture_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (paren_group (lparen) (fixed) (comma) (fixed) (rparen)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+picture environment
+================================================================================
+\begin{picture}(0,0)(1,1)
+  foo
+\end{picture}
+--------------------------------------------------------------------------------
+(document
+  (picture_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (paren_group (lparen) (fixed) (comma) (fixed) (rparen))
+      (paren_group (lparen) (fixed) (comma) (fixed) (rparen)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))

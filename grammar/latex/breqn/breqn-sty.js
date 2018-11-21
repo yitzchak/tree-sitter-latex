@@ -3,12 +3,12 @@ module.exports = {
     environments: {
       dmath: {
         name: $ => $.env_name_dmath,
-        beginParameters: $ => [optional($.brack_group), $.eol],
+        beginParameters: $ => [optional($.brack_group)],
         contents: $ => [repeat($._math_mode)]
       },
       dseries: {
         name: $ => $.env_name_dseries,
-        beginParameters: $ => [optional($.brack_group), $.eol],
+        beginParameters: $ => [optional($.brack_group)],
         contents: $ => [repeat($._text_mode)]
       }
     }

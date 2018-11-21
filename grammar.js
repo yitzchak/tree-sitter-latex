@@ -45,8 +45,12 @@ function semiSimpleGroup ($, ...contents) {
   return seq($.begingroup, $._scope_begin, ...contents, choice($.endgroup, $.exit), $._scope_end)
 }
 
-function brackGroup ($, contents) {
-  return seq(prec.dynamic(-10, $.lbrack), contents, $.rbrack)
+function brackGroup ($, ...contents) {
+  return seq($.lbrack, ...contents, $.rbrack)
+}
+
+function parenGroup ($, ...contents) {
+  return seq($.lparen, ...contents, $.rparen)
 }
 
 let rules = {
@@ -152,7 +156,10 @@ let g = {
     $.env_name_luacode,
     $.env_name_luacodestar,
     $.env_name_math,
+    $.env_name_minipage,
     $.env_name_minted,
+    $.env_name_picture,
+    $.env_name_table,
     $.env_name_tabu,
     $.env_name_tabular,
     $.env_name_tabularstar,
@@ -172,6 +179,7 @@ let g = {
     $.invalid,
     $.l,
     $.lbrack,
+    $.lparen,
     $.math_shift_end,
     $.math_shift,
     $.name,
@@ -181,6 +189,7 @@ let g = {
     $.plus,
     $.r,
     $.rbrack,
+    $.rparen,
     $.short_verb_delim,
     $.spread,
     $.star,
@@ -355,6 +364,14 @@ let g = {
       prec.right(-1, seq(optional($.fixed), $.cs))
     ),
 
+    dimension_brack_group: $ => brackGroup($, $._dimension),
+
+    dimension_group: $ => group($, $._dimension),
+
+    _dimension_parameter: $ => choice(alias($.dimension_group, $.group), $.cs),
+
+    fixed_pair: $ => parenGroup($, $.fixed, $.comma, $.fixed),
+
     _number: $ => choice(
       $.decimal,
       $.octal,
@@ -386,7 +403,7 @@ function isOptional (p) {
     (p.type === 'CHOICE' && p.members.some(member => member.type === 'BLANK'))
 }
 
-function defCmd (mode, label, { cs, parameters, local, alt }) {
+function defCmd (mode, label, { cs, parameters, local }) {
   g.rules[label] = function ($) {
     const head = []
     const body = parameters ? parameters($) : []
@@ -428,10 +445,23 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
     )
   }
 
-  g.rules[beginRuleSym] = $ => beginCmd($,
-    alias(name ? $[nameGroupRuleSym] : $.name_group, $.group),
-    ...(beginParameters ? beginParameters($) : [])
-  )
+  g.rules[beginRuleSym] = function ($) {
+    const body = beginParameters ? beginParameters($) : []
+    const tail = []
+
+    while (body.length && isOptional(body[body.length - 1])) {
+      tail.unshift(body.pop())
+    }
+
+    if (!bare) {
+      tail.unshift($._env_begin)
+    }
+
+    return beginCmd($,
+      alias(name ? $[nameGroupRuleSym] : $.name_group, $.group),
+      ...body, ...tail
+    )
+  }
 
   g.rules[endRuleSym] = $ => endCmd($,
     alias(name ? $[nameGroupRuleSym] : $.name_group, $.group),
@@ -441,7 +471,7 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
   if (mode === 'common' && !contents) {
     g.rules[envMathSym] = $ => seq(
       alias($[beginRuleSym], $.begin),
-      ...(bare ? [] : [$._env_begin]),
+      // ...(bare ? [] : [$._env_begin]),
       repeat($._math_mode),
       choice(
         alias($[endRuleSym], $.end),
@@ -452,7 +482,7 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
 
     g.rules[envTextSym] = $ => seq(
       alias($[beginRuleSym], $.begin),
-      ...(bare ? [] : [$._env_begin]),
+      // ...(bare ? [] : [$._env_begin]),
       repeat($._text_mode),
       choice(
         alias($[endRuleSym], $.end),
@@ -466,7 +496,7 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
   } else {
     g.rules[envSym] = $ => seq(
       alias($[beginRuleSym], $.begin),
-      ...(bare ? [] : [$._env_begin]),
+      // ...(bare ? [] : [$._env_begin]),
       ...(contents ? contents($) : [repeat(mode === 'math' ? $._math_mode : $._text_mode)]),
       choice(
         alias($[endRuleSym], $.end),

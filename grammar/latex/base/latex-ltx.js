@@ -160,12 +160,31 @@ module.exports = {
       },
       figure: {
         name: $ => $.env_name_figure,
-        bare: true,
         beginParameters: $ => [optional($.brack_group)]
       },
       inline_math: {
         name: $ => $.env_name_inline_math,
         contents: $ => [repeat($._math_mode)]
+      },
+      minipage: {
+        name: $ => $.env_name_minipage,
+        beginParameters: $ => [
+          optional($.brack_group),
+          optional(alias($.dimension_brack_group, $.brack_group)),
+          optional($.brack_group),
+          $._dimension_parameter
+        ]
+      },
+      picture: {
+        name: $ => $.env_name_picture,
+        beginParameters: $ => [
+          alias($.fixed_pair, $.paren_group),
+          optional(alias($.fixed_pair, $.paren_group))
+        ]
+      },
+      table: {
+        name: $ => $.env_name_table,
+        beginParameters: $ => [optional($.brack_group)]
       },
       text: {
         name: $ => $.env_name

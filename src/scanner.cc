@@ -528,6 +528,16 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
       return scan_single_char_symbol(lexer, rbrack);
     }
     break;
+  case '(':
+    if (valid_symbols[lparen]) {
+      return scan_single_char_symbol(lexer, lparen);
+    }
+    break;
+  case ')':
+    if (valid_symbols[rparen]) {
+      return scan_single_char_symbol(lexer, rparen);
+    }
+    break;
   case '=':
     if (valid_symbols[equals]) {
       return scan_single_char_symbol(lexer, equals);
@@ -602,8 +612,8 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
   CategoryFlags flags = LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG;
 
   while (lexer->lookahead &&
-         // (lexer->lookahead != '[' || !valid_symbols[lbrack]) &&
          (lexer->lookahead != ']' || !valid_symbols[rbrack]) &&
+         (lexer->lookahead != ')' || !valid_symbols[rparen]) &&
          flags[catcode_table[lexer->lookahead]]) {
     lexer->advance(lexer, false);
   }
