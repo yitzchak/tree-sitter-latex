@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <map>
 #include <vector>
+#include <bitset>
 #include <string>
 #include <cwctype>
 #include <cstring>
@@ -11,11 +12,15 @@
 
 namespace {
 
-using std::vector;
-using std::string;
+using std::any_of;
+using std::bitset;
 using std::map;
+using std::memcpy;
+using std::numeric_limits;
+using std::string;
+using std::vector;
 
-enum TokenType {
+enum SymbolType {
   _ESCAPE,
   _EXPLSYNTAXOFF_WORD,
   _EXPLSYNTAXON_WORD,
@@ -61,31 +66,57 @@ enum Category {
   INVALID_CATEGORY
 };
 
-struct CategoryDescription {
-  Category category;
-  TokenType type;
-  bool repeat;
+struct SymbolDescription {
+  SymbolType type;
+  size_t max_count;
+  bitset<16> categories;
+
+  SymbolDescription(unsigned long cats, SymbolType t, size_t c): categories(cats) {
+    type = t;
+    max_count = c;
+  }
 };
 
 struct Scanner {
-  static const int MIN_CATCODE_TABLE_SIZE = 128;
-  static const int MAX_CATCODE_TABLE_SIZE = 256;
+  static const size_t MIN_CATCODE_TABLE_SIZE = 128;
+  static const size_t MAX_CATCODE_TABLE_SIZE = 256;
+  static const size_t MAX_BLOCK_SIZE = numeric_limits<unsigned short>::max();
 
-  vector<CategoryDescription> category_descriptions = {
-    {ACTIVE_CHAR_CATEGORY, ACTIVE_CHAR, false},
-    {ALIGNMENT_TAB_CATEGORY, ALIGNMENT_TAB, false},
-    {BEGIN_CATEGORY, BEGIN_GROUP, false},
-    {COMMENT_CATEGORY, COMMENT_CHAR, false},
-    {END_CATEGORY, END_GROUP, false},
-    {EOL_CATEGORY, EOL, false},
-    {MATH_SHIFT_CATEGORY, MATH_SHIFT, false},
-    {PARAMETER_CATEGORY, PARAMETER_CHAR, false},
-    {SPACE_CATEGORY, _SPACE, true},
-    {SUBSCRIPT_CATEGORY, SUBSCRIPT, false},
-    {SUPERSCRIPT_CATEGORY, SUPERSCRIPT, false}
+  static const unsigned long ESCAPE_FLAG = 1 << ESCAPE_CATEGORY;
+  static const unsigned long BEGIN_FLAG = 1 << BEGIN_CATEGORY;
+  static const unsigned long END_FLAG = 1 << END_CATEGORY;
+  static const unsigned long MATH_SHIFT_FLAG = 1 << MATH_SHIFT_CATEGORY;
+  static const unsigned long ALIGNMENT_TAB_FLAG = 1 << ALIGNMENT_TAB_CATEGORY;
+  static const unsigned long EOL_FLAG = 1 << EOL_CATEGORY;
+  static const unsigned long PARAMETER_FLAG = 1 << PARAMETER_CATEGORY;
+  static const unsigned long SUPERSCRIPT_FLAG = 1 << SUPERSCRIPT_CATEGORY;
+  static const unsigned long SUBSCRIPT_FLAG = 1 << SUBSCRIPT_CATEGORY;
+  static const unsigned long IGNORED_FLAG = 1 << IGNORED_CATEGORY;
+  static const unsigned long SPACE_FLAG = 1 << SPACE_CATEGORY;
+  static const unsigned long LETTER_FLAG = 1 << LETTER_CATEGORY;
+  static const unsigned long OTHER_FLAG = 1 << OTHER_CATEGORY;
+  static const unsigned long ACTIVE_CHAR_FLAG = 1 << ACTIVE_CHAR_CATEGORY;
+  static const unsigned long COMMENT_FLAG = 1 << COMMENT_CATEGORY;
+  static const unsigned long INVALID_FLAG = 1 << INVALID_CATEGORY;
+
+  vector<SymbolDescription> symbol_descriptions = {
+    {~(LETTER_FLAG | OTHER_FLAG), _NON_LETTER_OR_OTHER, 1},
+    {~LETTER_FLAG, _TOKEN_END, 0},
+    {ESCAPE_FLAG, _ESCAPE, 1},
+    {BEGIN_FLAG, BEGIN_GROUP, 1},
+    {END_FLAG, END_GROUP, 1},
+    {MATH_SHIFT_FLAG, MATH_SHIFT, 1},
+    {ALIGNMENT_TAB_FLAG, ALIGNMENT_TAB, 1},
+    {EOL_FLAG, EOL, 1},
+    {PARAMETER_FLAG, PARAMETER_CHAR, 1},
+    {SUPERSCRIPT_FLAG, SUPERSCRIPT, 1},
+    {SUBSCRIPT_FLAG, SUBSCRIPT, 1},
+    {SPACE_FLAG, _SPACE, MAX_BLOCK_SIZE},
+    {ACTIVE_CHAR_FLAG, ACTIVE_CHAR, 1},
+    {COMMENT_FLAG, COMMENT_CHAR, 1}
   };
 
-  map<string, TokenType> words = {
+  map<string, SymbolType> words = {
     {"ExplSyntaxOff", _EXPLSYNTAXOFF_WORD},
     {"ExplSyntaxOn", _EXPLSYNTAXON_WORD},
     {"makeatletter", _MAKEATLETTER_WORD},
@@ -224,7 +255,7 @@ struct Scanner {
     const size_t ch_size = sizeof(int32_t);
 
     // First save the verbatim delimiter
-    std::memcpy(&buffer[0], &start_delim, ch_size);
+    memcpy(&buffer[0], &start_delim, ch_size);
 
     // Next store the catcodes map as [char, char] pairs
     unsigned num_serialized = 0;
@@ -234,7 +265,7 @@ struct Scanner {
 
     for (int32_t ch = 0; ch < catcode_table.size(); ch++) {
       if (catcode_table[ch] != OTHER_CATEGORY) {
-        std::memcpy(&buffer[length], &ch, ch_size); // character
+        memcpy(&buffer[length], &ch, ch_size); // character
         length += ch_size;
         buffer[length++] = static_cast<char>(catcode_table[ch]); // catcode
         num_serialized++;
@@ -242,13 +273,13 @@ struct Scanner {
     }
 
     for (auto it = overflow_catcodes.begin(); it != overflow_catcodes.end(); ++it) {
-      std::memcpy(&buffer[length], &it->first, ch_size); // character
+      memcpy(&buffer[length], &it->first, ch_size); // character
       length += ch_size;
       buffer[length++] = static_cast<char>(it->second); // catcode
       num_serialized++;
     }
 
-    std::memcpy(&buffer[sizeof(start_delim)], &num_serialized, sizeof(num_serialized));
+    memcpy(&buffer[sizeof(start_delim)], &num_serialized, sizeof(num_serialized));
 
     // Next store the saved_catcodes map as [char, char] pairs
     unsigned saved_cat_count_pos = length;
@@ -257,14 +288,14 @@ struct Scanner {
     num_serialized = 0;
 
     for (auto it = saved_catcodes.begin(); it != saved_catcodes.end(); ++it) {
-      std::memcpy(&buffer[length], &it->first, ch_size); // character
+      memcpy(&buffer[length], &it->first, ch_size); // character
       length += ch_size;
       buffer[length++] = static_cast<char>(it->second);
       num_serialized++;
     }
 
     num_serialized = saved_catcodes.size();
-    std::memcpy(&buffer[saved_cat_count_pos], &num_serialized, sizeof(num_serialized));
+    memcpy(&buffer[saved_cat_count_pos], &num_serialized, sizeof(num_serialized));
 
     return length;
   }
@@ -282,17 +313,17 @@ struct Scanner {
     reset();
 
     // Retrieve the verbatim start delimiter
-    std::memcpy(&start_delim, &buffer[0], ch_size);
+    memcpy(&start_delim, &buffer[0], ch_size);
 
     // Retrieve the catcode pairs
     unsigned num_serialized;
-    std::memcpy(&num_serialized, &buffer[sizeof(start_delim)], sizeof(num_serialized));
+    memcpy(&num_serialized, &buffer[sizeof(start_delim)], sizeof(num_serialized));
 
     unsigned i = sizeof(start_delim) + sizeof(num_serialized);
     unsigned set = 0;
     while (set < num_serialized) {
       int32_t character;
-      std::memcpy(&character, &buffer[i], ch_size);
+      memcpy(&character, &buffer[i], ch_size);
       i += ch_size;
       Category cat = static_cast<Category>(buffer[i++]);
       set_catcode(character, cat);
@@ -302,13 +333,13 @@ struct Scanner {
     // Retrieve the saved_catcode pairs
     saved_catcodes.clear();
 
-    std::memcpy(&num_serialized, &buffer[i], sizeof(num_serialized));
+    memcpy(&num_serialized, &buffer[i], sizeof(num_serialized));
 
     i += sizeof(num_serialized);
     set = 0;
     while (set < num_serialized) {
       int32_t character;
-      std::memcpy(&character, &buffer[i], ch_size);
+      memcpy(&character, &buffer[i], ch_size);
       i += ch_size;
       Category cat = static_cast<Category>(buffer[i++]);
       saved_catcodes[character] = cat;
@@ -375,17 +406,17 @@ struct Scanner {
     return true;
   }
 
-  bool scan_category(TSLexer *lexer, CategoryDescription desc) {
-    lexer->advance(lexer, false);
-
-    if (desc.repeat) {
-      while (get_catcode(lexer->lookahead) == desc.category) {
-        lexer->advance(lexer, false);
-      }
+  bool scan_symbol(TSLexer *lexer, SymbolDescription desc) {
+    // Accumulate characters as long as they match the catcode and are allowed
+    // by max_count.
+    for (size_t remaining = desc.max_count;
+        remaining > 0 && desc.categories[get_catcode(lexer->lookahead)];
+        remaining--) {
+      lexer->advance(lexer, false);
     }
 
-    lexer->mark_end(lexer);
     lexer->result_symbol = desc.type;
+    lexer->mark_end(lexer);
 
     return true;
   }
@@ -393,6 +424,8 @@ struct Scanner {
   bool scan_word(TSLexer *lexer) {
     string word;
 
+    // Keep advancing while there are letters available. Save the result for
+    // lookup in the word map.
     while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
       word += lexer->lookahead;
       lexer->advance(lexer, false);
@@ -400,6 +433,7 @@ struct Scanner {
 
     auto it = words.find(word);
 
+    // if the word is not found then let the internal scanner have the text.
     if (it == words.end()) {
       return false;
     }
@@ -407,6 +441,7 @@ struct Scanner {
     lexer->result_symbol = it->second;
     lexer->mark_end(lexer);
 
+    // Look for a word that signifies a catcode change.
     switch (lexer->result_symbol) {
       case _EXPLSYNTAXOFF_WORD:
         pop_catcode('\t');
@@ -450,49 +485,35 @@ struct Scanner {
   {
     Category code = get_catcode(lexer->lookahead);
 
-    if (valid_symbols[_ESCAPE] && code == ESCAPE_CATEGORY) {
-      lexer->advance(lexer, false);
-      lexer->result_symbol = _ESCAPE;
-      lexer->mark_end(lexer);
-      return true;
-    }
-
-    if ((valid_symbols[_MAKEATLETTER_WORD] || valid_symbols[_MAKEATOTHER_WORD] ||
-        valid_symbols[_EXPLSYNTAXON_WORD] || valid_symbols[_EXPLSYNTAXOFF_WORD]) &&
-        get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
-      return scan_word(lexer);
-    }
-
-    if (valid_symbols[_NON_LETTER_OR_OTHER] && code != LETTER_CATEGORY && code != OTHER_CATEGORY) {
-      lexer->advance(lexer, false);
-      lexer->result_symbol = _NON_LETTER_OR_OTHER;
-      lexer->mark_end(lexer);
-      return true;
-    }
-
-    if (valid_symbols[_TOKEN_END] && code != LETTER_CATEGORY) {
-      lexer->result_symbol = _TOKEN_END;
-      lexer->mark_end(lexer);
-      return true;
-    }
-
-    for (auto it = category_descriptions.begin(); it != category_descriptions.end(); it++) {
-      if (valid_symbols[it->type] && code == it->category) {
-        return scan_category(lexer, *it);
+    // First look for simple symbols such as escape, comment, etc.
+    for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {
+      if (it->categories[code] && valid_symbols[it->type]) {
+        return scan_symbol(lexer, *it);
       }
     }
 
+    // Check for word symbols that follow an escape
+    if (code == LETTER_CATEGORY &&
+        any_of(words.begin(), words.end(),
+          [valid_symbols](auto p){ return valid_symbols[p.second]; })) {
+      return scan_word(lexer);
+    }
+
+    // Look an inline verbatim delimiter and end the verbatim if one is
+    // currently open. Otherwise start a new one.
     if (valid_symbols[VERB_DELIM]) {
       return (start_delim) ?
         scan_end_verb_delim(lexer) :
         scan_start_verb_delim(lexer);
     }
 
+    // Scan an inline verbatim body.
     if (start_delim && valid_symbols[VERB_BODY]) {
       return scan_verb_body(lexer);
     }
 
-    // This is a kludge. Verbatim environments actually detect the corrent \end
+    // Scan a single line in a verbatim environment.
+    // NOTE: This is a kludge. Verbatim environments actually detect the corrent \end
     if (valid_symbols[VERB_LINE] && code != ESCAPE_CATEGORY) {
       return scan_verb_line(lexer);
     }
