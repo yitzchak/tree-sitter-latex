@@ -268,3 +268,80 @@ TeX rightskip dimension assign
     (dimension_assign
       (dimension_token)
       (glue (dimension (decimal) (unit))))))
+
+============================
+TeX hskip
+============================
+\hskip to 1in
+----------------------------
+(document
+  (text_mode
+    (skip
+      (skip_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX hskip without `to`
+============================
+\hskip1in
+----------------------------
+(document
+  (text_mode
+    (skip
+      (skip_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX vskip
+============================
+\vskip to 1in
+----------------------------
+(document
+  (text_mode
+    (skip
+      (skip_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX hbox
+============================
+\hbox to 1in
+----------------------------
+(document
+  (text_mode
+    (skip
+      (skip_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX hbox
+============================
+\hbox to 1in
+----------------------------
+(document
+  (text_mode
+    (skip
+      (skip_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX vtop
+============================
+\vtop to 1in
+----------------------------
+(document
+  (text_mode
+    (skip
+      (skip_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX vcenter
+============================
+\vcenter to 1in
+----------------------------
+(document
+  (text_mode
+    (skip
+      (skip_token)
+      (glue (dimension (decimal) (unit))))))

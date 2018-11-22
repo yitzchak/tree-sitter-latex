@@ -119,6 +119,7 @@ module.exports = grammar({
       $.escaped,
       $.catcode,
       $.dimension_assign,
+      $.skip,
       $.explsyntaxoff,
       $.explsyntaxon,
       $.makeatletter,
@@ -395,10 +396,16 @@ module.exports = grammar({
 
     // TeX dimension commands
 
-    dimension_assign: $ => seq($.dimension_token, choice($._space, '='), $.glue),
+    dimension_assign: $ => seq($.dimension_token, optional($._ignored), optional('='), optional($._ignored), $.glue),
 
     dimension_token: $ => token_rule($,
-      /baselineskip|displayindent|displaywidth|hangindent|hangafter|[hv]size|[hv]offset|leftskip|parindent|rightskip/
+      /baselineskip|displayindent|displaywidth|hangindent|hangafter|[hv]size|[hv]offset|leftskip|parindent|rightskip|tabskip/
+    ),
+
+    skip: $ => seq($.skip_token, optional($._ignored), optional('to'), optional($._ignored), $.glue),
+
+    skip_token: $ => token_rule($,
+      /[hv]skip|[hv]box|vtop|vcenter/
     ),
 
     glue: $ => seq(
