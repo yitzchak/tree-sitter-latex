@@ -118,6 +118,7 @@ module.exports = grammar({
       $.text,
       $.escaped,
       $.catcode,
+      $.dimension_assign,
       $.explsyntaxoff,
       $.explsyntaxon,
       $.makeatletter,
@@ -392,6 +393,17 @@ module.exports = grammar({
 
     explsyntaxoff_token: $ => token_rule($, $._explsyntaxoff_word),
 
+    // TeX dimension commands
+
+    dimension_assign: $ => seq($.dimension_token, choice($._space, '='), $.glue),
+
+    dimension_token: $ => token_rule($, /baselineskip|displayindent|displaywidth|hangindent|hangafter|[hv]size|[hv]offset|leftskip|parindent|rightskip/),
+
+    glue: $ => seq(
+      $.dimension,
+      optional(seq($._space, 'plus', $._space, $.dimension)),
+      optional(seq($._space, 'minus', $._space, $.dimension))),
+
     // hyperref functions
 
     href: $ => command_rule($, $.href_token, { opt: 1, text: 2 }),
@@ -464,9 +476,16 @@ module.exports = grammar({
 
     begin_opt: $ => '[',
     end_opt: $ => ']',
+
     text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
+
     token: $ => token_rule($, repeat1(/./)),
     escaped: $ => seq($._escape, $._non_letter_or_other),
+
+    dimension: $ => seq($.decimal, $.unit),
+    unit: $ => /bp|cc|cm|dd|em|ex|fil{1,3}|in|mm|mu|pc|pt|sp/,
+
+    decimal: $ => /([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,
     number: $ => /[0-9]+/
   }
 })

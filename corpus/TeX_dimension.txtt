@@ -1,0 +1,237 @@
+============================
+TeX baselineskip dimension assign with no equals sign
+============================
+\baselineskip 12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign with decimal
+============================
+\baselineskip=1.2pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign with plus glue
+============================
+\baselineskip=1.2pt plus 7em
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue
+        (dimension (decimal) (unit))
+        (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign with minus glue
+============================
+\baselineskip=1.2pt minus 7em
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue
+        (dimension (decimal) (unit))
+        (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign with plus and minus glue
+============================
+\baselineskip=1.2pt plus 7em minus 2ex
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue
+        (dimension (decimal) (unit))
+        (dimension (decimal) (unit))
+        (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign bp units
+============================
+\baselineskip=12bp
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign cc units
+============================
+\baselineskip=12cc
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign cm units
+============================
+\baselineskip=12cm
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign fil units
+============================
+\baselineskip=12fil
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign fill units
+============================
+\baselineskip=12fill
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX baselineskip dimension assign filll units
+============================
+\baselineskip=12filll
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX displayindent dimension assign
+============================
+\displayindent=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX displaywidth dimension assign
+============================
+\displaywidth=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX hangindent dimension assign
+============================
+\hangindent=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX hangafter dimension assign
+============================
+\hangafter=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX hsize dimension assign
+============================
+\hsize=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX vsize dimension assign
+============================
+\vsize=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX hoffset dimension assign
+============================
+\hoffset=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX leftskip dimension assign
+============================
+\leftskip=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX parindent dimension assign
+============================
+\parindent=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
+
+============================
+TeX rightskip dimension assign
+============================
+\rightskip=12pt
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (unit))))))
