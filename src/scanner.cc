@@ -76,7 +76,7 @@ struct SymbolDescription {
   SymbolWidth width;
   bitset<16> categories;
 
-  SymbolDescription(unsigned long cats, SymbolType t, SymbolWidth w): categories(cats) {
+  SymbolDescription(unsigned int cats, SymbolType t, SymbolWidth w): categories(cats) {
     type = t;
     width = w;
   }
@@ -86,22 +86,22 @@ struct Scanner {
   static const size_t MIN_CATCODE_TABLE_SIZE = 128;
   static const size_t MAX_CATCODE_TABLE_SIZE = 256;
 
-  static const unsigned long ESCAPE_FLAG = 1 << ESCAPE_CATEGORY;
-  static const unsigned long BEGIN_FLAG = 1 << BEGIN_CATEGORY;
-  static const unsigned long END_FLAG = 1 << END_CATEGORY;
-  static const unsigned long MATH_SHIFT_FLAG = 1 << MATH_SHIFT_CATEGORY;
-  static const unsigned long ALIGNMENT_TAB_FLAG = 1 << ALIGNMENT_TAB_CATEGORY;
-  static const unsigned long EOL_FLAG = 1 << EOL_CATEGORY;
-  static const unsigned long PARAMETER_FLAG = 1 << PARAMETER_CATEGORY;
-  static const unsigned long SUPERSCRIPT_FLAG = 1 << SUPERSCRIPT_CATEGORY;
-  static const unsigned long SUBSCRIPT_FLAG = 1 << SUBSCRIPT_CATEGORY;
-  static const unsigned long IGNORED_FLAG = 1 << IGNORED_CATEGORY;
-  static const unsigned long SPACE_FLAG = 1 << SPACE_CATEGORY;
-  static const unsigned long LETTER_FLAG = 1 << LETTER_CATEGORY;
-  static const unsigned long OTHER_FLAG = 1 << OTHER_CATEGORY;
-  static const unsigned long ACTIVE_CHAR_FLAG = 1 << ACTIVE_CHAR_CATEGORY;
-  static const unsigned long COMMENT_FLAG = 1 << COMMENT_CATEGORY;
-  static const unsigned long INVALID_FLAG = 1 << INVALID_CATEGORY;
+  static const unsigned int ESCAPE_FLAG = 1 << ESCAPE_CATEGORY;
+  static const unsigned int BEGIN_FLAG = 1 << BEGIN_CATEGORY;
+  static const unsigned int END_FLAG = 1 << END_CATEGORY;
+  static const unsigned int MATH_SHIFT_FLAG = 1 << MATH_SHIFT_CATEGORY;
+  static const unsigned int ALIGNMENT_TAB_FLAG = 1 << ALIGNMENT_TAB_CATEGORY;
+  static const unsigned int EOL_FLAG = 1 << EOL_CATEGORY;
+  static const unsigned int PARAMETER_FLAG = 1 << PARAMETER_CATEGORY;
+  static const unsigned int SUPERSCRIPT_FLAG = 1 << SUPERSCRIPT_CATEGORY;
+  static const unsigned int SUBSCRIPT_FLAG = 1 << SUBSCRIPT_CATEGORY;
+  static const unsigned int IGNORED_FLAG = 1 << IGNORED_CATEGORY;
+  static const unsigned int SPACE_FLAG = 1 << SPACE_CATEGORY;
+  static const unsigned int LETTER_FLAG = 1 << LETTER_CATEGORY;
+  static const unsigned int OTHER_FLAG = 1 << OTHER_CATEGORY;
+  static const unsigned int ACTIVE_CHAR_FLAG = 1 << ACTIVE_CHAR_CATEGORY;
+  static const unsigned int COMMENT_FLAG = 1 << COMMENT_CATEGORY;
+  static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
 
   vector<SymbolDescription> symbol_descriptions = {
     {~(LETTER_FLAG | OTHER_FLAG), _NON_LETTER_OR_OTHER, SINGLE_WIDTH},
