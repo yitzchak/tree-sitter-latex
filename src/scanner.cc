@@ -16,7 +16,6 @@ using std::any_of;
 using std::bitset;
 using std::map;
 using std::memcpy;
-using std::numeric_limits;
 using std::string;
 using std::vector;
 
@@ -66,21 +65,26 @@ enum Category {
   INVALID_CATEGORY
 };
 
+enum SymbolWidth {
+  ZERO_WIDTH,
+  SINGLE_WIDTH,
+  UNLIMITED_WIDTH
+};
+
 struct SymbolDescription {
   SymbolType type;
-  size_t max_count;
+  SymbolWidth width;
   bitset<16> categories;
 
-  SymbolDescription(unsigned long cats, SymbolType t, size_t c): categories(cats) {
+  SymbolDescription(unsigned long cats, SymbolType t, SymbolWidth w): categories(cats) {
     type = t;
-    max_count = c;
+    width = w;
   }
 };
 
 struct Scanner {
   static const size_t MIN_CATCODE_TABLE_SIZE = 128;
   static const size_t MAX_CATCODE_TABLE_SIZE = 256;
-  static const size_t MAX_BLOCK_SIZE = numeric_limits<unsigned short>::max();
 
   static const unsigned long ESCAPE_FLAG = 1 << ESCAPE_CATEGORY;
   static const unsigned long BEGIN_FLAG = 1 << BEGIN_CATEGORY;
@@ -100,20 +104,20 @@ struct Scanner {
   static const unsigned long INVALID_FLAG = 1 << INVALID_CATEGORY;
 
   vector<SymbolDescription> symbol_descriptions = {
-    {~(LETTER_FLAG | OTHER_FLAG), _NON_LETTER_OR_OTHER, 1},
-    {~LETTER_FLAG, _TOKEN_END, 0},
-    {ESCAPE_FLAG, _ESCAPE, 1},
-    {BEGIN_FLAG, BEGIN_GROUP, 1},
-    {END_FLAG, END_GROUP, 1},
-    {MATH_SHIFT_FLAG, MATH_SHIFT, 1},
-    {ALIGNMENT_TAB_FLAG, ALIGNMENT_TAB, 1},
-    {EOL_FLAG, EOL, 1},
-    {PARAMETER_FLAG, PARAMETER_CHAR, 1},
-    {SUPERSCRIPT_FLAG, SUPERSCRIPT, 1},
-    {SUBSCRIPT_FLAG, SUBSCRIPT, 1},
-    {SPACE_FLAG, _SPACE, MAX_BLOCK_SIZE},
-    {ACTIVE_CHAR_FLAG, ACTIVE_CHAR, 1},
-    {COMMENT_FLAG, COMMENT_CHAR, 1}
+    {~(LETTER_FLAG | OTHER_FLAG), _NON_LETTER_OR_OTHER, SINGLE_WIDTH},
+    {~LETTER_FLAG,                _TOKEN_END,           ZERO_WIDTH},
+    {ESCAPE_FLAG,                 _ESCAPE,              SINGLE_WIDTH},
+    {BEGIN_FLAG,                  BEGIN_GROUP,          SINGLE_WIDTH},
+    {END_FLAG,                    END_GROUP,            SINGLE_WIDTH},
+    {MATH_SHIFT_FLAG,             MATH_SHIFT,           SINGLE_WIDTH},
+    {ALIGNMENT_TAB_FLAG,          ALIGNMENT_TAB,        SINGLE_WIDTH},
+    {EOL_FLAG,                    EOL,                  SINGLE_WIDTH},
+    {PARAMETER_FLAG,              PARAMETER_CHAR,       SINGLE_WIDTH},
+    {SUPERSCRIPT_FLAG,            SUPERSCRIPT,          SINGLE_WIDTH},
+    {SUBSCRIPT_FLAG,              SUBSCRIPT,            SINGLE_WIDTH},
+    {SPACE_FLAG,                  _SPACE,               UNLIMITED_WIDTH},
+    {ACTIVE_CHAR_FLAG,            ACTIVE_CHAR,          SINGLE_WIDTH},
+    {COMMENT_FLAG,                COMMENT_CHAR,         SINGLE_WIDTH}
   };
 
   map<string, SymbolType> words = {
@@ -353,8 +357,8 @@ struct Scanner {
     if (lexer->lookahead && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
-      lexer->mark_end(lexer);
       lexer->result_symbol = VERB_DELIM;
+      lexer->mark_end(lexer);
       return true;
     }
 
@@ -364,15 +368,15 @@ struct Scanner {
   bool scan_end_verb_delim(TSLexer *lexer) {
     if (lexer->lookahead == start_delim) {
       lexer->advance(lexer, false);
-      lexer->mark_end(lexer);
       lexer->result_symbol = VERB_DELIM;
+      lexer->mark_end(lexer);
       start_delim = 0;
       return true;
     }
 
     if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
-      lexer->mark_end(lexer);
       lexer->result_symbol = VERB_DELIM; // don't eat the newline (for consistency)
+      lexer->mark_end(lexer);
       start_delim = 0;
       return true;
     }
@@ -385,8 +389,8 @@ struct Scanner {
       lexer->advance(lexer, false);
     }
 
-    lexer->mark_end(lexer);
     lexer->result_symbol = VERB_BODY;
+    lexer->mark_end(lexer);
 
     return true;
   }
@@ -400,19 +404,24 @@ struct Scanner {
       lexer->advance(lexer, false);
     }
 
-    lexer->mark_end(lexer);
     lexer->result_symbol = VERB_LINE;
+    lexer->mark_end(lexer);
 
     return true;
   }
 
   bool scan_symbol(TSLexer *lexer, SymbolDescription desc) {
     // Accumulate characters as long as they match the catcode and are allowed
-    // by max_count.
-    for (size_t remaining = desc.max_count;
-        remaining > 0 && desc.categories[get_catcode(lexer->lookahead)];
-        remaining--) {
-      lexer->advance(lexer, false);
+    // by the symbol width.
+    switch (desc.width) {
+      case SINGLE_WIDTH:
+        lexer->advance(lexer, false);
+        break;
+      case UNLIMITED_WIDTH:
+        while (desc.categories[get_catcode(lexer->lookahead)]) {
+          lexer->advance(lexer, false);
+        }
+        break;
     }
 
     lexer->result_symbol = desc.type;
