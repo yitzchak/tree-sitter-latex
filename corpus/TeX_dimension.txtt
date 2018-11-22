@@ -21,6 +21,39 @@ TeX baselineskip dimension assign with decimal
       (glue (dimension (decimal) (unit))))))
 
 ============================
+TeX baselineskip dimension assign with dimension reference
+============================
+\baselineskip=\voffset
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (dimension_token))))))
+
+============================
+TeX baselineskip dimension assign with scalar multiple of dimension reference
+============================
+\baselineskip=2\voffset
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (decimal) (dimension_token))))))
+
+============================
+TeX baselineskip dimension assign with token reference
+============================
+\baselineskip=\foo
+----------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_token)
+      (glue (dimension (token))))))
+
+============================
 TeX baselineskip dimension assign with plus glue
 ============================
 \baselineskip=1.2pt plus 7em

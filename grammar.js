@@ -397,12 +397,20 @@ module.exports = grammar({
 
     dimension_assign: $ => seq($.dimension_token, choice($._space, '='), $.glue),
 
-    dimension_token: $ => token_rule($, /baselineskip|displayindent|displaywidth|hangindent|hangafter|[hv]size|[hv]offset|leftskip|parindent|rightskip/),
+    dimension_token: $ => token_rule($,
+      /baselineskip|displayindent|displaywidth|hangindent|hangafter|[hv]size|[hv]offset|leftskip|parindent|rightskip/
+    ),
 
     glue: $ => seq(
       $.dimension,
       optional(seq($._space, 'plus', $._space, $.dimension)),
-      optional(seq($._space, 'minus', $._space, $.dimension))),
+      optional(seq($._space, 'minus', $._space, $.dimension))
+    ),
+
+    dimension: $ => seq(
+      optional($.decimal),
+      choice($.unit, $.dimension_token, $.token)
+    ),
 
     // hyperref functions
 
@@ -482,7 +490,6 @@ module.exports = grammar({
     token: $ => token_rule($, repeat1(/./)),
     escaped: $ => seq($._escape, $._non_letter_or_other),
 
-    dimension: $ => seq($.decimal, $.unit),
     unit: $ => /bp|cc|cm|dd|em|ex|fil{1,3}|in|mm|mu|pc|pt|sp/,
 
     decimal: $ => /([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,

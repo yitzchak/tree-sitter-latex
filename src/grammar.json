@@ -2146,6 +2146,40 @@
         }
       ]
     },
+    "dimension": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "decimal"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "unit"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "dimension_token"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "token"
+            }
+          ]
+        }
+      ]
+    },
     "href": {
       "type": "SEQ",
       "members": [
@@ -2794,19 +2828,6 @@
         {
           "type": "SYMBOL",
           "name": "_non_letter_or_other"
-        }
-      ]
-    },
-    "dimension": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "decimal"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "unit"
         }
       ]
     },
