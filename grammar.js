@@ -119,6 +119,7 @@ module.exports = grammar({
       $.escaped,
       $.catcode,
       $.dimension_assign,
+      $.glue_assign,
       $.skip,
       $.explsyntaxoff,
       $.explsyntaxon,
@@ -396,27 +397,48 @@ module.exports = grammar({
 
     // TeX dimension commands
 
-    dimension_assign: $ => seq($.dimension_token, optional($._ignored), optional('='), optional($._ignored), $.glue),
+    dimension_assign: $ => seq(
+      $.dimension_token,
+      optional($._ignored), optional('='), optional($._ignored),
+      $.dimension
+    ),
+
+    glue_assign: $ => seq(
+      $.glue_token,
+      optional($._ignored), optional('='), optional($._ignored),
+      $.glue
+    ),
+
+    glue_token: $ => token_rule($,
+      /(((above|below)display(short)?|baseline|left|line|normalbaseline|normalline|parfill|par|right|splittop|tab|top|x?space)skip)|(small|mid|big)skipamount/
+    ),
 
     dimension_token: $ => token_rule($,
-      /baselineskip|displayindent|displaywidth|hangindent|hangafter|[hv]size|[hv]offset|leftskip|parindent|rightskip|tabskip/
+      /(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth/
     ),
 
-    skip: $ => seq($.skip_token, optional($._ignored), optional('to'), optional($._ignored), $.glue),
+    // glue_space_token: $ => token_rule($,
+    //   /[hv]skip|(h|top|v)glue/
+    // ),
 
-    skip_token: $ => token_rule($,
-      /[hv]skip|[hv]box|vtop|vcenter/
-    ),
-
-    glue: $ => seq(
-      $.dimension,
-      optional(seq($._space, 'plus', $._space, $.dimension)),
-      optional(seq($._space, 'minus', $._space, $.dimension))
+    glue: $ => choice(
+      seq(optional($.decimal), $.glue_token),
+      seq(
+        $.dimension,
+        optional(seq($._space, 'plus', $._space, $.dimension)),
+        optional(seq($._space, 'minus', $._space, $.dimension))
+      )
     ),
 
     dimension: $ => seq(
       optional($.decimal),
       choice($.unit, $.dimension_token, $.token)
+    ),
+
+    skip: $ => seq($.skip_token, optional($._ignored), optional('to'), optional($._ignored), $.glue),
+
+    skip_token: $ => token_rule($,
+      /[hmv]skip|[hv]box|vtop|vcenter/
     ),
 
     // hyperref functions
@@ -497,9 +519,10 @@ module.exports = grammar({
     token: $ => token_rule($, repeat1(/./)),
     escaped: $ => seq($._escape, $._non_letter_or_other),
 
-    unit: $ => /bp|cc|cm|dd|em|ex|fil{1,3}|in|mm|mu|pc|pt|sp/,
+    // fi introduced by LuaTeX
+    unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|pc|pt|sp/,
 
-    decimal: $ => /([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,
+    decimal: $ => /[+-]?([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,
     number: $ => /[0-9]+/
   }
 })

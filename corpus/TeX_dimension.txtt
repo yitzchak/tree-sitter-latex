@@ -1,347 +1,132 @@
-============================
-TeX baselineskip dimension assign with no equals sign
-============================
-\baselineskip 12pt
-----------------------------
+================================
+Dimension assign - hoffset
+================================
+\hoffset=1em
+--------------------------------
 (document
   (text_mode
     (dimension_assign
       (dimension_token)
-      (glue (dimension (decimal) (unit))))))
+      (dimension (decimal) (unit)))))
 
-============================
-TeX baselineskip dimension assign with decimal
-============================
-\baselineskip=1.2pt
-----------------------------
+================================
+Dimension assign - hoffset missing equals sign
+================================
+\hoffset1em
+--------------------------------
 (document
   (text_mode
     (dimension_assign
       (dimension_token)
-      (glue (dimension (decimal) (unit))))))
+      (dimension (decimal) (unit)))))
 
-============================
-TeX baselineskip dimension assign with dimension reference
-============================
-\baselineskip=\voffset
-----------------------------
+================================
+Dimension assign - hoffset using dimension parameter
+================================
+\hoffset=\voffset
+--------------------------------
 (document
   (text_mode
     (dimension_assign
       (dimension_token)
-      (glue (dimension (dimension_token))))))
+      (dimension (dimension_token)))))
 
-============================
-TeX baselineskip dimension assign with scalar multiple of dimension reference
-============================
-\baselineskip=2\voffset
-----------------------------
+================================
+Dimension assign - hoffset using scalar multiple dimension parameter
+================================
+\hoffset=2\voffset
+--------------------------------
 (document
   (text_mode
     (dimension_assign
       (dimension_token)
-      (glue (dimension (decimal) (dimension_token))))))
+      (dimension (decimal) (dimension_token)))))
 
-============================
-TeX baselineskip dimension assign with token reference
-============================
-\baselineskip=\foo
-----------------------------
+================================
+Glue assign - leftskip
+================================
+\leftskip=1em
+--------------------------------
 (document
   (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (token))))))
+    (glue_assign
+      (glue_token)
+      (glue
+        (dimension (decimal) (unit))))))
 
-============================
-TeX baselineskip dimension assign with plus glue
-============================
-\baselineskip=1.2pt plus 7em
-----------------------------
+================================
+Glue assign - leftskip missing equals
+================================
+\leftskip 1em
+--------------------------------
 (document
   (text_mode
-    (dimension_assign
-      (dimension_token)
+    (glue_assign
+      (glue_token)
+      (glue
+        (dimension (decimal) (unit))))))
+
+================================
+Glue assign - leftskip same as rightskip
+================================
+\leftskip=\rightskip
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_token)
+      (glue
+        (glue_token)))))
+
+================================
+Glue assign - leftskip scalar multiple of rightskip
+================================
+\leftskip=2\rightskip
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_token)
+      (glue
+        (decimal)
+        (glue_token)))))
+
+================================
+Glue assign - leftskip with plus
+================================
+\leftskip=1em plus 2fil
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_token)
       (glue
         (dimension (decimal) (unit))
         (dimension (decimal) (unit))))))
 
-============================
-TeX baselineskip dimension assign with minus glue
-============================
-\baselineskip=1.2pt minus 7em
-----------------------------
+================================
+Glue assign - leftskip with minus
+================================
+\leftskip=1em minus 2fil
+--------------------------------
 (document
   (text_mode
-    (dimension_assign
-      (dimension_token)
+    (glue_assign
+      (glue_token)
       (glue
         (dimension (decimal) (unit))
         (dimension (decimal) (unit))))))
 
-============================
-TeX baselineskip dimension assign with plus and minus glue
-============================
-\baselineskip=1.2pt plus 7em minus 2ex
-----------------------------
+================================
+Glue assign - leftskip with plus and minus
+================================
+\leftskip=1em plus 0.5in minus 2fil
+--------------------------------
 (document
   (text_mode
-    (dimension_assign
-      (dimension_token)
+    (glue_assign
+      (glue_token)
       (glue
         (dimension (decimal) (unit))
         (dimension (decimal) (unit))
         (dimension (decimal) (unit))))))
-
-============================
-TeX baselineskip dimension assign bp units
-============================
-\baselineskip=12bp
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX baselineskip dimension assign cc units
-============================
-\baselineskip=12cc
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX baselineskip dimension assign cm units
-============================
-\baselineskip=12cm
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX baselineskip dimension assign fil units
-============================
-\baselineskip=12fil
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX baselineskip dimension assign fill units
-============================
-\baselineskip=12fill
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX baselineskip dimension assign filll units
-============================
-\baselineskip=12filll
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX displayindent dimension assign
-============================
-\displayindent=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX displaywidth dimension assign
-============================
-\displaywidth=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX hangindent dimension assign
-============================
-\hangindent=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX hangafter dimension assign
-============================
-\hangafter=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX hsize dimension assign
-============================
-\hsize=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX vsize dimension assign
-============================
-\vsize=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX hoffset dimension assign
-============================
-\hoffset=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX leftskip dimension assign
-============================
-\leftskip=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX parindent dimension assign
-============================
-\parindent=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX rightskip dimension assign
-============================
-\rightskip=12pt
-----------------------------
-(document
-  (text_mode
-    (dimension_assign
-      (dimension_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX hskip
-============================
-\hskip to 1in
-----------------------------
-(document
-  (text_mode
-    (skip
-      (skip_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX hskip without `to`
-============================
-\hskip1in
-----------------------------
-(document
-  (text_mode
-    (skip
-      (skip_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX vskip
-============================
-\vskip to 1in
-----------------------------
-(document
-  (text_mode
-    (skip
-      (skip_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX hbox
-============================
-\hbox to 1in
-----------------------------
-(document
-  (text_mode
-    (skip
-      (skip_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX hbox
-============================
-\hbox to 1in
-----------------------------
-(document
-  (text_mode
-    (skip
-      (skip_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX vtop
-============================
-\vtop to 1in
-----------------------------
-(document
-  (text_mode
-    (skip
-      (skip_token)
-      (glue (dimension (decimal) (unit))))))
-
-============================
-TeX vcenter
-============================
-\vcenter to 1in
-----------------------------
-(document
-  (text_mode
-    (skip
-      (skip_token)
-      (glue (dimension (decimal) (unit))))))

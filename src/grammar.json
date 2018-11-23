@@ -54,6 +54,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "glue_assign"
+        },
+        {
+          "type": "SYMBOL",
           "name": "skip"
         },
         {
@@ -2085,7 +2089,73 @@
         },
         {
           "type": "SYMBOL",
+          "name": "dimension"
+        }
+      ]
+    },
+    "glue_assign": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "glue_token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
           "name": "glue"
+        }
+      ]
+    },
+    "glue_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(((above|below)display(short)?|baseline|left|line|normalbaseline|normalline|parfill|par|right|splittop|tab|top|x?space)skip)|(small|mid|big)skipamount"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
         }
       ]
     },
@@ -2098,11 +2168,138 @@
         },
         {
           "type": "PATTERN",
-          "value": "baselineskip|displayindent|displaywidth|hangindent|hangafter|[hv]size|[hv]offset|leftskip|parindent|rightskip|tabskip"
+          "value": "(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth"
         },
         {
           "type": "SYMBOL",
           "name": "_token_end"
+        }
+      ]
+    },
+    "glue": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "decimal"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "glue_token"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "dimension"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_space"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "plus"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_space"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "dimension"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_space"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "minus"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_space"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "dimension"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "dimension": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "decimal"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "unit"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "dimension_token"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "token"
+            }
+          ]
         }
       ]
     },
@@ -2164,112 +2361,11 @@
         },
         {
           "type": "PATTERN",
-          "value": "[hv]skip|[hv]box|vtop|vcenter|openup"
+          "value": "[hmv]skip|[hv]box|vtop|vcenter"
         },
         {
           "type": "SYMBOL",
           "name": "_token_end"
-        }
-      ]
-    },
-    "glue": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "dimension"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_space"
-                },
-                {
-                  "type": "STRING",
-                  "value": "plus"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_space"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "dimension"
-                }
-              ]
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_space"
-                },
-                {
-                  "type": "STRING",
-                  "value": "minus"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_space"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "dimension"
-                }
-              ]
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        }
-      ]
-    },
-    "dimension": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "decimal"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "unit"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "dimension_token"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "token"
-            }
-          ]
         }
       ]
     },
@@ -2926,11 +3022,11 @@
     },
     "unit": {
       "type": "PATTERN",
-      "value": "bp|cc|cm|dd|em|ex|fil{1,3}|in|mm|mu|pc|pt|sp"
+      "value": "bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|pc|pt|sp"
     },
     "decimal": {
       "type": "PATTERN",
-      "value": "([0-9]+(\\.[0-9]*)?|[0-9]\\.[0-9]+)"
+      "value": "[+-]?([0-9]+(\\.[0-9]*)?|[0-9]\\.[0-9]+)"
     },
     "number": {
       "type": "PATTERN",
