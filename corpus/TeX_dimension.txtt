@@ -130,3 +130,17 @@ Glue assign - leftskip with plus and minus
         (dimension (decimal) (unit))
         (dimension (decimal) (unit))
         (dimension (decimal) (unit))))))
+
+=======================================
+Glue space - hskip
+=======================================
+\hskip 2em plus 1fi minus 1em
+---------------------------------------
+ (document
+   (text_mode
+     (glue_space
+       (glue_space_token)
+       (glue
+         (dimension (decimal) (unit))
+         (dimension (decimal) (unit))
+         (dimension (decimal) (unit))))))

@@ -120,7 +120,8 @@ module.exports = grammar({
       $.catcode,
       $.dimension_assign,
       $.glue_assign,
-      $.skip,
+      $.glue_space,
+      $.box,
       $.explsyntaxoff,
       $.explsyntaxon,
       $.makeatletter,
@@ -417,12 +418,38 @@ module.exports = grammar({
       /(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth/
     ),
 
-    // glue_space_token: $ => token_rule($,
-    //   /[hv]skip|(h|top|v)glue/
-    // ),
+    glue_space: $ => seq(
+      $.glue_space_token,
+      optional($._ignored),
+      $.glue),
+
+    glue_space_token: $ => token_rule($,
+      /[hmv]skip|(h|top|v)glue/
+    ),
+
+    box: $ => seq(
+      $.box_token,
+      optional($._ignored),
+      optional(
+        seq(
+          choice('to', 'spread'),
+          $._ignored,
+          $.dimension
+        )
+      ),
+      optional($._ignored),
+      $.text_group
+    ),
+
+    box_token: $ => token_rule($,
+      /[hv]box|vtop/
+    ),
 
     glue: $ => choice(
-      seq(optional($.decimal), $.glue_token),
+      seq(
+        optional($.decimal),
+        $.glue_token
+      ),
       seq(
         $.dimension,
         optional(seq($._space, 'plus', $._space, $.dimension)),
@@ -433,12 +460,6 @@ module.exports = grammar({
     dimension: $ => seq(
       optional($.decimal),
       choice($.unit, $.dimension_token, $.token)
-    ),
-
-    skip: $ => seq($.skip_token, optional($._ignored), optional('to'), optional($._ignored), $.glue),
-
-    skip_token: $ => token_rule($,
-      /[hmv]skip|[hv]box|vtop|vcenter/
     ),
 
     // hyperref functions

@@ -1,0 +1,34 @@
+=======================
+hbox
+=======================
+\hbox{foo}
+----------------------
+(document
+  (text_mode
+    (box
+      (box_token)
+      (text_group (begin_group) (text) (end_group)))))
+
+=======================
+hbox with spread
+=======================
+\hbox spread 10em{foo}
+----------------------
+(document
+  (text_mode
+    (box
+      (box_token)
+      (dimension (decimal) (unit))
+      (text_group (begin_group) (text) (end_group)))))
+
+=======================
+hbox with to
+=======================
+\hbox to 10em{foo}
+----------------------
+(document
+  (text_mode
+    (box
+      (box_token)
+      (dimension (decimal) (unit))
+      (text_group (begin_group) (text) (end_group)))))
