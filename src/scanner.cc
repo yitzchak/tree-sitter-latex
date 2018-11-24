@@ -34,9 +34,10 @@ enum SymbolType {
   ACTIVE_CHAR,
   ALIGNMENT_TAB,
   BEGIN_GROUP,
-  COMMENT_CHAR,
+  COMMENT,
   END_GROUP,
   EOL,
+  MAGIC_COMMENT,
   MATH_SHIFT,
   PARAMETER_CHAR,
   SUBSCRIPT,
@@ -116,8 +117,8 @@ struct Scanner {
     {SUPERSCRIPT_FLAG,            SUPERSCRIPT,          SINGLE_WIDTH},
     {SUBSCRIPT_FLAG,              SUBSCRIPT,            SINGLE_WIDTH},
     {SPACE_FLAG,                  _SPACE,               UNLIMITED_WIDTH},
-    {ACTIVE_CHAR_FLAG,            ACTIVE_CHAR,          SINGLE_WIDTH},
-    {COMMENT_FLAG,                COMMENT_CHAR,         SINGLE_WIDTH}
+    {ACTIVE_CHAR_FLAG,            ACTIVE_CHAR,          SINGLE_WIDTH}//,
+    // {COMMENT_FLAG,                COMMENT_CHAR,         SINGLE_WIDTH}
   };
 
   map<string, SymbolType> words = {
@@ -128,6 +129,11 @@ struct Scanner {
     {"ProvidesExplClass", _PROVIDESEXPLCLASS_WORD},
     {"ProvidesExplFile", _PROVIDESEXPLFILE_WORD},
     {"ProvidesExplPackage", _PROVIDESEXPLPACKAGE_WORD}
+  };
+
+  map<string, SymbolType> comment_types = {
+    {"!TeX", MAGIC_COMMENT},
+    {"!TEX", MAGIC_COMMENT}
   };
 
   int32_t start_delim = 0;
@@ -490,6 +496,39 @@ struct Scanner {
     return true;
   }
 
+  bool scan_comment(TSLexer *lexer) {
+    bitset<16> comment_type_categories = ~(EOL_FLAG | SPACE_FLAG | IGNORED_FLAG),
+      comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
+    string comment_type;
+
+    lexer->advance(lexer, false);
+
+    while (get_catcode(lexer->lookahead) == SPACE_CATEGORY) {
+      lexer->advance(lexer, false);
+    }
+
+    while (comment_type_categories[get_catcode(lexer->lookahead)]) {
+      comment_type += lexer->lookahead;
+      lexer->advance(lexer, false);
+    }
+
+    while (comment_categories[get_catcode(lexer->lookahead)]) {
+      lexer->advance(lexer, false);
+    }
+
+    auto it = comment_types.find(comment_type);
+
+    lexer->result_symbol = (it == comment_types.end()) ? COMMENT : it->second;
+
+    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+      lexer->advance(lexer, false);
+    }
+
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
     Category code = get_catcode(lexer->lookahead);
@@ -499,6 +538,10 @@ struct Scanner {
       if (it->categories[code] && valid_symbols[it->type]) {
         return scan_symbol(lexer, *it);
       }
+    }
+
+    if (code == COMMENT_CATEGORY && valid_symbols[COMMENT]) {
+      return scan_comment(lexer);
     }
 
     // Check for word symbols that follow an escape

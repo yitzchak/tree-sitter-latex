@@ -158,7 +158,7 @@ foo % bar
 (document
   (text_mode
     (text)
-    (comment (comment_char) (eol))))
+    (comment)))
 
 ===========
 magic comment
@@ -169,7 +169,7 @@ foo %!TeX bar=wibble
 (document
   (text_mode
     (text)
-    (magic_comment (comment_char) (magic_tag) (eol))))
+    (magic_comment)))
 
 =============
 documentclass
@@ -217,7 +217,7 @@ foo\emph%baz
     (text)
     (emph
       (emph_token)
-      (comment (comment_char) (eol))
+      (comment)
       (text_group (begin_group) (text) (end_group)))
     (text)))
 

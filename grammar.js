@@ -5,12 +5,12 @@ function begin_env_rule ($, options = {}) {
   ]
 
   for (let i = options.opt || 0; i > 0; i--) {
-    args.push(optional($._ignored))
+    // args.push(optional($._ignored))
     args.push(optional($.opt_text_group))
   }
 
   for (let i = options.text || 0; i > 0; i--) {
-    args.push(optional($._ignored))
+    // args.push(optional($._ignored))
     args.push(optional($.text_group))
   }
 
@@ -34,38 +34,38 @@ function command_rule ($, token, options = {}) {
   const args = [token]
 
   if (options.star) {
-    args.push(optional($._ignored))
+    // args.push(optional($._ignored))
     args.push(optional('*'))
   }
 
   for (let i = options.opt || 0; i > 0; i--) {
-    args.push(optional($._ignored))
+    // args.push(optional($._ignored))
     args.push(optional($.opt_text_group))
   }
 
   for (let i = options.name || 0; i > 0; i--) {
-    args.push(optional($._ignored))
+    // args.push(optional($._ignored))
     args.push($.name_group)
   }
 
   for (let i = options.text || 0; i > 0; i--) {
-    args.push(optional($._ignored))
+    // args.push(optional($._ignored))
     args.push($.text_group)
   }
 
   for (let i = options.math_text || 0; i > 0; i--) {
-    args.push(optional($._ignored))
+    // args.push(optional($._ignored))
     args.push($.math_text_group)
   }
 
   for (let i = options.text_opt || 0; i > 0; i--) {
-    args.push(optional($._ignored))
+    // args.push(optional($._ignored))
     args.push(optional($.text_group))
   }
 
-  if (args.length === 1) {
-    args.push(optional($._space))
-  }
+  // if (args.length === 1) {
+  //   args.push(optional($._space))
+  // }
 
   return seq.apply(null, args)
 }
@@ -92,9 +92,10 @@ module.exports = grammar({
     $.active_char,
     $.alignment_tab,
     $.begin_group,
-    $.comment_char,
+    $.comment,
     $.end_group,
     $.eol,
+    $.magic_comment,
     $.math_shift,
     $.parameter_char,
     $.subscript,
@@ -104,7 +105,7 @@ module.exports = grammar({
     $.verb_line
   ],
 
-  extras: $ => [],
+  extras: $ => [$._space, $.comment, $.magic_comment],
 
   rules: {
     document: $ => optional($.text_mode),
@@ -402,13 +403,15 @@ module.exports = grammar({
 
     dimension_assign: $ => seq(
       $.dimension_token,
-      optional($._ignored), optional('='), optional($._ignored),
+      optional('='),
+      // optional($._ignored), optional('='), optional($._ignored),
       $.dimension
     ),
 
     glue_assign: $ => seq(
       $.glue_token,
-      optional($._ignored), optional('='), optional($._ignored),
+      optional('='),
+      // optional($._ignored), optional('='), optional($._ignored),
       $.glue
     ),
 
@@ -422,7 +425,7 @@ module.exports = grammar({
 
     glue_space: $ => seq(
       $.glue_space_token,
-      optional($._ignored),
+      // optional($._ignored),
       $.glue),
 
     glue_space_token: $ => token_rule($,
@@ -431,15 +434,15 @@ module.exports = grammar({
 
     makebox: $ => seq(
       $.makebox_token,
-      optional($._ignored),
+      // optional($._ignored),
       optional(
         seq(
           choice('to', 'spread'),
-          $._ignored,
+          // $._ignored,
           $.dimension
         )
       ),
-      optional($._ignored),
+      // optional($._ignored),
       $.text_group
     ),
 
@@ -457,7 +460,7 @@ module.exports = grammar({
 
     usebox: $ => seq(
       $.usebox_token,
-      optional($._ignored),
+      // optional($._ignored),
       $.number
     ),
 
@@ -467,9 +470,9 @@ module.exports = grammar({
 
     movebox: $ => seq(
       $.movebox_token,
-      optional($._ignored),
+      // optional($._ignored),
       $.dimension,
-      optional($._ignored),
+      // optional($._ignored),
       $._box,
     ),
 
@@ -487,9 +490,10 @@ module.exports = grammar({
 
     setbox: $ => seq(
       $.setbox_token,
-      optional($._ignored),
+      // optional($._ignored),
       $.number,
-      optional($._ignored), optional('='), optional($._ignored),
+      optional('='),
+      // optional($._ignored), optional('='), optional($._ignored),
       $._box
     ),
 
@@ -497,9 +501,10 @@ module.exports = grammar({
 
     box_dimension_assign: $ => seq(
       $.box_dimension_token,
-      optional($._ignored),
+      // optional($._ignored),
       $.number,
-      optional($._ignored), optional('='), optional($._ignored),
+      optional('='),
+      // optional($._ignored), optional('='), optional($._ignored),
       $.dimension
     ),
 
@@ -512,14 +517,16 @@ module.exports = grammar({
       ),
       seq(
         $.dimension,
-        optional(seq($._space, 'plus', $._space, $.dimension)),
-        optional(seq($._space, 'minus', $._space, $.dimension))
+        optional(seq('plus', $.dimension)),
+        optional(seq('minus', $.dimension))
+        // optional(seq($._space, 'plus', $._space, $.dimension)),
+        // optional(seq($._space, 'minus', $._space, $.dimension))
       )
     ),
 
     box_dimension_ref: $ => seq(
       $.box_dimension_token,
-      optional($._ignored),
+      // optional($._ignored),
       $.number
     ),
 
@@ -581,27 +588,27 @@ module.exports = grammar({
       $.begin_group, optional($.text_mode), $.end_group
     ),
 
-    magic_comment: $ => seq(
-      $.comment_char,
-      optional($._space),
-      $.magic_tag,
-      $._space,
-      repeat(/./),
-      // This really needs to be EOL or EOF
-      $.eol
-    ),
+    // magic_comment: $ => seq(
+    //   $.comment_char,
+    //   optional($._space),
+    //   $.magic_tag,
+    //   $._space,
+    //   repeat(/./),
+    //   // This really needs to be EOL or EOF
+    //   $.eol
+    // ),
+    //
+    // magic_tag: $ => /!T[eE]X/,
+    //
+    // comment: $ => seq(
+    //   $.comment_char,
+    //   optional($._space),
+    //   repeat(/./),
+    //   // This really needs to be EOL or EOF
+    //   $.eol
+    // ),
 
-    magic_tag: $ => /!T[eE]X/,
-
-    comment: $ => seq(
-      $.comment_char,
-      optional($._space),
-      repeat(/./),
-      // This really needs to be EOL or EOF
-      $.eol
-    ),
-
-    _ignored: $ => prec(-1, repeat1(choice($._space, $.comment, $.magic_comment))),
+    // _ignored: $ => prec(-1, repeat1(choice($._space, $.comment, $.magic_comment))),
 
     begin_opt: $ => '[',
     end_opt: $ => ']',
