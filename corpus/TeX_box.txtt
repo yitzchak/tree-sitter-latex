@@ -5,8 +5,8 @@ hbox
 ----------------------
 (document
   (text_mode
-    (box
-      (box_token)
+    (makebox
+      (makebox_token)
       (text_group (begin_group) (text) (end_group)))))
 
 =======================
@@ -16,8 +16,8 @@ hbox with spread
 ----------------------
 (document
   (text_mode
-    (box
-      (box_token)
+    (makebox
+      (makebox_token)
       (dimension (decimal) (unit))
       (text_group (begin_group) (text) (end_group)))))
 
@@ -28,7 +28,90 @@ hbox with to
 ----------------------
 (document
   (text_mode
-    (box
-      (box_token)
+    (makebox
+      (makebox_token)
       (dimension (decimal) (unit))
       (text_group (begin_group) (text) (end_group)))))
+
+=======================
+setbox
+======================
+\setbox0=\hbox spread 10em{foo}
+-------------------------
+(document
+  (text_mode
+    (setbox
+      (setbox_token)
+      (number)
+      (makebox
+        (makebox_token)
+        (dimension (decimal) (unit))
+        (text_group (begin_group) (text) (end_group))))))
+
+=======================
+box
+=======================
+\box4
+----------------------
+(document
+  (text_mode
+    (usebox
+      (usebox_token)
+      (number))))
+
+========================
+raise
+=======================
+\raise12pc\box1
+------------------------
+(document
+  (text_mode
+    (movebox
+      (movebox_token)
+      (dimension (decimal) (unit))
+      (usebox
+        (usebox_token)
+        (number)))))
+
+=======================
+ht assign
+=======================
+\ht1=2\dp7
+-----------------------
+(document
+  (text_mode
+    (box_dimension_assign
+      (box_dimension_token)
+      (number)
+      (dimension
+        (decimal)
+        (box_dimension_ref
+          (box_dimension_token)
+          (number))))))
+
+===========================
+strut
+============================
+\setbox1=\strut
+-------------------------
+(document
+  (text_mode
+    (setbox
+      (setbox_token)
+      (number)
+      (strut
+        (strut_token)))))
+
+===========================
+phantom
+============================
+\setbox1=\phantom{foo}
+-------------------------
+(document
+  (text_mode
+    (setbox
+      (setbox_token)
+      (number)
+      (phantom_smash
+        (phantom_smash_token)
+        (text_group (begin_group) (text) (end_group))))))

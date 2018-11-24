@@ -62,7 +62,15 @@
         },
         {
           "type": "SYMBOL",
-          "name": "box"
+          "name": "_box"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "setbox"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "box_dimension_assign"
         },
         {
           "type": "SYMBOL",
@@ -2222,12 +2230,12 @@
         }
       ]
     },
-    "box": {
+    "makebox": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "box_token"
+          "name": "makebox_token"
         },
         {
           "type": "CHOICE",
@@ -2293,7 +2301,87 @@
         }
       ]
     },
-    "box_token": {
+    "strut": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "strut_token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_space"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "strut_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(math)?strut|null"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
+        }
+      ]
+    },
+    "phantom_smash": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "phantom_smash_token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "phantom_smash_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[hv]?phantom|smash"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
+        }
+      ]
+    },
+    "makebox_token": {
       "type": "SEQ",
       "members": [
         {
@@ -2303,6 +2391,295 @@
         {
           "type": "PATTERN",
           "value": "[hv]box|vtop"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
+        }
+      ]
+    },
+    "usebox": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "usebox_token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "number"
+        }
+      ]
+    },
+    "usebox_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(un[hv])?(box|copy)"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
+        }
+      ]
+    },
+    "movebox": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "movebox_token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dimension"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_box"
+        }
+      ]
+    },
+    "movebox_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "move(left|right)|raise|lower"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
+        }
+      ]
+    },
+    "_box": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "makebox"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "movebox"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "phantom_smash"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "strut"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "usebox"
+        }
+      ]
+    },
+    "setbox": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "setbox_token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "number"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_box"
+        }
+      ]
+    },
+    "setbox_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "setbox"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
+        }
+      ]
+    },
+    "box_dimension_assign": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "box_dimension_token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "number"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dimension"
+        }
+      ]
+    },
+    "box_dimension_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "ht|dp|wd"
         },
         {
           "type": "SYMBOL",
@@ -2403,6 +2780,31 @@
         }
       ]
     },
+    "box_dimension_ref": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "box_dimension_token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_ignored"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "number"
+        }
+      ]
+    },
     "dimension": {
       "type": "SEQ",
       "members": [
@@ -2424,6 +2826,10 @@
             {
               "type": "SYMBOL",
               "name": "unit"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "box_dimension_ref"
             },
             {
               "type": "SYMBOL",

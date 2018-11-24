@@ -121,7 +121,9 @@ module.exports = grammar({
       $.dimension_assign,
       $.glue_assign,
       $.glue_space,
-      $.box,
+      $._box,
+      $.setbox,
+      $.box_dimension_assign,
       $.explsyntaxoff,
       $.explsyntaxon,
       $.makeatletter,
@@ -427,8 +429,8 @@ module.exports = grammar({
       /[hmv]skip|(h|top|v)glue/
     ),
 
-    box: $ => seq(
-      $.box_token,
+    makebox: $ => seq(
+      $.makebox_token,
       optional($._ignored),
       optional(
         seq(
@@ -441,9 +443,67 @@ module.exports = grammar({
       $.text_group
     ),
 
-    box_token: $ => token_rule($,
+    strut: $ => command_rule($, $.strut_token),
+
+    strut_token: $ => token_rule($, /(math)?strut|null/),
+
+    phantom_smash: $ => command_rule($, $.phantom_smash_token, { text: 1 }),
+
+    phantom_smash_token: $ => token_rule($, /[hv]?phantom|smash/),
+
+    makebox_token: $ => token_rule($,
       /[hv]box|vtop/
     ),
+
+    usebox: $ => seq(
+      $.usebox_token,
+      optional($._ignored),
+      $.number
+    ),
+
+    usebox_token: $ => token_rule($,
+      /(un[hv])?(box|copy)/
+    ),
+
+    movebox: $ => seq(
+      $.movebox_token,
+      optional($._ignored),
+      $.dimension,
+      optional($._ignored),
+      $._box,
+    ),
+
+    movebox_token: $ => token_rule($,
+      /move(left|right)|raise|lower/
+    ),
+
+    _box: $ => choice(
+      $.makebox,
+      $.movebox,
+      $.phantom_smash,
+      $.strut,
+      $.usebox
+    ),
+
+    setbox: $ => seq(
+      $.setbox_token,
+      optional($._ignored),
+      $.number,
+      optional($._ignored), optional('='), optional($._ignored),
+      $._box
+    ),
+
+    setbox_token: $ => token_rule($, 'setbox'),
+
+    box_dimension_assign: $ => seq(
+      $.box_dimension_token,
+      optional($._ignored),
+      $.number,
+      optional($._ignored), optional('='), optional($._ignored),
+      $.dimension
+    ),
+
+    box_dimension_token: $ => token_rule($, /ht|dp|wd/),
 
     glue: $ => choice(
       seq(
@@ -457,9 +517,20 @@ module.exports = grammar({
       )
     ),
 
+    box_dimension_ref: $ => seq(
+      $.box_dimension_token,
+      optional($._ignored),
+      $.number
+    ),
+
     dimension: $ => seq(
       optional($.decimal),
-      choice($.unit, $.dimension_token, $.token)
+      choice(
+        $.unit,
+        $.box_dimension_ref,
+        $.dimension_token,
+        $.token
+      )
     ),
 
     // hyperref functions
