@@ -118,6 +118,12 @@ module.exports = grammar({
       $.text,
       $.escaped,
       $.catcode,
+      $.dimension_assign,
+      $.glue_assign,
+      $.glue_space,
+      $._box,
+      $.setbox,
+      $.box_dimension_assign,
       $.explsyntaxoff,
       $.explsyntaxon,
       $.makeatletter,
@@ -392,6 +398,141 @@ module.exports = grammar({
 
     explsyntaxoff_token: $ => token_rule($, $._explsyntaxoff_word),
 
+    // TeX dimension commands
+
+    dimension_assign: $ => seq(
+      $.dimension_token,
+      optional($._ignored), optional('='), optional($._ignored),
+      $.dimension
+    ),
+
+    glue_assign: $ => seq(
+      $.glue_token,
+      optional($._ignored), optional('='), optional($._ignored),
+      $.glue
+    ),
+
+    glue_token: $ => token_rule($,
+      /(((above|below)display(short)?|baseline|left|line|normalbaseline|normalline|parfill|par|right|splittop|tab|top|x?space)skip)|(small|mid|big)skipamount/
+    ),
+
+    dimension_token: $ => token_rule($,
+      /(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth/
+    ),
+
+    glue_space: $ => seq(
+      $.glue_space_token,
+      optional($._ignored),
+      $.glue),
+
+    glue_space_token: $ => token_rule($,
+      /[hmv]skip|(h|top|v)glue/
+    ),
+
+    makebox: $ => seq(
+      $.makebox_token,
+      optional($._ignored),
+      optional(
+        seq(
+          choice('to', 'spread'),
+          $._ignored,
+          $.dimension
+        )
+      ),
+      optional($._ignored),
+      $.text_group
+    ),
+
+    strut: $ => command_rule($, $.strut_token),
+
+    strut_token: $ => token_rule($, /(math)?strut|null/),
+
+    phantom_smash: $ => command_rule($, $.phantom_smash_token, { text: 1 }),
+
+    phantom_smash_token: $ => token_rule($, /[hv]?phantom|smash/),
+
+    makebox_token: $ => token_rule($,
+      /[hv]box|vtop/
+    ),
+
+    usebox: $ => seq(
+      $.usebox_token,
+      optional($._ignored),
+      $.number
+    ),
+
+    usebox_token: $ => token_rule($,
+      /(un[hv])?(box|copy)/
+    ),
+
+    movebox: $ => seq(
+      $.movebox_token,
+      optional($._ignored),
+      $.dimension,
+      optional($._ignored),
+      $._box,
+    ),
+
+    movebox_token: $ => token_rule($,
+      /move(left|right)|raise|lower/
+    ),
+
+    _box: $ => choice(
+      $.makebox,
+      $.movebox,
+      $.phantom_smash,
+      $.strut,
+      $.usebox
+    ),
+
+    setbox: $ => seq(
+      $.setbox_token,
+      optional($._ignored),
+      $.number,
+      optional($._ignored), optional('='), optional($._ignored),
+      $._box
+    ),
+
+    setbox_token: $ => token_rule($, 'setbox'),
+
+    box_dimension_assign: $ => seq(
+      $.box_dimension_token,
+      optional($._ignored),
+      $.number,
+      optional($._ignored), optional('='), optional($._ignored),
+      $.dimension
+    ),
+
+    box_dimension_token: $ => token_rule($, /ht|dp|wd/),
+
+    glue: $ => choice(
+      seq(
+        optional($.decimal),
+        $.glue_token
+      ),
+      seq(
+        $.dimension,
+        optional(seq($._space, 'plus', $._space, $.dimension)),
+        optional(seq($._space, 'minus', $._space, $.dimension))
+      )
+    ),
+
+    box_dimension_ref: $ => seq(
+      $.box_dimension_token,
+      optional($._ignored),
+      $.number
+    ),
+
+    dimension: $ => seq(
+      optional($.decimal),
+      choice(
+        $.unit,
+        $.box_dimension_ref,
+        $.dimension_token,
+        $.token
+      )
+    ),
+
     // hyperref functions
 
     href: $ => command_rule($, $.href_token, { opt: 1, text: 2 }),
@@ -464,9 +605,16 @@ module.exports = grammar({
 
     begin_opt: $ => '[',
     end_opt: $ => ']',
+
     text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
+
     token: $ => token_rule($, repeat1(/./)),
     escaped: $ => seq($._escape, $._non_letter_or_other),
+
+    // fi introduced by LuaTeX
+    unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|pc|pt|sp/,
+
+    decimal: $ => /[+-]?([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,
     number: $ => /[0-9]+/
   }
 })
