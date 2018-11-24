@@ -197,6 +197,16 @@ foo %!TeX bar=wibble
     (text))
   (magic_comment))
 
+===========
+tag comment
+===========
+foo %:wibble
+-----------
+(document
+  (text_mode
+    (text))
+  (tag_comment))
+
 =============
 documentclass
 =============

@@ -2559,6 +2559,10 @@
     {
       "type": "SYMBOL",
       "name": "magic_comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "tag_comment"
     }
   ],
   "conflicts": [],
@@ -2658,6 +2662,10 @@
     {
       "type": "SYMBOL",
       "name": "superscript"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "tag_comment"
     },
     {
       "type": "SYMBOL",

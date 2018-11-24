@@ -90,6 +90,7 @@ module.exports = grammar({
     $.parameter_char,
     $.subscript,
     $.superscript,
+    $.tag_comment,
     $.verb_body,
     $.verb_delim,
     $.verb_line
@@ -100,7 +101,8 @@ module.exports = grammar({
     $.arara_comment,
     $.bib_comment,
     $.comment,
-    $.magic_comment
+    $.magic_comment,
+    $.tag_comment,
   ],
 
   rules: {
