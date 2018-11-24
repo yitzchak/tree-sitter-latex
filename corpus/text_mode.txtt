@@ -153,23 +153,59 @@ quux
 comment
 ===========
 foo % bar
-
 -----------
 (document
   (text_mode
-    (text)
-    (comment (comment_char) (eol))))
+    (text))
+  (comment))
+
+===========
+comment eats EOL
+===========
+\emph%foo
+{bar}
+-----------
+(document (text_mode (emph (emph_token) (comment) (text_group (begin_group) (text) (end_group)))))
+
+===========
+arara comment
+===========
+foo % arara: pdflatex
+-----------
+(document
+  (text_mode
+    (text))
+  (arara_comment))
+
+===========
+bib comment
+===========
+foo %!Bib bar=wibble
+-----------
+(document
+  (text_mode
+    (text))
+  (bib_comment))
 
 ===========
 magic comment
 ===========
 foo %!TeX bar=wibble
-
 -----------
 (document
   (text_mode
-    (text)
-    (magic_comment (comment_char) (magic_tag) (eol))))
+    (text))
+  (magic_comment))
+
+===========
+tag comment
+===========
+foo %:wibble
+-----------
+(document
+  (text_mode
+    (text))
+  (tag_comment))
 
 =============
 documentclass
@@ -217,7 +253,7 @@ foo\emph%baz
     (text)
     (emph
       (emph_token)
-      (comment (comment_char) (eol))
+      (comment)
       (text_group (begin_group) (text) (end_group)))
     (text)))
 
