@@ -18,14 +18,6 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "magic_comment"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "comment"
-        },
-        {
-          "type": "SYMBOL",
           "name": "active_char"
         },
         {
@@ -2554,6 +2546,14 @@
     },
     {
       "type": "SYMBOL",
+      "name": "arara_comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "bib_comment"
+    },
+    {
+      "type": "SYMBOL",
       "name": "comment"
     },
     {
@@ -2617,7 +2617,15 @@
     },
     {
       "type": "SYMBOL",
+      "name": "arara_comment"
+    },
+    {
+      "type": "SYMBOL",
       "name": "begin_group"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "bib_comment"
     },
     {
       "type": "SYMBOL",

@@ -33,7 +33,9 @@ enum SymbolType {
   _TOKEN_END,
   ACTIVE_CHAR,
   ALIGNMENT_TAB,
+  ARARA_COMMENT,
   BEGIN_GROUP,
+  BIB_COMMENT,
   COMMENT,
   END_GROUP,
   EOL,
@@ -117,8 +119,7 @@ struct Scanner {
     {SUPERSCRIPT_FLAG,            SUPERSCRIPT,          SINGLE_WIDTH},
     {SUBSCRIPT_FLAG,              SUBSCRIPT,            SINGLE_WIDTH},
     {SPACE_FLAG,                  _SPACE,               UNLIMITED_WIDTH},
-    {ACTIVE_CHAR_FLAG,            ACTIVE_CHAR,          SINGLE_WIDTH}//,
-    // {COMMENT_FLAG,                COMMENT_CHAR,         SINGLE_WIDTH}
+    {ACTIVE_CHAR_FLAG,            ACTIVE_CHAR,          SINGLE_WIDTH}
   };
 
   map<string, SymbolType> words = {
@@ -131,7 +132,10 @@ struct Scanner {
     {"ProvidesExplPackage", _PROVIDESEXPLPACKAGE_WORD}
   };
 
-  map<string, SymbolType> comment_types = {
+  map<string, SymbolType> comment_tags = {
+    {"arara:", ARARA_COMMENT},
+    {"!Bib", BIB_COMMENT},
+    {"!BIB", BIB_COMMENT},
     {"!TeX", MAGIC_COMMENT},
     {"!TEX", MAGIC_COMMENT}
   };
@@ -497,29 +501,35 @@ struct Scanner {
   }
 
   bool scan_comment(TSLexer *lexer) {
-    bitset<16> comment_type_categories = ~(EOL_FLAG | SPACE_FLAG | IGNORED_FLAG),
+    bitset<16> comment_tag_categories = ~(EOL_FLAG | SPACE_FLAG | IGNORED_FLAG),
       comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
-    string comment_type;
+    string comment_tag;
 
+    // Skip the comment char
     lexer->advance(lexer, false);
 
+    // Skip any leading spaces
     while (get_catcode(lexer->lookahead) == SPACE_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
-    while (comment_type_categories[get_catcode(lexer->lookahead)]) {
-      comment_type += lexer->lookahead;
+    // Try to capture a tag
+    while (comment_tag_categories[get_catcode(lexer->lookahead)]) {
+      comment_tag += lexer->lookahead;
       lexer->advance(lexer, false);
     }
 
+    // Gobble the reset of the comment
     while (comment_categories[get_catcode(lexer->lookahead)]) {
       lexer->advance(lexer, false);
     }
 
-    auto it = comment_types.find(comment_type);
+    // Look for a valid comment tag
+    auto it = comment_tags.find(comment_tag);
 
-    lexer->result_symbol = (it == comment_types.end()) ? COMMENT : it->second;
+    lexer->result_symbol = (it == comment_tags.end()) ? COMMENT : it->second;
 
+    // Eat any EOL
     if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
@@ -540,6 +550,7 @@ struct Scanner {
       }
     }
 
+    // Look for comments.
     if (code == COMMENT_CATEGORY && valid_symbols[COMMENT]) {
       return scan_comment(lexer);
     }

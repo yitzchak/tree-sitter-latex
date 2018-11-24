@@ -5,12 +5,10 @@ function begin_env_rule ($, options = {}) {
   ]
 
   for (let i = options.opt || 0; i > 0; i--) {
-    // args.push(optional($._ignored))
     args.push(optional($.opt_text_group))
   }
 
   for (let i = options.text || 0; i > 0; i--) {
-    // args.push(optional($._ignored))
     args.push(optional($.text_group))
   }
 
@@ -34,38 +32,28 @@ function command_rule ($, token, options = {}) {
   const args = [token]
 
   if (options.star) {
-    // args.push(optional($._ignored))
     args.push(optional('*'))
   }
 
   for (let i = options.opt || 0; i > 0; i--) {
-    // args.push(optional($._ignored))
     args.push(optional($.opt_text_group))
   }
 
   for (let i = options.name || 0; i > 0; i--) {
-    // args.push(optional($._ignored))
     args.push($.name_group)
   }
 
   for (let i = options.text || 0; i > 0; i--) {
-    // args.push(optional($._ignored))
     args.push($.text_group)
   }
 
   for (let i = options.math_text || 0; i > 0; i--) {
-    // args.push(optional($._ignored))
     args.push($.math_text_group)
   }
 
   for (let i = options.text_opt || 0; i > 0; i--) {
-    // args.push(optional($._ignored))
     args.push(optional($.text_group))
   }
-
-  // if (args.length === 1) {
-  //   args.push(optional($._space))
-  // }
 
   return seq.apply(null, args)
 }
@@ -91,7 +79,9 @@ module.exports = grammar({
     $._token_end,
     $.active_char,
     $.alignment_tab,
+    $.arara_comment,
     $.begin_group,
+    $.bib_comment,
     $.comment,
     $.end_group,
     $.eol,
@@ -105,14 +95,18 @@ module.exports = grammar({
     $.verb_line
   ],
 
-  extras: $ => [$._space, $.comment, $.magic_comment],
+  extras: $ => [
+    $._space,
+    $.arara_comment,
+    $.bib_comment,
+    $.comment,
+    $.magic_comment
+  ],
 
   rules: {
     document: $ => optional($.text_mode),
 
     _common: $ => choice(
-      $.magic_comment,
-      $.comment,
       $.active_char,
       $.alignment_tab,
       $.parameter,
@@ -151,7 +145,6 @@ module.exports = grammar({
       $.text_group,
       prec(-1, alias($.begin_opt, 'text')),
       prec(-1, alias($.end_opt, 'text')),
-      // $.opt_text_group,
       $.emph,
       $.textbf,
       $.textit,
@@ -184,7 +177,6 @@ module.exports = grammar({
       $.math_group,
       prec(-1, alias($.begin_opt, 'text')),
       prec(-1, alias($.end_opt, 'text')),
-      // $.opt_math_group,
       $.include,
       $.storage,
       command_rule($, $.token),
@@ -404,14 +396,12 @@ module.exports = grammar({
     dimension_assign: $ => seq(
       $.dimension_token,
       optional('='),
-      // optional($._ignored), optional('='), optional($._ignored),
       $.dimension
     ),
 
     glue_assign: $ => seq(
       $.glue_token,
       optional('='),
-      // optional($._ignored), optional('='), optional($._ignored),
       $.glue
     ),
 
@@ -425,7 +415,6 @@ module.exports = grammar({
 
     glue_space: $ => seq(
       $.glue_space_token,
-      // optional($._ignored),
       $.glue),
 
     glue_space_token: $ => token_rule($,
@@ -434,15 +423,12 @@ module.exports = grammar({
 
     makebox: $ => seq(
       $.makebox_token,
-      // optional($._ignored),
       optional(
         seq(
           choice('to', 'spread'),
-          // $._ignored,
           $.dimension
         )
       ),
-      // optional($._ignored),
       $.text_group
     ),
 
@@ -460,7 +446,6 @@ module.exports = grammar({
 
     usebox: $ => seq(
       $.usebox_token,
-      // optional($._ignored),
       $.number
     ),
 
@@ -470,9 +455,7 @@ module.exports = grammar({
 
     movebox: $ => seq(
       $.movebox_token,
-      // optional($._ignored),
       $.dimension,
-      // optional($._ignored),
       $._box,
     ),
 
@@ -490,10 +473,8 @@ module.exports = grammar({
 
     setbox: $ => seq(
       $.setbox_token,
-      // optional($._ignored),
       $.number,
       optional('='),
-      // optional($._ignored), optional('='), optional($._ignored),
       $._box
     ),
 
@@ -501,10 +482,8 @@ module.exports = grammar({
 
     box_dimension_assign: $ => seq(
       $.box_dimension_token,
-      // optional($._ignored),
       $.number,
       optional('='),
-      // optional($._ignored), optional('='), optional($._ignored),
       $.dimension
     ),
 
@@ -519,14 +498,11 @@ module.exports = grammar({
         $.dimension,
         optional(seq('plus', $.dimension)),
         optional(seq('minus', $.dimension))
-        // optional(seq($._space, 'plus', $._space, $.dimension)),
-        // optional(seq($._space, 'minus', $._space, $.dimension))
       )
     ),
 
     box_dimension_ref: $ => seq(
       $.box_dimension_token,
-      // optional($._ignored),
       $.number
     ),
 
@@ -587,28 +563,6 @@ module.exports = grammar({
     math_text_group: $ => seq(
       $.begin_group, optional($.text_mode), $.end_group
     ),
-
-    // magic_comment: $ => seq(
-    //   $.comment_char,
-    //   optional($._space),
-    //   $.magic_tag,
-    //   $._space,
-    //   repeat(/./),
-    //   // This really needs to be EOL or EOF
-    //   $.eol
-    // ),
-    //
-    // magic_tag: $ => /!T[eE]X/,
-    //
-    // comment: $ => seq(
-    //   $.comment_char,
-    //   optional($._space),
-    //   repeat(/./),
-    //   // This really needs to be EOL or EOF
-    //   $.eol
-    // ),
-
-    // _ignored: $ => prec(-1, repeat1(choice($._space, $.comment, $.magic_comment))),
 
     begin_opt: $ => '[',
     end_opt: $ => ']',
