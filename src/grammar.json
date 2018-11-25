@@ -244,13 +244,8 @@
           "name": "usepackage"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "token"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "token"
         },
         {
           "type": "SYMBOL",
@@ -878,13 +873,8 @@
     "verbatim_text": {
       "type": "REPEAT1",
       "content": {
-        "type": "ALIAS",
-        "content": {
-          "type": "SYMBOL",
-          "name": "verb_line"
-        },
-        "named": false,
-        "value": "_verb_line"
+        "type": "SYMBOL",
+        "name": "_verb_line"
       }
     },
     "verbatim_env_group": {
@@ -2613,6 +2603,10 @@
     },
     {
       "type": "SYMBOL",
+      "name": "_verb_line"
+    },
+    {
+      "type": "SYMBOL",
       "name": "active_char"
     },
     {
@@ -2674,10 +2668,6 @@
     {
       "type": "SYMBOL",
       "name": "verb_delim"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "verb_line"
     }
   ],
   "inline": []

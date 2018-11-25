@@ -32,6 +32,7 @@ enum SymbolType {
   _PROVIDESEXPLPACKAGE_WORD,
   _SPACE,
   _TOKEN_END,
+  _VERB_LINE,
   ACTIVE_CHAR,
   ALIGNMENT_TAB,
   ARARA_COMMENT,
@@ -47,8 +48,7 @@ enum SymbolType {
   SUPERSCRIPT,
   TAG_COMMENT,
   VERB_BODY,
-  VERB_DELIM,
-  VERB_LINE
+  VERB_DELIM
 };
 
 enum Category {
@@ -416,7 +416,7 @@ struct Scanner {
       lexer->advance(lexer, false);
     }
 
-    lexer->result_symbol = VERB_LINE;
+    lexer->result_symbol = _VERB_LINE;
     lexer->mark_end(lexer);
 
     return true;
@@ -584,7 +584,7 @@ struct Scanner {
 
     // Scan a single line in a verbatim environment.
     // NOTE: This is a kludge. Verbatim environments actually detect the corrent \end
-    if (valid_symbols[VERB_LINE] && code != ESCAPE_CATEGORY) {
+    if (valid_symbols[_VERB_LINE] && code != ESCAPE_CATEGORY) {
       return scan_verb_line(lexer);
     }
 

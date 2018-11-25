@@ -77,6 +77,7 @@ module.exports = grammar({
     $._providesexplpackage_word,
     $._space,
     $._token_end,
+    $._verb_line,
     $.active_char,
     $.alignment_tab,
     $.arara_comment,
@@ -92,8 +93,7 @@ module.exports = grammar({
     $.superscript,
     $.tag_comment,
     $.verb_body,
-    $.verb_delim,
-    $.verb_line
+    $.verb_delim
   ],
 
   extras: $ => [
@@ -159,7 +159,7 @@ module.exports = grammar({
       $.section,
       $.storage,
       $.usepackage,
-      command_rule($, $.token),
+      $.token,
       $.footnote,
       // hyperref package
       $.href,
@@ -305,7 +305,7 @@ module.exports = grammar({
       name_group: $.verbatim_env_group
     }),
 
-    verbatim_text: $ => repeat1(alias($.verb_line, '_verb_line')),
+    verbatim_text: $ => repeat1($._verb_line),
 
     verbatim_env_group: $ => seq($.begin_group, $.verbatim_env_name, $.end_group),
 
