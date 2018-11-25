@@ -16,6 +16,7 @@ using std::any_of;
 using std::bitset;
 using std::map;
 using std::memcpy;
+using std::pair;
 using std::string;
 using std::vector;
 
@@ -564,7 +565,7 @@ struct Scanner {
     // Check for word symbols that follow an escape
     if (code == LETTER_CATEGORY &&
         any_of(words.begin(), words.end(),
-          [valid_symbols](auto p){ return valid_symbols[p.second]; })) {
+          [valid_symbols](pair<string, SymbolType> p){ return valid_symbols[p.second]; })) {
       return scan_word(lexer);
     }
 
