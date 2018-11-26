@@ -6,7 +6,7 @@ href command
 (document
   (text_mode
     (href
-      (href_token)
+      (href_cs)
       (opt_text_group (begin_opt) (text) (end_opt))
       (text_group (begin_group) (text) (end_group))
       (text_group (begin_group) (text) (end_group)))))
@@ -19,7 +19,7 @@ url command
 (document
   (text_mode
     (url
-      (url_token)
+      (url_cs)
       (text_group (begin_group) (text) (end_group)))))
 
 =============================
@@ -30,7 +30,7 @@ nolinkurl command
 (document
   (text_mode
     (url
-      (url_token)
+      (url_cs)
       (text_group (begin_group) (text) (end_group)))))
 
 =============================
@@ -41,7 +41,7 @@ hyperbaseurl command
 (document
   (text_mode
     (hyperbaseurl
-      (hyperbaseurl_token)
+      (hyperbaseurl_cs)
       (text_group (begin_group) (text) (end_group)))))
 
 =============================
@@ -52,7 +52,7 @@ hyperimage command
 (document
   (text_mode
     (hyperimage
-      (hyperimage_token)
+      (hyperimage_cs)
       (text_group (begin_group) (text) (end_group))
       (text_group (begin_group) (text) (end_group)))))
 
@@ -64,7 +64,7 @@ hyperref command
 (document
   (text_mode
     (hyperref
-      (hyperref_token)
+      (hyperref_cs)
       (text_group (begin_group) (text) (end_group))
       (text_group (begin_group) (text) (end_group))
       (text_group (begin_group) (text) (end_group))
@@ -78,6 +78,6 @@ hyperref local command
 (document
   (text_mode
     (hyperref
-      (hyperref_token)
+      (hyperref_cs)
       (opt_text_group (begin_opt) (text) (end_opt))
       (text_group (begin_group) (text) (end_group)))))

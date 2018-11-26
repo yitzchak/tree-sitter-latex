@@ -6,8 +6,8 @@ chardef
 (document
   (text_mode
     (chardef
-      (chardef_token)
-      (token)
+      (chardef_cs)
+      (cs)
       (decimal))))
 
 =====================
@@ -18,8 +18,8 @@ mathchardef
 (document
   (text_mode
     (chardef
-      (chardef_token)
-      (token)
+      (chardef_cs)
+      (cs)
       (decimal))))
 
 =====================
@@ -30,7 +30,7 @@ char
 (document
   (text_mode
     (char
-      (char_token)
+      (char_cs)
       (decimal))))
 
 =====================
@@ -41,7 +41,7 @@ accent
 (document
   (text_mode
     (char
-      (char_token)
+      (char_cs)
       (decimal))))
 
 =====================
@@ -52,5 +52,5 @@ mathchar
 (document
   (text_mode
     (char
-      (char_token)
+      (char_cs)
       (decimal))))

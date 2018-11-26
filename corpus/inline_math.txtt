@@ -57,7 +57,7 @@ quux
   (text_mode
     (text)
     (inline_math_env
-      (inline_math_begin (begin_token) (inline_math_env_group (begin_group) (inline_math_env_name) (end_group)))
+      (inline_math_begin (begin_cs) (inline_math_env_group (begin_group) (inline_math_env_name) (end_group)))
       (math_mode (text))
-      (inline_math_end (end_token) (inline_math_env_group (begin_group) (inline_math_env_name) (end_group))))
+      (inline_math_end (end_cs) (inline_math_env_group (begin_group) (inline_math_env_name) (end_group))))
     (text)))

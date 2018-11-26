@@ -1,6 +1,6 @@
 function begin_env_rule ($, options = {}) {
   const args = [
-    $.begin_token,
+    $.begin_cs,
     options.name_group || $.name_group
   ]
 
@@ -21,15 +21,15 @@ function begin_env_rule ($, options = {}) {
 
 function end_env_rule ($, options = {}) {
   const args = [
-    $.end_token,
+    $.end_cs,
     options.name_group || $.name_group
   ]
 
   return seq.apply(null, args)
 }
 
-function command_rule ($, token, options = {}) {
-  const args = [token]
+function command_rule ($, cs, options = {}) {
+  const args = [cs]
 
   if (options.star) {
     args.push(optional('*'))
@@ -58,14 +58,15 @@ function command_rule ($, token, options = {}) {
   return seq.apply(null, args)
 }
 
-function token_rule ($, name) {
-  return seq($._escape, name, $._token_end)
+function cs_rule ($, name) {
+  return seq($._escape, name, $._cs_end)
 }
 
 module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
+    $._cs_end,
     $._escape,
     $._explsyntaxoff_word,
     $._explsyntaxon_word,
@@ -76,7 +77,6 @@ module.exports = grammar({
     $._providesexplfile_word,
     $._providesexplpackage_word,
     $._space,
-    $._token_end,
     $._verb_line,
     $.active_char,
     $.alignment_tab,
@@ -129,9 +129,9 @@ module.exports = grammar({
       $.makeatother
     ),
 
-    inline_verbatim: $ => seq($.verb_token, $.verb_delim, $.verb_body, $.verb_delim),
+    inline_verbatim: $ => seq($.verb_cs, $.verb_delim, $.verb_body, $.verb_delim),
 
-    verb_token: $ => token_rule($, 'verb'),
+    verb_cs: $ => cs_rule($, 'verb'),
 
     _text_mode: $ => choice(
       $._common,
@@ -161,7 +161,7 @@ module.exports = grammar({
       $.section,
       $.storage,
       $.usepackage,
-      $.token,
+      $.cs,
       $.footnote,
       // hyperref package
       $.href,
@@ -183,7 +183,7 @@ module.exports = grammar({
       prec(-1, alias($.end_opt, 'text')),
       $.include,
       $.storage,
-      command_rule($, $.token),
+      command_rule($, $.cs),
       $.tag
     ),
 
@@ -273,12 +273,12 @@ module.exports = grammar({
     ),
 
     inline_math_begin: $ => seq(
-      $.begin_token,
+      $.begin_cs,
       $.inline_math_env_group
     ),
 
     inline_math_end: $ => seq(
-      $.end_token,
+      $.end_cs,
       $.inline_math_env_group
     ),
 
@@ -286,9 +286,9 @@ module.exports = grammar({
 
     inline_math_env_name: $ => 'math',
 
-    tag: $ => command_rule($, $.tag_token, { math_text: 1 }),
+    tag: $ => command_rule($, $.tag_cs, { math_text: 1 }),
 
-    tag_token: $ => token_rule($, 'tag'),
+    tag_cs: $ => cs_rule($, 'tag'),
 
     verbatim_env: $ => seq(
       $.verbatim_begin,
@@ -315,112 +315,112 @@ module.exports = grammar({
 
     begin: $ => begin_env_rule($),
 
-    begin_token: $ => token_rule($, 'begin'),
+    begin_cs: $ => cs_rule($, 'begin'),
 
     end: $ => end_env_rule($),
 
-    end_token: $ => token_rule($, 'end'),
+    end_cs: $ => cs_rule($, 'end'),
 
-    documentclass: $ => command_rule($, $.documentclass_token, { opt: 1, name: 1 }),
+    documentclass: $ => command_rule($, $.documentclass_cs, { opt: 1, name: 1 }),
 
-    documentclass_token: $ => token_rule($, 'documentclass'),
+    documentclass_cs: $ => cs_rule($, 'documentclass'),
 
-    usepackage: $ => command_rule($, $.usepackage_token, { opt: 1, name: 1 }),
+    usepackage: $ => command_rule($, $.usepackage_cs, { opt: 1, name: 1 }),
 
-    usepackage_token: $ => token_rule($, 'usepackage'),
+    usepackage_cs: $ => cs_rule($, 'usepackage'),
 
-    include: $ => command_rule($, $.include_token, { text: 1 }),
+    include: $ => command_rule($, $.include_cs, { text: 1 }),
 
-    include_token: $ => token_rule($, /include|input/),
+    include_cs: $ => cs_rule($, /include|input/),
 
-    providesexplclass: $ => command_rule($, $.providesexplclass_token, { text: 4 }),
+    providesexplclass: $ => command_rule($, $.providesexplclass_cs, { text: 4 }),
 
-    providesexplclass_token: $ => token_rule($, $._providesexplclass_word),
+    providesexplclass_cs: $ => cs_rule($, $._providesexplclass_word),
 
-    providesexplfile: $ => command_rule($, $.providesexplfile_token, { text: 4 }),
+    providesexplfile: $ => command_rule($, $.providesexplfile_cs, { text: 4 }),
 
-    providesexplfile_token: $ => token_rule($, $._providesexplfile_word),
+    providesexplfile_cs: $ => cs_rule($, $._providesexplfile_word),
 
-    providesexplpackage: $ => command_rule($, $.providesexplpackage_token, { text: 4 }),
+    providesexplpackage: $ => command_rule($, $.providesexplpackage_cs, { text: 4 }),
 
-    providesexplpackage_token: $ => token_rule($, $._providesexplpackage_word),
+    providesexplpackage_cs: $ => cs_rule($, $._providesexplpackage_word),
 
-    section: $ => command_rule($, $.section_token, { text: 1, opt: 1, star: true }),
+    section: $ => command_rule($, $.section_cs, { text: 1, opt: 1, star: true }),
 
-    section_token: $ => token_rule($, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/),
+    section_cs: $ => cs_rule($, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/),
 
-    storage: $ => command_rule($, $.storage_token),
+    storage: $ => command_rule($, $.storage_cs),
 
-    storage_token: $ => token_rule($, /[egx]?def/),
+    storage_cs: $ => cs_rule($, /[egx]?def/),
 
-    emph: $ => command_rule($, $.emph_token, { text: 1 }),
+    emph: $ => command_rule($, $.emph_cs, { text: 1 }),
 
-    emph_token: $ => token_rule($, 'emph'),
+    emph_cs: $ => cs_rule($, 'emph'),
 
-    footnote: $ => command_rule($, $.footnote_token, { text: 1, opt: 1 }),
+    footnote: $ => command_rule($, $.footnote_cs, { text: 1, opt: 1 }),
 
-    footnote_token: $ => token_rule($, 'footnote'),
+    footnote_cs: $ => cs_rule($, 'footnote'),
 
-    textbf: $ => command_rule($, $.textbf_token, { text: 1 }),
+    textbf: $ => command_rule($, $.textbf_cs, { text: 1 }),
 
-    textbf_token: $ => token_rule($, 'textbf'),
+    textbf_cs: $ => cs_rule($, 'textbf'),
 
-    textit: $ => command_rule($, $.textit_token, { text: 1 }),
+    textit: $ => command_rule($, $.textit_cs, { text: 1 }),
 
-    textit_token: $ => token_rule($, 'textit'),
+    textit_cs: $ => cs_rule($, 'textit'),
 
-    texttt: $ => command_rule($, $.texttt_token, { text: 1 }),
+    texttt: $ => command_rule($, $.texttt_cs, { text: 1 }),
 
-    texttt_token: $ => token_rule($, 'texttt'),
+    texttt_cs: $ => cs_rule($, 'texttt'),
 
-    makeatletter: $ => command_rule($, $.makeatletter_token),
+    makeatletter: $ => command_rule($, $.makeatletter_cs),
 
-    makeatletter_token: $ => token_rule($, $._makeatletter_word),
+    makeatletter_cs: $ => cs_rule($, $._makeatletter_word),
 
-    makeatother: $ => command_rule($, $.makeatother_token),
+    makeatother: $ => command_rule($, $.makeatother_cs),
 
-    makeatother_token: $ => token_rule($, $._makeatother_word),
+    makeatother_cs: $ => cs_rule($, $._makeatother_word),
 
-    explsyntaxon: $ => command_rule($, $.explsyntaxon_token),
+    explsyntaxon: $ => command_rule($, $.explsyntaxon_cs),
 
-    explsyntaxon_token: $ => token_rule($, $._explsyntaxon_word),
+    explsyntaxon_cs: $ => cs_rule($, $._explsyntaxon_word),
 
-    explsyntaxoff: $ => command_rule($, $.explsyntaxoff_token),
+    explsyntaxoff: $ => command_rule($, $.explsyntaxoff_cs),
 
-    explsyntaxoff_token: $ => token_rule($, $._explsyntaxoff_word),
+    explsyntaxoff_cs: $ => cs_rule($, $._explsyntaxoff_word),
 
     // TeX dimension commands
 
     dimension_assign: $ => seq(
-      $.dimension_token,
+      $.dimension_cs,
       optional('='),
       $.dimension
     ),
 
     glue_assign: $ => seq(
-      $.glue_token,
+      $.glue_cs,
       optional('='),
       $.glue
     ),
 
-    glue_token: $ => token_rule($,
+    glue_cs: $ => cs_rule($,
       /(((above|below)display(short)?|baseline|left|line|normalbaseline|normalline|parfill|par|right|splittop|tab|top|x?space)skip)|(small|mid|big)skipamount/
     ),
 
-    dimension_token: $ => token_rule($,
+    dimension_cs: $ => cs_rule($,
       /(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth/
     ),
 
     glue_space: $ => seq(
-      $.glue_space_token,
+      $.glue_space_cs,
       $.glue),
 
-    glue_space_token: $ => token_rule($,
+    glue_space_cs: $ => cs_rule($,
       /[hmv]skip|(h|top|v)glue/
     ),
 
     makebox: $ => seq(
-      $.makebox_token,
+      $.makebox_cs,
       optional(
         seq(
           choice('to', 'spread'),
@@ -430,34 +430,34 @@ module.exports = grammar({
       $.text_group
     ),
 
-    strut: $ => command_rule($, $.strut_token),
+    strut: $ => command_rule($, $.strut_cs),
 
-    strut_token: $ => token_rule($, /(math)?strut|null/),
+    strut_cs: $ => cs_rule($, /(math)?strut|null/),
 
-    phantom_smash: $ => command_rule($, $.phantom_smash_token, { text: 1 }),
+    phantom_smash: $ => command_rule($, $.phantom_smash_cs, { text: 1 }),
 
-    phantom_smash_token: $ => token_rule($, /[hv]?phantom|smash/),
+    phantom_smash_cs: $ => cs_rule($, /[hv]?phantom|smash/),
 
-    makebox_token: $ => token_rule($,
+    makebox_cs: $ => cs_rule($,
       /[hv]box|vtop/
     ),
 
     usebox: $ => seq(
-      $.usebox_token,
+      $.usebox_cs,
       $._number
     ),
 
-    usebox_token: $ => token_rule($,
+    usebox_cs: $ => cs_rule($,
       /(un[hv])?(box|copy)/
     ),
 
     movebox: $ => seq(
-      $.movebox_token,
+      $.movebox_cs,
       $.dimension,
       $._box,
     ),
 
-    movebox_token: $ => token_rule($,
+    movebox_cs: $ => cs_rule($,
       /move(left|right)|raise|lower/
     ),
 
@@ -470,27 +470,27 @@ module.exports = grammar({
     ),
 
     setbox: $ => seq(
-      $.setbox_token,
+      $.setbox_cs,
       $._number,
       optional('='),
       $._box
     ),
 
-    setbox_token: $ => token_rule($, 'setbox'),
+    setbox_cs: $ => cs_rule($, 'setbox'),
 
     box_dimension_assign: $ => seq(
-      $.box_dimension_token,
+      $.box_dimension_cs,
       $._number,
       optional('='),
       $.dimension
     ),
 
-    box_dimension_token: $ => token_rule($, /ht|dp|wd/),
+    box_dimension_cs: $ => cs_rule($, /ht|dp|wd/),
 
     glue: $ => choice(
       seq(
         optional($.fixed),
-        $.glue_token
+        $.glue_cs
       ),
       seq(
         $.dimension,
@@ -500,7 +500,7 @@ module.exports = grammar({
     ),
 
     box_dimension_ref: $ => seq(
-      $.box_dimension_token,
+      $.box_dimension_cs,
       $._number
     ),
 
@@ -509,63 +509,63 @@ module.exports = grammar({
       choice(
         $.unit,
         $.box_dimension_ref,
-        $.dimension_token,
-        $.token
+        $.dimension_cs,
+        $.cs
       )
     ),
 
     // TeX character functions
 
     catcode: $ => seq(
-      $.catcode_token, $._number, '=', $._number
+      $.catcode_cs, $._number, '=', $._number
     ),
 
-    catcode_token: $ => token_rule($,
+    catcode_cs: $ => cs_rule($,
       /(cat|del|kcat|lc|math|sf|uc)code/
     ),
 
     chardef: $ => seq(
-      $.chardef_token,
-      $.token,
+      $.chardef_cs,
+      $.cs,
       optional('='),
       $._number
     ),
 
-    chardef_token: $ => token_rule($, /(math)?chardef/),
+    chardef_cs: $ => cs_rule($, /(math)?chardef/),
 
     catcode_ref: $ => seq(
-      $.catcode_token, $._number
+      $.catcode_cs, $._number
     ),
 
     char: $ => seq(
-      $.char_token, $._number
+      $.char_cs, $._number
     ),
 
-    char_token: $ => token_rule($, /(math)?char|accent/),
+    char_cs: $ => cs_rule($, /(math)?char|accent/),
 
     // hyperref functions
 
-    href: $ => command_rule($, $.href_token, { opt: 1, text: 2 }),
+    href: $ => command_rule($, $.href_cs, { opt: 1, text: 2 }),
 
-    href_token: $ => token_rule($, 'href'),
+    href_cs: $ => cs_rule($, 'href'),
 
-    url: $ => command_rule($, $.url_token, { text: 1 }),
+    url: $ => command_rule($, $.url_cs, { text: 1 }),
 
-    url_token: $ => token_rule($, /(nolink)?url/),
+    url_cs: $ => cs_rule($, /(nolink)?url/),
 
-    hyperbaseurl: $ => command_rule($, $.hyperbaseurl_token, { text: 1 }),
+    hyperbaseurl: $ => command_rule($, $.hyperbaseurl_cs, { text: 1 }),
 
-    hyperbaseurl_token: $ => token_rule($, 'hyperbaseurl'),
+    hyperbaseurl_cs: $ => cs_rule($, 'hyperbaseurl'),
 
-    hyperimage: $ => command_rule($, $.hyperimage_token, { text: 2 }),
+    hyperimage: $ => command_rule($, $.hyperimage_cs, { text: 2 }),
 
-    hyperimage_token: $ => token_rule($, 'hyperimage'),
+    hyperimage_cs: $ => cs_rule($, 'hyperimage'),
 
     hyperref: $ => choice(
-      command_rule($, $.hyperref_token, { text: 4 }),
-      prec(-1, command_rule($, $.hyperref_token, { opt: 1, text: 1 }))),
+      command_rule($, $.hyperref_cs, { text: 4 }),
+      prec(-1, command_rule($, $.hyperref_cs, { opt: 1, text: 1 }))),
 
-    hyperref_token: $ => token_rule($, 'hyperref'),
+    hyperref_cs: $ => cs_rule($, 'hyperref'),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
@@ -597,7 +597,7 @@ module.exports = grammar({
 
     text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
 
-    token: $ => token_rule($, repeat1(/./)),
+    cs: $ => cs_rule($, repeat1(/./)),
 
     escaped: $ => seq($._escape, $._non_letter_or_other),
 

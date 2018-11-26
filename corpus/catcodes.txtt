@@ -5,7 +5,7 @@
 --------------------------------
 (document
   (text_mode
-    (token)
+    (cs)
     (text)))
 
 =================================
@@ -15,9 +15,9 @@
 ---------------------------------
 (document
   (text_mode
-    (makeatletter (makeatletter_token))
-    (token)
-    (makeatother (makeatother_token))))
+    (makeatletter (makeatletter_cs))
+    (cs)
+    (makeatother (makeatother_cs))))
 
 ==============================
 [makeatletter] @ sign is letter in text group
@@ -26,12 +26,12 @@
 ----------------
 (document
   (text_mode
-    (makeatletter (makeatletter_token))
+    (makeatletter (makeatletter_cs))
     (text_group
       (begin_group)
-      (token)
+      (cs)
       (end_group))
-    (makeatother (makeatother_token))))
+    (makeatother (makeatother_cs))))
 
 ==============================
 [makeatletter] @ sign is letter in optional text group
@@ -40,15 +40,15 @@
 ----------------
 (document
   (text_mode
-    (makeatletter (makeatletter_token))
-    (usepackage (usepackage_token)
+    (makeatletter (makeatletter_cs))
+    (usepackage (usepackage_cs)
       (opt_text_group
         (begin_opt)
         (text)
-        (token)
+        (cs)
         (end_opt))
       (name_group (begin_group) (name) (end_group)))
-    (makeatother (makeatother_token))))
+    (makeatother (makeatother_cs))))
 
 ============================
 [makeatletter] @ sign is letter then other
@@ -57,10 +57,10 @@
 ----------------
 (document
   (text_mode
-    (makeatletter (makeatletter_token))
-    (token)
-    (makeatother (makeatother_token))
-    (token)
+    (makeatletter (makeatletter_cs))
+    (cs)
+    (makeatother (makeatother_cs))
+    (cs)
     (text)))
 
 =================
@@ -70,7 +70,7 @@
 ----------------
 (document
   (text_mode
-    (token)
+    (cs)
     (text)
     (text)
     (text)))
@@ -82,9 +82,9 @@
 ----------------
 (document
   (text_mode
-    (explsyntaxon (explsyntaxon_token))
-    (token)
-    (explsyntaxoff (explsyntaxoff_token))))
+    (explsyntaxon (explsyntaxon_cs))
+    (cs)
+    (explsyntaxoff (explsyntaxoff_cs))))
 
 =================
 [ProvidesExplPackage] colon/underscore is letter
@@ -95,14 +95,14 @@
 (document
   (text_mode
     (providesexplpackage
-      (providesexplpackage_token)
+      (providesexplpackage_cs)
       (text_group (begin_group) (text) (end_group))
       (text_group (begin_group) (text) (end_group))
       (text_group (begin_group) (text) (end_group))
       (text_group (begin_group) (text) (end_group)))
     (text)
-    (token)
-    (explsyntaxoff (explsyntaxoff_token))))
+    (cs)
+    (explsyntaxoff (explsyntaxoff_cs))))
 
 ==============================
 [ExplSyntaxOn] colon/underscore is letter in text group
@@ -111,12 +111,12 @@
 ----------------
 (document
   (text_mode
-    (explsyntaxon (explsyntaxon_token))
+    (explsyntaxon (explsyntaxon_cs))
     (text_group
       (begin_group)
-      (token)
+      (cs)
       (end_group))
-    (explsyntaxoff (explsyntaxoff_token))))
+    (explsyntaxoff (explsyntaxoff_cs))))
 
 ==============================
 [ExplSyntaxOn] colon/underscore is letter in optional text group
@@ -125,15 +125,15 @@
 ----------------
 (document
   (text_mode
-    (explsyntaxon (explsyntaxon_token))
-    (usepackage (usepackage_token)
+    (explsyntaxon (explsyntaxon_cs))
+    (usepackage (usepackage_cs)
       (opt_text_group
         (begin_opt)
         (text)
-        (token)
+        (cs)
         (end_opt))
       (name_group (begin_group) (name) (end_group)))
-    (explsyntaxoff (explsyntaxoff_token))))
+    (explsyntaxoff (explsyntaxoff_cs))))
 
 ============================
 [ExplSyntaxOn] colon/underscore is letter then other
@@ -142,10 +142,10 @@
 ----------------
 (document
   (text_mode
-    (explsyntaxon (explsyntaxon_token))
-    (token)
-    (explsyntaxoff (explsyntaxoff_token))
-    (token)
+    (explsyntaxon (explsyntaxon_cs))
+    (cs)
+    (explsyntaxoff (explsyntaxoff_cs))
+    (cs)
     (text)
     (text)
     (text)))
@@ -157,14 +157,14 @@
 ----------------
 (document
   (text_mode
-    (explsyntaxon (explsyntaxon_token))
-    (token)
+    (explsyntaxon (explsyntaxon_cs))
+    (cs)
     (text)
-    (makeatletter (makeatletter_token))
-    (token)
-    (makeatother (makeatother_token))
-    (explsyntaxoff (explsyntaxoff_token))
-    (token)
+    (makeatletter (makeatletter_cs))
+    (cs)
+    (makeatother (makeatother_cs))
+    (explsyntaxoff (explsyntaxoff_cs))
+    (cs)
     (text)
     (text)
     (text)))
@@ -176,14 +176,14 @@
 -----------------------------------------------
 (document
   (text_mode
-    (explsyntaxon (explsyntaxon_token))
-    (token)
+    (explsyntaxon (explsyntaxon_cs))
+    (cs)
     (text)
-    (makeatletter (makeatletter_token))
-    (token)
-    (explsyntaxoff (explsyntaxoff_token))
-    (token)
-    (makeatother (makeatother_token))))
+    (makeatletter (makeatletter_cs))
+    (cs)
+    (explsyntaxoff (explsyntaxoff_cs))
+    (cs)
+    (makeatother (makeatother_cs))))
 
 ========================
 catcode with decimal number
@@ -193,7 +193,7 @@ catcode with decimal number
 (document
   (text_mode
     (catcode
-      (catcode_token)
+      (catcode_cs)
       (decimal)
       (decimal))))
 
@@ -205,7 +205,7 @@ catcode with octal number
 (document
   (text_mode
     (catcode
-      (catcode_token)
+      (catcode_cs)
       (octal)
       (decimal))))
 
@@ -217,7 +217,7 @@ catcode with octal number
 (document
   (text_mode
     (catcode
-      (catcode_token)
+      (catcode_cs)
       (hexadecimal)
       (decimal))))
 
@@ -229,7 +229,7 @@ catcode with char code by letter
 (document
   (text_mode
     (catcode
-      (catcode_token)
+      (catcode_cs)
       (charcode)
       (decimal))))
 
@@ -241,6 +241,6 @@ catcode with char code by escaped character
 (document
   (text_mode
     (catcode
-      (catcode_token)
+      (catcode_cs)
       (charcode (escaped))
       (decimal))))
