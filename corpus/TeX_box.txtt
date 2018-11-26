@@ -6,7 +6,7 @@ hbox
 (document
   (text_mode
     (makebox
-      (makebox_token)
+      (makebox_cs)
       (text_group (begin_group) (text) (end_group)))))
 
 =======================
@@ -17,8 +17,8 @@ hbox with spread
 (document
   (text_mode
     (makebox
-      (makebox_token)
-      (dimension (decimal) (unit))
+      (makebox_cs)
+      (dimension (fixed) (unit))
       (text_group (begin_group) (text) (end_group)))))
 
 =======================
@@ -29,8 +29,8 @@ hbox with to
 (document
   (text_mode
     (makebox
-      (makebox_token)
-      (dimension (decimal) (unit))
+      (makebox_cs)
+      (dimension (fixed) (unit))
       (text_group (begin_group) (text) (end_group)))))
 
 =======================
@@ -41,11 +41,11 @@ setbox
 (document
   (text_mode
     (setbox
-      (setbox_token)
-      (number)
+      (setbox_cs)
+      (decimal)
       (makebox
-        (makebox_token)
-        (dimension (decimal) (unit))
+        (makebox_cs)
+        (dimension (fixed) (unit))
         (text_group (begin_group) (text) (end_group))))))
 
 =======================
@@ -56,8 +56,8 @@ box
 (document
   (text_mode
     (usebox
-      (usebox_token)
-      (number))))
+      (usebox_cs)
+      (decimal))))
 
 ========================
 raise
@@ -67,11 +67,11 @@ raise
 (document
   (text_mode
     (movebox
-      (movebox_token)
-      (dimension (decimal) (unit))
+      (movebox_cs)
+      (dimension (fixed) (unit))
       (usebox
-        (usebox_token)
-        (number)))))
+        (usebox_cs)
+        (decimal)))))
 
 =======================
 ht assign
@@ -81,13 +81,13 @@ ht assign
 (document
   (text_mode
     (box_dimension_assign
-      (box_dimension_token)
-      (number)
+      (box_dimension_cs)
+      (decimal)
       (dimension
-        (decimal)
+        (fixed)
         (box_dimension_ref
-          (box_dimension_token)
-          (number))))))
+          (box_dimension_cs)
+          (decimal))))))
 
 ===========================
 strut
@@ -97,10 +97,10 @@ strut
 (document
   (text_mode
     (setbox
-      (setbox_token)
-      (number)
+      (setbox_cs)
+      (decimal)
       (strut
-        (strut_token)))))
+        (strut_cs)))))
 
 ===========================
 phantom
@@ -110,8 +110,8 @@ phantom
 (document
   (text_mode
     (setbox
-      (setbox_token)
-      (number)
+      (setbox_cs)
+      (decimal)
       (phantom_smash
-        (phantom_smash_token)
+        (phantom_smash_cs)
         (text_group (begin_group) (text) (end_group))))))

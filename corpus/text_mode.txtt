@@ -17,7 +17,7 @@ fubar\quux wibble
 (document
   (text_mode
     (text)
-    (token)
+    (cs)
     (text)))
 
 ==================
@@ -29,7 +29,7 @@ fubar\quux{bar} wibble
 (document
   (text_mode
     (text)
-    (token)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text)))
 
@@ -42,7 +42,7 @@ fubar\quux  {bar} wibble
 (document
   (text_mode
     (text)
-    (token)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text)))
 
@@ -56,7 +56,7 @@ fubar\quux  {bar} wibble
 (document
   (text_mode
     (text)
-    (token)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text)))
 
@@ -91,8 +91,8 @@ foo##1bar
 (document
   (text_mode
     (text)
-    (parameter (parameter_char) (number)) (text)
-    (parameter (parameter_char) (parameter_char) (number))
+    (parameter (parameter_char) (decimal)) (text)
+    (parameter (parameter_char) (parameter_char) (decimal))
     (text)))
 
 =============
@@ -144,9 +144,9 @@ quux
   (text_mode
     (text)
     (text_env
-      (begin (begin_token) (name_group (begin_group) (name) (end_group)))
+      (begin (begin_cs) (name_group (begin_group) (name) (end_group)))
       (text)
-      (end (end_token) (name_group (begin_group) (name) (end_group))))
+      (end (end_cs) (name_group (begin_group) (name) (end_group))))
   (text)))
 
 ===========
@@ -165,7 +165,7 @@ comment eats EOL
 \emph%foo
 {bar}
 -----------
-(document (text_mode (emph (emph_token) (comment) (text_group (begin_group) (text) (end_group)))))
+(document (text_mode (emph (emph_cs) (comment) (text_group (begin_group) (text) (end_group)))))
 
 ===========
 arara comment
@@ -215,7 +215,7 @@ documentclass
 (document
   (text_mode
     (documentclass
-      (documentclass_token)
+      (documentclass_cs)
       (opt_text_group (begin_opt) (text) (end_opt))
       (name_group (begin_group) (name) (end_group)))))
 
@@ -227,7 +227,7 @@ usepackage
 (document
   (text_mode
     (usepackage
-      (usepackage_token)
+      (usepackage_cs)
       (opt_text_group (begin_opt) (text) (end_opt))
       (name_group (begin_group) (name) (end_group)))))
 
@@ -239,7 +239,7 @@ foo\emph{bar}wibble
 (document
   (text_mode
     (text)
-    (emph (emph_token) (text_group (begin_group) (text) (end_group)))
+    (emph (emph_cs) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -252,7 +252,7 @@ foo\emph%baz
   (text_mode
     (text)
     (emph
-      (emph_token)
+      (emph_cs)
       (comment)
       (text_group (begin_group) (text) (end_group)))
     (text)))
@@ -265,7 +265,7 @@ foo\textbf{bar}wibble
 (document
   (text_mode
     (text)
-    (textbf (textbf_token) (text_group (begin_group) (text) (end_group)))
+    (textbf (textbf_cs) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -276,7 +276,7 @@ foo\textit{bar}wibble
 (document
   (text_mode
     (text)
-    (textit (textit_token) (text_group (begin_group) (text) (end_group)))
+    (textit (textit_cs) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -287,7 +287,7 @@ foo\texttt{bar}wibble
 (document
   (text_mode
     (text)
-    (texttt (texttt_token) (text_group (begin_group) (text) (end_group)))
+    (texttt (texttt_cs) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -299,8 +299,8 @@ foo\footnote[10]{bar}wibble
 (document
   (text_mode
     (text)
-    (footnote (footnote_token) (text_group (begin_group) (text) (end_group))) (text)
-    (footnote (footnote_token)
+    (footnote (footnote_cs) (text_group (begin_group) (text) (end_group))) (text)
+    (footnote (footnote_cs)
       (opt_text_group (begin_opt) (text) (end_opt))
       (text_group (begin_group) (text) (end_group)))
     (text)))
@@ -315,11 +315,11 @@ sections
 
 (document
   (text_mode
-    (section (section_token) (text_group (begin_group) (text) (end_group)))
+    (section (section_cs) (text_group (begin_group) (text) (end_group)))
     (text)
-    (section (section_token) (text_group (begin_group) (text) (end_group)))
+    (section (section_cs) (text_group (begin_group) (text) (end_group)))
     (text)
-    (section (section_token) (text_group (begin_group) (text) (end_group)))))
+    (section (section_cs) (text_group (begin_group) (text) (end_group)))))
 
 =================
 Square brackets do not trigger opt_text_group

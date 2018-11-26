@@ -6,8 +6,8 @@ Dimension assign - hoffset
 (document
   (text_mode
     (dimension_assign
-      (dimension_token)
-      (dimension (decimal) (unit)))))
+      (dimension_cs)
+      (dimension (fixed) (unit)))))
 
 ================================
 Dimension assign - hoffset missing equals sign
@@ -17,8 +17,8 @@ Dimension assign - hoffset missing equals sign
 (document
   (text_mode
     (dimension_assign
-      (dimension_token)
-      (dimension (decimal) (unit)))))
+      (dimension_cs)
+      (dimension (fixed) (unit)))))
 
 ================================
 Dimension assign - hoffset using dimension parameter
@@ -28,8 +28,8 @@ Dimension assign - hoffset using dimension parameter
 (document
   (text_mode
     (dimension_assign
-      (dimension_token)
-      (dimension (dimension_token)))))
+      (dimension_cs)
+      (dimension (dimension_cs)))))
 
 ================================
 Dimension assign - hoffset using scalar multiple dimension parameter
@@ -39,8 +39,8 @@ Dimension assign - hoffset using scalar multiple dimension parameter
 (document
   (text_mode
     (dimension_assign
-      (dimension_token)
-      (dimension (decimal) (dimension_token)))))
+      (dimension_cs)
+      (dimension (fixed) (dimension_cs)))))
 
 ================================
 Glue assign - leftskip
@@ -50,9 +50,9 @@ Glue assign - leftskip
 (document
   (text_mode
     (glue_assign
-      (glue_token)
+      (glue_cs)
       (glue
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))))))
 
 ================================
 Glue assign - leftskip missing equals
@@ -62,9 +62,9 @@ Glue assign - leftskip missing equals
 (document
   (text_mode
     (glue_assign
-      (glue_token)
+      (glue_cs)
       (glue
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))))))
 
 ================================
 Glue assign - leftskip same as rightskip
@@ -74,9 +74,9 @@ Glue assign - leftskip same as rightskip
 (document
   (text_mode
     (glue_assign
-      (glue_token)
+      (glue_cs)
       (glue
-        (glue_token)))))
+        (glue_cs)))))
 
 ================================
 Glue assign - leftskip scalar multiple of rightskip
@@ -86,10 +86,10 @@ Glue assign - leftskip scalar multiple of rightskip
 (document
   (text_mode
     (glue_assign
-      (glue_token)
+      (glue_cs)
       (glue
-        (decimal)
-        (glue_token)))))
+        (fixed)
+        (glue_cs)))))
 
 ================================
 Glue assign - leftskip with plus
@@ -99,10 +99,10 @@ Glue assign - leftskip with plus
 (document
   (text_mode
     (glue_assign
-      (glue_token)
+      (glue_cs)
       (glue
-        (dimension (decimal) (unit))
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))))))
 
 ================================
 Glue assign - leftskip with minus
@@ -112,10 +112,10 @@ Glue assign - leftskip with minus
 (document
   (text_mode
     (glue_assign
-      (glue_token)
+      (glue_cs)
       (glue
-        (dimension (decimal) (unit))
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))))))
 
 ================================
 Glue assign - leftskip with plus and minus
@@ -125,11 +125,11 @@ Glue assign - leftskip with plus and minus
 (document
   (text_mode
     (glue_assign
-      (glue_token)
+      (glue_cs)
       (glue
-        (dimension (decimal) (unit))
-        (dimension (decimal) (unit))
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))))))
 
 =======================================
 Glue space - hskip
@@ -139,8 +139,8 @@ Glue space - hskip
  (document
    (text_mode
      (glue_space
-       (glue_space_token)
+       (glue_space_cs)
        (glue
-         (dimension (decimal) (unit))
-         (dimension (decimal) (unit))
-         (dimension (decimal) (unit))))))
+         (dimension (fixed) (unit))
+         (dimension (fixed) (unit))
+         (dimension (fixed) (unit))))))

@@ -21,6 +21,7 @@ using std::string;
 using std::vector;
 
 enum SymbolType {
+  _CS_END,
   _ESCAPE,
   _EXPLSYNTAXOFF_WORD,
   _EXPLSYNTAXON_WORD,
@@ -31,7 +32,6 @@ enum SymbolType {
   _PROVIDESEXPLFILE_WORD,
   _PROVIDESEXPLPACKAGE_WORD,
   _SPACE,
-  _TOKEN_END,
   _VERB_LINE,
   ACTIVE_CHAR,
   ALIGNMENT_TAB,
@@ -110,7 +110,7 @@ struct Scanner {
 
   vector<SymbolDescription> symbol_descriptions = {
     {~(LETTER_FLAG | OTHER_FLAG), _NON_LETTER_OR_OTHER, SINGLE_WIDTH},
-    {~LETTER_FLAG,                _TOKEN_END,           ZERO_WIDTH},
+    {~LETTER_FLAG,                _CS_END,           ZERO_WIDTH},
     {ESCAPE_FLAG,                 _ESCAPE,              SINGLE_WIDTH},
     {BEGIN_FLAG,                  BEGIN_GROUP,          SINGLE_WIDTH},
     {END_FLAG,                    END_GROUP,            SINGLE_WIDTH},
