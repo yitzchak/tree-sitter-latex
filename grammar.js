@@ -109,24 +109,25 @@ module.exports = grammar({
     document: $ => optional($.text_mode),
 
     _common: $ => choice(
+      $._box,
       $.active_char,
       $.alignment_tab,
-      $.parameter,
-      $.text,
-      $.escaped,
+      $.box_dimension_assign,
       $.catcode,
       $.char,
       $.chardef,
       $.dimension_assign,
-      $.glue_assign,
-      $.glue_space,
-      $._box,
-      $.setbox,
-      $.box_dimension_assign,
+      $.escaped,
       $.explsyntaxoff,
       $.explsyntaxon,
+      $.glue_assign,
+      $.glue_space,
       $.makeatletter,
-      $.makeatother
+      $.makeatother,
+      $.newcommand,
+      $.parameter,
+      $.setbox,
+      $.text
     ),
 
     inline_verbatim: $ => seq($.verb_cs, $.verb_delim, $.verb_body, $.verb_delim),
@@ -542,6 +543,18 @@ module.exports = grammar({
     ),
 
     char_cs: $ => cs_rule($, /(math)?char|accent/),
+
+    // LaTeX newcommand, etc.
+
+    newcommand: $ => seq(
+      $.newcommand_cs,
+      $.text_group,
+      optional($.opt_text_group),
+      optional($.opt_text_group),
+      $.text_group
+    ),
+
+    newcommand_cs: $ => cs_rule($, /DeclareRobustCommand|newcommand/),
 
     // hyperref functions
 

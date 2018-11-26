@@ -18,6 +18,10 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "_box"
+        },
+        {
+          "type": "SYMBOL",
           "name": "active_char"
         },
         {
@@ -26,15 +30,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "parameter"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "text"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "escaped"
+          "name": "box_dimension_assign"
         },
         {
           "type": "SYMBOL",
@@ -54,23 +50,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "glue_assign"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "glue_space"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_box"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "setbox"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "box_dimension_assign"
+          "name": "escaped"
         },
         {
           "type": "SYMBOL",
@@ -82,11 +62,35 @@
         },
         {
           "type": "SYMBOL",
+          "name": "glue_assign"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "glue_space"
+        },
+        {
+          "type": "SYMBOL",
           "name": "makeatletter"
         },
         {
           "type": "SYMBOL",
           "name": "makeatother"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "newcommand"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "parameter"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "setbox"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text"
         }
       ]
     },
@@ -2211,6 +2215,64 @@
         {
           "type": "PATTERN",
           "value": "(math)?char|accent"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "newcommand": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "newcommand_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "opt_text_group"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "opt_text_group"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "newcommand_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "DeclareRobustCommand|newcommand"
         },
         {
           "type": "SYMBOL",

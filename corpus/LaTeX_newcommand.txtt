@@ -1,0 +1,38 @@
+======================
+Simple newcommand
+======================
+\newcommand{\foo}{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+newcommand with number of arguments
+======================
+\newcommand{\foo}[2]{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (opt_text_group (begin_opt) (text) (end_opt))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+newcommand with number of arguments and default value
+======================
+\newcommand{\foo}[2][def]{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (opt_text_group (begin_opt) (text) (end_opt))
+      (opt_text_group (begin_opt) (text) (end_opt))
+      (text_group (begin_group) (text) (end_group)))))
