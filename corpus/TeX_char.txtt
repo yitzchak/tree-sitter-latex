@@ -1,0 +1,11 @@
+=====================
+chardef
+=====================
+\chardef\foo=3
+--------------------
+(document
+  (text_mode
+    (chardef
+      (chardef_token)
+      (token)
+      (decimal))))

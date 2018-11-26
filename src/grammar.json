@@ -42,6 +42,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "chardef"
+        },
+        {
+          "type": "SYMBOL",
           "name": "dimension_assign"
         },
         {
@@ -2113,7 +2117,96 @@
         },
         {
           "type": "PATTERN",
-          "value": "k?catcode"
+          "value": "(cat|del|kcat|lc|math|sf|uc)code"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
+        }
+      ]
+    },
+    "chardef": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "chardef_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "token"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_number"
+        }
+      ]
+    },
+    "chardef_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(math)?chardef"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
+        }
+      ]
+    },
+    "catcode_ref": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "catcode_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_number"
+        }
+      ]
+    },
+    "char": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "char_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_number"
+        }
+      ]
+    },
+    "char_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(math)?char|accent"
         },
         {
           "type": "SYMBOL",
@@ -2542,6 +2635,10 @@
         {
           "type": "SYMBOL",
           "name": "charcode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "catcode_ref"
         }
       ]
     },

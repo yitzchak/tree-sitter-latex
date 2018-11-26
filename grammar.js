@@ -115,6 +115,7 @@ module.exports = grammar({
       $.text,
       $.escaped,
       $.catcode,
+      $.chardef,
       $.dimension_assign,
       $.glue_assign,
       $.glue_space,
@@ -518,14 +519,28 @@ module.exports = grammar({
       $.catcode_token, $._number, '=', $._number
     ),
 
-    catcode_token: $ => token_rule($, /k?catcode/),
+    catcode_token: $ => token_rule($,
+      /(cat|del|kcat|lc|math|sf|uc)code/
+    ),
 
-    // charcode: $ => choice(
-    //   $._number,
-    //   '`'
-    // ),
+    chardef: $ => seq(
+      $.chardef_token,
+      $.token,
+      optional('='),
+      $._number
+    ),
 
+    chardef_token: $ => token_rule($, /(math)?chardef/),
 
+    catcode_ref: $ => seq(
+      $.catcode_token, $._number
+    ),
+
+    char: $ => seq(
+      $.char_token, $._number
+    ),
+
+    char_token: $ => token_rule($, /(math)?char|accent/),
 
     // hyperref functions
 
@@ -594,7 +609,8 @@ module.exports = grammar({
       $.decimal,
       $.octal,
       $.hexadecimal,
-      $.charcode
+      $.charcode,
+      $.catcode_ref
     ),
 
     decimal: $ => /[0-9]+/,
