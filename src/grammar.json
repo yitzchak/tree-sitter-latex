@@ -42,6 +42,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "char"
+        },
+        {
+          "type": "SYMBOL",
           "name": "chardef"
         },
         {

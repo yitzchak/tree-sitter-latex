@@ -115,6 +115,7 @@ module.exports = grammar({
       $.text,
       $.escaped,
       $.catcode,
+      $.char,
       $.chardef,
       $.dimension_assign,
       $.glue_assign,

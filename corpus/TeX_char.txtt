@@ -9,3 +9,48 @@ chardef
       (chardef_token)
       (token)
       (decimal))))
+
+=====================
+mathchardef
+=====================
+\mathchardef\foo=3
+--------------------
+(document
+  (text_mode
+    (chardef
+      (chardef_token)
+      (token)
+      (decimal))))
+
+=====================
+char
+=====================
+\char3
+--------------------
+(document
+  (text_mode
+    (char
+      (char_token)
+      (decimal))))
+
+=====================
+accent
+=====================
+\accent3
+--------------------
+(document
+  (text_mode
+    (char
+      (char_token)
+      (decimal))))
+
+=====================
+mathchar
+=====================
+\mathchar3
+--------------------
+(document
+  (text_mode
+    (char
+      (char_token)
+      (decimal))))
