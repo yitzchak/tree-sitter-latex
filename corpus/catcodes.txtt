@@ -184,3 +184,63 @@
     (explsyntaxoff (explsyntaxoff_token))
     (token)
     (makeatother (makeatother_token))))
+
+========================
+catcode with decimal number
+=======================
+\catcode70=3
+----------------------
+(document
+  (text_mode
+    (catcode
+      (catcode_token)
+      (decimal)
+      (decimal))))
+
+========================
+catcode with octal number
+=======================
+\catcode'10=3
+----------------------
+(document
+  (text_mode
+    (catcode
+      (catcode_token)
+      (octal)
+      (decimal))))
+
+========================
+catcode with octal number
+=======================
+\catcode"A0=3
+----------------------
+(document
+  (text_mode
+    (catcode
+      (catcode_token)
+      (hexadecimal)
+      (decimal))))
+
+========================
+catcode with char code by letter
+=======================
+\catcode`A=3
+----------------------
+(document
+  (text_mode
+    (catcode
+      (catcode_token)
+      (charcode)
+      (decimal))))
+
+========================
+catcode with char code by escaped character
+=======================
+\catcode`\\=3
+----------------------
+(document
+  (text_mode
+    (catcode
+      (catcode_token)
+      (charcode (escaped))
+      (decimal))))

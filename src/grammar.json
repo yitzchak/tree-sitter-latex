@@ -375,7 +375,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "number"
+          "name": "decimal"
         }
       ]
     },
@@ -1278,44 +1278,6 @@
         }
       ]
     },
-    "catcode": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "catcode_token"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "escaped"
-        },
-        {
-          "type": "STRING",
-          "value": "="
-        },
-        {
-          "type": "SYMBOL",
-          "name": "number"
-        }
-      ]
-    },
-    "catcode_token": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_escape"
-        },
-        {
-          "type": "PATTERN",
-          "value": "k?catcode`"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_token_end"
-        }
-      ]
-    },
     "emph": {
       "type": "SEQ",
       "members": [
@@ -1821,7 +1783,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "number"
+          "name": "_number"
         }
       ]
     },
@@ -1910,7 +1872,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "number"
+          "name": "_number"
         },
         {
           "type": "CHOICE",
@@ -1956,7 +1918,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "number"
+          "name": "_number"
         },
         {
           "type": "CHOICE",
@@ -2004,7 +1966,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "decimal"
+                  "name": "fixed"
                 },
                 {
                   "type": "BLANK"
@@ -2079,7 +2041,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "number"
+          "name": "_number"
         }
       ]
     },
@@ -2091,7 +2053,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "decimal"
+              "name": "fixed"
             },
             {
               "type": "BLANK"
@@ -2118,6 +2080,44 @@
               "name": "token"
             }
           ]
+        }
+      ]
+    },
+    "catcode": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "catcode_token"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_number"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_number"
+        }
+      ]
+    },
+    "catcode_token": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "k?catcode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_token_end"
         }
       ]
     },
@@ -2520,13 +2520,64 @@
       "type": "PATTERN",
       "value": "bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|pc|pt|sp"
     },
-    "decimal": {
+    "fixed": {
       "type": "PATTERN",
       "value": "[+-]?([0-9]+(\\.[0-9]*)?|[0-9]\\.[0-9]+)"
     },
-    "number": {
+    "_number": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "decimal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "octal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "hexadecimal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "charcode"
+        }
+      ]
+    },
+    "decimal": {
       "type": "PATTERN",
       "value": "[0-9]+"
+    },
+    "octal": {
+      "type": "PATTERN",
+      "value": "'[0-7]+"
+    },
+    "hexadecimal": {
+      "type": "PATTERN",
+      "value": "\"[0-9a-fA-F]+"
+    },
+    "charcode": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "`"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "escaped"
+            },
+            {
+              "type": "PATTERN",
+              "value": "."
+            }
+          ]
+        }
+      ]
     }
   },
   "extras": [

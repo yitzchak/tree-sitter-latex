@@ -7,7 +7,7 @@ Dimension assign - hoffset
   (text_mode
     (dimension_assign
       (dimension_token)
-      (dimension (decimal) (unit)))))
+      (dimension (fixed) (unit)))))
 
 ================================
 Dimension assign - hoffset missing equals sign
@@ -18,7 +18,7 @@ Dimension assign - hoffset missing equals sign
   (text_mode
     (dimension_assign
       (dimension_token)
-      (dimension (decimal) (unit)))))
+      (dimension (fixed) (unit)))))
 
 ================================
 Dimension assign - hoffset using dimension parameter
@@ -40,7 +40,7 @@ Dimension assign - hoffset using scalar multiple dimension parameter
   (text_mode
     (dimension_assign
       (dimension_token)
-      (dimension (decimal) (dimension_token)))))
+      (dimension (fixed) (dimension_token)))))
 
 ================================
 Glue assign - leftskip
@@ -52,7 +52,7 @@ Glue assign - leftskip
     (glue_assign
       (glue_token)
       (glue
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))))))
 
 ================================
 Glue assign - leftskip missing equals
@@ -64,7 +64,7 @@ Glue assign - leftskip missing equals
     (glue_assign
       (glue_token)
       (glue
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))))))
 
 ================================
 Glue assign - leftskip same as rightskip
@@ -88,7 +88,7 @@ Glue assign - leftskip scalar multiple of rightskip
     (glue_assign
       (glue_token)
       (glue
-        (decimal)
+        (fixed)
         (glue_token)))))
 
 ================================
@@ -101,8 +101,8 @@ Glue assign - leftskip with plus
     (glue_assign
       (glue_token)
       (glue
-        (dimension (decimal) (unit))
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))))))
 
 ================================
 Glue assign - leftskip with minus
@@ -114,8 +114,8 @@ Glue assign - leftskip with minus
     (glue_assign
       (glue_token)
       (glue
-        (dimension (decimal) (unit))
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))))))
 
 ================================
 Glue assign - leftskip with plus and minus
@@ -127,9 +127,9 @@ Glue assign - leftskip with plus and minus
     (glue_assign
       (glue_token)
       (glue
-        (dimension (decimal) (unit))
-        (dimension (decimal) (unit))
-        (dimension (decimal) (unit))))))
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))))))
 
 =======================================
 Glue space - hskip
@@ -141,6 +141,6 @@ Glue space - hskip
      (glue_space
        (glue_space_token)
        (glue
-         (dimension (decimal) (unit))
-         (dimension (decimal) (unit))
-         (dimension (decimal) (unit))))))
+         (dimension (fixed) (unit))
+         (dimension (fixed) (unit))
+         (dimension (fixed) (unit))))))

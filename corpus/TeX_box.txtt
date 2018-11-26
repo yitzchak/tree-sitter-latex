@@ -18,7 +18,7 @@ hbox with spread
   (text_mode
     (makebox
       (makebox_token)
-      (dimension (decimal) (unit))
+      (dimension (fixed) (unit))
       (text_group (begin_group) (text) (end_group)))))
 
 =======================
@@ -30,7 +30,7 @@ hbox with to
   (text_mode
     (makebox
       (makebox_token)
-      (dimension (decimal) (unit))
+      (dimension (fixed) (unit))
       (text_group (begin_group) (text) (end_group)))))
 
 =======================
@@ -42,10 +42,10 @@ setbox
   (text_mode
     (setbox
       (setbox_token)
-      (number)
+      (decimal)
       (makebox
         (makebox_token)
-        (dimension (decimal) (unit))
+        (dimension (fixed) (unit))
         (text_group (begin_group) (text) (end_group))))))
 
 =======================
@@ -57,7 +57,7 @@ box
   (text_mode
     (usebox
       (usebox_token)
-      (number))))
+      (decimal))))
 
 ========================
 raise
@@ -68,10 +68,10 @@ raise
   (text_mode
     (movebox
       (movebox_token)
-      (dimension (decimal) (unit))
+      (dimension (fixed) (unit))
       (usebox
         (usebox_token)
-        (number)))))
+        (decimal)))))
 
 =======================
 ht assign
@@ -82,12 +82,12 @@ ht assign
   (text_mode
     (box_dimension_assign
       (box_dimension_token)
-      (number)
+      (decimal)
       (dimension
-        (decimal)
+        (fixed)
         (box_dimension_ref
           (box_dimension_token)
-          (number))))))
+          (decimal))))))
 
 ===========================
 strut
@@ -98,7 +98,7 @@ strut
   (text_mode
     (setbox
       (setbox_token)
-      (number)
+      (decimal)
       (strut
         (strut_token)))))
 
@@ -111,7 +111,7 @@ phantom
   (text_mode
     (setbox
       (setbox_token)
-      (number)
+      (decimal)
       (phantom_smash
         (phantom_smash_token)
         (text_group (begin_group) (text) (end_group))))))

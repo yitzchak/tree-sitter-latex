@@ -188,7 +188,7 @@ module.exports = grammar({
     math_mode: $ => prec.left(2, repeat1($._math_mode)),
 
     parameter: $ => seq(
-      repeat1($.parameter_char), $.number
+      repeat1($.parameter_char), $.decimal
     ),
 
     text_env: $ => seq(
@@ -351,12 +351,6 @@ module.exports = grammar({
 
     storage_token: $ => token_rule($, /[egx]?def/),
 
-    catcode: $ => seq(
-      $.catcode_token, $.escaped, '=', $.number
-    ),
-
-    catcode_token: $ => token_rule($, /k?catcode`/),
-
     emph: $ => command_rule($, $.emph_token, { text: 1 }),
 
     emph_token: $ => token_rule($, 'emph'),
@@ -448,7 +442,7 @@ module.exports = grammar({
 
     usebox: $ => seq(
       $.usebox_token,
-      $.number
+      $._number
     ),
 
     usebox_token: $ => token_rule($,
@@ -475,7 +469,7 @@ module.exports = grammar({
 
     setbox: $ => seq(
       $.setbox_token,
-      $.number,
+      $._number,
       optional('='),
       $._box
     ),
@@ -484,7 +478,7 @@ module.exports = grammar({
 
     box_dimension_assign: $ => seq(
       $.box_dimension_token,
-      $.number,
+      $._number,
       optional('='),
       $.dimension
     ),
@@ -493,7 +487,7 @@ module.exports = grammar({
 
     glue: $ => choice(
       seq(
-        optional($.decimal),
+        optional($.fixed),
         $.glue_token
       ),
       seq(
@@ -505,11 +499,11 @@ module.exports = grammar({
 
     box_dimension_ref: $ => seq(
       $.box_dimension_token,
-      $.number
+      $._number
     ),
 
     dimension: $ => seq(
-      optional($.decimal),
+      optional($.fixed),
       choice(
         $.unit,
         $.box_dimension_ref,
@@ -517,6 +511,21 @@ module.exports = grammar({
         $.token
       )
     ),
+
+    // TeX character functions
+
+    catcode: $ => seq(
+      $.catcode_token, $._number, '=', $._number
+    ),
+
+    catcode_token: $ => token_rule($, /k?catcode/),
+
+    // charcode: $ => choice(
+    //   $._number,
+    //   '`'
+    // ),
+
+
 
     // hyperref functions
 
@@ -567,17 +576,33 @@ module.exports = grammar({
     ),
 
     begin_opt: $ => '[',
+
     end_opt: $ => ']',
 
     text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
 
     token: $ => token_rule($, repeat1(/./)),
+
     escaped: $ => seq($._escape, $._non_letter_or_other),
 
     // fi introduced by LuaTeX
     unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|pc|pt|sp/,
 
-    decimal: $ => /[+-]?([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,
-    number: $ => /[0-9]+/
+    fixed: $ => /[+-]?([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,
+
+    _number: $ => choice(
+      $.decimal,
+      $.octal,
+      $.hexadecimal,
+      $.charcode
+    ),
+
+    decimal: $ => /[0-9]+/,
+
+    octal: $ => /'[0-7]+/,
+
+    hexadecimal: $ => /"[0-9a-fA-F]+/,
+
+    charcode: $ => seq('`', choice($.escaped, /./))
   }
 })
