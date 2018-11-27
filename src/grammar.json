@@ -95,6 +95,18 @@
         {
           "type": "SYMBOL",
           "name": "text"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "include"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "storage"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cs"
         }
       ]
     },
@@ -217,7 +229,27 @@
         },
         {
           "type": "SYMBOL",
+          "name": "textrm"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "textsf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "texttt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "textmd"
+        },
+        {
+          "type": "SYMBOL",
           "name": "textbf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "textup"
         },
         {
           "type": "SYMBOL",
@@ -225,7 +257,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "texttt"
+          "name": "textsl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "textsc"
         },
         {
           "type": "SYMBOL",
@@ -249,23 +285,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "include"
-        },
-        {
-          "type": "SYMBOL",
           "name": "section"
         },
         {
           "type": "SYMBOL",
-          "name": "storage"
-        },
-        {
-          "type": "SYMBOL",
           "name": "usepackage"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "cs"
         },
         {
           "type": "SYMBOL",
@@ -351,20 +375,31 @@
         },
         {
           "type": "SYMBOL",
-          "name": "include"
+          "name": "mathrm"
         },
         {
           "type": "SYMBOL",
-          "name": "storage"
+          "name": "mathnormal"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "cs"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "mathcal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "mathbf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "mathsf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "mathtt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "mathit"
         },
         {
           "type": "SYMBOL",
@@ -1214,36 +1249,6 @@
         }
       ]
     },
-    "emph": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "emph_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "text_group"
-        }
-      ]
-    },
-    "emph_cs": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_escape"
-        },
-        {
-          "type": "STRING",
-          "value": "emph"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_cs_end"
-        }
-      ]
-    },
     "footnote": {
       "type": "SEQ",
       "members": [
@@ -1279,96 +1284,6 @@
         {
           "type": "STRING",
           "value": "footnote"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_cs_end"
-        }
-      ]
-    },
-    "textbf": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "textbf_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "text_group"
-        }
-      ]
-    },
-    "textbf_cs": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_escape"
-        },
-        {
-          "type": "STRING",
-          "value": "textbf"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_cs_end"
-        }
-      ]
-    },
-    "textit": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "textit_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "text_group"
-        }
-      ]
-    },
-    "textit_cs": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_escape"
-        },
-        {
-          "type": "STRING",
-          "value": "textit"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_cs_end"
-        }
-      ]
-    },
-    "texttt": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "texttt_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "text_group"
-        }
-      ]
-    },
-    "texttt_cs": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_escape"
-        },
-        {
-          "type": "STRING",
-          "value": "texttt"
         },
         {
           "type": "SYMBOL",
@@ -2449,6 +2364,516 @@
         {
           "type": "PATTERN",
           "value": "(re)?newenvironment"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "textrm": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "textrm_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "textrm_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "textrm"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "textsf": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "textsf_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "textsf_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "textsf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "texttt": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "texttt_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "texttt_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "texttt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "textmd": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "textmd_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "textmd_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "textmd"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "textbf": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "textbf_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "textbf_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "textbf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "textup": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "textup_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "textup_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "textup"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "textit": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "textit_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "textit_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "textit"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "textsl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "textsl_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "textsl_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "textsl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "textsc": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "textsc_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "textsc_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "textsc"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "emph": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "emph_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "emph_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "emph"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "mathrm": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "mathrm_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_group"
+        }
+      ]
+    },
+    "mathrm_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "mathrm"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "mathnormal": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "mathnormal_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_group"
+        }
+      ]
+    },
+    "mathnormal_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "mathnormal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "mathcal": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "mathcal_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_group"
+        }
+      ]
+    },
+    "mathcal_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "mathcal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "mathbf": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "mathbf_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_group"
+        }
+      ]
+    },
+    "mathbf_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "mathbf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "mathsf": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "mathsf_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_group"
+        }
+      ]
+    },
+    "mathsf_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "mathsf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "mathtt": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "mathtt_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_group"
+        }
+      ]
+    },
+    "mathtt_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "mathtt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "mathit": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "mathit_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_group"
+        }
+      ]
+    },
+    "mathit_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "mathit"
         },
         {
           "type": "SYMBOL",

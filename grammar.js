@@ -83,7 +83,10 @@ module.exports = grammar({
       $.newenvironment,
       $.parameter,
       $.setbox,
-      $.text
+      $.text,
+      $.include,
+      $.storage,
+      $.cs
     ),
 
     inline_verbatim: $ => seq(
@@ -112,19 +115,22 @@ module.exports = grammar({
       prec(-1, alias($.lbrack, 'text')),
       prec(-1, alias($.rbrack, 'text')),
       $.emph,
-      $.textbf,
-      $.textit,
+      $.textrm,
+      $.textsf,
       $.texttt,
+      $.textmd,
+      $.textbf,
+      $.textup,
+      $.textit,
+      $.textsl,
+      $.textsc,
       $.providesexplclass,
       $.providesexplfile,
       $.providesexplpackage,
       $.documentclass,
       $.documentstyle,
-      $.include,
       $.section,
-      $.storage,
       $.usepackage,
-      $.cs,
       $.footnote,
       // hyperref package
       $.href,
@@ -144,9 +150,13 @@ module.exports = grammar({
       $.math_group,
       prec(-1, alias($.lbrack, 'text')),
       prec(-1, alias($.rbrack, 'text')),
-      $.include,
-      $.storage,
-      cmd($, $.cs),
+      $.mathrm,
+      $.mathnormal,
+      $.mathcal,
+      $.mathbf,
+      $.mathsf,
+      $.mathtt,
+      $.mathit,
       $.tag
     ),
 
@@ -357,13 +367,6 @@ module.exports = grammar({
 
     storage_cs: $ => cs($, /[egx]?def/),
 
-    emph: $ => cmd($,
-      $.emph_cs,
-      $.text_group
-    ),
-
-    emph_cs: $ => cs($, 'emph'),
-
     footnote: $ => cmd($,
       $.footnote_cs,
       optional($.brack_group_text),
@@ -371,27 +374,6 @@ module.exports = grammar({
     ),
 
     footnote_cs: $ => cs($, 'footnote'),
-
-    textbf: $ => cmd($,
-      $.textbf_cs,
-      $.text_group
-    ),
-
-    textbf_cs: $ => cs($, 'textbf'),
-
-    textit: $ => cmd($,
-      $.textit_cs,
-      $.text_group
-    ),
-
-    textit_cs: $ => cs($, 'textit'),
-
-    texttt: $ => cmd($,
-      $.texttt_cs,
-      $.text_group
-    ),
-
-    texttt_cs: $ => cs($, 'texttt'),
 
     makeatletter: $ => cmd($,
       $.makeatletter_cs
@@ -635,7 +617,137 @@ module.exports = grammar({
 
     // LaTeX boxes
 
+    // LaTeX font changing: text
 
+    // \*family, \*series and \*shape skipped because they are zero argument
+    // commands and are not used as operands.
+
+    // It would be nice to collapse the following into single cmd rule, but
+    // Atom seems pretty limited in the scope selectors.
+
+    textrm: $ => cmd($,
+      $.textrm_cs,
+      $.text_group
+    ),
+
+    textrm_cs: $ => cs($, 'textrm'),
+
+    textsf: $ => cmd($,
+      $.textsf_cs,
+      $.text_group
+    ),
+
+    textsf_cs: $ => cs($, 'textsf'),
+
+    texttt: $ => cmd($,
+      $.texttt_cs,
+      $.text_group
+    ),
+
+    texttt_cs: $ => cs($, 'texttt'),
+
+    textmd: $ => cmd($,
+      $.textmd_cs,
+      $.text_group
+    ),
+
+    textmd_cs: $ => cs($, 'textmd'),
+
+    textbf: $ => cmd($,
+      $.textbf_cs,
+      $.text_group
+    ),
+
+    textbf_cs: $ => cs($, 'textbf'),
+
+    textup: $ => cmd($,
+      $.textup_cs,
+      $.text_group
+    ),
+
+    textup_cs: $ => cs($, 'textup'),
+
+    textit: $ => cmd($,
+      $.textit_cs,
+      $.text_group
+    ),
+
+    textit_cs: $ => cs($, 'textit'),
+
+    textsl: $ => cmd($,
+      $.textsl_cs,
+      $.text_group
+    ),
+
+    textsl_cs: $ => cs($, 'textsl'),
+
+    textsc: $ => cmd($,
+      $.textsc_cs,
+      $.text_group
+    ),
+
+    textsc_cs: $ => cs($, 'textsc'),
+
+    emph: $ => cmd($,
+      $.emph_cs,
+      $.text_group
+    ),
+
+    emph_cs: $ => cs($, 'emph'),
+
+    // LaTeX font changing: math
+
+    // It would be nice to collapse the following into single cmd rule, but
+    // Atom seems pretty limited in the scope selectors.
+
+    mathrm: $ => cmd($,
+      $.mathrm_cs,
+      $.math_group
+    ),
+
+    mathrm_cs: $ => cs($, 'mathrm'),
+
+    mathnormal: $ => cmd($,
+      $.mathnormal_cs,
+      $.math_group
+    ),
+
+    mathnormal_cs: $ => cs($, 'mathnormal'),
+
+    mathcal: $ => cmd($,
+      $.mathcal_cs,
+      $.math_group
+    ),
+
+    mathcal_cs: $ => cs($, 'mathcal'),
+
+    mathbf: $ => cmd($,
+      $.mathbf_cs,
+      $.math_group
+    ),
+
+    mathbf_cs: $ => cs($, 'mathbf'),
+
+    mathsf: $ => cmd($,
+      $.mathsf_cs,
+      $.math_group
+    ),
+
+    mathsf_cs: $ => cs($, 'mathsf'),
+
+    mathtt: $ => cmd($,
+      $.mathtt_cs,
+      $.math_group
+    ),
+
+    mathtt_cs: $ => cs($, 'mathtt'),
+
+    mathit: $ => cmd($,
+      $.mathit_cs,
+      $.math_group
+    ),
+
+    mathit_cs: $ => cs($, 'mathit'),
 
     // hyperref functions
 

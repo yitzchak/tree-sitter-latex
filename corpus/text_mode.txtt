@@ -208,65 +208,6 @@ foo %:wibble
   (tag_comment))
 
 =====================
-emph
-=====================
-foo\emph{bar}wibble
----------------------
-(document
-  (text_mode
-    (text)
-    (emph (emph_cs) (text_group (begin_group) (text) (end_group)))
-    (text)))
-
-=====================
-emph with a comment before argument
-=====================
-foo\emph%baz
-{bar}wibble
----------------------
-(document
-  (text_mode
-    (text)
-    (emph
-      (emph_cs)
-      (comment)
-      (text_group (begin_group) (text) (end_group)))
-    (text)))
-
-=====================
-textbf
-=====================
-foo\textbf{bar}wibble
----------------------
-(document
-  (text_mode
-    (text)
-    (textbf (textbf_cs) (text_group (begin_group) (text) (end_group)))
-    (text)))
-
-=====================
-textit
-=====================
-foo\textit{bar}wibble
----------------------
-(document
-  (text_mode
-    (text)
-    (textit (textit_cs) (text_group (begin_group) (text) (end_group)))
-    (text)))
-
-=====================
-texttt
-=====================
-foo\texttt{bar}wibble
----------------------
-(document
-  (text_mode
-    (text)
-    (texttt (texttt_cs) (text_group (begin_group) (text) (end_group)))
-    (text)))
-
-=====================
 footnote
 =====================
 foo\footnote{bar}wibble
