@@ -4,11 +4,10 @@ chardef
 \chardef\foo=3
 --------------------
 (document
-  (text_mode
-    (chardef
-      (chardef_cs)
-      (cs)
-      (decimal))))
+  (chardef
+    (chardef_cs)
+    (cs)
+    (decimal)))
 
 =====================
 mathchardef
@@ -16,11 +15,10 @@ mathchardef
 \mathchardef\foo=3
 --------------------
 (document
-  (text_mode
-    (chardef
-      (chardef_cs)
-      (cs)
-      (decimal))))
+  (chardef
+    (chardef_cs)
+    (cs)
+    (decimal)))
 
 =====================
 char
@@ -28,10 +26,9 @@ char
 \char3
 --------------------
 (document
-  (text_mode
-    (char
-      (char_cs)
-      (decimal))))
+  (char
+    (char_cs)
+    (decimal)))
 
 =====================
 accent
@@ -39,10 +36,9 @@ accent
 \accent3
 --------------------
 (document
-  (text_mode
-    (char
-      (char_cs)
-      (decimal))))
+  (char
+    (char_cs)
+    (decimal)))
 
 =====================
 mathchar
@@ -50,7 +46,6 @@ mathchar
 \mathchar3
 --------------------
 (document
-  (text_mode
-    (char
-      (char_cs)
-      (decimal))))
+  (char
+    (char_cs)
+    (decimal)))

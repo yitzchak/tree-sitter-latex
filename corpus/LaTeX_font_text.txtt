@@ -4,10 +4,9 @@ emph
 foo\emph{bar}wibble
 ---------------------
 (document
-  (text_mode
-    (text)
-    (emph (emph_cs) (text_group (begin_group) (text) (end_group)))
-    (text)))
+  (text)
+  (emph (emph_cs) (text_group (begin_group) (text) (end_group)))
+  (text))
 
 =====================
 emph with a comment before argument
@@ -16,13 +15,12 @@ foo\emph%baz
 {bar}wibble
 ---------------------
 (document
-  (text_mode
-    (text)
-    (emph
-      (emph_cs)
-      (comment)
-      (text_group (begin_group) (text) (end_group)))
-    (text)))
+  (text)
+  (emph
+    (emph_cs)
+    (comment)
+    (text_group (begin_group) (text) (end_group)))
+  (text))
 
 =====================
 textbf
@@ -30,10 +28,9 @@ textbf
 foo\textbf{bar}wibble
 ---------------------
 (document
-  (text_mode
-    (text)
-    (textbf (textbf_cs) (text_group (begin_group) (text) (end_group)))
-    (text)))
+  (text)
+  (textbf (textbf_cs) (text_group (begin_group) (text) (end_group)))
+  (text))
 
 =====================
 textit
@@ -41,10 +38,9 @@ textit
 foo\textit{bar}wibble
 ---------------------
 (document
-  (text_mode
-    (text)
-    (textit (textit_cs) (text_group (begin_group) (text) (end_group)))
-    (text)))
+  (text)
+  (textit (textit_cs) (text_group (begin_group) (text) (end_group)))
+  (text))
 
 =====================
 texttt
@@ -52,7 +48,6 @@ texttt
 foo\texttt{bar}wibble
 ---------------------
 (document
-  (text_mode
-    (text)
-    (texttt (texttt_cs) (text_group (begin_group) (text) (end_group)))
-    (text)))
+  (text)
+  (texttt (texttt_cs) (text_group (begin_group) (text) (end_group)))
+  (text))

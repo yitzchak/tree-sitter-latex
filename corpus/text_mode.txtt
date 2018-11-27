@@ -3,62 +3,51 @@ Plain text
 ==================
 fubar
 ---
-
 (document
-  (text_mode
-    (text)))
+  (text))
 
 ==================
 Single command
 ==================
 fubar\quux wibble
 ---
-
 (document
-  (text_mode
-    (text)
-    (cs)
-    (text)))
+  (text)
+  (cs)
+  (text))
 
 ==================
 Single command with arguments
 ==================
 fubar\quux{bar} wibble
 ---
-
 (document
-  (text_mode
-    (text)
-    (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text)))
+  (text)
+  (cs)
+  (text_group (begin_group) (text) (end_group))
+  (text))
 
 ==================
 Single command with spaces
 ==================
 fubar\quux  {bar} wibble
 ---
-
 (document
-  (text_mode
-    (text)
-    (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text)))
-
+  (text)
+  (cs)
+  (text_group (begin_group) (text) (end_group))
+  (text))
 
 ==================
 Single command with arguments and spaces (TODO: Resolve design choice)
 ==================
 fubar\quux  {bar} wibble
 ---
-
 (document
-  (text_mode
-    (text)
-    (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text)))
+  (text)
+  (cs)
+  (text_group (begin_group) (text) (end_group))
+  (text))
 
 =============
 Active char
@@ -66,10 +55,9 @@ Active char
 foo~bar
 -------------
 (document
-  (text_mode
-    (text)
-    (active_char)
-    (text)))
+  (text)
+  (active_char)
+  (text))
 
 =============
 Alignment tab
@@ -77,10 +65,9 @@ Alignment tab
 foo&bar
 -------------
 (document
-  (text_mode
-    (text)
-    (alignment_tab)
-    (text)))
+  (text)
+  (alignment_tab)
+  (text))
 
 =============
 Parameter
@@ -89,11 +76,10 @@ foo#1bar
 foo##1bar
 -------------
 (document
-  (text_mode
-    (text)
-    (parameter (parameter_char) (decimal)) (text)
-    (parameter (parameter_char) (parameter_char) (decimal))
-    (text)))
+  (text)
+  (parameter (parameter_char) (decimal)) (text)
+  (parameter (parameter_char) (parameter_char) (decimal))
+  (text))
 
 =============
 Subscript
@@ -101,10 +87,9 @@ Subscript
 foo_bar
 -------------
 (document
-  (text_mode
-    (text)
-    (text)
-    (text)))
+  (text)
+  (text)
+  (text))
 
 =============
 Escaped
@@ -112,10 +97,9 @@ Escaped
 foo\^bar
 -------------
 (document
-  (text_mode
-    (text)
-    (escaped)
-    (text)))
+  (text)
+  (escaped)
+  (text))
 
 =============
 Text group
@@ -123,13 +107,12 @@ Text group
 foo{bar}wibble
 -------------
 (document
-  (text_mode
+  (text)
+  (text_group
+    (begin_group)
     (text)
-    (text_group
-      (begin_group)
-      (text)
-      (end_group))
-    (text)))
+    (end_group))
+  (text))
 
 =============
 text environment
@@ -141,13 +124,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (text_env
+    (begin (begin_cs) (name_group (begin_group) (name) (end_group)))
     (text)
-    (text_env
-      (begin (begin_cs) (name_group (begin_group) (name) (end_group)))
-      (text)
-      (end (end_cs) (name_group (begin_group) (name) (end_group))))
-  (text)))
+    (end (end_cs) (name_group (begin_group) (name) (end_group))))
+  (text))
 
 ===========
 comment
@@ -155,8 +137,7 @@ comment
 foo % bar
 -----------
 (document
-  (text_mode
-    (text))
+  (text)
   (comment))
 
 ===========
@@ -165,7 +146,11 @@ comment eats EOL
 \emph%foo
 {bar}
 -----------
-(document (text_mode (emph (emph_cs) (comment) (text_group (begin_group) (text) (end_group)))))
+(document
+  (emph
+    (emph_cs)
+    (comment)
+    (text_group (begin_group) (text) (end_group))))
 
 ===========
 arara comment
@@ -173,8 +158,7 @@ arara comment
 foo % arara: pdflatex
 -----------
 (document
-  (text_mode
-    (text))
+  (text)
   (arara_comment))
 
 ===========
@@ -183,8 +167,7 @@ bib comment
 foo %!Bib bar=wibble
 -----------
 (document
-  (text_mode
-    (text))
+  (text)
   (bib_comment))
 
 ===========
@@ -193,8 +176,7 @@ magic comment
 foo %!TeX bar=wibble
 -----------
 (document
-  (text_mode
-    (text))
+  (text)
   (magic_comment))
 
 ===========
@@ -203,8 +185,7 @@ tag comment
 foo %:wibble
 -----------
 (document
-  (text_mode
-    (text))
+  (text)
   (tag_comment))
 
 =====================
@@ -214,13 +195,12 @@ foo\footnote{bar}wibble
 foo\footnote[10]{bar}wibble
 ---------------------
 (document
-  (text_mode
-    (text)
-    (footnote (footnote_cs) (text_group (begin_group) (text) (end_group))) (text)
-    (footnote (footnote_cs)
-      (brack_group_text (lbrack) (text) (rbrack))
-      (text_group (begin_group) (text) (end_group)))
-    (text)))
+  (text)
+  (footnote (footnote_cs) (text_group (begin_group) (text) (end_group))) (text)
+  (footnote (footnote_cs)
+    (brack_group_text (lbrack) (text) (rbrack))
+    (text_group (begin_group) (text) (end_group)))
+  (text))
 
 =====================
 sections
@@ -231,23 +211,30 @@ sections
 ---------------------
 
 (document
-  (text_mode
-    (section (section_cs) (text_group (begin_group) (text) (end_group)))
-    (text)
-    (section (section_cs) (text_group (begin_group) (text) (end_group)))
-    (text)
-    (section (section_cs) (text_group (begin_group) (text) (end_group)))))
+  (section (section_cs) (text_group (begin_group) (text) (end_group)))
+  (text)
+  (section (section_cs) (text_group (begin_group) (text) (end_group)))
+  (text)
+  (section (section_cs) (text_group (begin_group) (text) (end_group))))
 
 =================
 Square brackets do not trigger brack_group_text
 ================
 foo[bar]wibble
 ---------------
-(document (text_mode (text) (text) (text) (text) (text)))
+(document
+  (text)
+  (text)
+  (text)
+  (text)
+  (text))
 
 =================
 Allow unmatch square brackets
 ================
 foo[bar
 ---------------
-(document (text_mode (text) (text) (text)))
+(document
+  (text)
+  (text)
+  (text))

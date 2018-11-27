@@ -9,7 +9,6 @@ quux
 quux
 ----------------------
 (document
-  (text_mode
     (text)
     (verbatim_env
       (verbatim_begin
@@ -18,7 +17,7 @@ quux
         (eol))
       (verbatim_text)
       (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+    (text))
 
 ===========================
 Verbatim environment
@@ -30,16 +29,15 @@ bar
 quux
 ---------------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ===========================
 Verbatim star environment
@@ -51,16 +49,15 @@ bar
 quux
 ---------------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ===========================
 BVerbatim environment
@@ -72,16 +69,15 @@ bar
 quux
 ---------------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ===========================
 BVerbatim star environment
@@ -93,16 +89,15 @@ bar
 quux
 ---------------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ===========================
 LVerbatim environment
@@ -114,16 +109,15 @@ bar
 quux
 ---------------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ===========================
 LVerbatim star environment
@@ -135,16 +129,15 @@ bar
 quux
 ---------------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ===========================
 lstlisting environment
@@ -156,16 +149,15 @@ bar
 quux
 ---------------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ===========================
 lstlisting environment with optional argument
@@ -177,17 +169,16 @@ bar
 quux
 ---------------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (brack_group_text (lbrack) (text) (rbrack))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (brack_group_text (lbrack) (text) (rbrack))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ===========================
 minted environment
@@ -199,17 +190,16 @@ bar
 quux
 ---------------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (text_group (begin_group) (text) (end_group))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ======================
 empty verbatim environment
@@ -220,15 +210,14 @@ foo
 quux
 ----------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (eol))
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (eol))
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ======================
 multiline verbatim environment
@@ -241,16 +230,15 @@ wibble
 quux
 ----------------------
 (document
-  (text_mode
-    (text)
-    (verbatim_env
-      (verbatim_begin
-        (begin_cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-        (eol))
-      (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
-    (text)))
+  (text)
+  (verbatim_env
+    (verbatim_begin
+      (begin_cs)
+      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (eol))
+    (verbatim_text)
+    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+  (text))
 
 ======================
 inline verbatim
@@ -263,12 +251,11 @@ text
 text
 ----------------------
 (document
-  (text_mode
-    (text)
-    (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)
-    (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)
-    (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)
-    (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)))
+  (text)
+  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)
+  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)
+  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)
+  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text))
 
 ======================
 not (quite) inline verbatim
@@ -276,5 +263,4 @@ not (quite) inline verbatim
 \verb  +foo+ the space here is the actual delim, so +foo+ is plain text
 ----------------------
 (document
-  (text_mode
-    (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)))
+  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text))

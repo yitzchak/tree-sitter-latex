@@ -60,8 +60,12 @@ module.exports = grammar({
     $.tag_comment,
   ],
 
+  conflicts: $ => [
+    [$._math_mode]
+  ],
+
   rules: {
-    document: $ => optional($.text_mode),
+    document: $ => repeat($._text_mode),
 
     _common: $ => choice(
       $._box,
@@ -140,7 +144,7 @@ module.exports = grammar({
       $.hyperref
     ),
 
-    text_mode: $ => repeat1($._text_mode),
+    // text_mode: $ => repeat1($._text_mode),
 
     _math_mode: $ => choice(
       $._common,
@@ -160,7 +164,7 @@ module.exports = grammar({
       $.tag
     ),
 
-    math_mode: $ => prec.left(2, repeat1($._math_mode)),
+    // math_mode: $ => repeat1($._math_mode),
 
     parameter: $ => seq(
       repeat1($.parameter_char),
@@ -187,23 +191,23 @@ module.exports = grammar({
 
     tex_display_math: $ => seq(
       $.math_shift, $.math_shift,
-      optional($.math_mode),
+      repeat($._math_mode),
       $.math_shift, $.math_shift
     ),
 
     latex_display_math: $ => seq(
       $.begin_display_math,
-      $.math_mode,
+      repeat1($._math_mode),
       $.end_display_math
     ),
 
     begin_display_math: $ => seq($._escape, '['),
 
-    end_display_math: $ => seq($._escape, ']'),
+    end_display_math: $ => prec(-3, seq($._escape, ']')),
 
     display_math_env: $ => seq(
       $.display_math_begin,
-      $.math_mode,
+      repeat1($._math_mode),
       $.display_math_end
     ),
 
@@ -214,9 +218,9 @@ module.exports = grammar({
       $.eol
     ),
 
-    display_math_end: $ => end_cmd($,
+    display_math_end: $ => prec(-3, end_cmd($,
       $.display_math_env_group
-    ),
+    )),
 
     display_math_env_group: $ => seq(
       $.begin_group,
@@ -234,13 +238,13 @@ module.exports = grammar({
 
     tex_inline_math: $ => seq(
       $.math_shift,
-      $.math_mode,
+      repeat1($._math_mode),
       $.math_shift
     ),
 
     latex_inline_math: $ => seq(
       $.begin_inline_math,
-      optional($.math_mode),
+      repeat($._math_mode),
       $.end_inline_math
     ),
 
@@ -250,7 +254,7 @@ module.exports = grammar({
 
     inline_math_env: $ => seq(
       $.inline_math_begin,
-      optional($.math_mode),
+      repeat($._math_mode),
       $.inline_math_end
     ),
 
@@ -258,9 +262,9 @@ module.exports = grammar({
       $.inline_math_env_group
     ),
 
-    inline_math_end: $ => end_cmd($,
+    inline_math_end: $ => prec(-3, end_cmd($,
       $.inline_math_env_group
-    ),
+    )),
 
     inline_math_env_group: $ => seq(
       $.begin_group,
@@ -822,7 +826,7 @@ module.exports = grammar({
     ),
 
     math_text_group: $ => seq(
-      $.begin_group, optional($.text_mode), $.end_group
+      $.begin_group, repeat($._text_mode), $.end_group
     ),
 
     lbrack: $ => '[',
