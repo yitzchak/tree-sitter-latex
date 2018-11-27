@@ -1492,12 +1492,12 @@
         }
       ]
     },
-    "makebox": {
+    "mkbox": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "makebox_cs"
+          "name": "mkbox_cs"
         },
         {
           "type": "CHOICE",
@@ -1591,7 +1591,7 @@
         }
       ]
     },
-    "makebox_cs": {
+    "mkbox_cs": {
       "type": "SEQ",
       "members": [
         {
@@ -1677,7 +1677,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "makebox"
+          "name": "mkbox"
         },
         {
           "type": "SYMBOL",
@@ -2353,6 +2353,300 @@
           "name": "_cs_end"
         }
       ]
+    },
+    "makebox": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "makebox_cs"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "brack_group_dimension"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "brack_group_text"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "makebox_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(make|frame)box"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "savebox": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "savebox_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "brack_group_dimension"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "brack_group_text"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "savebox_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "savebox"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "parbox": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "parbox_cs"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "brack_group_text"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "brack_group_dimension"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "brack_group_text"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "group_dimension"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "parbox_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "parbox"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "minipage_env": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "minipage_begin"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_text_mode"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minipage_end"
+        }
+      ]
+    },
+    "minipage_begin": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minipage_env_group"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "brack_group_text"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "brack_group_dimension"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "brack_group_text"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "group_dimension"
+        }
+      ]
+    },
+    "minipage_end": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "end_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minipage_env_group"
+        }
+      ]
+    },
+    "minipage_env_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minipage_env_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "minipage_env_name": {
+      "type": "STRING",
+      "value": "minipage"
     },
     "textrm": {
       "type": "SEQ",
@@ -3100,6 +3394,40 @@
         }
       ]
     },
+    "group_dimension": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dimension"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "brack_group_dimension": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "lbrack"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "dimension"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "rbrack"
+        }
+      ]
+    },
     "name_group": {
       "type": "SEQ",
       "members": [
@@ -3256,7 +3584,7 @@
     },
     "unit": {
       "type": "PATTERN",
-      "value": "bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|pc|pt|sp"
+      "value": "bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp"
     },
     "fixed": {
       "type": "PATTERN",

@@ -434,8 +434,8 @@ module.exports = grammar({
       /[hmv]skip|(h|top|v)glue/
     ),
 
-    makebox: $ => cmd($,
-      $.makebox_cs,
+    mkbox: $ => cmd($,
+      $.mkbox_cs,
       optional(
         seq(
           choice('to', 'spread'),
@@ -458,7 +458,7 @@ module.exports = grammar({
 
     phantom_smash_cs: $ => cs($, /[hv]?phantom|smash/),
 
-    makebox_cs: $ => cs($,
+    mkbox_cs: $ => cs($,
       /[hv]box|vtop/
     ),
 
@@ -482,7 +482,7 @@ module.exports = grammar({
     ),
 
     _box: $ => choice(
-      $.makebox,
+      $.mkbox,
       $.movebox,
       $.phantom_smash,
       $.strut,
@@ -620,6 +620,68 @@ module.exports = grammar({
     newenvironment_cs: $ => cs($, /(re)?newenvironment/),
 
     // LaTeX boxes
+
+    makebox: $ => cmd($,
+      $.makebox_cs,
+      optional(
+        seq(
+          $.brack_group_dimension,
+          optional($.brack_group_text)
+        ),
+      ),
+      $.text_group
+    ),
+
+    makebox_cs: $ => cs($, /(make|frame)box/),
+
+    savebox: $ => cmd($,
+      $.savebox_cs,
+      $.text_group,
+      optional($.brack_group_dimension),
+      optional($.brack_group_text),
+      $.text_group
+    ),
+
+    savebox_cs: $ => cs($, 'savebox'),
+
+    makebox_cs: $ => cs($, /(make|frame)box/),
+
+    parbox: $ => cmd($,
+      $.parbox_cs,
+      optional($.brack_group_text),
+      optional($.brack_group_dimension),
+      optional($.brack_group_text),
+      $.group_dimension,
+      $.text_group
+    ),
+
+    parbox_cs: $ => cs($, 'parbox'),
+
+    minipage_env: $ => seq(
+      $.minipage_begin,
+      repeat($._text_mode),
+      $.minipage_end
+    ),
+
+    minipage_begin: $ => begin_cmd($,
+      $.minipage_env_group,
+      optional($.brack_group_text),
+      optional($.brack_group_dimension),
+      optional($.brack_group_text),
+      $.group_dimension
+    ),
+
+    minipage_end: $ => end_cmd($,
+      $.minipage_env_group
+    ),
+
+    minipage_env_group: $ => seq(
+      $.begin_group,
+      $.minipage_env_name,
+      $.end_group
+    ),
+
+    minipage_env_name: $ => 'minipage',
 
     // LaTeX font changing: text
 
@@ -809,6 +871,14 @@ module.exports = grammar({
       $.begin_group, repeat($._text_mode), $.end_group
     ),
 
+    group_dimension: $ => seq(
+      $.begin_group, $.dimension, $.end_group
+    ),
+
+    brack_group_dimension: $ => seq(
+      $.lbrack, $.dimension, $.rbrack
+    ),
+
     name_group: $ => seq(
       $.begin_group, alias($.text, 'name'), $.end_group
     ),
@@ -840,7 +910,7 @@ module.exports = grammar({
     escaped: $ => seq($._escape, $._non_letter_or_other),
 
     // fi introduced by LuaTeX
-    unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|pc|pt|sp/,
+    unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/,
 
     fixed: $ => /[+-]?([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,
 
