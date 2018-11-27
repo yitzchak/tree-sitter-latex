@@ -6,7 +6,7 @@ href command
 (document
   (href
     (href_cs)
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -72,5 +72,5 @@ hyperref local command
 (document
   (hyperref
     (hyperref_cs)
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group))))

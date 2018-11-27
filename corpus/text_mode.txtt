@@ -198,7 +198,7 @@ foo\footnote[10]{bar}wibble
   (text)
   (footnote (footnote_cs) (text_group (begin_group) (text) (end_group))) (text)
   (footnote (footnote_cs)
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group)))
   (text))
 
@@ -218,7 +218,7 @@ sections
   (section (section_cs) (text_group (begin_group) (text) (end_group))))
 
 =================
-Square brackets do not trigger brack_group_text
+Square brackets do not trigger text_brack_group
 ================
 foo[bar]wibble
 ---------------

@@ -38,7 +38,7 @@
 (document
   (makeatletter (makeatletter_cs))
   (usepackage (usepackage_cs)
-    (brack_group_text
+    (text_brack_group
       (lbrack)
       (text)
       (cs)
@@ -117,7 +117,7 @@
 (document
   (explsyntaxon (explsyntaxon_cs))
   (usepackage (usepackage_cs)
-    (brack_group_text
+    (text_brack_group
       (lbrack)
       (text)
       (cs)

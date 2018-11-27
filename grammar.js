@@ -17,6 +17,14 @@ function end_cmd ($, name_group) {
   return seq($.end_cs, name_group || $.name_group)
 }
 
+function group ($, contents) {
+  return seq($.begin_group, contents, $.end_group)
+}
+
+function brack_group ($, contents) {
+  return seq($.lbrack, contents, $.rbrack)
+}
+
 module.exports = grammar({
   name: 'latex',
 
@@ -213,7 +221,7 @@ module.exports = grammar({
 
     display_math_begin: $ => begin_cmd($,
       $.display_math_env_group,
-      optional($.brack_group_text),
+      optional($.text_brack_group),
       optional($.text_group),
       $.eol
     ),
@@ -222,11 +230,7 @@ module.exports = grammar({
       $.display_math_env_group
     )),
 
-    display_math_env_group: $ => seq(
-      $.begin_group,
-      $.display_math_env_name,
-      $.end_group
-    ),
+    display_math_env_group: $ => group($, $.display_math_env_name),
 
     display_math_env_name: $ => /(displaymath|eqnarray\*?|align\*?|alignat\*?|equation\*?|flalign\*?|gather\*?|multiline\*?|split\*?|dmath\*?|dseries\*?|dgroup\*?|darray\*?)/,
 
@@ -266,15 +270,11 @@ module.exports = grammar({
       $.inline_math_env_group
     )),
 
-    inline_math_env_group: $ => seq(
-      $.begin_group,
-      $.inline_math_env_name,
-      $.end_group
-    ),
+    inline_math_env_group: $ => group($, $.inline_math_env_name),
 
     inline_math_env_name: $ => 'math',
 
-    tag: $ => cmd($, $.tag_cs, $.math_text_group),
+    tag: $ => cmd($, $.tag_cs, $.text_group),
 
     tag_cs: $ => cs($, 'tag'),
 
@@ -286,7 +286,7 @@ module.exports = grammar({
 
     verbatim_begin: $ => begin_cmd($,
       $.verbatim_env_group,
-      optional($.brack_group_text),
+      optional($.text_brack_group),
       optional($.text_group),
       $.eol
     ),
@@ -297,11 +297,7 @@ module.exports = grammar({
 
     verbatim_text: $ => repeat1($._verb_line),
 
-    verbatim_env_group: $ => seq(
-      $.begin_group,
-      $.verbatim_env_name,
-      $.end_group
-    ),
+    verbatim_env_group: $ => group($, $.verbatim_env_name),
 
     verbatim_env_name: $ => /(verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt)/,
 
@@ -359,7 +355,7 @@ module.exports = grammar({
     section: $ => cmd($,
       $.section_cs,
       optional('*'),
-      optional($.brack_group_text),
+      optional($.text_brack_group),
       $.text_group
     ),
 
@@ -373,7 +369,7 @@ module.exports = grammar({
 
     footnote: $ => cmd($,
       $.footnote_cs,
-      optional($.brack_group_text),
+      optional($.text_brack_group),
       $.text_group
     ),
 
@@ -570,16 +566,16 @@ module.exports = grammar({
 
     documentclass: $ => prec.right(-2, cmd($,
       $.documentclass_cs,
-      optional($.brack_group_text),
+      optional($.text_brack_group),
       $.name_group,
-      optional($.brack_group_text)
+      optional($.text_brack_group)
     )),
 
     documentclass_cs: $ => cs($, 'documentclass'),
 
     documentstyle: $ => cmd($,
       $.documentstyle_cs,
-      optional($.brack_group_text),
+      optional($.text_brack_group),
       $.name_group
     ),
 
@@ -587,9 +583,9 @@ module.exports = grammar({
 
     usepackage: $ => prec.right(-2, cmd($,
       $.usepackage_cs,
-      optional($.brack_group_text),
+      optional($.text_brack_group),
       $.name_group,
-      optional($.brack_group_text)
+      optional($.text_brack_group)
     )),
 
     usepackage_cs: $ => cs($, 'usepackage'),
@@ -600,8 +596,8 @@ module.exports = grammar({
       $.newcommand_cs,
       optional('*'),
       $.text_group,
-      optional($.brack_group_text),
-      optional($.brack_group_text),
+      optional($.text_brack_group),
+      optional($.text_brack_group),
       $.text_group
     ),
 
@@ -611,8 +607,8 @@ module.exports = grammar({
       $.newenvironment_cs,
       optional('*'),
       $.text_group,
-      optional($.brack_group_text),
-      optional($.brack_group_text),
+      optional($.text_brack_group),
+      optional($.text_brack_group),
       $.text_group,
       $.text_group
     ),
@@ -625,8 +621,8 @@ module.exports = grammar({
       $.makebox_cs,
       optional(
         seq(
-          $.brack_group_dimension,
-          optional($.brack_group_text)
+          $.dimension_brack_group,
+          optional($.text_brack_group)
         ),
       ),
       $.text_group
@@ -637,8 +633,8 @@ module.exports = grammar({
     savebox: $ => cmd($,
       $.savebox_cs,
       $.text_group,
-      optional($.brack_group_dimension),
-      optional($.brack_group_text),
+      optional($.dimension_brack_group),
+      optional($.text_brack_group),
       $.text_group
     ),
 
@@ -648,10 +644,10 @@ module.exports = grammar({
 
     parbox: $ => cmd($,
       $.parbox_cs,
-      optional($.brack_group_text),
-      optional($.brack_group_dimension),
-      optional($.brack_group_text),
-      $.group_dimension,
+      optional($.text_brack_group),
+      optional($.dimension_brack_group),
+      optional($.text_brack_group),
+      $.dimension_group,
       $.text_group
     ),
 
@@ -665,21 +661,17 @@ module.exports = grammar({
 
     minipage_begin: $ => begin_cmd($,
       $.minipage_env_group,
-      optional($.brack_group_text),
-      optional($.brack_group_dimension),
-      optional($.brack_group_text),
-      $.group_dimension
+      optional($.text_brack_group),
+      optional($.dimension_brack_group),
+      optional($.text_brack_group),
+      $.dimension_group
     ),
 
     minipage_end: $ => end_cmd($,
       $.minipage_env_group
     ),
 
-    minipage_env_group: $ => seq(
-      $.begin_group,
-      $.minipage_env_name,
-      $.end_group
-    ),
+    minipage_env_group: $ => group($, $.minipage_env_name),
 
     minipage_env_name: $ => 'minipage',
 
@@ -819,7 +811,7 @@ module.exports = grammar({
 
     href: $ => cmd($,
       $.href_cs,
-      optional($.brack_group_text),
+      optional($.text_brack_group),
       $.text_group,
       $.text_group
     ),
@@ -859,7 +851,7 @@ module.exports = grammar({
       prec(-1,
         cmd($,
           $.hyperref_cs,
-          optional($.brack_group_text),
+          optional($.text_brack_group),
           $.text_group
         )
       )
@@ -867,37 +859,19 @@ module.exports = grammar({
 
     hyperref_cs: $ => cs($, 'hyperref'),
 
-    text_group: $ => seq(
-      $.begin_group, repeat($._text_mode), $.end_group
-    ),
+    text_group: $ => group($, repeat($._text_mode)),
 
-    group_dimension: $ => seq(
-      $.begin_group, $.dimension, $.end_group
-    ),
+    dimension_group: $ => group($, $.dimension),
 
-    brack_group_dimension: $ => seq(
-      $.lbrack, $.dimension, $.rbrack
-    ),
+    dimension_brack_group: $ => brack_group($, $.dimension),
 
-    name_group: $ => seq(
-      $.begin_group, alias($.text, 'name'), $.end_group
-    ),
+    name_group: $ => group($, alias($.text, 'name')),
 
-    brack_group_text: $ => seq(
-      $.lbrack, repeat($._text_mode), $.rbrack
-    ),
+    text_brack_group: $ => brack_group($, repeat($._text_mode)),
 
-    math_group: $ => seq(
-      $.begin_group, repeat($._math_mode), $.end_group
-    ),
+    math_group: $ => group($, repeat($._math_mode)),
 
-    brack_group_math: $ => seq(
-      $.lbrack, repeat($._math_mode), $.rbrack
-    ),
-
-    math_text_group: $ => seq(
-      $.begin_group, repeat($._text_mode), $.end_group
-    ),
+    math_brack_group: $ => brack_group($, repeat($._math_mode)),
 
     lbrack: $ => '[',
 

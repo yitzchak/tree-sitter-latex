@@ -174,7 +174,7 @@ quux
     (verbatim_begin
       (begin_cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-      (brack_group_text (lbrack) (text) (rbrack))
+      (text_brack_group (lbrack) (text) (rbrack))
       (eol))
     (verbatim_text)
     (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
