@@ -5,7 +5,7 @@ function begin_env_rule ($, options = {}) {
   ]
 
   for (let i = options.opt || 0; i > 0; i--) {
-    args.push(optional($.opt_text_group))
+    args.push(optional($.brack_group_text))
   }
 
   for (let i = options.text || 0; i > 0; i--) {
@@ -36,7 +36,7 @@ function command_rule ($, cs, options = {}) {
   }
 
   for (let i = options.opt || 0; i > 0; i--) {
-    args.push(optional($.opt_text_group))
+    args.push(optional($.brack_group_text))
   }
 
   for (let i = options.name || 0; i > 0; i--) {
@@ -149,8 +149,8 @@ module.exports = grammar({
       $._inline_math,
       $.text_env,
       $.text_group,
-      prec(-1, alias($.begin_opt, 'text')),
-      prec(-1, alias($.end_opt, 'text')),
+      prec(-1, alias($.lbrack, 'text')),
+      prec(-1, alias($.rbrack, 'text')),
       $.emph,
       $.textbf,
       $.textit,
@@ -159,6 +159,7 @@ module.exports = grammar({
       $.providesexplfile,
       $.providesexplpackage,
       $.documentclass,
+      $.documentstyle,
       $.include,
       $.section,
       $.storage,
@@ -181,8 +182,8 @@ module.exports = grammar({
       $.superscript,
       $.math_env,
       $.math_group,
-      prec(-1, alias($.begin_opt, 'text')),
-      prec(-1, alias($.end_opt, 'text')),
+      prec(-1, alias($.lbrack, 'text')),
+      prec(-1, alias($.rbrack, 'text')),
       $.include,
       $.storage,
       command_rule($, $.cs),
@@ -322,14 +323,6 @@ module.exports = grammar({
     end: $ => end_env_rule($),
 
     end_cs: $ => cs_rule($, 'end'),
-
-    documentclass: $ => command_rule($, $.documentclass_cs, { opt: 1, name: 1 }),
-
-    documentclass_cs: $ => cs_rule($, 'documentclass'),
-
-    usepackage: $ => command_rule($, $.usepackage_cs, { opt: 1, name: 1 }),
-
-    usepackage_cs: $ => cs_rule($, 'usepackage'),
 
     include: $ => command_rule($, $.include_cs, { text: 1 }),
 
@@ -519,7 +512,10 @@ module.exports = grammar({
     // TeX character functions
 
     catcode: $ => seq(
-      $.catcode_cs, $._number, '=', $._number
+      $.catcode_cs,
+      $._number,
+      optional('='),
+      $._number
     ),
 
     catcode_cs: $ => cs_rule($,
@@ -545,14 +541,42 @@ module.exports = grammar({
 
     char_cs: $ => cs_rule($, /(math)?char|accent/),
 
-    // LaTeX newcommand, etc.
+    // LaTex preamble commands
+
+    documentclass: $ => prec.right(-2, seq(
+      $.documentclass_cs,
+      optional($.brack_group_text),
+      $.name_group,
+      optional($.brack_group_text)
+    )),
+
+    documentclass_cs: $ => cs_rule($, 'documentclass'),
+
+    documentstyle: $ => seq(
+      $.documentstyle_cs,
+      optional($.brack_group_text),
+      $.name_group
+    ),
+
+    documentstyle_cs: $ => cs_rule($, 'documentstyle'),
+
+    usepackage: $ => prec.right(-2, seq(
+      $.usepackage_cs,
+      optional($.brack_group_text),
+      $.name_group,
+      optional($.brack_group_text)
+    )),
+
+    usepackage_cs: $ => cs_rule($, 'usepackage'),
+
+    // LaTeX definitionas
 
     newcommand: $ => seq(
       $.newcommand_cs,
       optional('*'),
       $.text_group,
-      optional($.opt_text_group),
-      optional($.opt_text_group),
+      optional($.brack_group_text),
+      optional($.brack_group_text),
       $.text_group
     ),
 
@@ -562,13 +586,17 @@ module.exports = grammar({
       $.newenvironment_cs,
       optional('*'),
       $.text_group,
-      optional($.opt_text_group),
-      optional($.opt_text_group),
+      optional($.brack_group_text),
+      optional($.brack_group_text),
       $.text_group,
       $.text_group
     ),
 
     newenvironment_cs: $ => cs_rule($, /(re)?newenvironment/),
+
+    // LaTeX boxes
+
+
 
     // hyperref functions
 
@@ -602,25 +630,25 @@ module.exports = grammar({
       $.begin_group, alias($.text, 'name'), $.end_group
     ),
 
-    opt_text_group: $ => seq(
-      $.begin_opt, repeat($._text_mode), $.end_opt
+    brack_group_text: $ => seq(
+      $.lbrack, repeat($._text_mode), $.rbrack
     ),
 
     math_group: $ => seq(
       $.begin_group, repeat($._math_mode), $.end_group
     ),
 
-    opt_math_group: $ => seq(
-      $.begin_opt, repeat($._math_mode), $.end_opt
+    brack_group_math: $ => seq(
+      $.lbrack, repeat($._math_mode), $.rbrack
     ),
 
     math_text_group: $ => seq(
       $.begin_group, optional($.text_mode), $.end_group
     ),
 
-    begin_opt: $ => '[',
+    lbrack: $ => '[',
 
-    end_opt: $ => ']',
+    rbrack: $ => ']',
 
     text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
 

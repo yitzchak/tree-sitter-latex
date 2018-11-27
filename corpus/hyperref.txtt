@@ -7,7 +7,7 @@ href command
   (text_mode
     (href
       (href_cs)
-      (opt_text_group (begin_opt) (text) (end_opt))
+      (brack_group_text (lbrack) (text) (rbrack))
       (text_group (begin_group) (text) (end_group))
       (text_group (begin_group) (text) (end_group)))))
 
@@ -79,5 +79,5 @@ hyperref local command
   (text_mode
     (hyperref
       (hyperref_cs)
-      (opt_text_group (begin_opt) (text) (end_opt))
+      (brack_group_text (lbrack) (text) (rbrack))
       (text_group (begin_group) (text) (end_group)))))

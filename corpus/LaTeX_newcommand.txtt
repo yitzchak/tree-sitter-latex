@@ -20,7 +20,7 @@ newcommand with number of arguments
     (newcommand
       (newcommand_cs)
       (text_group (begin_group) (cs) (end_group))
-      (opt_text_group (begin_opt) (text) (end_opt))
+      (brack_group_text (lbrack) (text) (rbrack))
       (text_group (begin_group) (text) (end_group)))))
 
 ======================
@@ -33,8 +33,8 @@ newcommand with number of arguments and default value
     (newcommand
       (newcommand_cs)
       (text_group (begin_group) (cs) (end_group))
-      (opt_text_group (begin_opt) (text) (end_opt))
-      (opt_text_group (begin_opt) (text) (end_opt))
+      (brack_group_text (lbrack) (text) (rbrack))
+      (brack_group_text (lbrack) (text) (rbrack))
       (text_group (begin_group) (text) (end_group)))))
 
 ======================
