@@ -4,16 +4,32 @@ mathbf
 $foo \mathbf{bar} wibble$
 ---------------------
 (document
-  (text_mode
-    (tex_inline_math
-      (math_shift)
-      (math_mode
+  (tex_inline_math
+    (math_shift)
+    (text)
+    (mathbf
+      (mathbf_cs)
+      (math_group
+        (begin_group)
         (text)
-        (mathbf
-          (mathbf_cs)
-          (math_group
-            (begin_group)
-            (text)
-            (end_group)))
-        (text))
-      (math_shift))))
+        (end_group)))
+    (text)
+    (math_shift)))
+
+=====================
+mathbf inline LaTeX inline math
+=====================
+\(foo \mathbf{bar} wibble\)
+---------------------
+(document
+  (latex_inline_math
+    (begin_inline_math)
+    (text)
+    (mathbf
+      (mathbf_cs)
+      (math_group
+        (begin_group)
+        (text)
+        (end_group)))
+    (text)
+    (end_inline_math)))

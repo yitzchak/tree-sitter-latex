@@ -4,12 +4,11 @@ href command
 \href[page=1]{http://foo.bar}{wibble}
 -----------------------------
 (document
-  (text_mode
-    (href
-      (href_cs)
-      (brack_group_text (lbrack) (text) (rbrack))
-      (text_group (begin_group) (text) (end_group))
-      (text_group (begin_group) (text) (end_group)))))
+  (href
+    (href_cs)
+    (brack_group_text (lbrack) (text) (rbrack))
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
 
 =============================
 url command
@@ -17,10 +16,9 @@ url command
 \url{http://foo.bar}
 -----------------------------
 (document
-  (text_mode
-    (url
-      (url_cs)
-      (text_group (begin_group) (text) (end_group)))))
+  (url
+    (url_cs)
+    (text_group (begin_group) (text) (end_group))))
 
 =============================
 nolinkurl command
@@ -28,10 +26,9 @@ nolinkurl command
 \nolinkurl{http://foo.bar}
 -----------------------------
 (document
-  (text_mode
-    (url
-      (url_cs)
-      (text_group (begin_group) (text) (end_group)))))
+  (url
+    (url_cs)
+    (text_group (begin_group) (text) (end_group))))
 
 =============================
 hyperbaseurl command
@@ -39,10 +36,9 @@ hyperbaseurl command
 \hyperbaseurl{http://foo.bar}
 -----------------------------
 (document
-  (text_mode
-    (hyperbaseurl
-      (hyperbaseurl_cs)
-      (text_group (begin_group) (text) (end_group)))))
+  (hyperbaseurl
+    (hyperbaseurl_cs)
+    (text_group (begin_group) (text) (end_group))))
 
 =============================
 hyperimage command
@@ -50,11 +46,10 @@ hyperimage command
 \hyperimage{http://foo.bar}{wibble}
 -----------------------------
 (document
-  (text_mode
-    (hyperimage
-      (hyperimage_cs)
-      (text_group (begin_group) (text) (end_group))
-      (text_group (begin_group) (text) (end_group)))))
+  (hyperimage
+    (hyperimage_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
 
 =============================
 hyperref command
@@ -62,13 +57,12 @@ hyperref command
 \hyperref{http://foo.bar}{wibble}{quux}{baz}
 -----------------------------
 (document
-  (text_mode
-    (hyperref
-      (hyperref_cs)
-      (text_group (begin_group) (text) (end_group))
-      (text_group (begin_group) (text) (end_group))
-      (text_group (begin_group) (text) (end_group))
-      (text_group (begin_group) (text) (end_group)))))
+  (hyperref
+    (hyperref_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
 
 =============================
 hyperref local command
@@ -76,8 +70,7 @@ hyperref local command
 \hyperref[foo]{wibble}
 -----------------------------
 (document
-  (text_mode
-    (hyperref
-      (hyperref_cs)
-      (brack_group_text (lbrack) (text) (rbrack))
-      (text_group (begin_group) (text) (end_group)))))
+  (hyperref
+    (hyperref_cs)
+    (brack_group_text (lbrack) (text) (rbrack))
+    (text_group (begin_group) (text) (end_group))))

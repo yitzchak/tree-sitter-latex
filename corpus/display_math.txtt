@@ -4,13 +4,12 @@ TeX display math
 foo$$bar$$quux
 -------------
 (document
-  (text_mode
+  (text)
+  (tex_display_math
+    (math_shift) (math_shift)
     (text)
-    (tex_display_math
-      (math_shift) (math_shift)
-      (math_mode (text))
-      (math_shift) (math_shift))
-    (text)))
+    (math_shift) (math_shift))
+  (text))
 
 ============
 TeX empty display math
@@ -18,12 +17,11 @@ TeX empty display math
 foo$$$$quux
 -------------
 (document
-  (text_mode
-    (text)
-    (tex_display_math
-      (math_shift) (math_shift)
-      (math_shift) (math_shift))
-    (text)))
+  (text)
+  (tex_display_math
+    (math_shift) (math_shift)
+    (math_shift) (math_shift))
+  (text))
 
 ==================
 LaTeX display math
@@ -31,13 +29,12 @@ LaTeX display math
 foo\[bar\]quux
 -------------
 (document
-  (text_mode
+  (text)
+  (latex_display_math
+    (begin_display_math)
     (text)
-    (latex_display_math
-      (begin_display_math)
-      (math_mode (text))
-      (end_display_math))
-    (text)))
+    (end_display_math))
+  (text))
 
 =======================
 LaTeX displaymath environment
@@ -49,13 +46,12 @@ bar
 quux
 -----------------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 LaTeX eqnarray environment
@@ -67,13 +63,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 LaTeX eqnarray* environment
@@ -85,13 +80,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath align environment
@@ -103,13 +97,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath align* environment
@@ -121,13 +114,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath alignat environment
@@ -139,17 +131,16 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin
+      (begin_cs)
+      (display_math_env_group (begin_group) (display_math_env_name) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (eol))
     (text)
-    (display_math_env
-      (display_math_begin
-        (begin_cs)
-        (display_math_env_group (begin_group) (display_math_env_name) (end_group))
-        (text_group (begin_group) (text) (end_group))
-        (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath alignat* environment
@@ -161,17 +152,16 @@ bar
 quux
 -------------
 (document
-  (text_mode
-    (text)
-    (display_math_env
+  (text)
+  (display_math_env
     (display_math_begin
       (begin_cs)
       (display_math_env_group (begin_group) (display_math_env_name) (end_group))
       (text_group (begin_group) (text) (end_group))
       (eol))
-    (math_mode (text))
+    (text)
     (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-  (text)))
+  (text))
 
 =============
 amsmath equation environment
@@ -183,13 +173,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath equation* environment
@@ -201,13 +190,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath flalign environment
@@ -219,13 +207,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath flalign* environment
@@ -237,13 +224,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath gather environment
@@ -255,13 +241,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath gather* environment
@@ -273,13 +258,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath multiline environment
@@ -291,13 +275,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath multiline* environment
@@ -309,13 +292,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath split environment
@@ -327,13 +309,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =============
 amsmath split* environment
@@ -345,13 +326,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =========================
 breqn dmath environment
@@ -363,13 +343,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 ==========================
 breqn dmath* environment
@@ -381,13 +360,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =========================
 breqn dseries environment
@@ -399,13 +377,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 ==========================
 breqn dseries* environment
@@ -417,13 +394,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =========================
 breqn dgroup environment
@@ -435,13 +411,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 ==========================
 breqn group* environment
@@ -453,13 +428,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 =========================
 breqn darray environment
@@ -471,13 +445,12 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))
 
 ==========================
 breqn darray* environment
@@ -489,10 +462,9 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (display_math_env
+    (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
     (text)
-    (display_math_env
-      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
-      (math_mode (text))
-      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
-    (text)))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+  (text))

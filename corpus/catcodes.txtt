@@ -4,9 +4,8 @@
 \bar@wibble
 --------------------------------
 (document
-  (text_mode
-    (cs)
-    (text)))
+  (cs)
+  (text))
 
 =================================
 [makeatletter] @ sign is letter
@@ -14,10 +13,9 @@
 \makeatletter\bar@wibble\makeatother
 ---------------------------------
 (document
-  (text_mode
-    (makeatletter (makeatletter_cs))
-    (cs)
-    (makeatother (makeatother_cs))))
+  (makeatletter (makeatletter_cs))
+  (cs)
+  (makeatother (makeatother_cs)))
 
 ==============================
 [makeatletter] @ sign is letter in text group
@@ -25,13 +23,12 @@
 \makeatletter{\bar@wibble}\makeatother
 ----------------
 (document
-  (text_mode
-    (makeatletter (makeatletter_cs))
-    (text_group
-      (begin_group)
-      (cs)
-      (end_group))
-    (makeatother (makeatother_cs))))
+  (makeatletter (makeatletter_cs))
+  (text_group
+    (begin_group)
+    (cs)
+    (end_group))
+  (makeatother (makeatother_cs)))
 
 ==============================
 [makeatletter] @ sign is letter in optional text group
@@ -39,16 +36,15 @@
 \makeatletter\usepackage[foo\bar@wibble]{foo}\makeatother
 ----------------
 (document
-  (text_mode
-    (makeatletter (makeatletter_cs))
-    (usepackage (usepackage_cs)
-      (brack_group_text
-        (lbrack)
-        (text)
-        (cs)
-        (rbrack))
-      (name_group (begin_group) (name) (end_group)))
-    (makeatother (makeatother_cs))))
+  (makeatletter (makeatletter_cs))
+  (usepackage (usepackage_cs)
+    (brack_group_text
+      (lbrack)
+      (text)
+      (cs)
+      (rbrack))
+    (name_group (begin_group) (name) (end_group)))
+  (makeatother (makeatother_cs)))
 
 ============================
 [makeatletter] @ sign is letter then other
@@ -56,12 +52,11 @@
 \makeatletter\bar@wibble\makeatother\quux@gronk
 ----------------
 (document
-  (text_mode
-    (makeatletter (makeatletter_cs))
-    (cs)
-    (makeatother (makeatother_cs))
-    (cs)
-    (text)))
+  (makeatletter (makeatletter_cs))
+  (cs)
+  (makeatother (makeatother_cs))
+  (cs)
+  (text))
 
 =================
 [ExplSyntaxOn] colon/underscore is not letter
@@ -69,11 +64,10 @@
 \bar:wibble_wobble
 ----------------
 (document
-  (text_mode
-    (cs)
-    (text)
-    (text)
-    (text)))
+  (cs)
+  (text)
+  (text)
+  (text))
 
 =================
 [ExplSyntaxOn] colon/underscore is letter
@@ -81,10 +75,9 @@
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff
 ----------------
 (document
-  (text_mode
-    (explsyntaxon (explsyntaxon_cs))
-    (cs)
-    (explsyntaxoff (explsyntaxoff_cs))))
+  (explsyntaxon (explsyntaxon_cs))
+  (cs)
+  (explsyntaxoff (explsyntaxoff_cs)))
 
 =================
 [ProvidesExplPackage] colon/underscore is letter
@@ -93,16 +86,15 @@
 \bar:wibble_wobble\ExplSyntaxOff
 ----------------
 (document
-  (text_mode
-    (providesexplpackage
-      (providesexplpackage_cs)
-      (text_group (begin_group) (text) (end_group))
-      (text_group (begin_group) (text) (end_group))
-      (text_group (begin_group) (text) (end_group))
-      (text_group (begin_group) (text) (end_group)))
-    (text)
-    (cs)
-    (explsyntaxoff (explsyntaxoff_cs))))
+  (providesexplpackage
+    (providesexplpackage_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group)))
+  (text)
+  (cs)
+  (explsyntaxoff (explsyntaxoff_cs)))
 
 ==============================
 [ExplSyntaxOn] colon/underscore is letter in text group
@@ -110,13 +102,12 @@
 \ExplSyntaxOn{\bar:wibble_wobble}\ExplSyntaxOff
 ----------------
 (document
-  (text_mode
-    (explsyntaxon (explsyntaxon_cs))
-    (text_group
-      (begin_group)
-      (cs)
-      (end_group))
-    (explsyntaxoff (explsyntaxoff_cs))))
+  (explsyntaxon (explsyntaxon_cs))
+  (text_group
+    (begin_group)
+    (cs)
+    (end_group))
+  (explsyntaxoff (explsyntaxoff_cs)))
 
 ==============================
 [ExplSyntaxOn] colon/underscore is letter in optional text group
@@ -124,16 +115,15 @@
 \ExplSyntaxOn\usepackage[foo\bar:wibble_wobble]{foo}\ExplSyntaxOff
 ----------------
 (document
-  (text_mode
-    (explsyntaxon (explsyntaxon_cs))
-    (usepackage (usepackage_cs)
-      (brack_group_text
-        (lbrack)
-        (text)
-        (cs)
-        (rbrack))
-      (name_group (begin_group) (name) (end_group)))
-    (explsyntaxoff (explsyntaxoff_cs))))
+  (explsyntaxon (explsyntaxon_cs))
+  (usepackage (usepackage_cs)
+    (brack_group_text
+      (lbrack)
+      (text)
+      (cs)
+      (rbrack))
+    (name_group (begin_group) (name) (end_group)))
+  (explsyntaxoff (explsyntaxoff_cs)))
 
 ============================
 [ExplSyntaxOn] colon/underscore is letter then other
@@ -141,14 +131,13 @@
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
 ----------------
 (document
-  (text_mode
-    (explsyntaxon (explsyntaxon_cs))
-    (cs)
-    (explsyntaxoff (explsyntaxoff_cs))
-    (cs)
-    (text)
-    (text)
-    (text)))
+  (explsyntaxon (explsyntaxon_cs))
+  (cs)
+  (explsyntaxoff (explsyntaxoff_cs))
+  (cs)
+  (text)
+  (text)
+  (text))
 
 ==============================
 [ExplSyntaxOn/makeatletter] Nested regions
@@ -156,18 +145,17 @@
 \ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\makeatother\ExplSyntaxOff\zap@zip:nil_zil
 ----------------
 (document
-  (text_mode
-    (explsyntaxon (explsyntaxon_cs))
-    (cs)
-    (text)
-    (makeatletter (makeatletter_cs))
-    (cs)
-    (makeatother (makeatother_cs))
-    (explsyntaxoff (explsyntaxoff_cs))
-    (cs)
-    (text)
-    (text)
-    (text)))
+  (explsyntaxon (explsyntaxon_cs))
+  (cs)
+  (text)
+  (makeatletter (makeatletter_cs))
+  (cs)
+  (makeatother (makeatother_cs))
+  (explsyntaxoff (explsyntaxoff_cs))
+  (cs)
+  (text)
+  (text)
+  (text))
 
 ===============================================
 [ExplSyntaxOn/makeatletter] Interleaved regions
@@ -175,15 +163,14 @@
 \ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\ExplSyntaxOff\zap@zip\makeatother
 -----------------------------------------------
 (document
-  (text_mode
-    (explsyntaxon (explsyntaxon_cs))
-    (cs)
-    (text)
-    (makeatletter (makeatletter_cs))
-    (cs)
-    (explsyntaxoff (explsyntaxoff_cs))
-    (cs)
-    (makeatother (makeatother_cs))))
+  (explsyntaxon (explsyntaxon_cs))
+  (cs)
+  (text)
+  (makeatletter (makeatletter_cs))
+  (cs)
+  (explsyntaxoff (explsyntaxoff_cs))
+  (cs)
+  (makeatother (makeatother_cs)))
 
 ========================
 catcode with decimal number
@@ -191,11 +178,10 @@ catcode with decimal number
 \catcode70=3
 ----------------------
 (document
-  (text_mode
-    (catcode
-      (catcode_cs)
-      (decimal)
-      (decimal))))
+  (catcode
+    (catcode_cs)
+    (decimal)
+    (decimal)))
 
 ========================
 catcode with octal number
@@ -203,11 +189,10 @@ catcode with octal number
 \catcode'10=3
 ----------------------
 (document
-  (text_mode
-    (catcode
-      (catcode_cs)
-      (octal)
-      (decimal))))
+  (catcode
+    (catcode_cs)
+    (octal)
+    (decimal)))
 
 ========================
 catcode with octal number
@@ -215,11 +200,10 @@ catcode with octal number
 \catcode"A0=3
 ----------------------
 (document
-  (text_mode
-    (catcode
-      (catcode_cs)
-      (hexadecimal)
-      (decimal))))
+  (catcode
+    (catcode_cs)
+    (hexadecimal)
+    (decimal)))
 
 ========================
 catcode with char code by letter
@@ -227,11 +211,10 @@ catcode with char code by letter
 \catcode`A=3
 ----------------------
 (document
-  (text_mode
-    (catcode
-      (catcode_cs)
-      (charcode)
-      (decimal))))
+  (catcode
+    (catcode_cs)
+    (charcode)
+    (decimal)))
 
 ========================
 catcode with char code by escaped character
@@ -239,8 +222,7 @@ catcode with char code by escaped character
 \catcode`\\=3
 ----------------------
 (document
-  (text_mode
-    (catcode
-      (catcode_cs)
-      (charcode (escaped))
-      (decimal))))
+  (catcode
+    (catcode_cs)
+    (charcode (escaped))
+    (decimal)))

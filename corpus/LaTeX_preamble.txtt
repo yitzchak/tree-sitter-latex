@@ -4,11 +4,10 @@ documentclass
 \documentclass[foo]{bar}
 ----------------
 (document
-  (text_mode
-    (documentclass
-      (documentclass_cs)
-      (brack_group_text (lbrack) (text) (rbrack))
-      (name_group (begin_group) (name) (end_group)))))
+  (documentclass
+    (documentclass_cs)
+    (brack_group_text (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))))
 
 =============
 documentclass with date
@@ -16,12 +15,11 @@ documentclass with date
 \documentclass[foo]{bar}[2000/01/01]
 ----------------
 (document
-  (text_mode
-    (documentclass
-      (documentclass_cs)
-      (brack_group_text (lbrack) (text) (rbrack))
-      (name_group (begin_group) (name) (end_group))
-      (brack_group_text (lbrack) (text) (rbrack)))))
+  (documentclass
+    (documentclass_cs)
+    (brack_group_text (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))
+    (brack_group_text (lbrack) (text) (rbrack))))
 
 =============
 documentstyle
@@ -29,11 +27,10 @@ documentstyle
 \documentstyle[foo]{bar}
 ----------------
 (document
-  (text_mode
-    (documentstyle
-      (documentstyle_cs)
-      (brack_group_text (lbrack) (text) (rbrack))
-      (name_group (begin_group) (name) (end_group)))))
+  (documentstyle
+    (documentstyle_cs)
+    (brack_group_text (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))))
 
 ======================
 usepackage
@@ -41,11 +38,10 @@ usepackage
 \usepackage[foo]{bar}
 -------------------
 (document
-  (text_mode
-    (usepackage
-      (usepackage_cs)
-      (brack_group_text (lbrack) (text) (rbrack))
-      (name_group (begin_group) (name) (end_group)))))
+  (usepackage
+    (usepackage_cs)
+    (brack_group_text (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))))
 
 =============
 usepackage with date
@@ -53,9 +49,8 @@ usepackage with date
 \usepackage[foo]{bar}[2000/01/01]
 ----------------
 (document
-  (text_mode
-    (usepackage
-      (usepackage_cs)
-      (brack_group_text (lbrack) (text) (rbrack))
-      (name_group (begin_group) (name) (end_group))
-      (brack_group_text (lbrack) (text) (rbrack)))))
+  (usepackage
+    (usepackage_cs)
+    (brack_group_text (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))
+    (brack_group_text (lbrack) (text) (rbrack))))

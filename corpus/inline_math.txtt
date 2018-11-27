@@ -4,13 +4,12 @@ TeX inline math
 foo$bar$quux
 -------------
 (document
-  (text_mode
+  (text)
+  (tex_inline_math
+    (math_shift)
     (text)
-    (tex_inline_math
-      (math_shift)
-      (math_mode (text))
-      (math_shift))
-    (text)))
+    (math_shift))
+  (text))
 
 =============
 TeX consecutive inline math
@@ -18,17 +17,16 @@ TeX consecutive inline math
 foo$bar$$wibble$quux
 -------------
 (document
-  (text_mode
+  (text)
+  (tex_inline_math
+    (math_shift)
     (text)
-    (tex_inline_math
-      (math_shift)
-      (math_mode (text))
-      (math_shift))
-    (tex_inline_math
-      (math_shift)
-      (math_mode (text))
-      (math_shift))
-    (text)))
+    (math_shift))
+  (tex_inline_math
+    (math_shift)
+    (text)
+    (math_shift))
+  (text))
 
 =============
 LaTeX inline math
@@ -36,13 +34,26 @@ LaTeX inline math
 foo\(bar\)quux
 -------------
 (document
-  (text_mode
+  (text)
+  (latex_inline_math
+    (begin_inline_math)
     (text)
-    (latex_inline_math
-      (begin_inline_math)
-      (math_mode (text))
-      (end_inline_math))
-    (text)))
+    (end_inline_math))
+  (text))
+
+=============
+LaTeX inline math with control sequence
+=============
+foo\(bar\wibble\)quux
+-------------
+(document
+  (text)
+  (latex_inline_math
+    (begin_inline_math)
+    (text)
+    (cs)
+    (end_inline_math))
+  (text))
 
 =============
 math environment
@@ -54,10 +65,9 @@ bar
 quux
 -------------
 (document
-  (text_mode
+  (text)
+  (inline_math_env
+    (inline_math_begin (begin_cs) (inline_math_env_group (begin_group) (inline_math_env_name) (end_group)))
     (text)
-    (inline_math_env
-      (inline_math_begin (begin_cs) (inline_math_env_group (begin_group) (inline_math_env_name) (end_group)))
-      (math_mode (text))
-      (inline_math_end (end_cs) (inline_math_env_group (begin_group) (inline_math_env_name) (end_group))))
-    (text)))
+    (inline_math_end (end_cs) (inline_math_env_group (begin_group) (inline_math_env_name) (end_group))))
+  (text))

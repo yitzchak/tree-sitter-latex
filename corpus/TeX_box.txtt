@@ -4,10 +4,9 @@ hbox
 \hbox{foo}
 ----------------------
 (document
-  (text_mode
-    (makebox
-      (makebox_cs)
-      (text_group (begin_group) (text) (end_group)))))
+  (makebox
+    (makebox_cs)
+    (text_group (begin_group) (text) (end_group))))
 
 =======================
 hbox with spread
@@ -15,11 +14,10 @@ hbox with spread
 \hbox spread 10em{foo}
 ----------------------
 (document
-  (text_mode
-    (makebox
-      (makebox_cs)
-      (dimension (fixed) (unit))
-      (text_group (begin_group) (text) (end_group)))))
+  (makebox
+    (makebox_cs)
+    (dimension (fixed) (unit))
+    (text_group (begin_group) (text) (end_group))))
 
 =======================
 hbox with to
@@ -27,11 +25,10 @@ hbox with to
 \hbox to 10em{foo}
 ----------------------
 (document
-  (text_mode
-    (makebox
-      (makebox_cs)
-      (dimension (fixed) (unit))
-      (text_group (begin_group) (text) (end_group)))))
+  (makebox
+    (makebox_cs)
+    (dimension (fixed) (unit))
+    (text_group (begin_group) (text) (end_group))))
 
 =======================
 setbox
@@ -39,14 +36,13 @@ setbox
 \setbox0=\hbox spread 10em{foo}
 -------------------------
 (document
-  (text_mode
-    (setbox
-      (setbox_cs)
-      (decimal)
-      (makebox
-        (makebox_cs)
-        (dimension (fixed) (unit))
-        (text_group (begin_group) (text) (end_group))))))
+  (setbox
+    (setbox_cs)
+    (decimal)
+    (makebox
+      (makebox_cs)
+      (dimension (fixed) (unit))
+      (text_group (begin_group) (text) (end_group)))))
 
 =======================
 box
@@ -54,10 +50,9 @@ box
 \box4
 ----------------------
 (document
-  (text_mode
-    (usebox
-      (usebox_cs)
-      (decimal))))
+  (usebox
+    (usebox_cs)
+    (decimal)))
 
 ========================
 raise
@@ -65,13 +60,12 @@ raise
 \raise12pc\box1
 ------------------------
 (document
-  (text_mode
-    (movebox
-      (movebox_cs)
-      (dimension (fixed) (unit))
-      (usebox
-        (usebox_cs)
-        (decimal)))))
+  (movebox
+    (movebox_cs)
+    (dimension (fixed) (unit))
+    (usebox
+      (usebox_cs)
+      (decimal))))
 
 =======================
 ht assign
@@ -79,15 +73,14 @@ ht assign
 \ht1=2\dp7
 -----------------------
 (document
-  (text_mode
-    (box_dimension_assign
-      (box_dimension_cs)
-      (decimal)
-      (dimension
-        (fixed)
-        (box_dimension_ref
-          (box_dimension_cs)
-          (decimal))))))
+  (box_dimension_assign
+    (box_dimension_cs)
+    (decimal)
+    (dimension
+      (fixed)
+      (box_dimension_ref
+        (box_dimension_cs)
+        (decimal)))))
 
 ===========================
 strut
@@ -95,12 +88,11 @@ strut
 \setbox1=\strut
 -------------------------
 (document
-  (text_mode
-    (setbox
-      (setbox_cs)
-      (decimal)
-      (strut
-        (strut_cs)))))
+  (setbox
+    (setbox_cs)
+    (decimal)
+    (strut
+      (strut_cs))))
 
 ===========================
 phantom
@@ -108,10 +100,9 @@ phantom
 \setbox1=\phantom{foo}
 -------------------------
 (document
-  (text_mode
-    (setbox
-      (setbox_cs)
-      (decimal)
-      (phantom_smash
-        (phantom_smash_cs)
-        (text_group (begin_group) (text) (end_group))))))
+  (setbox
+    (setbox_cs)
+    (decimal)
+    (phantom_smash
+      (phantom_smash_cs)
+      (text_group (begin_group) (text) (end_group)))))
