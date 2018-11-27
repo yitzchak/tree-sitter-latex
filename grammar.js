@@ -125,6 +125,7 @@ module.exports = grammar({
       $.makeatletter,
       $.makeatother,
       $.newcommand,
+      $.newenvironment,
       $.parameter,
       $.setbox,
       $.text
@@ -548,13 +549,26 @@ module.exports = grammar({
 
     newcommand: $ => seq(
       $.newcommand_cs,
+      optional('*'),
       $.text_group,
       optional($.opt_text_group),
       optional($.opt_text_group),
       $.text_group
     ),
 
-    newcommand_cs: $ => cs_rule($, /DeclareRobustCommand|newcommand/),
+    newcommand_cs: $ => cs_rule($, /(DeclareRobust|Check)Command|(new|provide|renew)command/),
+
+    newenvironment: $ => seq(
+      $.newenvironment_cs,
+      optional('*'),
+      $.text_group,
+      optional($.opt_text_group),
+      optional($.opt_text_group),
+      $.text_group,
+      $.text_group
+    ),
+
+    newenvironment_cs: $ => cs_rule($, /(re)?newenvironment/),
 
     // hyperref functions
 

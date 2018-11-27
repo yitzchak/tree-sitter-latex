@@ -36,3 +36,27 @@ newcommand with number of arguments and default value
       (opt_text_group (begin_opt) (text) (end_opt))
       (opt_text_group (begin_opt) (text) (end_opt))
       (text_group (begin_group) (text) (end_group)))))
+
+======================
+Simple newcommand*
+======================
+\newcommand*{\foo}{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+Simple renewcommand
+======================
+\renewcommand{\foo}{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
