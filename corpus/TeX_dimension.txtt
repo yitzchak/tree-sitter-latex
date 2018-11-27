@@ -1,0 +1,146 @@
+================================
+Dimension assign - hoffset
+================================
+\hoffset=1em
+--------------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_cs)
+      (dimension (fixed) (unit)))))
+
+================================
+Dimension assign - hoffset missing equals sign
+================================
+\hoffset1em
+--------------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_cs)
+      (dimension (fixed) (unit)))))
+
+================================
+Dimension assign - hoffset using dimension parameter
+================================
+\hoffset=\voffset
+--------------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_cs)
+      (dimension (dimension_cs)))))
+
+================================
+Dimension assign - hoffset using scalar multiple dimension parameter
+================================
+\hoffset=2\voffset
+--------------------------------
+(document
+  (text_mode
+    (dimension_assign
+      (dimension_cs)
+      (dimension (fixed) (dimension_cs)))))
+
+================================
+Glue assign - leftskip
+================================
+\leftskip=1em
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_cs)
+      (glue
+        (dimension (fixed) (unit))))))
+
+================================
+Glue assign - leftskip missing equals
+================================
+\leftskip 1em
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_cs)
+      (glue
+        (dimension (fixed) (unit))))))
+
+================================
+Glue assign - leftskip same as rightskip
+================================
+\leftskip=\rightskip
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_cs)
+      (glue
+        (glue_cs)))))
+
+================================
+Glue assign - leftskip scalar multiple of rightskip
+================================
+\leftskip=2\rightskip
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_cs)
+      (glue
+        (fixed)
+        (glue_cs)))))
+
+================================
+Glue assign - leftskip with plus
+================================
+\leftskip=1em plus 2fil
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_cs)
+      (glue
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))))))
+
+================================
+Glue assign - leftskip with minus
+================================
+\leftskip=1em minus 2fil
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_cs)
+      (glue
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))))))
+
+================================
+Glue assign - leftskip with plus and minus
+================================
+\leftskip=1em plus 0.5in minus 2fil
+--------------------------------
+(document
+  (text_mode
+    (glue_assign
+      (glue_cs)
+      (glue
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))
+        (dimension (fixed) (unit))))))
+
+=======================================
+Glue space - hskip
+=======================================
+\hskip 2em plus 1fi minus 1em
+---------------------------------------
+ (document
+   (text_mode
+     (glue_space
+       (glue_space_cs)
+       (glue
+         (dimension (fixed) (unit))
+         (dimension (fixed) (unit))
+         (dimension (fixed) (unit))))))

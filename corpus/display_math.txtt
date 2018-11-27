@@ -7,11 +7,22 @@ foo$$bar$$quux
   (text_mode
     (text)
     (tex_display_math
-      (math_shift)
-      (math_shift)
+      (math_shift) (math_shift)
       (math_mode (text))
-      (math_shift)
-      (math_shift))
+      (math_shift) (math_shift))
+    (text)))
+
+============
+TeX empty display math
+=============
+foo$$$$quux
+-------------
+(document
+  (text_mode
+    (text)
+    (tex_display_math
+      (math_shift) (math_shift)
+      (math_shift) (math_shift))
     (text)))
 
 ==================
@@ -41,9 +52,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -59,9 +70,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -77,9 +88,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -95,9 +106,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -113,9 +124,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -132,11 +143,12 @@ quux
     (text)
     (display_math_env
       (display_math_begin
-        (begin_token)
+        (begin_cs)
         (display_math_env_group (begin_group) (display_math_env_name) (end_group))
-        (text_group (begin_group) (text) (end_group)))
+        (text_group (begin_group) (text) (end_group))
+        (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -153,11 +165,12 @@ quux
     (text)
     (display_math_env
     (display_math_begin
-      (begin_token)
+      (begin_cs)
       (display_math_env_group (begin_group) (display_math_env_name) (end_group))
-      (text_group (begin_group) (text) (end_group)))
+      (text_group (begin_group) (text) (end_group))
+      (eol))
     (math_mode (text))
-    (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+    (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
   (text)))
 
 =============
@@ -173,9 +186,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -191,9 +204,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -209,9 +222,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -227,9 +240,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -245,9 +258,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -263,9 +276,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -281,9 +294,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -299,9 +312,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -317,9 +330,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =============
@@ -335,9 +348,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =========================
@@ -353,9 +366,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 ==========================
@@ -371,9 +384,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =========================
@@ -389,9 +402,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 ==========================
@@ -407,9 +420,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =========================
@@ -425,9 +438,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 ==========================
@@ -443,9 +456,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 =========================
@@ -461,9 +474,9 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))
 
 ==========================
@@ -479,7 +492,7 @@ quux
   (text_mode
     (text)
     (display_math_env
-      (display_math_begin (begin_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group)))
+      (display_math_begin (begin_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group)) (eol))
       (math_mode (text))
-      (display_math_end (end_token) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
+      (display_math_end (end_cs) (display_math_env_group (begin_group) (display_math_env_name) (end_group))))
     (text)))

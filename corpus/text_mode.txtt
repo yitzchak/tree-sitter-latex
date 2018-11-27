@@ -17,20 +17,19 @@ fubar\quux wibble
 (document
   (text_mode
     (text)
-    (token)
+    (cs)
     (text)))
 
 ==================
 Single command with arguments
 ==================
-fubar\quux[opt]{bar} wibble
+fubar\quux{bar} wibble
 ---
 
 (document
   (text_mode
     (text)
-    (token)
-    (opt_text_group (begin_opt) (text) (end_opt))
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text)))
 
@@ -43,7 +42,7 @@ fubar\quux  {bar} wibble
 (document
   (text_mode
     (text)
-    (token)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text)))
 
@@ -51,14 +50,13 @@ fubar\quux  {bar} wibble
 ==================
 Single command with arguments and spaces (TODO: Resolve design choice)
 ==================
-fubar\quux  [opt]  {bar} wibble
+fubar\quux  {bar} wibble
 ---
 
 (document
   (text_mode
     (text)
-    (token)
-    (opt_text_group (begin_opt) (text) (end_opt)) (text)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text)))
 
@@ -93,8 +91,8 @@ foo##1bar
 (document
   (text_mode
     (text)
-    (parameter (parameter_char) (number)) (text)
-    (parameter (parameter_char) (parameter_char) (number))
+    (parameter (parameter_char) (decimal)) (text)
+    (parameter (parameter_char) (parameter_char) (decimal))
     (text)))
 
 =============
@@ -134,20 +132,6 @@ foo{bar}wibble
     (text)))
 
 =============
-Optional Text group
-=============
-foo[bar]wibble
--------------
-(document
-  (text_mode
-    (text)
-    (opt_text_group
-      (begin_opt)
-      (text)
-      (end_opt))
-    (text)))
-
-=============
 text environment
 =============
 foo
@@ -160,9 +144,9 @@ quux
   (text_mode
     (text)
     (text_env
-      (begin (begin_token) (env_name (begin_group) (text) (end_group)))
+      (begin (begin_cs) (name_group (begin_group) (name) (end_group)))
       (text)
-      (end (end_token) (env_name (begin_group) (text) (end_group))))
+      (end (end_cs) (name_group (begin_group) (name) (end_group))))
   (text)))
 
 ===========
@@ -171,8 +155,37 @@ comment
 foo % bar
 -----------
 (document
-  (text_mode (text))
+  (text_mode
+    (text))
   (comment))
+
+===========
+comment eats EOL
+===========
+\emph%foo
+{bar}
+-----------
+(document (text_mode (emph (emph_cs) (comment) (text_group (begin_group) (text) (end_group)))))
+
+===========
+arara comment
+===========
+foo % arara: pdflatex
+-----------
+(document
+  (text_mode
+    (text))
+  (arara_comment))
+
+===========
+bib comment
+===========
+foo %!Bib bar=wibble
+-----------
+(document
+  (text_mode
+    (text))
+  (bib_comment))
 
 ===========
 magic comment
@@ -180,8 +193,19 @@ magic comment
 foo %!TeX bar=wibble
 -----------
 (document
-  (text_mode (text))
+  (text_mode
+    (text))
   (magic_comment))
+
+===========
+tag comment
+===========
+foo %:wibble
+-----------
+(document
+  (text_mode
+    (text))
+  (tag_comment))
 
 =============
 documentclass
@@ -191,9 +215,9 @@ documentclass
 (document
   (text_mode
     (documentclass
-      (documentclass_token)
+      (documentclass_cs)
       (opt_text_group (begin_opt) (text) (end_opt))
-      (class_name (begin_group) (text) (end_group)))))
+      (name_group (begin_group) (name) (end_group)))))
 
 ======================
 usepackage
@@ -203,9 +227,9 @@ usepackage
 (document
   (text_mode
     (usepackage
-      (usepackage_token)
+      (usepackage_cs)
       (opt_text_group (begin_opt) (text) (end_opt))
-      (package_name (begin_group) (text) (end_group)))))
+      (name_group (begin_group) (name) (end_group)))))
 
 =====================
 emph
@@ -215,7 +239,22 @@ foo\emph{bar}wibble
 (document
   (text_mode
     (text)
-    (emph (emph_token) (text_group (begin_group) (text) (end_group)))
+    (emph (emph_cs) (text_group (begin_group) (text) (end_group)))
+    (text)))
+
+=====================
+emph with a comment before argument
+=====================
+foo\emph%baz
+{bar}wibble
+---------------------
+(document
+  (text_mode
+    (text)
+    (emph
+      (emph_cs)
+      (comment)
+      (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -226,7 +265,7 @@ foo\textbf{bar}wibble
 (document
   (text_mode
     (text)
-    (textbf (textbf_token) (text_group (begin_group) (text) (end_group)))
+    (textbf (textbf_cs) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -237,7 +276,7 @@ foo\textit{bar}wibble
 (document
   (text_mode
     (text)
-    (textit (textit_token) (text_group (begin_group) (text) (end_group)))
+    (textit (textit_cs) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -248,7 +287,7 @@ foo\texttt{bar}wibble
 (document
   (text_mode
     (text)
-    (texttt (texttt_token) (text_group (begin_group) (text) (end_group)))
+    (texttt (texttt_cs) (text_group (begin_group) (text) (end_group)))
     (text)))
 
 =====================
@@ -260,8 +299,8 @@ foo\footnote[10]{bar}wibble
 (document
   (text_mode
     (text)
-    (footnote (footnote_token) (text_group (begin_group) (text) (end_group))) (text)
-    (footnote (footnote_token)
+    (footnote (footnote_cs) (text_group (begin_group) (text) (end_group))) (text)
+    (footnote (footnote_cs)
       (opt_text_group (begin_opt) (text) (end_opt))
       (text_group (begin_group) (text) (end_group)))
     (text)))
@@ -276,34 +315,22 @@ sections
 
 (document
   (text_mode
-    (section (section_token) (text_group (begin_group) (text) (end_group)))
+    (section (section_cs) (text_group (begin_group) (text) (end_group)))
     (text)
-    (section (section_token) (text_group (begin_group) (text) (end_group)))
+    (section (section_cs) (text_group (begin_group) (text) (end_group)))
     (text)
-    (section (section_token) (text_group (begin_group) (text) (end_group)))))
+    (section (section_cs) (text_group (begin_group) (text) (end_group)))))
 
-=====================
-double circumflex
-=====================
-^^af%
-^^az%
----------------------
+=================
+Square brackets do not trigger opt_text_group
+================
+foo[bar]wibble
+---------------
+(document (text_mode (text) (text) (text) (text) (text)))
 
-(document
-  (text_mode
-    (text (double_circumflex)) (comment) (text)
-    (text (double_circumflex)) (text)) (comment))
-
-=====================
-double circumflex in command
-=====================
-\^^af%
-\^^az%
-\foo^^Mbar%
----------------------
-
-(document
-  (text_mode
-    (escaped (double_circumflex)) (comment) (text)
-    (escaped (double_circumflex)) (text) (comment) (text)
-    (token) (text (double_circumflex)) (text)) (comment))
+=================
+Allow unmatch square brackets
+================
+foo[bar
+---------------
+(document (text_mode (text) (text) (text)))

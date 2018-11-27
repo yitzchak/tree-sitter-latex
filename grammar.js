@@ -1,32 +1,108 @@
-const named_command = ($, name, starred=false) => {
-  if (starred) {
-    return seq($._escape, name, optional($._whitespace), optional('*'), optional($._whitespace))
-  } else {
-    return seq($._escape, name, optional($._whitespace))
+function begin_env_rule ($, options = {}) {
+  const args = [
+    $.begin_cs,
+    options.name_group || $.name_group
+  ]
+
+  for (let i = options.opt || 0; i > 0; i--) {
+    args.push(optional($.opt_text_group))
   }
+
+  for (let i = options.text || 0; i > 0; i--) {
+    args.push(optional($.text_group))
+  }
+
+  if (options.eol) {
+    args.push($.eol)
+  }
+
+  return seq.apply(null, args)
 }
 
-const command_options = ($) => optional(seq($.opt_text_group, optional($._whitespace)))
-const command_options_at = ($) => optional(seq($.opt_text_group_at, optional($._whitespace)))
+function end_env_rule ($, options = {}) {
+  const args = [
+    $.end_cs,
+    options.name_group || $.name_group
+  ]
 
-const env_options = ($) => command_options($)
-const env_options_at = ($) => command_options_at($)
+  return seq.apply(null, args)
+}
 
-const PREC = {
-  DOUBLE_CIRCUMFLEX: 1
+function command_rule ($, cs, options = {}) {
+  const args = [cs]
+
+  if (options.star) {
+    args.push(optional('*'))
+  }
+
+  for (let i = options.opt || 0; i > 0; i--) {
+    args.push(optional($.opt_text_group))
+  }
+
+  for (let i = options.name || 0; i > 0; i--) {
+    args.push($.name_group)
+  }
+
+  for (let i = options.text || 0; i > 0; i--) {
+    args.push($.text_group)
+  }
+
+  for (let i = options.math_text || 0; i > 0; i--) {
+    args.push($.math_text_group)
+  }
+
+  for (let i = options.text_opt || 0; i > 0; i--) {
+    args.push(optional($.text_group))
+  }
+
+  return seq.apply(null, args)
+}
+
+function cs_rule ($, name) {
+  return seq($._escape, name, $._cs_end)
 }
 
 module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
+    $._cs_end,
+    $._escape,
+    $._explsyntaxoff_word,
+    $._explsyntaxon_word,
+    $._makeatletter_word,
+    $._makeatother_word,
+    $._non_letter_or_other,
+    $._providesexplclass_word,
+    $._providesexplfile_word,
+    $._providesexplpackage_word,
+    $._space,
+    $._verb_line,
+    $.active_char,
+    $.alignment_tab,
+    $.arara_comment,
+    $.begin_group,
+    $.bib_comment,
+    $.comment,
+    $.end_group,
+    $.eol,
+    $.magic_comment,
+    $.math_shift,
+    $.parameter_char,
+    $.subscript,
+    $.superscript,
+    $.tag_comment,
     $.verb_body,
     $.verb_delim
   ],
 
   extras: $ => [
+    $._space,
+    $.arara_comment,
+    $.bib_comment,
+    $.comment,
     $.magic_comment,
-    $.comment
+    $.tag_comment,
   ],
 
   rules: {
@@ -38,10 +114,26 @@ module.exports = grammar({
       $.parameter,
       $.text,
       $.escaped,
-      $.catcode
+      $.catcode,
+      $.char,
+      $.chardef,
+      $.dimension_assign,
+      $.glue_assign,
+      $.glue_space,
+      $._box,
+      $.setbox,
+      $.box_dimension_assign,
+      $.explsyntaxoff,
+      $.explsyntaxon,
+      $.makeatletter,
+      $.makeatother
     ),
 
-    _text_mode_common: $ => choice(
+    inline_verbatim: $ => seq($.verb_cs, $.verb_delim, $.verb_body, $.verb_delim),
+
+    verb_cs: $ => cs_rule($, 'verb'),
+
+    _text_mode: $ => choice(
       $._common,
       // Underscore produces an error by default in LaTeX text mode. Some
       // some package define underscore to produce \tex­tun­der­score. We assume
@@ -50,112 +142,63 @@ module.exports = grammar({
       alias($.subscript, 'text'),
       alias($.superscript, 'text'),
       $.verbatim_env,
-      $.inline_verbatim
-    ),
-
-    inline_verbatim: $ => seq($.verb_token, $.verb_delim, $.verb_body, $.verb_delim),
-
-    verb_token: $ => seq($._escape, /verb\*?/), // whitespace is _not_ gobbled here
-
-    _whitespace: $ => repeat1(/[\s\t]/),
-
-    _text_mode: $ => choice(
-      $._text_mode_common,
+      $.inline_verbatim,
       $._display_math,
       $._inline_math,
       $.text_env,
       $.text_group,
-      $.opt_text_group,
-      $.text_mode_at_region,
+      prec(-1, alias($.begin_opt, 'text')),
+      prec(-1, alias($.end_opt, 'text')),
       $.emph,
       $.textbf,
       $.textit,
       $.texttt,
+      $.providesexplclass,
+      $.providesexplfile,
+      $.providesexplpackage,
       $.documentclass,
       $.include,
       $.section,
       $.storage,
       $.usepackage,
-      $.token,
-      $.footnote
+      $.cs,
+      $.footnote,
+      // hyperref package
+      $.href,
+      $.url,
+      $.hyperbaseurl,
+      $.hyperimage,
+      $.hyperref
     ),
 
     text_mode: $ => repeat1($._text_mode),
 
-    _text_mode_at: $ => choice(
-      $._text_mode_common,
-      $._display_math_at,
-      $._inline_math_at,
-      $.text_env_at,
-      $.text_group_at,
-      $.opt_text_group_at,
-      $.emph_at,
-      $.textbf_at,
-      $.textit_at,
-      $.texttt_at,
-      $.documentclass,
-      $.include_at,
-      $.section_at,
-      $.storage,
-      $.usepackage,
-      $.token_at,
-      $.footnote_at
-    ),
-
-    text_mode_at: $ => prec.left(2, repeat1($._text_mode_at)),
-
-    text_mode_at_region: $ => seq($.makeatletter, optional($.text_mode_at), $.makeatother),
-
-    _math_mode_common: $ => choice(
+    _math_mode: $ => choice(
       $._common,
       $.subscript,
       $.superscript,
-    ),
-
-    _math_mode: $ => choice(
-      $._math_mode_common,
       $.math_env,
       $.math_group,
-      $.opt_math_group,
+      prec(-1, alias($.begin_opt, 'text')),
+      prec(-1, alias($.end_opt, 'text')),
       $.include,
       $.storage,
-      $.token,
+      command_rule($, $.cs),
       $.tag
     ),
 
     math_mode: $ => prec.left(2, repeat1($._math_mode)),
 
-    _math_mode_at: $ => choice(
-      $._math_mode_common,
-      $.math_env_at,
-      $.math_group_at,
-      $.opt_math_group_at,
-      $.include_at,
-      $.storage,
-      $.token_at,
-      $.tag_at
-    ),
-
-    math_mode_at: $ => prec.left(2, repeat1($._math_mode_at)),
-
     parameter: $ => seq(
-      repeat1($.parameter_char), $.number
+      repeat1($.parameter_char), $.decimal
     ),
 
     text_env: $ => seq(
       $.begin, repeat($._text_mode), $.end
     ),
 
-    text_env_at: $ => seq(
-      $.begin, repeat($._text_mode_at), $.end
-    ),
-
     math_env: $ => seq(
       $.begin, repeat($._math_mode), $.end
-    ),
-
-    math_env_at: $ => seq(
-      $.begin, repeat($._math_mode_at), $.end
     ),
 
     _display_math: $ => choice(
@@ -164,21 +207,9 @@ module.exports = grammar({
       $.display_math_env
     ),
 
-    _display_math_at: $ => choice(
-      $.tex_display_math_at,
-      $.latex_display_math_at,
-      $.display_math_env_at
-    ),
-
     tex_display_math: $ => seq(
       $.math_shift, $.math_shift,
-      $.math_mode,
-      $.math_shift, $.math_shift
-    ),
-
-    tex_display_math_at: $ => seq(
-      $.math_shift, $.math_shift,
-      $.math_mode_at,
+      optional($.math_mode),
       $.math_shift, $.math_shift
     ),
 
@@ -188,19 +219,9 @@ module.exports = grammar({
       $.end_display_math
     ),
 
-    latex_display_math_at: $ => seq(
-      $.begin_display_math,
-      $.math_mode_at,
-      $.end_display_math
-    ),
+    begin_display_math: $ => seq($._escape, '['),
 
-    begin_display_math: $ => named_command($, '['),
-
-    end_display_math: $ => named_command($, ']'),
-
-    begin_inline_math: $ => named_command($, '('),
-
-    end_inline_math: $ => named_command($, ')'),
+    end_display_math: $ => seq($._escape, ']'),
 
     display_math_env: $ => seq(
       $.display_math_begin,
@@ -208,32 +229,16 @@ module.exports = grammar({
       $.display_math_end
     ),
 
-    display_math_env_at: $ => seq(
-      alias($.display_math_begin_at, 'display_math_begin'),
-      $.math_mode_at,
-      $.display_math_end
-    ),
+    display_math_begin: $ => begin_env_rule($, {
+      name_group: $.display_math_env_group,
+      opt: 1,
+      text: 1,
+      eol: true
+    }),
 
-    display_math_begin: $ => seq(
-      $.begin_token,
-      $.display_math_env_group,
-      env_options($),
-      optional($.text_group),
-      $._end_of_line
-    ),
-
-    display_math_begin_at: $ => seq(
-      $.begin_token,
-      $.display_math_env_group,
-      env_options_at($),
-      optional($.text_group_at),
-      $._end_of_line
-    ),
-
-    display_math_end: $ => seq(
-      $.end_token,
-      $.display_math_env_group
-    ),
+    display_math_end: $ => end_env_rule($, {
+      name_group: $.display_math_env_group
+    }),
 
     display_math_env_group: $ => seq($.begin_group, $.display_math_env_name, $.end_group),
 
@@ -245,55 +250,35 @@ module.exports = grammar({
       $.inline_math_env
     ),
 
-    _inline_math_at: $ => choice(
-      $.tex_inline_math_at,
-      $.latex_inline_math_at,
-      $.inline_math_env_at
-    ),
-
     tex_inline_math: $ => seq(
       $.math_shift,
       $.math_mode,
       $.math_shift
     ),
 
-    tex_inline_math_at: $ => seq(
-      $.math_shift,
-      $.math_mode_at,
-      $.math_shift
-    ),
-
     latex_inline_math: $ => seq(
       $.begin_inline_math,
-      $.math_mode,
+      optional($.math_mode),
       $.end_inline_math
     ),
 
-    latex_inline_math_at: $ => seq(
-      $.begin_inline_math,
-      $.math_mode_at,
-      $.end_inline_math
-    ),
+    begin_inline_math: $ => seq($._escape, '('),
+
+    end_inline_math: $ => seq($._escape, ')'),
 
     inline_math_env: $ => seq(
       $.inline_math_begin,
-      $.math_mode,
-      $.inline_math_end
-    ),
-
-    inline_math_env_at: $ => seq(
-      $.inline_math_begin,
-      $.math_mode_at,
+      optional($.math_mode),
       $.inline_math_end
     ),
 
     inline_math_begin: $ => seq(
-      $.begin_token,
+      $.begin_cs,
       $.inline_math_env_group
     ),
 
     inline_math_end: $ => seq(
-      $.end_token,
+      $.end_cs,
       $.inline_math_env_group
     ),
 
@@ -301,11 +286,9 @@ module.exports = grammar({
 
     inline_math_env_name: $ => 'math',
 
-    tag: $ => seq($.tag_token, $.math_text_group),
+    tag: $ => command_rule($, $.tag_cs, { math_text: 1 }),
 
-    tag_at: $ => seq($.tag_token, $.math_text_group_at),
-
-    tag_token: $ => named_command($, 'tag'),
+    tag_cs: $ => cs_rule($, 'tag'),
 
     verbatim_env: $ => seq(
       $.verbatim_begin,
@@ -313,196 +296,330 @@ module.exports = grammar({
       $.verbatim_end
     ),
 
-    verbatim_begin: $ => seq(
-      $.begin_token,
-      $.verbatim_env_group,
-      env_options($),
-      optional($.text_group),
-      $._end_of_line
-    ),
+    verbatim_begin: $ => begin_env_rule($, {
+      name_group: $.verbatim_env_group,
+      opt: 1,
+      text: 1,
+      eol: true
+    }),
 
-    verbatim_end: $ => seq(
-      // $._end_of_line,
-      $.end_token,
-      $.verbatim_env_group
-    ),
+    verbatim_end: $ => end_env_rule($, {
+      name_group: $.verbatim_env_group
+    }),
 
-    verbatim_text: $ => repeat1(seq(repeat(/./), $._end_of_line)),
+    verbatim_text: $ => repeat1($._verb_line),
 
     verbatim_env_group: $ => seq($.begin_group, $.verbatim_env_name, $.end_group),
 
     verbatim_env_name: $ => /(verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt)/,
 
-    escaped: $ => seq(
-      $._escape,
-      $._control_symbol_body
+    begin: $ => begin_env_rule($),
+
+    begin_cs: $ => cs_rule($, 'begin'),
+
+    end: $ => end_env_rule($),
+
+    end_cs: $ => cs_rule($, 'end'),
+
+    documentclass: $ => command_rule($, $.documentclass_cs, { opt: 1, name: 1 }),
+
+    documentclass_cs: $ => cs_rule($, 'documentclass'),
+
+    usepackage: $ => command_rule($, $.usepackage_cs, { opt: 1, name: 1 }),
+
+    usepackage_cs: $ => cs_rule($, 'usepackage'),
+
+    include: $ => command_rule($, $.include_cs, { text: 1 }),
+
+    include_cs: $ => cs_rule($, /include|input/),
+
+    providesexplclass: $ => command_rule($, $.providesexplclass_cs, { text: 4 }),
+
+    providesexplclass_cs: $ => cs_rule($, $._providesexplclass_word),
+
+    providesexplfile: $ => command_rule($, $.providesexplfile_cs, { text: 4 }),
+
+    providesexplfile_cs: $ => cs_rule($, $._providesexplfile_word),
+
+    providesexplpackage: $ => command_rule($, $.providesexplpackage_cs, { text: 4 }),
+
+    providesexplpackage_cs: $ => cs_rule($, $._providesexplpackage_word),
+
+    section: $ => command_rule($, $.section_cs, { text: 1, opt: 1, star: true }),
+
+    section_cs: $ => cs_rule($, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/),
+
+    storage: $ => command_rule($, $.storage_cs),
+
+    storage_cs: $ => cs_rule($, /[egx]?def/),
+
+    emph: $ => command_rule($, $.emph_cs, { text: 1 }),
+
+    emph_cs: $ => cs_rule($, 'emph'),
+
+    footnote: $ => command_rule($, $.footnote_cs, { text: 1, opt: 1 }),
+
+    footnote_cs: $ => cs_rule($, 'footnote'),
+
+    textbf: $ => command_rule($, $.textbf_cs, { text: 1 }),
+
+    textbf_cs: $ => cs_rule($, 'textbf'),
+
+    textit: $ => command_rule($, $.textit_cs, { text: 1 }),
+
+    textit_cs: $ => cs_rule($, 'textit'),
+
+    texttt: $ => command_rule($, $.texttt_cs, { text: 1 }),
+
+    texttt_cs: $ => cs_rule($, 'texttt'),
+
+    makeatletter: $ => command_rule($, $.makeatletter_cs),
+
+    makeatletter_cs: $ => cs_rule($, $._makeatletter_word),
+
+    makeatother: $ => command_rule($, $.makeatother_cs),
+
+    makeatother_cs: $ => cs_rule($, $._makeatother_word),
+
+    explsyntaxon: $ => command_rule($, $.explsyntaxon_cs),
+
+    explsyntaxon_cs: $ => cs_rule($, $._explsyntaxon_word),
+
+    explsyntaxoff: $ => command_rule($, $.explsyntaxoff_cs),
+
+    explsyntaxoff_cs: $ => cs_rule($, $._explsyntaxoff_word),
+
+    // TeX dimension commands
+
+    dimension_assign: $ => seq(
+      $.dimension_cs,
+      optional('='),
+      $.dimension
     ),
 
-    _control_symbol_body: $ => choice($.double_circumflex, /[^a-zA-Z]/),
-
-    begin: $ => seq($.begin_token, alias($.simple_text_group, 'env_name')),
-
-    begin_token: $ => named_command($, 'begin'),
-
-    end: $ => seq($.end_token, alias($.simple_text_group, 'env_name')),
-
-    end_token: $ => named_command($, 'end'),
-
-    documentclass: $ => seq(
-      $.documentclass_token,
-      command_options($),
-      alias($.simple_text_group, 'class_name')
+    glue_assign: $ => seq(
+      $.glue_cs,
+      optional('='),
+      $.glue
     ),
 
-    documentclass_token: $ => named_command($, 'documentclass'),
-
-    usepackage: $ => seq(
-      $.usepackage_token,
-      command_options($),
-      alias($.simple_text_group, 'package_name')
+    glue_cs: $ => cs_rule($,
+      /(((above|below)display(short)?|baseline|left|line|normalbaseline|normalline|parfill|par|right|splittop|tab|top|x?space)skip)|(small|mid|big)skipamount/
     ),
 
-    usepackage_token: $ => named_command($, 'usepackage'),
-
-    include: $ => seq($.include_token, $.text_group),
-
-    include_at: $ => seq($.include_token, $.text_group_at),
-
-    include_token: $ => named_command($, /include|input/),
-
-    section: $ => seq($.section_token, command_options($), $.text_group),
-
-    section_at: $ => seq($.section_token, command_options_at($), $.text_group_at),
-
-    section_token: $ => named_command(
-      $, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/, true
+    dimension_cs: $ => cs_rule($,
+      /(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth/
     ),
 
-    storage: $ => $.storage_token,
+    glue_space: $ => seq(
+      $.glue_space_cs,
+      $.glue),
 
-    storage_token: $ => named_command($, /[egx]?def/),
+    glue_space_cs: $ => cs_rule($,
+      /[hmv]skip|(h|top|v)glue/
+    ),
+
+    makebox: $ => seq(
+      $.makebox_cs,
+      optional(
+        seq(
+          choice('to', 'spread'),
+          $.dimension
+        )
+      ),
+      $.text_group
+    ),
+
+    strut: $ => command_rule($, $.strut_cs),
+
+    strut_cs: $ => cs_rule($, /(math)?strut|null/),
+
+    phantom_smash: $ => command_rule($, $.phantom_smash_cs, { text: 1 }),
+
+    phantom_smash_cs: $ => cs_rule($, /[hv]?phantom|smash/),
+
+    makebox_cs: $ => cs_rule($,
+      /[hv]box|vtop/
+    ),
+
+    usebox: $ => seq(
+      $.usebox_cs,
+      $._number
+    ),
+
+    usebox_cs: $ => cs_rule($,
+      /(un[hv])?(box|copy)/
+    ),
+
+    movebox: $ => seq(
+      $.movebox_cs,
+      $.dimension,
+      $._box,
+    ),
+
+    movebox_cs: $ => cs_rule($,
+      /move(left|right)|raise|lower/
+    ),
+
+    _box: $ => choice(
+      $.makebox,
+      $.movebox,
+      $.phantom_smash,
+      $.strut,
+      $.usebox
+    ),
+
+    setbox: $ => seq(
+      $.setbox_cs,
+      $._number,
+      optional('='),
+      $._box
+    ),
+
+    setbox_cs: $ => cs_rule($, 'setbox'),
+
+    box_dimension_assign: $ => seq(
+      $.box_dimension_cs,
+      $._number,
+      optional('='),
+      $.dimension
+    ),
+
+    box_dimension_cs: $ => cs_rule($, /ht|dp|wd/),
+
+    glue: $ => choice(
+      seq(
+        optional($.fixed),
+        $.glue_cs
+      ),
+      seq(
+        $.dimension,
+        optional(seq('plus', $.dimension)),
+        optional(seq('minus', $.dimension))
+      )
+    ),
+
+    box_dimension_ref: $ => seq(
+      $.box_dimension_cs,
+      $._number
+    ),
+
+    dimension: $ => seq(
+      optional($.fixed),
+      choice(
+        $.unit,
+        $.box_dimension_ref,
+        $.dimension_cs,
+        $.cs
+      )
+    ),
+
+    // TeX character functions
 
     catcode: $ => seq(
-      $.catcode_token, $.escaped, '=', $.number
+      $.catcode_cs, $._number, '=', $._number
     ),
 
-    catcode_token: $ => seq($._escape, /k?catcode`/),
+    catcode_cs: $ => cs_rule($,
+      /(cat|del|kcat|lc|math|sf|uc)code/
+    ),
 
-    emph: $ => seq($.emph_token, $.text_group),
+    chardef: $ => seq(
+      $.chardef_cs,
+      $.cs,
+      optional('='),
+      $._number
+    ),
 
-    emph_at: $ => seq($.emph_token, $.text_group_at),
+    chardef_cs: $ => cs_rule($, /(math)?chardef/),
 
-    emph_token: $ => named_command($, 'emph'),
+    catcode_ref: $ => seq(
+      $.catcode_cs, $._number
+    ),
 
-    footnote: $ => seq($.footnote_token, command_options($), $.text_group),
+    char: $ => seq(
+      $.char_cs, $._number
+    ),
 
-    footnote_at: $ => seq($.footnote_token, command_options_at($), $.text_group_at),
+    char_cs: $ => cs_rule($, /(math)?char|accent/),
 
-    footnote_token: $ => named_command($, 'footnote'),
+    // hyperref functions
 
-    textbf: $ => seq($.textbf_token, $.text_group),
+    href: $ => command_rule($, $.href_cs, { opt: 1, text: 2 }),
 
-    textbf_at: $ => seq($.textbf_token, $.text_group_at),
+    href_cs: $ => cs_rule($, 'href'),
 
-    textbf_token: $ => named_command($, 'textbf'),
+    url: $ => command_rule($, $.url_cs, { text: 1 }),
 
-    textit: $ => seq($.textit_token, $.text_group),
+    url_cs: $ => cs_rule($, /(nolink)?url/),
 
-    textit_at: $ => seq($.textit_token, $.text_group_at),
+    hyperbaseurl: $ => command_rule($, $.hyperbaseurl_cs, { text: 1 }),
 
-    textit_token: $ => named_command($, 'textit'),
+    hyperbaseurl_cs: $ => cs_rule($, 'hyperbaseurl'),
 
-    texttt: $ => seq($.texttt_token, $.text_group),
+    hyperimage: $ => command_rule($, $.hyperimage_cs, { text: 2 }),
 
-    texttt_at: $ => seq($.texttt_token, $.text_group_at),
+    hyperimage_cs: $ => cs_rule($, 'hyperimage'),
 
-    texttt_token: $ => named_command($, 'texttt'),
+    hyperref: $ => choice(
+      command_rule($, $.hyperref_cs, { text: 4 }),
+      prec(-1, command_rule($, $.hyperref_cs, { opt: 1, text: 1 }))),
 
-    makeatletter: $ => $.makeatletter_token,
-
-    makeatletter_token: $ => named_command($, 'makeatletter'),
-
-    makeatother: $ => $.makeatother_token,
-
-    makeatother_token: $ => named_command($, 'makeatother'),
-
-    double_circumflex: $ => prec(PREC.DOUBLE_CIRCUMFLEX, token(/\^\^([0-9a-f][0-9a-f]|.)/)),
+    hyperref_cs: $ => cs_rule($, 'hyperref'),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
     ),
 
-    text_group_at: $ => seq(
-      $.begin_group, repeat($._text_mode_at), $.end_group
-    ),
-
-    simple_text_group: $ => seq(
-      $.begin_group, $.text, $.end_group
+    name_group: $ => seq(
+      $.begin_group, alias($.text, 'name'), $.end_group
     ),
 
     opt_text_group: $ => seq(
       $.begin_opt, repeat($._text_mode), $.end_opt
     ),
 
-    opt_text_group_at: $ => seq(
-      $.begin_opt, repeat($._text_mode_at), $.end_opt
-    ),
-
     math_group: $ => seq(
       $.begin_group, repeat($._math_mode), $.end_group
-    ),
-
-    math_group_at: $ => seq(
-      $.begin_group, repeat($._math_mode_at), $.end_group
     ),
 
     opt_math_group: $ => seq(
       $.begin_opt, repeat($._math_mode), $.end_opt
     ),
 
-    opt_math_group_at: $ => seq(
-      $.begin_opt, repeat($._math_mode_at), $.end_opt
-    ),
-
     math_text_group: $ => seq(
       $.begin_group, optional($.text_mode), $.end_group
     ),
 
-    math_text_group_at: $ => seq(
-      $.begin_group, optional($.text_mode_at), $.end_group
+    begin_opt: $ => '[',
+
+    end_opt: $ => ']',
+
+    text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
+
+    cs: $ => cs_rule($, repeat1(/./)),
+
+    escaped: $ => seq($._escape, $._non_letter_or_other),
+
+    // fi introduced by LuaTeX
+    unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|pc|pt|sp/,
+
+    fixed: $ => /[+-]?([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,
+
+    _number: $ => choice(
+      $.decimal,
+      $.octal,
+      $.hexadecimal,
+      $.charcode,
+      $.catcode_ref
     ),
 
-    token: $ => seq($._escape, $._name, optional($._whitespace)),
+    decimal: $ => /[0-9]+/,
 
-    token_at: $ => seq($._escape, $._name_at, optional($._whitespace)),
+    octal: $ => /'[0-7]+/,
 
-    magic_comment: $ => /%\s*!T[eE]X\s+.*/,
+    hexadecimal: $ => /"[0-9a-fA-F]+/,
 
-    comment: $ => /%.*/,
-
-    // verbatim_text: $ => seq(/.*/, $._end_of_line),
-
-    _escape: $ => '\\',
-    begin_group: $ => '{',
-    end_group: $ => '}',
-    begin_opt: $ => '[',
-    end_opt: $ => ']',
-    math_shift: $ => '$',
-    alignment_tab: $ => '&',
-    _end_of_line: $ => '\n',
-    parameter_char: $ => '#',
-    superscript: $ => '^',
-    subscript: $ => '_',
-    //ignored_character: //,
-    _whitespace: $ => /[ \t]+/,
-    // letter: $ => /[a-zA-Z]/,
-    _name: $ => /[a-zA-Z]+/,
-    _name_at: $ => /[a-zA-Z@]+/,
-    // other: $ => /[^\\{}$&\n#^_ \ta-zA-Z~%]/,
-    active_char: $ => '~',
-    // comment_char: $ => '%',
-    text: $ => prec.left(repeat1(choice(/[^\\{}$&#^_~%\[\]]+/, $.double_circumflex))),
-    number: $ => /[0-9]+/,
-    // _verbatim_token: $ => /.*/,
+    charcode: $ => seq('`', choice($.escaped, /./))
   }
 })
