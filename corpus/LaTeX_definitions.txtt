@@ -1,0 +1,153 @@
+======================
+Simple newcommand
+======================
+\newcommand{\foo}{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+newcommand with number of arguments
+======================
+\newcommand{\foo}[2]{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (brack_group_text (lbrack) (text) (rbrack))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+newcommand with number of arguments and default value
+======================
+\newcommand{\foo}[2][def]{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (brack_group_text (lbrack) (text) (rbrack))
+      (brack_group_text (lbrack) (text) (rbrack))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+Simple newcommand*
+======================
+\newcommand*{\foo}{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+Simple renewcommand
+======================
+\renewcommand{\foo}{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+Simple providecommand
+======================
+\providecommand{\foo}{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+Simple DeclareRobustCommand
+======================
+\DeclareRobustCommand{\foo}{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+Simple CheckCommand
+======================
+\CheckCommand{\foo}{bar}
+----------------------
+(document
+  (text_mode
+    (newcommand
+      (newcommand_cs)
+      (text_group (begin_group) (cs) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+Simple newenvironment
+======================
+\newenvironment{foo}{bar}{quux}
+----------------------
+(document
+  (text_mode
+    (newenvironment
+      (newenvironment_cs)
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+newenvironment with number of arguments
+======================
+\newenvironment{foo}[2]{bar}{quux}
+----------------------
+(document
+  (text_mode
+    (newenvironment
+      (newenvironment_cs)
+      (text_group (begin_group) (text) (end_group))
+      (brack_group_text (lbrack) (text) (rbrack))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+newenvironment with number of arguments and default value
+======================
+\newenvironment{foo}[2][wibble]{bar}{quux}
+----------------------
+(document
+  (text_mode
+    (newenvironment
+      (newenvironment_cs)
+      (text_group (begin_group) (text) (end_group))
+      (brack_group_text (lbrack) (text) (rbrack))
+      (brack_group_text (lbrack) (text) (rbrack))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group)))))
+
+======================
+Simple renewenvironment
+======================
+\renewenvironment{foo}{bar}{quux}
+----------------------
+(document
+  (text_mode
+    (newenvironment
+      (newenvironment_cs)
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group))
+      (text_group (begin_group) (text) (end_group)))))

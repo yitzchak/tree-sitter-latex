@@ -1,65 +1,20 @@
-function begin_env_rule ($, options = {}) {
-  const args = [
-    $.begin_cs,
-    options.name_group || $.name_group
-  ]
-
-  for (let i = options.opt || 0; i > 0; i--) {
-    args.push(optional($.opt_text_group))
-  }
-
-  for (let i = options.text || 0; i > 0; i--) {
-    args.push(optional($.text_group))
-  }
-
-  if (options.eol) {
-    args.push($.eol)
-  }
-
-  return seq.apply(null, args)
-}
-
-function end_env_rule ($, options = {}) {
-  const args = [
-    $.end_cs,
-    options.name_group || $.name_group
-  ]
-
-  return seq.apply(null, args)
-}
-
-function command_rule ($, cs, options = {}) {
-  const args = [cs]
-
-  if (options.star) {
-    args.push(optional('*'))
-  }
-
-  for (let i = options.opt || 0; i > 0; i--) {
-    args.push(optional($.opt_text_group))
-  }
-
-  for (let i = options.name || 0; i > 0; i--) {
-    args.push($.name_group)
-  }
-
-  for (let i = options.text || 0; i > 0; i--) {
-    args.push($.text_group)
-  }
-
-  for (let i = options.math_text || 0; i > 0; i--) {
-    args.push($.math_text_group)
-  }
-
-  for (let i = options.text_opt || 0; i > 0; i--) {
-    args.push(optional($.text_group))
-  }
-
-  return seq.apply(null, args)
-}
-
-function cs_rule ($, name) {
+function cs ($, name) {
   return seq($._escape, name, $._cs_end)
+}
+
+// This command is a placeholder for aliasing of cs
+function cmd () {
+  return seq.apply(null, Array.prototype.slice.call(arguments, 1))
+}
+
+function begin_cmd ($) {
+  return (arguments.length > 1)
+    ? seq.apply(null, [$.begin_cs].concat(Array.prototype.slice.call(arguments, 1)))
+    : seq($.begin_cs, $.name_group)
+}
+
+function end_cmd ($, name_group) {
+  return seq($.end_cs, name_group || $.name_group)
 }
 
 module.exports = grammar({
@@ -109,29 +64,39 @@ module.exports = grammar({
     document: $ => optional($.text_mode),
 
     _common: $ => choice(
+      $._box,
       $.active_char,
       $.alignment_tab,
-      $.parameter,
-      $.text,
-      $.escaped,
+      $.box_dimension_assign,
       $.catcode,
       $.char,
       $.chardef,
       $.dimension_assign,
-      $.glue_assign,
-      $.glue_space,
-      $._box,
-      $.setbox,
-      $.box_dimension_assign,
+      $.escaped,
       $.explsyntaxoff,
       $.explsyntaxon,
+      $.glue_assign,
+      $.glue_space,
       $.makeatletter,
-      $.makeatother
+      $.makeatother,
+      $.newcommand,
+      $.newenvironment,
+      $.parameter,
+      $.setbox,
+      $.text,
+      $.include,
+      $.storage,
+      $.cs
     ),
 
-    inline_verbatim: $ => seq($.verb_cs, $.verb_delim, $.verb_body, $.verb_delim),
+    inline_verbatim: $ => seq(
+      $.verb_cs,
+      $.verb_delim,
+      $.verb_body,
+      $.verb_delim
+    ),
 
-    verb_cs: $ => cs_rule($, 'verb'),
+    verb_cs: $ => cs($, 'verb'),
 
     _text_mode: $ => choice(
       $._common,
@@ -147,21 +112,25 @@ module.exports = grammar({
       $._inline_math,
       $.text_env,
       $.text_group,
-      prec(-1, alias($.begin_opt, 'text')),
-      prec(-1, alias($.end_opt, 'text')),
+      prec(-1, alias($.lbrack, 'text')),
+      prec(-1, alias($.rbrack, 'text')),
       $.emph,
-      $.textbf,
-      $.textit,
+      $.textrm,
+      $.textsf,
       $.texttt,
+      $.textmd,
+      $.textbf,
+      $.textup,
+      $.textit,
+      $.textsl,
+      $.textsc,
       $.providesexplclass,
       $.providesexplfile,
       $.providesexplpackage,
       $.documentclass,
-      $.include,
+      $.documentstyle,
       $.section,
-      $.storage,
       $.usepackage,
-      $.cs,
       $.footnote,
       // hyperref package
       $.href,
@@ -179,26 +148,35 @@ module.exports = grammar({
       $.superscript,
       $.math_env,
       $.math_group,
-      prec(-1, alias($.begin_opt, 'text')),
-      prec(-1, alias($.end_opt, 'text')),
-      $.include,
-      $.storage,
-      command_rule($, $.cs),
+      prec(-1, alias($.lbrack, 'text')),
+      prec(-1, alias($.rbrack, 'text')),
+      $.mathrm,
+      $.mathnormal,
+      $.mathcal,
+      $.mathbf,
+      $.mathsf,
+      $.mathtt,
+      $.mathit,
       $.tag
     ),
 
     math_mode: $ => prec.left(2, repeat1($._math_mode)),
 
     parameter: $ => seq(
-      repeat1($.parameter_char), $.decimal
+      repeat1($.parameter_char),
+      $.decimal
     ),
 
     text_env: $ => seq(
-      $.begin, repeat($._text_mode), $.end
+      $.begin,
+      repeat($._text_mode),
+      $.end
     ),
 
     math_env: $ => seq(
-      $.begin, repeat($._math_mode), $.end
+      $.begin,
+      repeat($._math_mode),
+      $.end
     ),
 
     _display_math: $ => choice(
@@ -229,18 +207,22 @@ module.exports = grammar({
       $.display_math_end
     ),
 
-    display_math_begin: $ => begin_env_rule($, {
-      name_group: $.display_math_env_group,
-      opt: 1,
-      text: 1,
-      eol: true
-    }),
+    display_math_begin: $ => begin_cmd($,
+      $.display_math_env_group,
+      optional($.brack_group_text),
+      optional($.text_group),
+      $.eol
+    ),
 
-    display_math_end: $ => end_env_rule($, {
-      name_group: $.display_math_env_group
-    }),
+    display_math_end: $ => end_cmd($,
+      $.display_math_env_group
+    ),
 
-    display_math_env_group: $ => seq($.begin_group, $.display_math_env_name, $.end_group),
+    display_math_env_group: $ => seq(
+      $.begin_group,
+      $.display_math_env_name,
+      $.end_group
+    ),
 
     display_math_env_name: $ => /(displaymath|eqnarray\*?|align\*?|alignat\*?|equation\*?|flalign\*?|gather\*?|multiline\*?|split\*?|dmath\*?|dseries\*?|dgroup\*?|darray\*?)/,
 
@@ -272,23 +254,25 @@ module.exports = grammar({
       $.inline_math_end
     ),
 
-    inline_math_begin: $ => seq(
-      $.begin_cs,
+    inline_math_begin: $ => begin_cmd($,
       $.inline_math_env_group
     ),
 
-    inline_math_end: $ => seq(
-      $.end_cs,
+    inline_math_end: $ => end_cmd($,
       $.inline_math_env_group
     ),
 
-    inline_math_env_group: $ => seq($.begin_group, $.inline_math_env_name, $.end_group),
+    inline_math_env_group: $ => seq(
+      $.begin_group,
+      $.inline_math_env_name,
+      $.end_group
+    ),
 
     inline_math_env_name: $ => 'math',
 
-    tag: $ => command_rule($, $.tag_cs, { math_text: 1 }),
+    tag: $ => cmd($, $.tag_cs, $.math_text_group),
 
-    tag_cs: $ => cs_rule($, 'tag'),
+    tag_cs: $ => cs($, 'tag'),
 
     verbatim_env: $ => seq(
       $.verbatim_begin,
@@ -296,130 +280,157 @@ module.exports = grammar({
       $.verbatim_end
     ),
 
-    verbatim_begin: $ => begin_env_rule($, {
-      name_group: $.verbatim_env_group,
-      opt: 1,
-      text: 1,
-      eol: true
-    }),
+    verbatim_begin: $ => begin_cmd($,
+      $.verbatim_env_group,
+      optional($.brack_group_text),
+      optional($.text_group),
+      $.eol
+    ),
 
-    verbatim_end: $ => end_env_rule($, {
-      name_group: $.verbatim_env_group
-    }),
+    verbatim_end: $ => end_cmd($,
+      $.verbatim_env_group
+    ),
 
     verbatim_text: $ => repeat1($._verb_line),
 
-    verbatim_env_group: $ => seq($.begin_group, $.verbatim_env_name, $.end_group),
+    verbatim_env_group: $ => seq(
+      $.begin_group,
+      $.verbatim_env_name,
+      $.end_group
+    ),
 
     verbatim_env_name: $ => /(verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt)/,
 
-    begin: $ => begin_env_rule($),
+    begin: $ => begin_cmd($),
 
-    begin_cs: $ => cs_rule($, 'begin'),
+    begin_cs: $ => cs($, 'begin'),
 
-    end: $ => end_env_rule($),
+    end: $ => end_cmd($),
 
-    end_cs: $ => cs_rule($, 'end'),
+    end_cs: $ => cs($, 'end'),
 
-    documentclass: $ => command_rule($, $.documentclass_cs, { opt: 1, name: 1 }),
+    include: $ => cmd($,
+      $.include_cs,
+      $.text_group
+    ),
 
-    documentclass_cs: $ => cs_rule($, 'documentclass'),
+    include_cs: $ => cs($, /include|input/),
 
-    usepackage: $ => command_rule($, $.usepackage_cs, { opt: 1, name: 1 }),
+    providesexplclass: $ => cmd($,
+      $.providesexplclass_cs,
+      $.text_group,
+      $.text_group,
+      $.text_group,
+      $.text_group
+    ),
 
-    usepackage_cs: $ => cs_rule($, 'usepackage'),
+    providesexplclass_cs: $ => cs($,
+      $._providesexplclass_word
+    ),
 
-    include: $ => command_rule($, $.include_cs, { text: 1 }),
+    providesexplfile: $ => cmd($,
+      $.providesexplfile_cs,
+      $.text_group,
+      $.text_group,
+      $.text_group,
+      $.text_group
+    ),
 
-    include_cs: $ => cs_rule($, /include|input/),
+    providesexplfile_cs: $ => cs($,
+      $._providesexplfile_word
+    ),
 
-    providesexplclass: $ => command_rule($, $.providesexplclass_cs, { text: 4 }),
+    providesexplpackage: $ => cmd($,
+      $.providesexplpackage_cs,
+      $.text_group,
+      $.text_group,
+      $.text_group,
+      $.text_group
+    ),
 
-    providesexplclass_cs: $ => cs_rule($, $._providesexplclass_word),
+    providesexplpackage_cs: $ => cs($,
+      $._providesexplpackage_word
+    ),
 
-    providesexplfile: $ => command_rule($, $.providesexplfile_cs, { text: 4 }),
+    section: $ => cmd($,
+      $.section_cs,
+      optional('*'),
+      optional($.brack_group_text),
+      $.text_group
+    ),
 
-    providesexplfile_cs: $ => cs_rule($, $._providesexplfile_word),
+    section_cs: $ => cs($,
+      /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/
+    ),
 
-    providesexplpackage: $ => command_rule($, $.providesexplpackage_cs, { text: 4 }),
+    storage: $ => cmd($, $.storage_cs),
 
-    providesexplpackage_cs: $ => cs_rule($, $._providesexplpackage_word),
+    storage_cs: $ => cs($, /[egx]?def/),
 
-    section: $ => command_rule($, $.section_cs, { text: 1, opt: 1, star: true }),
+    footnote: $ => cmd($,
+      $.footnote_cs,
+      optional($.brack_group_text),
+      $.text_group
+    ),
 
-    section_cs: $ => cs_rule($, /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/),
+    footnote_cs: $ => cs($, 'footnote'),
 
-    storage: $ => command_rule($, $.storage_cs),
+    makeatletter: $ => cmd($,
+      $.makeatletter_cs
+    ),
 
-    storage_cs: $ => cs_rule($, /[egx]?def/),
+    makeatletter_cs: $ => cs($, $._makeatletter_word),
 
-    emph: $ => command_rule($, $.emph_cs, { text: 1 }),
+    makeatother: $ => cmd($,
+      $.makeatother_cs
+    ),
 
-    emph_cs: $ => cs_rule($, 'emph'),
+    makeatother_cs: $ => cs($, $._makeatother_word),
 
-    footnote: $ => command_rule($, $.footnote_cs, { text: 1, opt: 1 }),
+    explsyntaxon: $ => cmd($,
+      $.explsyntaxon_cs
+    ),
 
-    footnote_cs: $ => cs_rule($, 'footnote'),
+    explsyntaxon_cs: $ => cs($, $._explsyntaxon_word),
 
-    textbf: $ => command_rule($, $.textbf_cs, { text: 1 }),
+    explsyntaxoff: $ => cmd($,
+      $.explsyntaxoff_cs
+    ),
 
-    textbf_cs: $ => cs_rule($, 'textbf'),
-
-    textit: $ => command_rule($, $.textit_cs, { text: 1 }),
-
-    textit_cs: $ => cs_rule($, 'textit'),
-
-    texttt: $ => command_rule($, $.texttt_cs, { text: 1 }),
-
-    texttt_cs: $ => cs_rule($, 'texttt'),
-
-    makeatletter: $ => command_rule($, $.makeatletter_cs),
-
-    makeatletter_cs: $ => cs_rule($, $._makeatletter_word),
-
-    makeatother: $ => command_rule($, $.makeatother_cs),
-
-    makeatother_cs: $ => cs_rule($, $._makeatother_word),
-
-    explsyntaxon: $ => command_rule($, $.explsyntaxon_cs),
-
-    explsyntaxon_cs: $ => cs_rule($, $._explsyntaxon_word),
-
-    explsyntaxoff: $ => command_rule($, $.explsyntaxoff_cs),
-
-    explsyntaxoff_cs: $ => cs_rule($, $._explsyntaxoff_word),
+    explsyntaxoff_cs: $ => cs($, $._explsyntaxoff_word),
 
     // TeX dimension commands
 
-    dimension_assign: $ => seq(
+    dimension_assign: $ => cmd($,
       $.dimension_cs,
       optional('='),
       $.dimension
     ),
 
-    glue_assign: $ => seq(
+    glue_assign: $ => cmd($,
       $.glue_cs,
       optional('='),
       $.glue
     ),
 
-    glue_cs: $ => cs_rule($,
+    glue_cs: $ => cs($,
       /(((above|below)display(short)?|baseline|left|line|normalbaseline|normalline|parfill|par|right|splittop|tab|top|x?space)skip)|(small|mid|big)skipamount/
     ),
 
-    dimension_cs: $ => cs_rule($,
+    dimension_cs: $ => cs($,
       /(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth/
     ),
 
-    glue_space: $ => seq(
+    glue_space: $ => cmd($,
       $.glue_space_cs,
-      $.glue),
+      $.glue
+    ),
 
-    glue_space_cs: $ => cs_rule($,
+    glue_space_cs: $ => cs($,
       /[hmv]skip|(h|top|v)glue/
     ),
 
-    makebox: $ => seq(
+    makebox: $ => cmd($,
       $.makebox_cs,
       optional(
         seq(
@@ -430,34 +441,39 @@ module.exports = grammar({
       $.text_group
     ),
 
-    strut: $ => command_rule($, $.strut_cs),
+    strut: $ => cmd($,
+      $.strut_cs
+    ),
 
-    strut_cs: $ => cs_rule($, /(math)?strut|null/),
+    strut_cs: $ => cs($, /(math)?strut|null/),
 
-    phantom_smash: $ => command_rule($, $.phantom_smash_cs, { text: 1 }),
+    phantom_smash: $ => cmd($,
+      $.phantom_smash_cs,
+      $.text_group
+    ),
 
-    phantom_smash_cs: $ => cs_rule($, /[hv]?phantom|smash/),
+    phantom_smash_cs: $ => cs($, /[hv]?phantom|smash/),
 
-    makebox_cs: $ => cs_rule($,
+    makebox_cs: $ => cs($,
       /[hv]box|vtop/
     ),
 
-    usebox: $ => seq(
+    usebox: $ => cmd($,
       $.usebox_cs,
       $._number
     ),
 
-    usebox_cs: $ => cs_rule($,
+    usebox_cs: $ => cs($,
       /(un[hv])?(box|copy)/
     ),
 
-    movebox: $ => seq(
+    movebox: $ => cmd($,
       $.movebox_cs,
       $.dimension,
       $._box,
     ),
 
-    movebox_cs: $ => cs_rule($,
+    movebox_cs: $ => cs($,
       /move(left|right)|raise|lower/
     ),
 
@@ -469,23 +485,23 @@ module.exports = grammar({
       $.usebox
     ),
 
-    setbox: $ => seq(
+    setbox: $ => cmd($,
       $.setbox_cs,
       $._number,
       optional('='),
       $._box
     ),
 
-    setbox_cs: $ => cs_rule($, 'setbox'),
+    setbox_cs: $ => cs($, 'setbox'),
 
-    box_dimension_assign: $ => seq(
+    box_dimension_assign: $ => cmd($,
       $.box_dimension_cs,
       $._number,
       optional('='),
       $.dimension
     ),
 
-    box_dimension_cs: $ => cs_rule($, /ht|dp|wd/),
+    box_dimension_cs: $ => cs($, /ht|dp|wd/),
 
     glue: $ => choice(
       seq(
@@ -516,56 +532,274 @@ module.exports = grammar({
 
     // TeX character functions
 
-    catcode: $ => seq(
-      $.catcode_cs, $._number, '=', $._number
+    catcode: $ => cmd($,
+      $.catcode_cs,
+      $._number,
+      optional('='),
+      $._number
     ),
 
-    catcode_cs: $ => cs_rule($,
+    catcode_cs: $ => cs($,
       /(cat|del|kcat|lc|math|sf|uc)code/
     ),
 
-    chardef: $ => seq(
+    chardef: $ => cmd($,
       $.chardef_cs,
       $.cs,
       optional('='),
       $._number
     ),
 
-    chardef_cs: $ => cs_rule($, /(math)?chardef/),
+    chardef_cs: $ => cs($, /(math)?chardef/),
 
-    catcode_ref: $ => seq(
+    catcode_ref: $ => cmd($,
       $.catcode_cs, $._number
     ),
 
-    char: $ => seq(
+    char: $ => cmd($,
       $.char_cs, $._number
     ),
 
-    char_cs: $ => cs_rule($, /(math)?char|accent/),
+    char_cs: $ => cs($, /(math)?char|accent/),
+
+    // LaTex preamble commands
+
+    documentclass: $ => prec.right(-2, cmd($,
+      $.documentclass_cs,
+      optional($.brack_group_text),
+      $.name_group,
+      optional($.brack_group_text)
+    )),
+
+    documentclass_cs: $ => cs($, 'documentclass'),
+
+    documentstyle: $ => cmd($,
+      $.documentstyle_cs,
+      optional($.brack_group_text),
+      $.name_group
+    ),
+
+    documentstyle_cs: $ => cs($, 'documentstyle'),
+
+    usepackage: $ => prec.right(-2, cmd($,
+      $.usepackage_cs,
+      optional($.brack_group_text),
+      $.name_group,
+      optional($.brack_group_text)
+    )),
+
+    usepackage_cs: $ => cs($, 'usepackage'),
+
+    // LaTeX definitions
+
+    newcommand: $ => cmd($,
+      $.newcommand_cs,
+      optional('*'),
+      $.text_group,
+      optional($.brack_group_text),
+      optional($.brack_group_text),
+      $.text_group
+    ),
+
+    newcommand_cs: $ => cs($, /(DeclareRobust|Check)Command|(new|provide|renew)command/),
+
+    newenvironment: $ => cmd($,
+      $.newenvironment_cs,
+      optional('*'),
+      $.text_group,
+      optional($.brack_group_text),
+      optional($.brack_group_text),
+      $.text_group,
+      $.text_group
+    ),
+
+    newenvironment_cs: $ => cs($, /(re)?newenvironment/),
+
+    // LaTeX boxes
+
+    // LaTeX font changing: text
+
+    // \*family, \*series and \*shape skipped because they are zero argument
+    // commands and are not used as operands.
+
+    // It would be nice to collapse the following into single cmd rule, but
+    // Atom seems pretty limited in the scope selectors.
+
+    textrm: $ => cmd($,
+      $.textrm_cs,
+      $.text_group
+    ),
+
+    textrm_cs: $ => cs($, 'textrm'),
+
+    textsf: $ => cmd($,
+      $.textsf_cs,
+      $.text_group
+    ),
+
+    textsf_cs: $ => cs($, 'textsf'),
+
+    texttt: $ => cmd($,
+      $.texttt_cs,
+      $.text_group
+    ),
+
+    texttt_cs: $ => cs($, 'texttt'),
+
+    textmd: $ => cmd($,
+      $.textmd_cs,
+      $.text_group
+    ),
+
+    textmd_cs: $ => cs($, 'textmd'),
+
+    textbf: $ => cmd($,
+      $.textbf_cs,
+      $.text_group
+    ),
+
+    textbf_cs: $ => cs($, 'textbf'),
+
+    textup: $ => cmd($,
+      $.textup_cs,
+      $.text_group
+    ),
+
+    textup_cs: $ => cs($, 'textup'),
+
+    textit: $ => cmd($,
+      $.textit_cs,
+      $.text_group
+    ),
+
+    textit_cs: $ => cs($, 'textit'),
+
+    textsl: $ => cmd($,
+      $.textsl_cs,
+      $.text_group
+    ),
+
+    textsl_cs: $ => cs($, 'textsl'),
+
+    textsc: $ => cmd($,
+      $.textsc_cs,
+      $.text_group
+    ),
+
+    textsc_cs: $ => cs($, 'textsc'),
+
+    emph: $ => cmd($,
+      $.emph_cs,
+      $.text_group
+    ),
+
+    emph_cs: $ => cs($, 'emph'),
+
+    // LaTeX font changing: math
+
+    // It would be nice to collapse the following into single cmd rule, but
+    // Atom seems pretty limited in the scope selectors.
+
+    mathrm: $ => cmd($,
+      $.mathrm_cs,
+      $.math_group
+    ),
+
+    mathrm_cs: $ => cs($, 'mathrm'),
+
+    mathnormal: $ => cmd($,
+      $.mathnormal_cs,
+      $.math_group
+    ),
+
+    mathnormal_cs: $ => cs($, 'mathnormal'),
+
+    mathcal: $ => cmd($,
+      $.mathcal_cs,
+      $.math_group
+    ),
+
+    mathcal_cs: $ => cs($, 'mathcal'),
+
+    mathbf: $ => cmd($,
+      $.mathbf_cs,
+      $.math_group
+    ),
+
+    mathbf_cs: $ => cs($, 'mathbf'),
+
+    mathsf: $ => cmd($,
+      $.mathsf_cs,
+      $.math_group
+    ),
+
+    mathsf_cs: $ => cs($, 'mathsf'),
+
+    mathtt: $ => cmd($,
+      $.mathtt_cs,
+      $.math_group
+    ),
+
+    mathtt_cs: $ => cs($, 'mathtt'),
+
+    mathit: $ => cmd($,
+      $.mathit_cs,
+      $.math_group
+    ),
+
+    mathit_cs: $ => cs($, 'mathit'),
 
     // hyperref functions
 
-    href: $ => command_rule($, $.href_cs, { opt: 1, text: 2 }),
+    href: $ => cmd($,
+      $.href_cs,
+      optional($.brack_group_text),
+      $.text_group,
+      $.text_group
+    ),
 
-    href_cs: $ => cs_rule($, 'href'),
+    href_cs: $ => cs($, 'href'),
 
-    url: $ => command_rule($, $.url_cs, { text: 1 }),
+    url: $ => cmd($,
+      $.url_cs,
+      $.text_group
+    ),
 
-    url_cs: $ => cs_rule($, /(nolink)?url/),
+    url_cs: $ => cs($, /(nolink)?url/),
 
-    hyperbaseurl: $ => command_rule($, $.hyperbaseurl_cs, { text: 1 }),
+    hyperbaseurl: $ => cmd($,
+      $.hyperbaseurl_cs,
+      $.text_group
+    ),
 
-    hyperbaseurl_cs: $ => cs_rule($, 'hyperbaseurl'),
+    hyperbaseurl_cs: $ => cs($, 'hyperbaseurl'),
 
-    hyperimage: $ => command_rule($, $.hyperimage_cs, { text: 2 }),
+    hyperimage: $ => cmd($,
+      $.hyperimage_cs,
+      $.text_group,
+      $.text_group
+    ),
 
-    hyperimage_cs: $ => cs_rule($, 'hyperimage'),
+    hyperimage_cs: $ => cs($, 'hyperimage'),
 
     hyperref: $ => choice(
-      command_rule($, $.hyperref_cs, { text: 4 }),
-      prec(-1, command_rule($, $.hyperref_cs, { opt: 1, text: 1 }))),
+      cmd($,
+        $.hyperref_cs,
+        $.text_group,
+        $.text_group,
+        $.text_group,
+        $.text_group
+      ),
+      prec(-1,
+        cmd($,
+          $.hyperref_cs,
+          optional($.brack_group_text),
+          $.text_group
+        )
+      )
+    ),
 
-    hyperref_cs: $ => cs_rule($, 'hyperref'),
+    hyperref_cs: $ => cs($, 'hyperref'),
 
     text_group: $ => seq(
       $.begin_group, repeat($._text_mode), $.end_group
@@ -575,29 +809,29 @@ module.exports = grammar({
       $.begin_group, alias($.text, 'name'), $.end_group
     ),
 
-    opt_text_group: $ => seq(
-      $.begin_opt, repeat($._text_mode), $.end_opt
+    brack_group_text: $ => seq(
+      $.lbrack, repeat($._text_mode), $.rbrack
     ),
 
     math_group: $ => seq(
       $.begin_group, repeat($._math_mode), $.end_group
     ),
 
-    opt_math_group: $ => seq(
-      $.begin_opt, repeat($._math_mode), $.end_opt
+    brack_group_math: $ => seq(
+      $.lbrack, repeat($._math_mode), $.rbrack
     ),
 
     math_text_group: $ => seq(
       $.begin_group, optional($.text_mode), $.end_group
     ),
 
-    begin_opt: $ => '[',
+    lbrack: $ => '[',
 
-    end_opt: $ => ']',
+    rbrack: $ => ']',
 
     text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
 
-    cs: $ => cs_rule($, repeat1(/./)),
+    cs: $ => cs($, repeat1(/./)),
 
     escaped: $ => seq($._escape, $._non_letter_or_other),
 
