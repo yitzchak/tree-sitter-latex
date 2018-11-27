@@ -25,6 +25,19 @@ function brack_group ($, contents) {
   return seq($.lbrack, contents, $.rbrack)
 }
 
+function optional_seq () {
+  var result
+
+  for (var i = arguments.length - 1; i > -1; i--) {
+    result = optional(
+      result
+        ? seq(arguments[i], result)
+        : arguments[i])
+  }
+
+  return result
+}
+
 module.exports = grammar({
   name: 'latex',
 
@@ -93,6 +106,10 @@ module.exports = grammar({
       $.makeatother,
       $.newcommand,
       $.newenvironment,
+      $.makebox,
+      $.parbox,
+      $.minipage_env,
+      $.savebox,
       $.parameter,
       $.setbox,
       $.text,
@@ -619,11 +636,9 @@ module.exports = grammar({
 
     makebox: $ => cmd($,
       $.makebox_cs,
-      optional(
-        seq(
-          $.dimension_brack_group,
-          optional($.text_brack_group)
-        ),
+      optional_seq(
+        $.dimension_brack_group,
+        $.text_brack_group,
       ),
       $.text_group
     ),
@@ -633,8 +648,10 @@ module.exports = grammar({
     savebox: $ => cmd($,
       $.savebox_cs,
       $.text_group,
-      optional($.dimension_brack_group),
-      optional($.text_brack_group),
+      optional_seq(
+        $.dimension_brack_group,
+        $.text_brack_group
+      ),
       $.text_group
     ),
 
@@ -644,9 +661,11 @@ module.exports = grammar({
 
     parbox: $ => cmd($,
       $.parbox_cs,
-      optional($.text_brack_group),
-      optional($.dimension_brack_group),
-      optional($.text_brack_group),
+      optional_seq(
+        $.text_brack_group,
+        $.dimension_brack_group,
+        $.text_brack_group
+      ),
       $.dimension_group,
       $.text_group
     ),
@@ -661,9 +680,11 @@ module.exports = grammar({
 
     minipage_begin: $ => begin_cmd($,
       $.minipage_env_group,
-      optional($.text_brack_group),
-      optional($.dimension_brack_group),
-      optional($.text_brack_group),
+      optional_seq(
+        $.text_brack_group,
+        $.dimension_brack_group,
+        $.text_brack_group
+      ),
       $.dimension_group
     ),
 
