@@ -608,7 +608,7 @@ module.exports = grammar({
 
     usepackage_cs: $ => cs($, 'usepackage'),
 
-    // LaTeX definitionas
+    // LaTeX definitions
 
     newcommand: $ => cmd($,
       $.newcommand_cs,
