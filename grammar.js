@@ -166,6 +166,12 @@ module.exports = grammar({
       $.ProvidesPackage,
       $.DeclareOption,
       $.PassOptionTo,
+      $.At,
+      $.ProcessOptions,
+      $.ExecuteOptions,
+      $.IfFileExists,
+      $.Error,
+      $.WarningInfo,
       // hyperref package
       $.href,
       $.url,
@@ -871,6 +877,60 @@ module.exports = grammar({
     ),
 
     PassOptionTo_cs: $ => cs($, /PassOptionTo(Class|Package)/),
+
+    // LaTeX cls Delaying code
+
+    At: $ => cmd($,
+      $.At_cs,
+      $.text_group
+    ),
+
+    At_cs: $ => cs($,
+      /At(EndOfClass|EndOfPackage|BeginDocument|EndDocument|BeginDvi)/
+    ),
+
+    // LaTeX cls Option processing
+
+    ProcessOptions: $ => cmd($, $.ProcessOptions_cs, optional('*')),
+
+    ProcessOptions_cs: $ => cs($, 'ProcessOptions'),
+
+    ExecuteOptions: $ => cmd($,
+      $.ExecuteOptions_cs,
+      $.name_group
+    ),
+
+    ExecuteOptions_cs: $ => cs($, 'ExecuteOptions'),
+
+    // LaTeX cls Safe file commands
+
+    IfFileExists: $ => cmd($,
+      $.IfFileExists_cs,
+      $.text_group,
+      $.text_group,
+      $.text_group
+    ),
+
+    IfFileExists_cs: $ => cs($, /(Input)?IfFileExists/),
+
+    // LaTeX cls Reporting errors, etc
+
+    Error: $ => cmd($,
+      $.Error_cs,
+      $.text_group,
+      $.text_group,
+      $.text_group
+    ),
+
+    Error_cs: $ => cs($, /(Class|Package)Error/),
+
+    WarningInfo: $ => cmd($,
+      $.WarningInfo_cs,
+      $.text_group,
+      $.text_group
+    ),
+
+    WarningInfo_cs: $ => cs($, /(Class|Package)(Warning(NoLine)?|Info)/),
 
     // hyperref functions
 

@@ -324,6 +324,30 @@
         },
         {
           "type": "SYMBOL",
+          "name": "At"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ProcessOptions"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ExecuteOptions"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "IfFileExists"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "Error"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "WarningInfo"
+        },
+        {
+          "type": "SYMBOL",
           "name": "href"
         },
         {
@@ -3361,6 +3385,214 @@
         {
           "type": "PATTERN",
           "value": "PassOptionTo(Class|Package)"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "At": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "At_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "At_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "At(EndOfClass|EndOfPackage|BeginDocument|EndDocument|BeginDvi)"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "ProcessOptions": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "ProcessOptions_cs"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "*"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "ProcessOptions_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "ProcessOptions"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "ExecuteOptions": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "ExecuteOptions_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "name_group"
+        }
+      ]
+    },
+    "ExecuteOptions_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "ExecuteOptions"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "IfFileExists": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "IfFileExists_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "IfFileExists_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(Input)?IfFileExists"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "Error": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "Error_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "Error_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(Class|Package)Error"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "WarningInfo": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "WarningInfo_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "WarningInfo_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(Class|Package)(Warning(NoLine)?|Info)"
         },
         {
           "type": "SYMBOL",
