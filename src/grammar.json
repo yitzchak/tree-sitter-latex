@@ -49,11 +49,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "explsyntaxoff"
+          "name": "ExplSyntaxOff"
         },
         {
           "type": "SYMBOL",
-          "name": "explsyntaxon"
+          "name": "ExplSyntaxOn"
         },
         {
           "type": "SYMBOL",
@@ -276,15 +276,15 @@
         },
         {
           "type": "SYMBOL",
-          "name": "providesexplclass"
+          "name": "ProvidesExplClass"
         },
         {
           "type": "SYMBOL",
-          "name": "providesexplfile"
+          "name": "ProvidesExplFile"
         },
         {
           "type": "SYMBOL",
-          "name": "providesexplpackage"
+          "name": "ProvidesExplPackage"
         },
         {
           "type": "SYMBOL",
@@ -300,11 +300,27 @@
         },
         {
           "type": "SYMBOL",
-          "name": "usepackage"
+          "name": "use"
         },
         {
           "type": "SYMBOL",
           "name": "footnote"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "NeedsTeXFormat"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ProvidesPackage"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "DeclareOption"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "PassOptionTo"
         },
         {
           "type": "SYMBOL",
@@ -950,7 +966,7 @@
     },
     "verbatim_env_name": {
       "type": "PATTERN",
-      "value": "(verbatim|[BL]?Verbatim\\*?|lstlisting|minted|alltt)"
+      "value": "verbatim|[BL]?Verbatim\\*?|lstlisting|minted|alltt|filecontents\\*?"
     },
     "begin": {
       "type": "SEQ",
@@ -1042,12 +1058,12 @@
         }
       ]
     },
-    "providesexplclass": {
+    "ProvidesExplClass": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "providesexplclass_cs"
+          "name": "ProvidesExplClass_cs"
         },
         {
           "type": "SYMBOL",
@@ -1067,7 +1083,7 @@
         }
       ]
     },
-    "providesexplclass_cs": {
+    "ProvidesExplClass_cs": {
       "type": "SEQ",
       "members": [
         {
@@ -1076,7 +1092,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_providesexplclass_word"
+          "name": "_ProvidesExplClass_word"
         },
         {
           "type": "SYMBOL",
@@ -1084,12 +1100,12 @@
         }
       ]
     },
-    "providesexplfile": {
+    "ProvidesExplFile": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "providesexplfile_cs"
+          "name": "ProvidesExplFile_cs"
         },
         {
           "type": "SYMBOL",
@@ -1109,7 +1125,7 @@
         }
       ]
     },
-    "providesexplfile_cs": {
+    "ProvidesExplFile_cs": {
       "type": "SEQ",
       "members": [
         {
@@ -1118,7 +1134,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_providesexplfile_word"
+          "name": "_ProvidesExplFile_word"
         },
         {
           "type": "SYMBOL",
@@ -1126,12 +1142,12 @@
         }
       ]
     },
-    "providesexplpackage": {
+    "ProvidesExplPackage": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "providesexplpackage_cs"
+          "name": "ProvidesExplPackage_cs"
         },
         {
           "type": "SYMBOL",
@@ -1151,7 +1167,7 @@
         }
       ]
     },
-    "providesexplpackage_cs": {
+    "ProvidesExplPackage_cs": {
       "type": "SEQ",
       "members": [
         {
@@ -1160,7 +1176,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_providesexplpackage_word"
+          "name": "_ProvidesExplPackage_word"
         },
         {
           "type": "SYMBOL",
@@ -1342,16 +1358,16 @@
         }
       ]
     },
-    "explsyntaxon": {
+    "ExplSyntaxOn": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "explsyntaxon_cs"
+          "name": "ExplSyntaxOn_cs"
         }
       ]
     },
-    "explsyntaxon_cs": {
+    "ExplSyntaxOn_cs": {
       "type": "SEQ",
       "members": [
         {
@@ -1360,7 +1376,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_explsyntaxon_word"
+          "name": "_ExplSyntaxOn_word"
         },
         {
           "type": "SYMBOL",
@@ -1368,16 +1384,16 @@
         }
       ]
     },
-    "explsyntaxoff": {
+    "ExplSyntaxOff": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "explsyntaxoff_cs"
+          "name": "ExplSyntaxOff_cs"
         }
       ]
     },
-    "explsyntaxoff_cs": {
+    "ExplSyntaxOff_cs": {
       "type": "SEQ",
       "members": [
         {
@@ -1386,7 +1402,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_explsyntaxoff_word"
+          "name": "_ExplSyntaxOff_word"
         },
         {
           "type": "SYMBOL",
@@ -2168,7 +2184,7 @@
         }
       ]
     },
-    "usepackage": {
+    "use": {
       "type": "PREC_RIGHT",
       "value": -2,
       "content": {
@@ -2176,7 +2192,7 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "usepackage_cs"
+            "name": "use_cs"
           },
           {
             "type": "CHOICE",
@@ -2209,7 +2225,7 @@
         ]
       }
     },
-    "usepackage_cs": {
+    "use_cs": {
       "type": "SEQ",
       "members": [
         {
@@ -2217,8 +2233,8 @@
           "name": "_escape"
         },
         {
-          "type": "STRING",
-          "value": "usepackage"
+          "type": "PATTERN",
+          "value": "usepackage|(LoadClass|RequirePackage)(WithOptions)?"
         },
         {
           "type": "SYMBOL",
@@ -3199,6 +3215,159 @@
         }
       ]
     },
+    "NeedsTeXFormat": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "NeedsTeXFormat_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "NeedsTeXFormat_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "NeedsTeXFormat"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "ProvidesPackage": {
+      "type": "PREC_RIGHT",
+      "value": -2,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "ProvidesPackage_cs"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "text_group"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "text_brack_group"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "ProvidesPackage_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "ProvidesPackage"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "DeclareOption": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "DeclareOption_cs"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "*"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "text_group"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        }
+      ]
+    },
+    "DeclareOption_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "DeclareOption"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "PassOptionTo": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "PassOptionTo_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "name_group"
+        }
+      ]
+    },
+    "PassOptionTo_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "PassOptionTo(Class|Package)"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
     "href": {
       "type": "SEQ",
       "members": [
@@ -3713,11 +3882,11 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_explsyntaxoff_word"
+      "name": "_ExplSyntaxOff_word"
     },
     {
       "type": "SYMBOL",
-      "name": "_explsyntaxon_word"
+      "name": "_ExplSyntaxOn_word"
     },
     {
       "type": "SYMBOL",
@@ -3733,15 +3902,15 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_providesexplclass_word"
+      "name": "_ProvidesExplClass_word"
     },
     {
       "type": "SYMBOL",
-      "name": "_providesexplfile_word"
+      "name": "_ProvidesExplFile_word"
     },
     {
       "type": "SYMBOL",
-      "name": "_providesexplpackage_word"
+      "name": "_ProvidesExplPackage_word"
     },
     {
       "type": "SYMBOL",

@@ -38,8 +38,8 @@ usepackage
 \usepackage[foo]{bar}
 -------------------
 (document
-  (usepackage
-    (usepackage_cs)
+  (use
+    (use_cs)
     (text_brack_group (lbrack) (text) (rbrack))
     (name_group (begin_group) (name) (end_group))))
 
@@ -49,8 +49,8 @@ usepackage with date
 \usepackage[foo]{bar}[2000/01/01]
 ----------------
 (document
-  (usepackage
-    (usepackage_cs)
+  (use
+    (use_cs)
     (text_brack_group (lbrack) (text) (rbrack))
     (name_group (begin_group) (name) (end_group))
     (text_brack_group (lbrack) (text) (rbrack))))

@@ -1,0 +1,117 @@
+===========================
+NeedsTeXFormat
+===========================
+\NeedsTeXFormat{LaTeX2e}
+---------------------------
+(document
+  (NeedsTeXFormat
+    (NeedsTeXFormat_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+===========================
+ProvidesPackage
+===========================
+\ProvidesPackage{foo}
+---------------------------
+(document
+  (ProvidesPackage
+    (ProvidesPackage_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+===========================
+ProvidesPackage with optional date
+===========================
+\ProvidesPackage{foo}[2000/01/01]
+---------------------------
+(document
+  (ProvidesPackage
+    (ProvidesPackage_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_brack_group (lbrack) (text) (rbrack))))
+
+===========================
+RequirePackage
+===========================
+\RequirePackage{foo}
+---------------------------
+(document
+  (use
+    (use_cs)
+    (name_group (begin_group) (name) (end_group))))
+
+===========================
+RequirePackage with options
+===========================
+\RequirePackage[bar]{foo}
+---------------------------
+(document
+  (use
+    (use_cs)
+    (text_brack_group (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))))
+
+===========================
+RequirePackage with date
+===========================
+\RequirePackage{foo}[2000/01/01]
+---------------------------
+(document
+  (use
+    (use_cs)
+    (name_group (begin_group) (name) (end_group))
+    (text_brack_group (lbrack) (text) (rbrack))))
+
+===========================
+RequirePackage with options and date
+===========================
+\RequirePackage[bar]{foo}[2000/01/01]
+---------------------------
+(document
+  (use
+    (use_cs)
+    (text_brack_group (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))
+    (text_brack_group (lbrack) (text) (rbrack))))
+
+===========================
+DeclareOption
+===========================
+\DeclareOption{foo}{bar}
+---------------------------
+(document
+  (DeclareOption
+    (DeclareOption_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+===========================
+DeclareOption*
+===========================
+\DeclareOption*{bar}
+---------------------------
+(document
+  (DeclareOption
+    (DeclareOption_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+===========================
+PassOptionToClass
+===========================
+\PassOptionToClass{foo}{bar}
+---------------------------
+(document
+  (PassOptionTo
+    (PassOptionTo_cs)
+    (text_group (begin_group) (text) (end_group))
+    (name_group (begin_group) (name) (end_group))))
+
+===========================
+PassOptionToPackage
+===========================
+\PassOptionToPackage{foo}{bar}
+---------------------------
+(document
+  (PassOptionTo
+    (PassOptionTo_cs)
+    (text_group (begin_group) (text) (end_group))
+    (name_group (begin_group) (name) (end_group))))
