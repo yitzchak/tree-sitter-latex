@@ -274,3 +274,26 @@ PackageInfo
     (WarningInfo_cs)
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))))
+
+============================
+ensuremath
+============================
+\ensuremath{foo}
+---------------------------
+(document
+  (ensuremath
+    (ensuremath_cs)
+    (math_group (begin_group) (text) (end_group))))
+
+============================
+ensuremath inside inline math
+============================
+\(\ensuremath{foo}\)
+---------------------------
+(document
+  (latex_inline_math
+    (begin_inline_math)
+    (ensuremath
+      (ensuremath_cs)
+      (math_group (begin_group) (text) (end_group)))
+    (end_inline_math)))

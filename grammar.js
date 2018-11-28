@@ -98,6 +98,7 @@ module.exports = grammar({
       $.chardef,
       $.dimension_assign,
       $.escaped,
+      $.ensuremath,
       $.ExplSyntaxOff,
       $.ExplSyntaxOn,
       $.glue_assign,
@@ -301,6 +302,13 @@ module.exports = grammar({
     inline_math_env_group: $ => group($, $.inline_math_env_name),
 
     inline_math_env_name: $ => 'math',
+
+    ensuremath: $ => cmd($,
+      $.ensuremath_cs,
+      $.math_group
+    ),
+
+    ensuremath_cs: $ => cs($, 'ensuremath'),
 
     tag: $ => cmd($, $.tag_cs, $.text_group),
 

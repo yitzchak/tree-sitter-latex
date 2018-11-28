@@ -49,6 +49,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "ensuremath"
+        },
+        {
+          "type": "SYMBOL",
           "name": "ExplSyntaxOff"
         },
         {
@@ -854,6 +858,36 @@
     "inline_math_env_name": {
       "type": "STRING",
       "value": "math"
+    },
+    "ensuremath": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "ensuremath_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "math_group"
+        }
+      ]
+    },
+    "ensuremath_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "ensuremath"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
     },
     "tag": {
       "type": "SEQ",
