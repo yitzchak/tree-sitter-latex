@@ -23,8 +23,8 @@ using std::string;
 using std::vector;
 
 enum SymbolType {
-  _AT_BEGIN,
-  _AT_END,
+  _AT_LETTER,
+  _AT_OTHER,
   _CS_END,
   _ESCAPE,
   _EXPL_BEGIN,
@@ -151,8 +151,8 @@ struct Scanner {
 
   list<CatCodeBlock> catcode_blocks = {
     {
-      _AT_BEGIN,
-      _AT_BEGIN,
+      _AT_LETTER,
+      _AT_LETTER,
       false,
       BLOCK_SET,
       {
@@ -160,8 +160,8 @@ struct Scanner {
       }
     },
     {
-      _AT_END,
-      _AT_END,
+      _AT_OTHER,
+      _AT_OTHER,
       false,
       BLOCK_SET,
       {
@@ -211,7 +211,8 @@ struct Scanner {
         {'\\', ESCAPE_CATEGORY},
         {'{', BEGIN_CATEGORY},
         {'}', END_CATEGORY},
-        {'#', PARAMETER_CATEGORY},
+        // {'#', PARAMETER_CATEGORY},
+        {'\n', EOL_CATEGORY},
         {'A', LETTER_CATEGORY},
         {'B', LETTER_CATEGORY},
         {'C', LETTER_CATEGORY},
@@ -265,7 +266,7 @@ struct Scanner {
         {'y', LETTER_CATEGORY},
         {'z', LETTER_CATEGORY},
         {'~', ACTIVE_CHAR_CATEGORY},
-        // {'%', COMMENT_CATEGORY}
+        {'%', COMMENT_CATEGORY}
       }
     },
     { // luaexec catcode table
@@ -277,6 +278,7 @@ struct Scanner {
         {'\\', ESCAPE_CATEGORY},
         {'{', BEGIN_CATEGORY},
         {'}', END_CATEGORY},
+        {'\n', EOL_CATEGORY},
         {'A', LETTER_CATEGORY},
         {'B', LETTER_CATEGORY},
         {'C', LETTER_CATEGORY},
@@ -329,6 +331,7 @@ struct Scanner {
         {'x', LETTER_CATEGORY},
         {'y', LETTER_CATEGORY},
         {'z', LETTER_CATEGORY},
+        {'%', COMMENT_CATEGORY}
       }
     },
     { // luacode catcode table

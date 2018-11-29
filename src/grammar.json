@@ -1036,7 +1036,7 @@
     },
     "verbatim_env_name": {
       "type": "PATTERN",
-      "value": "verbatim|[BL]?Verbatim\\*?|lstlisting|minted|alltt|filecontents\\*?"
+      "value": "verbatim|[BL]?Verbatim\\*?|lstlisting|minted|alltt|filecontents\\*?|luacode\\*"
     },
     "begin": {
       "type": "SEQ",
@@ -1397,7 +1397,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_at_begin"
+          "name": "_at_letter"
         }
       ]
     },
@@ -1427,7 +1427,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_at_end"
+          "name": "_at_other"
         }
       ]
     },
@@ -4041,27 +4041,6 @@
       "type": "STRING",
       "value": "luacode"
     },
-    "luacode_star_env_group": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "begin_group"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "luacode_star_env_name"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_group"
-        }
-      ]
-    },
-    "luacode_star_env_name": {
-      "type": "STRING",
-      "value": "luacode*"
-    },
     "text_group": {
       "type": "SEQ",
       "members": [
@@ -4352,11 +4331,11 @@
   "externals": [
     {
       "type": "SYMBOL",
-      "name": "_at_begin"
+      "name": "_at_letter"
     },
     {
       "type": "SYMBOL",
-      "name": "_at_end"
+      "name": "_at_other"
     },
     {
       "type": "SYMBOL",

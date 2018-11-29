@@ -1,3 +1,84 @@
+========================
+luadirect
+=======================
+\luadirect{
+  texio.write_nl("Special chars: _ ^ & $ { } working.\string\n"
+  .. "Backslashes need a bit of care.\string\n"
+  .. "Sharps and tildes too: # doubled, but \string# and \string~")
+  % a tex comment: no easy way to get a %
+  tex.sprint("\string\\pi \string\\neq", tostring(math.pi))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+---------------------------
+(document
+  (luadirect
+    (luadirect_cs)
+    (text_group
+      (begin_group)
+      (text)
+      (text_group (begin_group) (text) (end_group))
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (text)
+      (cs)
+      (active_char)
+      (text (comment))
+      (cs)
+      (escaped)
+      (text)
+      (cs)
+      (escaped)
+      (text (comment))
+      (cs)
+      (text)
+      (end_group)))) 
+
+=======================
+luaexec
+=======================
+\luaexec{
+  texio.write_nl("Special chars: _ ^ & $ { } ~ working.\string\n"
+  .. "Backslashes still need a bit of care.\string\n"
+  .. "Single sharps are easier now: \#")
+  % a tex comment: we also get a % below
+  tex.sprint("\\pi \\neq ", tostring(math.pi):gsub(’\%.’, ’+’))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+----------------------------
+(document
+  (luaexec
+    (luaexec_cs)
+    (text_group
+      (begin_group)
+      (text)
+      (text_group (begin_group) (text) (end_group))
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (text (comment))
+      (escaped)
+      (text)
+      (escaped)
+      (text)
+      (escaped)
+      (text (comment))
+      (cs)
+      (text)
+      (end_group))))
+
 =================
 luacode environment
 ===================

@@ -44,8 +44,8 @@ module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
-    $._at_begin,
-    $._at_end,
+    $._at_letter,
+    $._at_other,
     $._cs_end,
     $._escape,
     $._expl_begin,
@@ -341,7 +341,7 @@ module.exports = grammar({
 
     verbatim_env_group: $ => group($, $.verbatim_env_name),
 
-    verbatim_env_name: $ => /verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt|filecontents\*?/,
+    verbatim_env_name: $ => /verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt|filecontents\*?|luacode\*/,
 
     begin: $ => begin_cmd($),
 
@@ -416,14 +416,14 @@ module.exports = grammar({
 
     makeatletter: $ => cmd($,
       $.makeatletter_cs,
-      $._at_begin,
+      $._at_letter,
     ),
 
     makeatletter_cs: $ => cs($, 'makeatletter'),
 
     makeatother: $ => cmd($,
       $.makeatother_cs,
-      $._at_end
+      $._at_other
     ),
 
     makeatother_cs: $ => cs($, 'makeatother'),
@@ -1038,10 +1038,6 @@ module.exports = grammar({
     luacode_env_group: $ => group($, $.luacode_env_name),
 
     luacode_env_name: $ => 'luacode',
-
-    luacode_star_env_group: $ => group($, $.luacode_star_env_name),
-
-    luacode_star_env_name: $ => 'luacode*',
 
     // Common rules
 
