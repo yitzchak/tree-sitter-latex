@@ -69,6 +69,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "luadirect"
+        },
+        {
+          "type": "SYMBOL",
           "name": "makeatletter"
         },
         {
@@ -3850,6 +3854,103 @@
         }
       ]
     },
+    "luadirect": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "luadirect_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lua_begin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lua_end"
+        }
+      ]
+    },
+    "luadirect_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "luadirect"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "luaexec_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "luaexec"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "luacode_env_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacode_env_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "luacode_env_name": {
+      "type": "STRING",
+      "value": "luacode"
+    },
+    "luacode_star_env_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacode_star_env_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "luacode_star_env_name": {
+      "type": "STRING",
+      "value": "luacode*"
+    },
     "text_group": {
       "type": "SEQ",
       "members": [
@@ -4153,6 +4254,14 @@
     {
       "type": "SYMBOL",
       "name": "_ExplSyntaxOn_word"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_lua_begin"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_lua_end"
     },
     {
       "type": "SYMBOL",

@@ -1,0 +1,12 @@
+========================
+luadirect
+========================
+\luadirect{foo}
+------------------------
+(document
+  (luadirect
+    (luadirect_cs)
+    (text_group
+      (begin_group)
+      (text)
+      (end_group))))

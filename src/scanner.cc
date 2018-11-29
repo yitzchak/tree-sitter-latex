@@ -25,6 +25,8 @@ enum SymbolType {
   _ESCAPE,
   _EXPLSYNTAXOFF_WORD,
   _EXPLSYNTAXON_WORD,
+  _LUA_BEGIN,
+  _LUA_END,
   _MAKEATLETTER_WORD,
   _MAKEATOTHER_WORD,
   _NON_LETTER_OR_OTHER,
@@ -146,6 +148,7 @@ struct Scanner {
   vector<Category> catcode_table;
   map<int32_t, Category> overflow_catcodes;
   map<int32_t, Category> saved_catcodes;
+  map<SymbolType, map<int32_t, Category>> s_catcodes;
 
   Scanner() {}
 
@@ -264,6 +267,16 @@ struct Scanner {
     if (it != saved_catcodes.end()) {
       set_catcode(key, it->second);
       saved_catcodes.erase(key);
+    }
+  }
+
+  void set_catcodes(SymbolType symbol, bool reset, map<int32_t, Category> c) {
+    if (reset) {
+      for (int32_t ch = 0; ch < catcode_table.size(); ch++) {
+        if (catcode_table[ch] != OTHER_CATEGORY) {
+          
+        }
+      }
     }
   }
 
@@ -549,6 +562,18 @@ struct Scanner {
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
     Category code = get_catcode(lexer->lookahead);
+
+    if (valid_symbols[_LUA_BEGIN]) {
+      lexer->result_symbol = _LUA_BEGIN;
+      lexer->mark_end(lexer);
+      return true;
+    }
+
+    if (valid_symbols[_LUA_END]) {
+      lexer->result_symbol = _LUA_END;
+      lexer->mark_end(lexer);
+      return true;
+    }
 
     // First look for simple symbols such as escape, comment, etc.
     for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {

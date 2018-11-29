@@ -46,6 +46,8 @@ module.exports = grammar({
     $._escape,
     $._ExplSyntaxOff_word,
     $._ExplSyntaxOn_word,
+    $._lua_begin,
+    $._lua_end,
     $._makeatletter_word,
     $._makeatother_word,
     $._non_letter_or_other,
@@ -103,6 +105,7 @@ module.exports = grammar({
       $.ExplSyntaxOn,
       $.glue_assign,
       $.glue_space,
+      $.luadirect,
       $.makeatletter,
       $.makeatother,
       $.newcommand,
@@ -991,6 +994,29 @@ module.exports = grammar({
     ),
 
     hyperref_cs: $ => cs($, 'hyperref'),
+
+    // luacode
+
+    luadirect: $ => cmd($,
+      $.luadirect_cs,
+      $._lua_begin,
+      $.text_group,
+      $._lua_end
+    ),
+
+    luadirect_cs: $ => cs($, 'luadirect'),
+
+    luaexec_cs: $ => cs($, 'luaexec'),
+
+    luacode_env_group: $ => group($, $.luacode_env_name),
+
+    luacode_env_name: $ => 'luacode',
+
+    luacode_star_env_group: $ => group($, $.luacode_star_env_name),
+
+    luacode_star_env_name: $ => 'luacode*',
+
+    // Common rules
 
     text_group: $ => group($, repeat($._text_mode)),
 
