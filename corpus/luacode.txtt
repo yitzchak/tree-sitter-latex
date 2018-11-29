@@ -1,12 +1,33 @@
-========================
-luadirect
-========================
-\luadirect{foo}
-------------------------
+=================
+luacode environment
+===================
+\begin{luacode}
+  texio.write_nl("Special chars: _ ^ & $ { } ~ # % working.\string\n"
+  .. "Only backslashes still need a bit of care.\string\n")
+  -- a lua comment: we could use \% below, too
+  tex.sprint("\\pi \\neq ", tostring(math.pi):gsub(’%.’, ’+’))
+  -- we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+\end{luacode}
+---------------------
 (document
-  (luadirect
-    (luadirect_cs)
-    (text_group
-      (begin_group)
-      (text)
-      (end_group))))
+  (luacode_env
+    (luacode_begin (begin_cs) (luacode_env_group (begin_group) (luacode_env_name) (end_group)))
+    (text)
+    (text_group (begin_group) (text) (end_group))
+    (text)
+    (cs)
+    (cs)
+    (text)
+    (cs)
+    (cs)
+    (text)
+    (cs)
+    (text)
+    (escaped)
+    (text)
+    (escaped)
+    (text)
+    (cs)
+    (text)
+    (luacode_end (end_cs) (luacode_env_group (begin_group) (luacode_env_name) (end_group)))))

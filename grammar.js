@@ -13,8 +13,10 @@ function begin_cmd ($) {
     : seq($.begin_cs, $.name_group)
 }
 
-function end_cmd ($, name_group) {
-  return seq($.end_cs, name_group || $.name_group)
+function end_cmd ($) {
+  return (arguments.length > 1)
+    ? seq.apply(null, [$.end_cs].concat(Array.prototype.slice.call(arguments, 1)))
+    : seq($.end_cs, $.name_group)
 }
 
 function group ($, contents) {
@@ -48,8 +50,10 @@ module.exports = grammar({
     $._escape,
     $._expl_begin,
     $._expl_end,
-    $._lua_begin,
     $._lua_end,
+    $._luacode_begin,
+    $._luadirect_begin,
+    $._luaexec_begin,
     $._non_letter_or_other,
     $._space,
     $._verb_line,
@@ -103,6 +107,8 @@ module.exports = grammar({
       $.glue_assign,
       $.glue_space,
       $.luadirect,
+      $.luaexec,
+      $.luacode_env,
       $.makeatletter,
       $.makeatother,
       $.newcommand,
@@ -997,14 +1003,37 @@ module.exports = grammar({
 
     luadirect: $ => cmd($,
       $.luadirect_cs,
-      $._lua_begin,
+      $._luadirect_begin,
       $.text_group,
       $._lua_end
     ),
 
     luadirect_cs: $ => cs($, 'luadirect'),
 
+    luaexec: $ => cmd($,
+      $.luaexec_cs,
+      $._luaexec_begin,
+      $.text_group,
+      $._lua_end
+    ),
+
     luaexec_cs: $ => cs($, 'luaexec'),
+
+    luacode_env: $ => seq(
+      $.luacode_begin,
+      repeat($._text_mode),
+      $.luacode_end
+    ),
+
+    luacode_begin: $ => begin_cmd($,
+      $.luacode_env_group,
+      $._luacode_begin
+    ),
+
+    luacode_end: $ => end_cmd($,
+      $.luacode_env_group,
+      $._lua_end
+    ),
 
     luacode_env_group: $ => group($, $.luacode_env_name),
 
