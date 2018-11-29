@@ -1142,6 +1142,10 @@
         {
           "type": "SYMBOL",
           "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_begin"
         }
       ]
     },
@@ -1153,8 +1157,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ProvidesExplClass_word"
+          "type": "STRING",
+          "value": "ProvidesExplClass"
         },
         {
           "type": "SYMBOL",
@@ -1184,6 +1188,10 @@
         {
           "type": "SYMBOL",
           "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_begin"
         }
       ]
     },
@@ -1195,8 +1203,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ProvidesExplFile_word"
+          "type": "STRING",
+          "value": "ProvidesExplFile"
         },
         {
           "type": "SYMBOL",
@@ -1226,6 +1234,10 @@
         {
           "type": "SYMBOL",
           "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_begin"
         }
       ]
     },
@@ -1237,8 +1249,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ProvidesExplPackage_word"
+          "type": "STRING",
+          "value": "ProvidesExplPackage"
         },
         {
           "type": "SYMBOL",
@@ -1374,6 +1386,10 @@
         {
           "type": "SYMBOL",
           "name": "makeatletter_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_at_begin"
         }
       ]
     },
@@ -1385,8 +1401,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_makeatletter_word"
+          "type": "STRING",
+          "value": "makeatletter"
         },
         {
           "type": "SYMBOL",
@@ -1400,6 +1416,10 @@
         {
           "type": "SYMBOL",
           "name": "makeatother_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_at_end"
         }
       ]
     },
@@ -1411,8 +1431,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_makeatother_word"
+          "type": "STRING",
+          "value": "makeatother"
         },
         {
           "type": "SYMBOL",
@@ -1426,6 +1446,10 @@
         {
           "type": "SYMBOL",
           "name": "ExplSyntaxOn_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_begin"
         }
       ]
     },
@@ -1437,8 +1461,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ExplSyntaxOn_word"
+          "type": "STRING",
+          "value": "ExplSyntaxOn"
         },
         {
           "type": "SYMBOL",
@@ -1452,6 +1476,10 @@
         {
           "type": "SYMBOL",
           "name": "ExplSyntaxOff_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_end"
         }
       ]
     },
@@ -1463,8 +1491,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ExplSyntaxOff_word"
+          "type": "STRING",
+          "value": "ExplSyntaxOff"
         },
         {
           "type": "SYMBOL",
@@ -4241,6 +4269,14 @@
   "externals": [
     {
       "type": "SYMBOL",
+      "name": "_at_begin"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_at_end"
+    },
+    {
+      "type": "SYMBOL",
       "name": "_cs_end"
     },
     {
@@ -4249,11 +4285,11 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_ExplSyntaxOff_word"
+      "name": "_expl_begin"
     },
     {
       "type": "SYMBOL",
-      "name": "_ExplSyntaxOn_word"
+      "name": "_expl_end"
     },
     {
       "type": "SYMBOL",
@@ -4265,27 +4301,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_makeatletter_word"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_makeatother_word"
-    },
-    {
-      "type": "SYMBOL",
       "name": "_non_letter_or_other"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_ProvidesExplClass_word"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_ProvidesExplFile_word"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_ProvidesExplPackage_word"
     },
     {
       "type": "SYMBOL",

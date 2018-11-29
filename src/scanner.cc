@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <list>
 #include <map>
 #include <vector>
 #include <bitset>
@@ -14,6 +15,7 @@ namespace {
 
 using std::any_of;
 using std::bitset;
+using std::list;
 using std::map;
 using std::memcpy;
 using std::pair;
@@ -21,18 +23,15 @@ using std::string;
 using std::vector;
 
 enum SymbolType {
+  _AT_BEGIN,
+  _AT_END,
   _CS_END,
   _ESCAPE,
-  _EXPLSYNTAXOFF_WORD,
-  _EXPLSYNTAXON_WORD,
+  _EXPL_BEGIN,
+  _EXPL_END,
   _LUA_BEGIN,
   _LUA_END,
-  _MAKEATLETTER_WORD,
-  _MAKEATOTHER_WORD,
   _NON_LETTER_OR_OTHER,
-  _PROVIDESEXPLCLASS_WORD,
-  _PROVIDESEXPLFILE_WORD,
-  _PROVIDESEXPLPACKAGE_WORD,
   _SPACE,
   _VERB_LINE,
   ACTIVE_CHAR,
@@ -89,6 +88,20 @@ struct SymbolDescription {
   }
 };
 
+enum BlockOperation {
+  BLOCK_SET,
+  BLOCK_PUSH,
+  BLOCK_POP
+};
+
+struct CatCodeBlock {
+  SymbolType begin;
+  SymbolType end;
+  bool reset;
+  BlockOperation operation;
+  map<int32_t, Category> catcodes;
+};
+
 struct Scanner {
   static const size_t MIN_CATCODE_TABLE_SIZE = 128;
   static const size_t MAX_CATCODE_TABLE_SIZE = 256;
@@ -126,22 +139,130 @@ struct Scanner {
     {ACTIVE_CHAR_FLAG,            ACTIVE_CHAR,          SINGLE_WIDTH}
   };
 
-  map<string, SymbolType> words = {
-    {"ExplSyntaxOff", _EXPLSYNTAXOFF_WORD},
-    {"ExplSyntaxOn", _EXPLSYNTAXON_WORD},
-    {"makeatletter", _MAKEATLETTER_WORD},
-    {"makeatother", _MAKEATOTHER_WORD},
-    {"ProvidesExplClass", _PROVIDESEXPLCLASS_WORD},
-    {"ProvidesExplFile", _PROVIDESEXPLFILE_WORD},
-    {"ProvidesExplPackage", _PROVIDESEXPLPACKAGE_WORD}
-  };
-
   map<string, SymbolType> comment_types = {
     {"arara:", ARARA_COMMENT},
     {"!Bib", BIB_COMMENT},
     {"!BIB", BIB_COMMENT},
     {"!TeX", MAGIC_COMMENT},
     {"!TEX", MAGIC_COMMENT}
+  };
+
+  list<CatCodeBlock> catcode_blocks = {
+    {
+      _AT_BEGIN,
+      _AT_BEGIN,
+      false,
+      BLOCK_SET,
+      {
+        {'@', LETTER_CATEGORY}
+      }
+    },
+    {
+      _AT_END,
+      _AT_END,
+      false,
+      BLOCK_SET,
+      {
+        {'@', OTHER_CATEGORY}
+      }
+    },
+    {
+      _EXPL_BEGIN,
+      _EXPL_END,
+      false,
+      BLOCK_PUSH,
+      {
+        {'\t', IGNORED_CATEGORY},
+        {' ',  IGNORED_CATEGORY},
+        {'"',  OTHER_CATEGORY},
+        {'&',  ALIGNMENT_TAB_CATEGORY},
+        {':',  LETTER_CATEGORY},
+        {'^',  SUPERSCRIPT_CATEGORY},
+        {'_',  LETTER_CATEGORY},
+        {'|',  OTHER_CATEGORY},
+        {'~',  SPACE_CATEGORY}
+      }
+    },
+    { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
+      _EXPL_END,
+      _EXPL_END,
+      false,
+      BLOCK_SET,
+      {
+        {'\t', SPACE_CATEGORY},
+        {' ',  SPACE_CATEGORY},
+        {'"',  OTHER_CATEGORY},
+        {'&',  ALIGNMENT_TAB_CATEGORY},
+        {':',  OTHER_CATEGORY},
+        {'^',  SUPERSCRIPT_CATEGORY},
+        {'_',  SUBSCRIPT_CATEGORY},
+        {'|',  OTHER_CATEGORY},
+        {'~',  ACTIVE_CHAR_CATEGORY}
+      }
+    },
+    {
+      _LUA_BEGIN,
+      _LUA_END,
+      true,
+      BLOCK_PUSH,
+      {
+        {'\\', ESCAPE_CATEGORY},
+        {'{', BEGIN_CATEGORY},
+        {'}', END_CATEGORY},
+        {'A', LETTER_CATEGORY},
+        {'B', LETTER_CATEGORY},
+        {'C', LETTER_CATEGORY},
+        {'D', LETTER_CATEGORY},
+        {'E', LETTER_CATEGORY},
+        {'F', LETTER_CATEGORY},
+        {'G', LETTER_CATEGORY},
+        {'H', LETTER_CATEGORY},
+        {'I', LETTER_CATEGORY},
+        {'J', LETTER_CATEGORY},
+        {'K', LETTER_CATEGORY},
+        {'L', LETTER_CATEGORY},
+        {'M', LETTER_CATEGORY},
+        {'N', LETTER_CATEGORY},
+        {'O', LETTER_CATEGORY},
+        {'P', LETTER_CATEGORY},
+        {'Q', LETTER_CATEGORY},
+        {'R', LETTER_CATEGORY},
+        {'S', LETTER_CATEGORY},
+        {'T', LETTER_CATEGORY},
+        {'U', LETTER_CATEGORY},
+        {'V', LETTER_CATEGORY},
+        {'W', LETTER_CATEGORY},
+        {'X', LETTER_CATEGORY},
+        {'Y', LETTER_CATEGORY},
+        {'Z', LETTER_CATEGORY},
+        {'a', LETTER_CATEGORY},
+        {'b', LETTER_CATEGORY},
+        {'c', LETTER_CATEGORY},
+        {'d', LETTER_CATEGORY},
+        {'e', LETTER_CATEGORY},
+        {'f', LETTER_CATEGORY},
+        {'g', LETTER_CATEGORY},
+        {'h', LETTER_CATEGORY},
+        {'i', LETTER_CATEGORY},
+        {'j', LETTER_CATEGORY},
+        {'k', LETTER_CATEGORY},
+        {'l', LETTER_CATEGORY},
+        {'m', LETTER_CATEGORY},
+        {'n', LETTER_CATEGORY},
+        {'o', LETTER_CATEGORY},
+        {'p', LETTER_CATEGORY},
+        {'q', LETTER_CATEGORY},
+        {'r', LETTER_CATEGORY},
+        {'s', LETTER_CATEGORY},
+        {'t', LETTER_CATEGORY},
+        {'u', LETTER_CATEGORY},
+        {'v', LETTER_CATEGORY},
+        {'w', LETTER_CATEGORY},
+        {'x', LETTER_CATEGORY},
+        {'y', LETTER_CATEGORY},
+        {'z', LETTER_CATEGORY},
+      }
+    }
   };
 
   int32_t start_delim = 0;
@@ -270,14 +391,35 @@ struct Scanner {
     }
   }
 
-  void set_catcodes(SymbolType symbol, bool reset, map<int32_t, Category> c) {
-    if (reset) {
+  CatCodeBlock load_catcode_block(CatCodeBlock block) {
+    CatCodeBlock previous;
+
+    previous.begin = block.end;
+    previous.end = block.end;
+    previous.reset = block.reset;
+    previous.operation = (block.operation == BLOCK_PUSH) ? BLOCK_POP : BLOCK_SET;
+
+    if (block.reset) {
+      previous.catcodes = overflow_catcodes;
+
       for (int32_t ch = 0; ch < catcode_table.size(); ch++) {
         if (catcode_table[ch] != OTHER_CATEGORY) {
-          
+          previous.catcodes[ch] = catcode_table[ch];
         }
       }
+
+      reset();
     }
+
+    for (auto it = block.catcodes.cbegin(); it != block.catcodes.cend(); it++) {
+      if (!block.reset) {
+        previous.catcodes[it->first] = get_catcode(it->first);
+      }
+
+      set_catcode(it->first, it->second);
+    }
+
+    return previous;
   }
 
   unsigned serialize(char *buffer) {
@@ -455,66 +597,6 @@ struct Scanner {
     return true;
   }
 
-  bool scan_word(TSLexer *lexer) {
-    string word;
-
-    // Keep advancing while there are letters available. Save the result for
-    // lookup in the word map.
-    while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
-      word += lexer->lookahead;
-      lexer->advance(lexer, false);
-    }
-
-    auto it = words.find(word);
-
-    // if the word is not found then let the internal scanner have the text.
-    if (it == words.end()) {
-      return false;
-    }
-
-    lexer->result_symbol = it->second;
-    lexer->mark_end(lexer);
-
-    // Look for a word that signifies a catcode change.
-    switch (lexer->result_symbol) {
-      case _EXPLSYNTAXOFF_WORD:
-        pop_catcode('\t');
-        pop_catcode(' ');
-        pop_catcode('"');
-        pop_catcode('&');
-        pop_catcode(':');
-        pop_catcode('^');
-        pop_catcode('_');
-        pop_catcode('|');
-        pop_catcode('~');
-        // pop_catcode('\n');
-        break;
-      case _EXPLSYNTAXON_WORD:
-      case _PROVIDESEXPLCLASS_WORD:
-      case _PROVIDESEXPLFILE_WORD:
-      case _PROVIDESEXPLPACKAGE_WORD:
-        push_catcode('\t', IGNORED_CATEGORY);
-        push_catcode(' ',  IGNORED_CATEGORY);
-        push_catcode('"',  OTHER_CATEGORY);
-        push_catcode('&',  ALIGNMENT_TAB_CATEGORY);
-        push_catcode(':',  LETTER_CATEGORY);
-        push_catcode('^',  SUPERSCRIPT_CATEGORY);
-        push_catcode('_',  LETTER_CATEGORY);
-        push_catcode('|',  OTHER_CATEGORY);
-        push_catcode('~',  SPACE_CATEGORY);
-        // set_catcode('\n', IGNORED_CATEGORY);
-        break;
-      case _MAKEATOTHER_WORD:
-        set_catcode('@', OTHER_CATEGORY);
-        break;
-      case _MAKEATLETTER_WORD:
-        set_catcode('@', LETTER_CATEGORY);
-        break;
-    }
-
-    return true;
-  }
-
   bool scan_comment(TSLexer *lexer) {
     bitset<16> comment_type_categories = ~(EOL_FLAG | SPACE_FLAG | IGNORED_FLAG),
       comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
@@ -563,16 +645,24 @@ struct Scanner {
   {
     Category code = get_catcode(lexer->lookahead);
 
-    if (valid_symbols[_LUA_BEGIN]) {
-      lexer->result_symbol = _LUA_BEGIN;
-      lexer->mark_end(lexer);
-      return true;
-    }
+    for (auto it = catcode_blocks.begin(); it != catcode_blocks.end(); it++) {
+      if (valid_symbols[it->begin]) {
+        lexer->result_symbol = it->begin;
+        lexer->mark_end(lexer);
 
-    if (valid_symbols[_LUA_END]) {
-      lexer->result_symbol = _LUA_END;
-      lexer->mark_end(lexer);
-      return true;
+        CatCodeBlock previous = load_catcode_block(*it);
+
+        switch (it->operation) {
+          case BLOCK_PUSH:
+            catcode_blocks.push_front(previous);
+            break;
+          case BLOCK_POP:
+            catcode_blocks.erase(it);
+            break;
+        }
+
+        return true;
+      }
     }
 
     // First look for simple symbols such as escape, comment, etc.
@@ -585,13 +675,6 @@ struct Scanner {
     // Look for comments.
     if (code == COMMENT_CATEGORY && valid_symbols[COMMENT]) {
       return scan_comment(lexer);
-    }
-
-    // Check for word symbols that follow an escape
-    if (code == LETTER_CATEGORY &&
-        any_of(words.begin(), words.end(),
-          [valid_symbols](pair<string, SymbolType> p){ return valid_symbols[p.second]; })) {
-      return scan_word(lexer);
     }
 
     // Look an inline verbatim delimiter and end the verbatim if one is
