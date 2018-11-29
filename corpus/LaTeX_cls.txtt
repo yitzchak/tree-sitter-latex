@@ -1,0 +1,299 @@
+===========================
+NeedsTeXFormat
+===========================
+\NeedsTeXFormat{LaTeX2e}
+---------------------------
+(document
+  (NeedsTeXFormat
+    (NeedsTeXFormat_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+===========================
+ProvidesPackage
+===========================
+\ProvidesPackage{foo}
+---------------------------
+(document
+  (ProvidesPackage
+    (ProvidesPackage_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+===========================
+ProvidesPackage with optional date
+===========================
+\ProvidesPackage{foo}[2000/01/01]
+---------------------------
+(document
+  (ProvidesPackage
+    (ProvidesPackage_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_brack_group (lbrack) (text) (rbrack))))
+
+===========================
+RequirePackage
+===========================
+\RequirePackage{foo}
+---------------------------
+(document
+  (use
+    (use_cs)
+    (name_group (begin_group) (name) (end_group))))
+
+===========================
+RequirePackage with options
+===========================
+\RequirePackage[bar]{foo}
+---------------------------
+(document
+  (use
+    (use_cs)
+    (text_brack_group (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))))
+
+===========================
+RequirePackage with date
+===========================
+\RequirePackage{foo}[2000/01/01]
+---------------------------
+(document
+  (use
+    (use_cs)
+    (name_group (begin_group) (name) (end_group))
+    (text_brack_group (lbrack) (text) (rbrack))))
+
+===========================
+RequirePackage with options and date
+===========================
+\RequirePackage[bar]{foo}[2000/01/01]
+---------------------------
+(document
+  (use
+    (use_cs)
+    (text_brack_group (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))
+    (text_brack_group (lbrack) (text) (rbrack))))
+
+===========================
+DeclareOption
+===========================
+\DeclareOption{foo}{bar}
+---------------------------
+(document
+  (DeclareOption
+    (DeclareOption_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+===========================
+DeclareOption*
+===========================
+\DeclareOption*{bar}
+---------------------------
+(document
+  (DeclareOption
+    (DeclareOption_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+===========================
+PassOptionToClass
+===========================
+\PassOptionToClass{foo}{bar}
+---------------------------
+(document
+  (PassOptionTo
+    (PassOptionTo_cs)
+    (text_group (begin_group) (text) (end_group))
+    (name_group (begin_group) (name) (end_group))))
+
+===========================
+PassOptionToPackage
+===========================
+\PassOptionToPackage{foo}{bar}
+---------------------------
+(document
+  (PassOptionTo
+    (PassOptionTo_cs)
+    (text_group (begin_group) (text) (end_group))
+    (name_group (begin_group) (name) (end_group))))
+
+============================
+AtEndOfClass
+============================
+\AtEndOfClass{foo}
+----------------------------
+(document
+  (At
+    (At_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+AtEndOfPackage
+============================
+\AtEndOfPackage{foo}
+----------------------------
+(document
+  (At
+    (At_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+AtBeginDocument
+============================
+\AtBeginDocument{foo}
+----------------------------
+(document
+  (At
+    (At_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+AtEndDocument
+============================
+\AtEndDocument{foo}
+----------------------------
+(document
+  (At
+    (At_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+AtBeginDvi
+============================
+\AtBeginDvi{foo}
+----------------------------
+(document
+  (At
+    (At_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+ProcessOptions
+============================
+\ProcessOptions
+----------------------------
+(document
+  (ProcessOptions
+    (ProcessOptions_cs)))
+
+============================
+ProcessOptions*
+============================
+\ProcessOptions*
+----------------------------
+(document
+  (ProcessOptions
+    (ProcessOptions_cs)))
+
+============================
+ExecuteOptions
+============================
+\ExecuteOptions{foo}
+----------------------------
+(document
+  (ExecuteOptions
+    (ExecuteOptions_cs)
+    (name_group (begin_group) (name) (end_group))))
+
+============================
+IfFileExists
+============================
+\IfFileExists{foo}{bar}{baz}
+----------------------------
+(document
+  (IfFileExists
+    (IfFileExists_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+InputIfFileExists
+============================
+\InputIfFileExists{foo}{bar}{baz}
+----------------------------
+(document
+  (IfFileExists
+    (IfFileExists_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+ClassError
+============================
+\ClassError{foo}{bar}{baz}
+----------------------------
+(document
+  (Error
+    (Error_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+PackageError
+============================
+\PackageError{foo}{bar}{baz}
+----------------------------
+(document
+  (Error
+    (Error_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+ClassWarning
+============================
+\ClassWarning{foo}{bar}
+----------------------------
+(document
+  (WarningInfo
+    (WarningInfo_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+ClassWarningNoLine
+============================
+\ClassWarningNoLine{foo}{bar}
+----------------------------
+(document
+  (WarningInfo
+    (WarningInfo_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+PackageInfo
+============================
+\PackageInfo{foo}{bar}
+----------------------------
+(document
+  (WarningInfo
+    (WarningInfo_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+============================
+ensuremath
+============================
+\ensuremath{foo}
+---------------------------
+(document
+  (ensuremath
+    (ensuremath_cs)
+    (math_group (begin_group) (text) (end_group))))
+
+============================
+ensuremath inside inline math
+============================
+\(\ensuremath{foo}\)
+---------------------------
+(document
+  (latex_inline_math
+    (begin_inline_math)
+    (ensuremath
+      (ensuremath_cs)
+      (math_group (begin_group) (text) (end_group)))
+    (end_inline_math)))

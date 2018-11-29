@@ -4,8 +4,8 @@ hbox
 \hbox{foo}
 ----------------------
 (document
-  (makebox
-    (makebox_cs)
+  (mkbox
+    (mkbox_cs)
     (text_group (begin_group) (text) (end_group))))
 
 =======================
@@ -14,8 +14,8 @@ hbox with spread
 \hbox spread 10em{foo}
 ----------------------
 (document
-  (makebox
-    (makebox_cs)
+  (mkbox
+    (mkbox_cs)
     (dimension (fixed) (unit))
     (text_group (begin_group) (text) (end_group))))
 
@@ -25,8 +25,8 @@ hbox with to
 \hbox to 10em{foo}
 ----------------------
 (document
-  (makebox
-    (makebox_cs)
+  (mkbox
+    (mkbox_cs)
     (dimension (fixed) (unit))
     (text_group (begin_group) (text) (end_group))))
 
@@ -39,8 +39,8 @@ setbox
   (setbox
     (setbox_cs)
     (decimal)
-    (makebox
-      (makebox_cs)
+    (mkbox
+      (mkbox_cs)
       (dimension (fixed) (unit))
       (text_group (begin_group) (text) (end_group)))))
 

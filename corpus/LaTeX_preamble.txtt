@@ -6,7 +6,7 @@ documentclass
 (document
   (documentclass
     (documentclass_cs)
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (name_group (begin_group) (name) (end_group))))
 
 =============
@@ -17,9 +17,9 @@ documentclass with date
 (document
   (documentclass
     (documentclass_cs)
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (name_group (begin_group) (name) (end_group))
-    (brack_group_text (lbrack) (text) (rbrack))))
+    (text_brack_group (lbrack) (text) (rbrack))))
 
 =============
 documentstyle
@@ -29,7 +29,7 @@ documentstyle
 (document
   (documentstyle
     (documentstyle_cs)
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (name_group (begin_group) (name) (end_group))))
 
 ======================
@@ -38,9 +38,9 @@ usepackage
 \usepackage[foo]{bar}
 -------------------
 (document
-  (usepackage
-    (usepackage_cs)
-    (brack_group_text (lbrack) (text) (rbrack))
+  (use
+    (use_cs)
+    (text_brack_group (lbrack) (text) (rbrack))
     (name_group (begin_group) (name) (end_group))))
 
 =============
@@ -49,8 +49,8 @@ usepackage with date
 \usepackage[foo]{bar}[2000/01/01]
 ----------------
 (document
-  (usepackage
-    (usepackage_cs)
-    (brack_group_text (lbrack) (text) (rbrack))
+  (use
+    (use_cs)
+    (text_brack_group (lbrack) (text) (rbrack))
     (name_group (begin_group) (name) (end_group))
-    (brack_group_text (lbrack) (text) (rbrack))))
+    (text_brack_group (lbrack) (text) (rbrack))))

@@ -1,0 +1,206 @@
+====================
+makebox
+====================
+\makebox{foo}
+-------------------
+(document
+  (makebox
+    (makebox_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+makebox with width
+====================
+\makebox[1in]{foo}
+-------------------
+(document
+  (makebox
+    (makebox_cs)
+    (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+makebox with width and position
+====================
+\makebox[1in][s]{foo}
+-------------------
+(document
+  (makebox
+    (makebox_cs)
+    (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+framebox
+====================
+\framebox{foo}
+-------------------
+(document
+  (makebox
+    (makebox_cs)
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+savebox
+====================
+\savebox{\foo}{bar}
+-------------------
+(document
+  (savebox
+    (savebox_cs)
+    (text_group (begin_group) (cs) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+savebox with width
+====================
+\savebox{\foo}[2in]{bar}
+-------------------
+(document
+  (savebox
+    (savebox_cs)
+    (text_group (begin_group) (cs) (end_group))
+    (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+savebox with width and position
+====================
+\savebox{\foo}[2in][c]{bar}
+-------------------
+(document
+  (savebox
+    (savebox_cs)
+    (text_group (begin_group) (cs) (end_group))
+    (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+parbox
+====================
+\parbox{1in}{foo}
+-------------------
+(document
+  (parbox
+    (parbox_cs)
+    (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+parbox with position
+====================
+\parbox[t]{1in}{foo}
+-------------------
+(document
+  (parbox
+    (parbox_cs)
+    (text_brack_group (lbrack) (text) (rbrack))
+    (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+parbox with position and height
+====================
+\parbox[t][24pt]{1in}{foo}
+-------------------
+(document
+  (parbox
+    (parbox_cs)
+    (text_brack_group (lbrack) (text) (rbrack))
+    (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+====================
+parbox with position and height and inner position
+====================
+\parbox[t][24pt][c]{1in}{foo}
+-------------------
+(document
+  (parbox
+    (parbox_cs)
+    (text_brack_group (lbrack) (text) (rbrack))
+    (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
+    (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group))
+    (text_group (begin_group) (text) (end_group))))
+
+======================
+minipage
+======================
+\begin{minipage}{2in}
+foo
+\end{minipage}
+----------------------
+(document
+  (minipage_env
+    (minipage_begin
+      (begin_cs)
+      (minipage_env_group (begin_group) (minipage_env_name) (end_group))
+      (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
+    (text)
+    (minipage_end
+      (end_cs)
+      (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
+
+======================
+minipage with position
+======================
+\begin{minipage}[b]{2in}
+foo
+\end{minipage}
+----------------------
+(document
+  (minipage_env
+    (minipage_begin
+      (begin_cs)
+      (minipage_env_group (begin_group) (minipage_env_name) (end_group))
+      (text_brack_group (lbrack) (text) (rbrack))
+      (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
+    (text)
+    (minipage_end
+      (end_cs)
+      (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
+
+======================
+minipage with position and height
+======================
+\begin{minipage}[b][2in]{2in}
+foo
+\end{minipage}
+----------------------
+(document
+  (minipage_env
+    (minipage_begin
+      (begin_cs)
+      (minipage_env_group (begin_group) (minipage_env_name) (end_group))
+      (text_brack_group (lbrack) (text) (rbrack))
+      (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+      (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
+    (text)
+    (minipage_end
+      (end_cs)
+      (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
+
+======================
+minipage with position and height and inner position
+======================
+\begin{minipage}[b][2in][t]{2in}
+foo
+\end{minipage}
+----------------------
+(document
+  (minipage_env
+    (minipage_begin
+      (begin_cs)
+      (minipage_env_group (begin_group) (minipage_env_name) (end_group))
+      (text_brack_group (lbrack) (text) (rbrack))
+      (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+      (text_brack_group (lbrack) (text) (rbrack))
+      (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
+    (text)
+    (minipage_end
+      (end_cs)
+      (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))

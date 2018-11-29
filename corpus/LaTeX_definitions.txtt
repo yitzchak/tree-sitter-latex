@@ -18,7 +18,7 @@ newcommand with number of arguments
   (newcommand
     (newcommand_cs)
     (text_group (begin_group) (cs) (end_group))
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group))))
 
 ======================
@@ -30,8 +30,8 @@ newcommand with number of arguments and default value
   (newcommand
     (newcommand_cs)
     (text_group (begin_group) (cs) (end_group))
-    (brack_group_text (lbrack) (text) (rbrack))
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group))))
 
 ======================
@@ -110,7 +110,7 @@ newenvironment with number of arguments
   (newenvironment
     (newenvironment_cs)
     (text_group (begin_group) (text) (end_group))
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -123,8 +123,8 @@ newenvironment with number of arguments and default value
   (newenvironment
     (newenvironment_cs)
     (text_group (begin_group) (text) (end_group))
-    (brack_group_text (lbrack) (text) (rbrack))
-    (brack_group_text (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
+    (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
