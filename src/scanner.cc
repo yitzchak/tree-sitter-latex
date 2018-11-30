@@ -326,7 +326,9 @@ struct Scanner {
       OP_SET,
       {
         true,
-        {{'@', '@', LETTER_CATEGORY}}
+        {
+          {'@', '@', LETTER_CATEGORY}
+        }
       }
     },
     {
@@ -335,7 +337,9 @@ struct Scanner {
       OP_SET,
       {
         true,
-        {{'@', '@', OTHER_CATEGORY}}
+        {
+          {'@', '@', OTHER_CATEGORY}
+        }
       }
     },
     {
@@ -384,14 +388,13 @@ struct Scanner {
         false,
         {
           {'\\', '\\', ESCAPE_CATEGORY},
-          {'{', '{', BEGIN_CATEGORY},
-          {'}', '}', END_CATEGORY},
-          // {'#', PARAMETER_CATEGORY},
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
           {'\n', '\n', EOL_CATEGORY},
-          {'A', 'Z', LETTER_CATEGORY},
-          {'a', 'z', LETTER_CATEGORY},
-          {'~', '~', ACTIVE_CHAR_CATEGORY},
-          {'%', '%', COMMENT_CATEGORY}
+          {'A',  'Z',  LETTER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY},
+          {'~',  '~',  ACTIVE_CHAR_CATEGORY},
+          {'%',  '%',  COMMENT_CATEGORY}
         }
       }
     },
@@ -403,12 +406,12 @@ struct Scanner {
         false,
         {
           {'\\', '\\', ESCAPE_CATEGORY},
-          {'{', '{', BEGIN_CATEGORY},
-          {'}', '}', END_CATEGORY},
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
           {'\n', '\n', EOL_CATEGORY},
-          {'A', 'Z', LETTER_CATEGORY},
-          {'a', 'z', LETTER_CATEGORY},
-          {'%', '%', COMMENT_CATEGORY}
+          {'A',  'Z',  LETTER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY},
+          {'%',  '%',  COMMENT_CATEGORY}
         }
       }
     },
@@ -420,10 +423,10 @@ struct Scanner {
         false,
         {
           {'\\', '\\', ESCAPE_CATEGORY},
-          {'{', '{', BEGIN_CATEGORY},
-          {'}', '}', END_CATEGORY},
-          {'A', 'Z', LETTER_CATEGORY},
-          {'a', 'z', LETTER_CATEGORY}
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
+          {'A',  'Z',  LETTER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY}
         }
       }
     }
