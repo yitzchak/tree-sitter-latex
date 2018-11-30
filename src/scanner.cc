@@ -422,8 +422,8 @@ struct Scanner {
       {
         false,
         {
-          {'\\', '\\', ESCAPE_CATEGORY},
           {'{',  '{',  BEGIN_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
           {'}',  '}',  END_CATEGORY},
           {'A',  'Z',  LETTER_CATEGORY},
           {'a',  'z',  LETTER_CATEGORY}
