@@ -81,6 +81,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "luacodestar_env"
+        },
+        {
+          "type": "SYMBOL",
           "name": "makeatletter"
         },
         {
@@ -1048,7 +1052,7 @@
     },
     "verbatim_env_name": {
       "type": "PATTERN",
-      "value": "verbatim|[BL]?Verbatim\\*?|lstlisting|minted|alltt|filecontents\\*?|luacode\\*"
+      "value": "verbatim|[BL]?Verbatim\\*?|lstlisting|minted|alltt|filecontents\\*?"
     },
     "begin": {
       "type": "SEQ",
@@ -4052,6 +4056,89 @@
     "luacode_env_name": {
       "type": "STRING",
       "value": "luacode"
+    },
+    "luacodestar_env": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_begin"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "lua_text"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_end"
+        }
+      ]
+    },
+    "luacodestar_begin": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_env_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "luacodestar_end": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "end_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_env_group"
+        }
+      ]
+    },
+    "lua_text": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_verb_line"
+      }
+    },
+    "luacodestar_env_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_env_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "luacodestar_env_name": {
+      "type": "STRING",
+      "value": "luacode*"
     },
     "text_group": {
       "type": "SEQ",

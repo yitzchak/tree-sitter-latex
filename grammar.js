@@ -110,6 +110,7 @@ module.exports = grammar({
       $.luadirect,
       $.luaexec,
       $.luacode_env,
+      $.luacodestar_env,
       $.makeatletter,
       $.makeatother,
       $.newcommand,
@@ -342,7 +343,7 @@ module.exports = grammar({
 
     verbatim_env_group: $ => group($, $.verbatim_env_name),
 
-    verbatim_env_name: $ => /verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt|filecontents\*?|luacode\*/,
+    verbatim_env_name: $ => /verbatim|[BL]?Verbatim\*?|lstlisting|minted|alltt|filecontents\*?/,
 
     begin: $ => begin_cmd($),
 
@@ -1039,6 +1040,27 @@ module.exports = grammar({
     luacode_env_group: $ => group($, $.luacode_env_name),
 
     luacode_env_name: $ => 'luacode',
+
+    luacodestar_env: $ => seq(
+      $.luacodestar_begin,
+      optional($.lua_text),
+      $.luacodestar_end
+    ),
+
+    luacodestar_begin: $ => begin_cmd($,
+      $.luacodestar_env_group,
+      $.eol
+    ),
+
+    luacodestar_end: $ => end_cmd($,
+      $.luacodestar_env_group
+    ),
+
+    lua_text: $ => repeat1($._verb_line),
+
+    luacodestar_env_group: $ => group($, $.luacodestar_env_name),
+
+    luacodestar_env_name: $ => 'luacode*',
 
     // Common rules
 

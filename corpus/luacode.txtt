@@ -38,7 +38,7 @@ luadirect
       (text (comment))
       (cs)
       (text)
-      (end_group)))) 
+      (end_group))))
 
 =======================
 luaexec
@@ -112,3 +112,23 @@ luacode environment
     (cs)
     (text)
     (luacode_end (end_cs) (luacode_env_group (begin_group) (luacode_env_name) (end_group)))))
+
+
+==========================
+luacode* environment
+==========================
+\begin{luacode*}
+  texio.write_nl("Special chars: _ ^ & $ { } ~ # % \\ working.\n")
+  -- a lua comment: the backlash is doubled as in normal Lua code
+  tex.sprint("\\pi \\neq ", tostring(math.pi):gsub(’%.’, ’+’))
+  -- no way to use a TeX variable here
+\end{luacode*}
+-----------------------------
+(document
+  (luacodestar_env
+    (luacodestar_begin
+      (begin_cs)
+      (luacodestar_env_group (begin_group) (luacodestar_env_name) (end_group)) (eol))
+    (lua_text)
+    (luacodestar_end (end_cs)
+      (luacodestar_env_group (begin_group) (luacodestar_env_name) (end_group)))))
