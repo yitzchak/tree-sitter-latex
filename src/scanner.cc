@@ -402,7 +402,6 @@ struct Scanner {
   int32_t start_delim = 0;
   vector<Category> catcode_table;
   map<int32_t, Category> overflow_catcodes;
-  map<int32_t, Category> saved_catcodes;
   map<SymbolType, map<int32_t, Category>> s_catcodes;
 
   Scanner() {}
@@ -411,7 +410,7 @@ struct Scanner {
     start_delim = 0;
     catcode_table.assign(MIN_CATCODE_TABLE_SIZE, OTHER_CATEGORY);
     overflow_catcodes.clear();
-    saved_catcodes.clear();
+    // catcode_blocks.remove_if([](CatCodeBlock b){ return b.operation == BLOCK_POP; });
   }
 
   void initialize() {
@@ -511,20 +510,6 @@ struct Scanner {
     }
   }
 
-  void push_catcode(int32_t key, Category code) {
-    saved_catcodes[key] = get_catcode(key);
-    set_catcode(key, code);
-  }
-
-  void pop_catcode(int32_t key) {
-    auto it = saved_catcodes.find(key);
-
-    if (it != saved_catcodes.end()) {
-      set_catcode(key, it->second);
-      saved_catcodes.erase(key);
-    }
-  }
-
   CatCodeBlock load_catcode_block(CatCodeBlock block) {
     CatCodeBlock previous;
 
@@ -557,6 +542,21 @@ struct Scanner {
     return previous;
   }
 
+  unsigned serialize_catcode_map (char *buffer, const map<int32_t, Category>& catcodes) {
+    unsigned num_serialized = 0, length = 0;
+
+    for (auto it = catcodes.cbegin(); it != catcodes.cend(); ++it) {
+      memcpy(&buffer[length], &it->first, sizeof(int32_t)); // character
+      length += sizeof(int32_t);
+      buffer[length++] = static_cast<char>(it->second); // catcode
+      num_serialized++;
+    }
+
+    memcpy(&buffer[sizeof(start_delim)], &num_serialized, sizeof(num_serialized));
+
+    return length;
+  }
+
   unsigned serialize(char *buffer) {
     const size_t ch_size = sizeof(int32_t);
 
@@ -586,22 +586,6 @@ struct Scanner {
     }
 
     memcpy(&buffer[sizeof(start_delim)], &num_serialized, sizeof(num_serialized));
-
-    // Next store the saved_catcodes map as [char, char] pairs
-    unsigned saved_cat_count_pos = length;
-    length += sizeof(saved_cat_count_pos);
-
-    num_serialized = 0;
-
-    for (auto it = saved_catcodes.begin(); it != saved_catcodes.end(); ++it) {
-      memcpy(&buffer[length], &it->first, ch_size); // character
-      length += ch_size;
-      buffer[length++] = static_cast<char>(it->second);
-      num_serialized++;
-    }
-
-    num_serialized = saved_catcodes.size();
-    memcpy(&buffer[saved_cat_count_pos], &num_serialized, sizeof(num_serialized));
 
     return length;
   }
@@ -633,22 +617,6 @@ struct Scanner {
       i += ch_size;
       Category cat = static_cast<Category>(buffer[i++]);
       set_catcode(character, cat);
-      set += 1;
-    }
-
-    // Retrieve the saved_catcode pairs
-    saved_catcodes.clear();
-
-    memcpy(&num_serialized, &buffer[i], sizeof(num_serialized));
-
-    i += sizeof(num_serialized);
-    set = 0;
-    while (set < num_serialized) {
-      int32_t character;
-      memcpy(&character, &buffer[i], ch_size);
-      i += ch_size;
-      Category cat = static_cast<Category>(buffer[i++]);
-      saved_catcodes[character] = cat;
       set += 1;
     }
   }
