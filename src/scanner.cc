@@ -90,6 +90,135 @@ struct SymbolDescription {
   }
 };
 
+struct CatCodeTable {
+  static const size_t TABLE_SIZE = 256;
+
+  bool partial;
+  vector<Category> table;
+  map<int32_t, Category> overflow;
+
+  CatCodeTable (bool _partial = false) :
+      partial(_partial),
+      table(_partial ? 0 : TABLE_SIZE) {}
+
+  CatCodeTable (bool _partial, std::initializer_list<std::pair<const int32_t, Category>> init) :
+      partial(_partial),
+      table(_partial ? 0 : TABLE_SIZE) {
+    for (auto it = init.begin(); it != init.end(); it++) {
+      set_catcode(it->first, it->second);
+    }
+  }
+
+  void set_catcode(const int32_t key, Category cat) {
+    if (key > -1 && key < table.size()) {
+      table[key] = cat;
+    } else {
+      overflow[key] = cat;
+    }
+  }
+
+  Category get_catcode(const int32_t key) const {
+    if (key > -1 && key < table.size()) {
+      return table[key];
+    }
+
+    auto it = overflow.find(key);
+
+    return (it == overflow.end()) ?
+      OTHER_CATEGORY :
+      it->second;
+  }
+
+  void load(const CatCodeTable& other, CatCodeTable& copy) {
+    if (other.partial) {
+      copy.partial = true;
+
+      // Load the values from the other table
+      for (int32_t ch = 0; ch < other.table.size(); ch++) {
+        // Save the current value
+        copy.set_catcode(ch, get_catcode(ch));
+        // Set the new value
+        set_catcode(ch, other.table[ch]);
+      }
+
+      // Load the values from the other overflow
+      for (auto it = other.overflow.begin(); it != other.overflow.end(); it++) {
+        // Save the current value
+        copy.set_catcode(it->first, get_catcode(it->first));
+        // Set the new value
+        set_catcode(it->first, it->second);
+      }
+    } else {
+      // Save the current table
+      copy.partial = partial;
+      copy.table = table;
+      copy.overflow = overflow;
+      // Load the new table
+      table = other.table;
+      overflow = other.overflow;
+    }
+  }
+
+  unsigned serialize(char *buffer) {
+    unsigned length = 0, num_serialized = table.size();
+
+    buffer[length++] = static_cast<char>(partial);
+
+    memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
+    length += sizeof(num_serialized);
+
+    for (auto it = table.begin(); it != table.end(); it++) {
+      buffer[length++] = static_cast<char>(*it);
+    }
+
+    num_serialized = overflow.size();
+    memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
+    length += sizeof(num_serialized);
+
+    for (auto it = overflow.cbegin(); it != overflow.cend(); it++) {
+      memcpy(&buffer[length], &it->first, sizeof(int32_t)); // character
+      length += sizeof(int32_t);
+      buffer[length++] = static_cast<char>(it->second); // catcode
+    }
+
+    return length;
+  }
+
+  void deserialize(const char *buffer, unsigned length) {
+    if (length == 0) {
+      partial = false;
+      table.assign(TABLE_SIZE, OTHER_CATEGORY);
+      overflow.clear();
+      return;
+    }
+
+    table.clear();
+    overflow.clear();
+
+    unsigned pos = 0;
+
+    partial = static_cast<bool>(buffer[pos++]);
+
+    unsigned num_serialized;
+    memcpy(&num_serialized, &buffer[length], sizeof(num_serialized));
+    pos += sizeof(num_serialized);
+
+    for (unsigned i = 0; i < num_serialized; i++) {
+      table.push_back(static_cast<Category>(buffer[pos++]));
+    }
+
+    memcpy(&num_serialized, &buffer[length], sizeof(num_serialized));
+    pos += sizeof(num_serialized);
+
+    for (unsigned i = 0; i < num_serialized; i++) {
+      int32_t character;
+      memcpy(&character, &buffer[pos], sizeof(int32_t));
+      pos += sizeof(int32_t);
+      overflow[character] = static_cast<Category>(buffer[pos++]);
+    }
+  }
+};
+
 enum BlockOperation {
   BLOCK_SET,
   BLOCK_PUSH,
@@ -102,6 +231,13 @@ struct CatCodeBlock {
   bool reset;
   BlockOperation operation;
   map<int32_t, Category> catcodes;
+};
+
+struct CatCodeTableOp {
+  SymbolType begin;
+  SymbolType end;
+  BlockOperation operation;
+  CatCodeTable table;
 };
 
 struct Scanner {
@@ -147,6 +283,266 @@ struct Scanner {
     {"!BIB", BIB_COMMENT},
     {"!TeX", MAGIC_COMMENT},
     {"!TEX", MAGIC_COMMENT}
+  };
+
+  list<CatCodeTableOp> table_ops = {
+    {
+      _AT_LETTER,
+      _AT_LETTER,
+      BLOCK_SET,
+      {
+        true,
+        {{'@', LETTER_CATEGORY}}
+      }
+    },
+    {
+      _AT_OTHER,
+      _AT_OTHER,
+      BLOCK_SET,
+      {
+        true,
+        {{'@', OTHER_CATEGORY}}
+      }
+    },
+    {
+      _EXPL_BEGIN,
+      _EXPL_END,
+      BLOCK_PUSH,
+      {
+        true,
+        {
+          {'\t', IGNORED_CATEGORY},
+          {' ',  IGNORED_CATEGORY},
+          {'"',  OTHER_CATEGORY},
+          {'&',  ALIGNMENT_TAB_CATEGORY},
+          {':',  LETTER_CATEGORY},
+          {'^',  SUPERSCRIPT_CATEGORY},
+          {'_',  LETTER_CATEGORY},
+          {'|',  OTHER_CATEGORY},
+          {'~',  SPACE_CATEGORY}
+        }
+      }
+    },
+    { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
+      _EXPL_END,
+      _EXPL_END,
+      BLOCK_SET,
+      {
+        true,
+        {
+          {'\t', SPACE_CATEGORY},
+          {' ',  SPACE_CATEGORY},
+          {'"',  OTHER_CATEGORY},
+          {'&',  ALIGNMENT_TAB_CATEGORY},
+          {':',  OTHER_CATEGORY},
+          {'^',  SUPERSCRIPT_CATEGORY},
+          {'_',  SUBSCRIPT_CATEGORY},
+          {'|',  OTHER_CATEGORY},
+          {'~',  ACTIVE_CHAR_CATEGORY}
+        }
+      }
+    },
+    { // \luadirect catcode table
+      _LUADIRECT_BEGIN,
+      _LUA_END,
+      BLOCK_PUSH,
+      {
+        false,
+        {
+          {'\\', ESCAPE_CATEGORY},
+          {'{', BEGIN_CATEGORY},
+          {'}', END_CATEGORY},
+          // {'#', PARAMETER_CATEGORY},
+          {'\n', EOL_CATEGORY},
+          {'A', LETTER_CATEGORY},
+          {'B', LETTER_CATEGORY},
+          {'C', LETTER_CATEGORY},
+          {'D', LETTER_CATEGORY},
+          {'E', LETTER_CATEGORY},
+          {'F', LETTER_CATEGORY},
+          {'G', LETTER_CATEGORY},
+          {'H', LETTER_CATEGORY},
+          {'I', LETTER_CATEGORY},
+          {'J', LETTER_CATEGORY},
+          {'K', LETTER_CATEGORY},
+          {'L', LETTER_CATEGORY},
+          {'M', LETTER_CATEGORY},
+          {'N', LETTER_CATEGORY},
+          {'O', LETTER_CATEGORY},
+          {'P', LETTER_CATEGORY},
+          {'Q', LETTER_CATEGORY},
+          {'R', LETTER_CATEGORY},
+          {'S', LETTER_CATEGORY},
+          {'T', LETTER_CATEGORY},
+          {'U', LETTER_CATEGORY},
+          {'V', LETTER_CATEGORY},
+          {'W', LETTER_CATEGORY},
+          {'X', LETTER_CATEGORY},
+          {'Y', LETTER_CATEGORY},
+          {'Z', LETTER_CATEGORY},
+          {'a', LETTER_CATEGORY},
+          {'b', LETTER_CATEGORY},
+          {'c', LETTER_CATEGORY},
+          {'d', LETTER_CATEGORY},
+          {'e', LETTER_CATEGORY},
+          {'f', LETTER_CATEGORY},
+          {'g', LETTER_CATEGORY},
+          {'h', LETTER_CATEGORY},
+          {'i', LETTER_CATEGORY},
+          {'j', LETTER_CATEGORY},
+          {'k', LETTER_CATEGORY},
+          {'l', LETTER_CATEGORY},
+          {'m', LETTER_CATEGORY},
+          {'n', LETTER_CATEGORY},
+          {'o', LETTER_CATEGORY},
+          {'p', LETTER_CATEGORY},
+          {'q', LETTER_CATEGORY},
+          {'r', LETTER_CATEGORY},
+          {'s', LETTER_CATEGORY},
+          {'t', LETTER_CATEGORY},
+          {'u', LETTER_CATEGORY},
+          {'v', LETTER_CATEGORY},
+          {'w', LETTER_CATEGORY},
+          {'x', LETTER_CATEGORY},
+          {'y', LETTER_CATEGORY},
+          {'z', LETTER_CATEGORY},
+          {'~', ACTIVE_CHAR_CATEGORY},
+          {'%', COMMENT_CATEGORY}
+        }
+      }
+    },
+    { // luaexec catcode table
+      _LUAEXEC_BEGIN,
+      _LUA_END,
+      BLOCK_PUSH,
+      {
+        false,
+        {
+          {'\\', ESCAPE_CATEGORY},
+          {'{', BEGIN_CATEGORY},
+          {'}', END_CATEGORY},
+          {'\n', EOL_CATEGORY},
+          {'A', LETTER_CATEGORY},
+          {'B', LETTER_CATEGORY},
+          {'C', LETTER_CATEGORY},
+          {'D', LETTER_CATEGORY},
+          {'E', LETTER_CATEGORY},
+          {'F', LETTER_CATEGORY},
+          {'G', LETTER_CATEGORY},
+          {'H', LETTER_CATEGORY},
+          {'I', LETTER_CATEGORY},
+          {'J', LETTER_CATEGORY},
+          {'K', LETTER_CATEGORY},
+          {'L', LETTER_CATEGORY},
+          {'M', LETTER_CATEGORY},
+          {'N', LETTER_CATEGORY},
+          {'O', LETTER_CATEGORY},
+          {'P', LETTER_CATEGORY},
+          {'Q', LETTER_CATEGORY},
+          {'R', LETTER_CATEGORY},
+          {'S', LETTER_CATEGORY},
+          {'T', LETTER_CATEGORY},
+          {'U', LETTER_CATEGORY},
+          {'V', LETTER_CATEGORY},
+          {'W', LETTER_CATEGORY},
+          {'X', LETTER_CATEGORY},
+          {'Y', LETTER_CATEGORY},
+          {'Z', LETTER_CATEGORY},
+          {'a', LETTER_CATEGORY},
+          {'b', LETTER_CATEGORY},
+          {'c', LETTER_CATEGORY},
+          {'d', LETTER_CATEGORY},
+          {'e', LETTER_CATEGORY},
+          {'f', LETTER_CATEGORY},
+          {'g', LETTER_CATEGORY},
+          {'h', LETTER_CATEGORY},
+          {'i', LETTER_CATEGORY},
+          {'j', LETTER_CATEGORY},
+          {'k', LETTER_CATEGORY},
+          {'l', LETTER_CATEGORY},
+          {'m', LETTER_CATEGORY},
+          {'n', LETTER_CATEGORY},
+          {'o', LETTER_CATEGORY},
+          {'p', LETTER_CATEGORY},
+          {'q', LETTER_CATEGORY},
+          {'r', LETTER_CATEGORY},
+          {'s', LETTER_CATEGORY},
+          {'t', LETTER_CATEGORY},
+          {'u', LETTER_CATEGORY},
+          {'v', LETTER_CATEGORY},
+          {'w', LETTER_CATEGORY},
+          {'x', LETTER_CATEGORY},
+          {'y', LETTER_CATEGORY},
+          {'z', LETTER_CATEGORY},
+          {'%', COMMENT_CATEGORY}
+        }
+      }
+    },
+    { // luacode catcode table
+      _LUACODE_BEGIN,
+      _LUA_END,
+      BLOCK_PUSH,
+      {
+        false,
+        {
+          {'\\', ESCAPE_CATEGORY},
+          {'{', BEGIN_CATEGORY},
+          {'}', END_CATEGORY},
+          {'A', LETTER_CATEGORY},
+          {'B', LETTER_CATEGORY},
+          {'C', LETTER_CATEGORY},
+          {'D', LETTER_CATEGORY},
+          {'E', LETTER_CATEGORY},
+          {'F', LETTER_CATEGORY},
+          {'G', LETTER_CATEGORY},
+          {'H', LETTER_CATEGORY},
+          {'I', LETTER_CATEGORY},
+          {'J', LETTER_CATEGORY},
+          {'K', LETTER_CATEGORY},
+          {'L', LETTER_CATEGORY},
+          {'M', LETTER_CATEGORY},
+          {'N', LETTER_CATEGORY},
+          {'O', LETTER_CATEGORY},
+          {'P', LETTER_CATEGORY},
+          {'Q', LETTER_CATEGORY},
+          {'R', LETTER_CATEGORY},
+          {'S', LETTER_CATEGORY},
+          {'T', LETTER_CATEGORY},
+          {'U', LETTER_CATEGORY},
+          {'V', LETTER_CATEGORY},
+          {'W', LETTER_CATEGORY},
+          {'X', LETTER_CATEGORY},
+          {'Y', LETTER_CATEGORY},
+          {'Z', LETTER_CATEGORY},
+          {'a', LETTER_CATEGORY},
+          {'b', LETTER_CATEGORY},
+          {'c', LETTER_CATEGORY},
+          {'d', LETTER_CATEGORY},
+          {'e', LETTER_CATEGORY},
+          {'f', LETTER_CATEGORY},
+          {'g', LETTER_CATEGORY},
+          {'h', LETTER_CATEGORY},
+          {'i', LETTER_CATEGORY},
+          {'j', LETTER_CATEGORY},
+          {'k', LETTER_CATEGORY},
+          {'l', LETTER_CATEGORY},
+          {'m', LETTER_CATEGORY},
+          {'n', LETTER_CATEGORY},
+          {'o', LETTER_CATEGORY},
+          {'p', LETTER_CATEGORY},
+          {'q', LETTER_CATEGORY},
+          {'r', LETTER_CATEGORY},
+          {'s', LETTER_CATEGORY},
+          {'t', LETTER_CATEGORY},
+          {'u', LETTER_CATEGORY},
+          {'v', LETTER_CATEGORY},
+          {'w', LETTER_CATEGORY},
+          {'x', LETTER_CATEGORY},
+          {'y', LETTER_CATEGORY},
+          {'z', LETTER_CATEGORY}
+        }
+      }
+    }
   };
 
   list<CatCodeBlock> catcode_blocks = {
@@ -540,21 +936,6 @@ struct Scanner {
     }
 
     return previous;
-  }
-
-  unsigned serialize_catcode_map (char *buffer, const map<int32_t, Category>& catcodes) {
-    unsigned num_serialized = 0, length = 0;
-
-    for (auto it = catcodes.cbegin(); it != catcodes.cend(); ++it) {
-      memcpy(&buffer[length], &it->first, sizeof(int32_t)); // character
-      length += sizeof(int32_t);
-      buffer[length++] = static_cast<char>(it->second); // catcode
-      num_serialized++;
-    }
-
-    memcpy(&buffer[sizeof(start_delim)], &num_serialized, sizeof(num_serialized));
-
-    return length;
   }
 
   unsigned serialize(char *buffer) {
