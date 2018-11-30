@@ -468,20 +468,32 @@
       ]
     },
     "parameter": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "parameter_char"
+      "type": "PREC_LEFT",
+      "value": -1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "REPEAT1",
+            "content": {
+              "type": "SYMBOL",
+              "name": "parameter_char"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[1-9]"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "decimal"
-        }
-      ]
+        ]
+      }
     },
     "text_env": {
       "type": "SEQ",

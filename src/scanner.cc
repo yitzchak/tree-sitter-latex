@@ -127,7 +127,7 @@ struct Scanner {
 
   vector<SymbolDescription> symbol_descriptions = {
     {~(LETTER_FLAG | OTHER_FLAG), _NON_LETTER_OR_OTHER, SINGLE_WIDTH},
-    {~LETTER_FLAG,                _CS_END,           ZERO_WIDTH},
+    {~LETTER_FLAG,                _CS_END,              ZERO_WIDTH},
     {ESCAPE_FLAG,                 _ESCAPE,              SINGLE_WIDTH},
     {BEGIN_FLAG,                  BEGIN_GROUP,          SINGLE_WIDTH},
     {END_FLAG,                    END_GROUP,            SINGLE_WIDTH},
