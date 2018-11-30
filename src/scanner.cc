@@ -27,6 +27,7 @@ enum SymbolType {
   _AT_LETTER,
   _AT_OTHER,
   _CS_END,
+  _DEFAULT_CATCODES,
   _ESCAPE,
   _EXPL_BEGIN,
   _EXPL_END,
@@ -96,13 +97,15 @@ struct CatCodeCategoryRegion {
   Category category;
 };
 
-struct CatCodeTable {
+class CatCodeTable {
+protected:
   static const size_t TABLE_SIZE = 256;
 
   bool partial;
   vector<Category> table;
   map<int32_t, Category> overflow;
 
+public:
   CatCodeTable (bool _partial = false) :
       partial(_partial),
       table(_partial ? 0 : TABLE_SIZE, OTHER_CATEGORY) {}
@@ -142,6 +145,10 @@ struct CatCodeTable {
       it->second;
   }
 
+  inline Category operator[](const int32_t key) const {
+    return get_catcode(key);
+  }
+
   void load(const CatCodeTable& other, CatCodeTable& copy) {
     copy.partial = other.partial;
 
@@ -172,14 +179,6 @@ struct CatCodeTable {
       table = other.table;
       overflow = other.overflow;
     }
-
-    // for (int32_t ch = 0; ch < table.size(); ch++) {
-    //   std::cout << ch << " " << table[ch] << std::endl;
-    // }
-    //
-    // for (auto it = overflow.cbegin(); it != overflow.cend(); it++) {
-    //   std::cout << it->first << " " << it->second << std::endl;
-    // }
   }
 
   unsigned serialize(char *buffer) const {
@@ -321,6 +320,33 @@ struct Scanner {
 
   list<CatCodeCommand> catcode_commands = {
     {
+      _DEFAULT_CATCODES,
+      _DEFAULT_CATCODES,
+      OP_SET,
+      {
+        false,
+        {
+          {'\\',   '\\',   ESCAPE_CATEGORY},
+          {'{',    '{',    BEGIN_CATEGORY},
+          {'}',    '}',    END_CATEGORY},
+          {'$',    '$',    MATH_SHIFT_CATEGORY},
+          {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
+          {'\n',   '\n',   EOL_CATEGORY},
+          {'#',    '#',    PARAMETER_CATEGORY},
+          {'^',    '^',    SUPERSCRIPT_CATEGORY},
+          {'_',    '_',    SUBSCRIPT_CATEGORY},
+          {'\0',   '\0',   IGNORED_CATEGORY},
+          {' ',    ' ',    SPACE_CATEGORY},
+          {'\t',   '\t',   SPACE_CATEGORY},
+          {'A',    'Z',    LETTER_CATEGORY},
+          {'a',    'z',    LETTER_CATEGORY},
+          {'~',    '~',    ACTIVE_CHAR_CATEGORY},
+          {'%',    '%',    COMMENT_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}
+        }
+      }
+    },
+    {
       _AT_LETTER,
       _AT_LETTER,
       OP_SET,
@@ -445,74 +471,9 @@ struct Scanner {
 
   void initialize() {
     reset();
-
-    catcode_table.set_catcode('\\', ESCAPE_CATEGORY);
-    catcode_table.set_catcode('{', BEGIN_CATEGORY);
-    catcode_table.set_catcode('}', END_CATEGORY);
-    catcode_table.set_catcode('$', MATH_SHIFT_CATEGORY);
-    catcode_table.set_catcode('&', ALIGNMENT_TAB_CATEGORY);
-    catcode_table.set_catcode('\n', EOL_CATEGORY);
-    catcode_table.set_catcode('#', PARAMETER_CATEGORY);
-    catcode_table.set_catcode('^', SUPERSCRIPT_CATEGORY);
-    catcode_table.set_catcode('_', SUBSCRIPT_CATEGORY);
-    catcode_table.set_catcode('\0', IGNORED_CATEGORY);
-    catcode_table.set_catcode(' ', SPACE_CATEGORY);
-    catcode_table.set_catcode('\t', SPACE_CATEGORY);
-    catcode_table.set_catcode('A', LETTER_CATEGORY);
-    catcode_table.set_catcode('B', LETTER_CATEGORY);
-    catcode_table.set_catcode('C', LETTER_CATEGORY);
-    catcode_table.set_catcode('D', LETTER_CATEGORY);
-    catcode_table.set_catcode('E', LETTER_CATEGORY);
-    catcode_table.set_catcode('F', LETTER_CATEGORY);
-    catcode_table.set_catcode('G', LETTER_CATEGORY);
-    catcode_table.set_catcode('H', LETTER_CATEGORY);
-    catcode_table.set_catcode('I', LETTER_CATEGORY);
-    catcode_table.set_catcode('J', LETTER_CATEGORY);
-    catcode_table.set_catcode('K', LETTER_CATEGORY);
-    catcode_table.set_catcode('L', LETTER_CATEGORY);
-    catcode_table.set_catcode('M', LETTER_CATEGORY);
-    catcode_table.set_catcode('N', LETTER_CATEGORY);
-    catcode_table.set_catcode('O', LETTER_CATEGORY);
-    catcode_table.set_catcode('P', LETTER_CATEGORY);
-    catcode_table.set_catcode('Q', LETTER_CATEGORY);
-    catcode_table.set_catcode('R', LETTER_CATEGORY);
-    catcode_table.set_catcode('S', LETTER_CATEGORY);
-    catcode_table.set_catcode('T', LETTER_CATEGORY);
-    catcode_table.set_catcode('U', LETTER_CATEGORY);
-    catcode_table.set_catcode('V', LETTER_CATEGORY);
-    catcode_table.set_catcode('W', LETTER_CATEGORY);
-    catcode_table.set_catcode('X', LETTER_CATEGORY);
-    catcode_table.set_catcode('Y', LETTER_CATEGORY);
-    catcode_table.set_catcode('Z', LETTER_CATEGORY);
-    catcode_table.set_catcode('a', LETTER_CATEGORY);
-    catcode_table.set_catcode('b', LETTER_CATEGORY);
-    catcode_table.set_catcode('c', LETTER_CATEGORY);
-    catcode_table.set_catcode('d', LETTER_CATEGORY);
-    catcode_table.set_catcode('e', LETTER_CATEGORY);
-    catcode_table.set_catcode('f', LETTER_CATEGORY);
-    catcode_table.set_catcode('g', LETTER_CATEGORY);
-    catcode_table.set_catcode('h', LETTER_CATEGORY);
-    catcode_table.set_catcode('i', LETTER_CATEGORY);
-    catcode_table.set_catcode('j', LETTER_CATEGORY);
-    catcode_table.set_catcode('k', LETTER_CATEGORY);
-    catcode_table.set_catcode('l', LETTER_CATEGORY);
-    catcode_table.set_catcode('m', LETTER_CATEGORY);
-    catcode_table.set_catcode('n', LETTER_CATEGORY);
-    catcode_table.set_catcode('o', LETTER_CATEGORY);
-    catcode_table.set_catcode('p', LETTER_CATEGORY);
-    catcode_table.set_catcode('q', LETTER_CATEGORY);
-    catcode_table.set_catcode('r', LETTER_CATEGORY);
-    catcode_table.set_catcode('s', LETTER_CATEGORY);
-    catcode_table.set_catcode('t', LETTER_CATEGORY);
-    catcode_table.set_catcode('u', LETTER_CATEGORY);
-    catcode_table.set_catcode('v', LETTER_CATEGORY);
-    catcode_table.set_catcode('w', LETTER_CATEGORY);
-    catcode_table.set_catcode('x', LETTER_CATEGORY);
-    catcode_table.set_catcode('y', LETTER_CATEGORY);
-    catcode_table.set_catcode('z', LETTER_CATEGORY);
-    catcode_table.set_catcode('~', ACTIVE_CHAR_CATEGORY);
-    catcode_table.set_catcode('%', COMMENT_CATEGORY);
-    catcode_table.set_catcode('\x7f', INVALID_CATEGORY);
+    // This is a hack. I'd like to have grammer.js load this via _DEFAULT_CATCODES.
+    CatCodeTable copy;
+    catcode_table.load(catcode_commands.front().table, copy);
   }
 
   unsigned serialize(char *buffer) const {
@@ -576,7 +537,7 @@ struct Scanner {
   bool scan_start_verb_delim(TSLexer *lexer) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
-    if (lexer->lookahead && catcode_table.get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+    if (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
       lexer->result_symbol = VERB_DELIM;
@@ -596,7 +557,7 @@ struct Scanner {
       return true;
     }
 
-    if (catcode_table.get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       lexer->result_symbol = VERB_DELIM; // don't eat the newline (for consistency)
       lexer->mark_end(lexer);
       start_delim = 0;
@@ -607,7 +568,7 @@ struct Scanner {
   }
 
   bool scan_verb_body(TSLexer *lexer) {
-    while (lexer->lookahead && lexer->lookahead != start_delim && catcode_table.get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+    while (lexer->lookahead && lexer->lookahead != start_delim && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -618,11 +579,11 @@ struct Scanner {
   }
 
   bool scan_verb_line(TSLexer *lexer) {
-    while (lexer->lookahead && catcode_table.get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+    while (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
-    if (catcode_table.get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -640,7 +601,7 @@ struct Scanner {
         lexer->advance(lexer, false);
         break;
       case UNLIMITED_WIDTH:
-        while (desc.categories[catcode_table.get_catcode(lexer->lookahead)]) {
+        while (desc.categories[catcode_table[lexer->lookahead]]) {
           lexer->advance(lexer, false);
         }
         break;
@@ -665,12 +626,12 @@ struct Scanner {
       lexer->result_symbol = TAG_COMMENT;
     } else {
       // Skip any leading spaces
-      while (catcode_table.get_catcode(lexer->lookahead) == SPACE_CATEGORY) {
+      while (catcode_table[lexer->lookahead] == SPACE_CATEGORY) {
         lexer->advance(lexer, false);
       }
 
       // Try to capture a tag
-      while (comment_type_categories[catcode_table.get_catcode(lexer->lookahead)]) {
+      while (comment_type_categories[catcode_table[lexer->lookahead]]) {
         comment_type += lexer->lookahead;
         lexer->advance(lexer, false);
       }
@@ -682,12 +643,12 @@ struct Scanner {
     }
 
     // Gobble the reset of the comment
-    while (comment_categories[catcode_table.get_catcode(lexer->lookahead)]) {
+    while (comment_categories[catcode_table[lexer->lookahead]]) {
       lexer->advance(lexer, false);
     }
 
     // Eat any EOL
-    if (catcode_table.get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -698,7 +659,7 @@ struct Scanner {
 
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
-    Category code = catcode_table.get_catcode(lexer->lookahead);
+    Category code = catcode_table[lexer->lookahead];
 
     for (auto it = catcode_commands.begin(); it != catcode_commands.end(); it++) {
       if (valid_symbols[it->begin]) {

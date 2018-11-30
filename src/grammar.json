@@ -4355,6 +4355,10 @@
     },
     {
       "type": "SYMBOL",
+      "name": "_default_catcodes"
+    },
+    {
+      "type": "SYMBOL",
       "name": "_escape"
     },
     {

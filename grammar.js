@@ -47,6 +47,7 @@ module.exports = grammar({
     $._at_letter,
     $._at_other,
     $._cs_end,
+    $._default_catcodes,
     $._escape,
     $._expl_begin,
     $._expl_end,
