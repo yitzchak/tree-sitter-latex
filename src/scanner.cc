@@ -91,6 +91,11 @@ struct SymbolDescription {
   }
 };
 
+struct CatCodeCategoryRegion {
+  int32_t begin, end;
+  Category category;
+};
+
 struct CatCodeTable {
   static const size_t TABLE_SIZE = 256;
 
@@ -102,11 +107,13 @@ struct CatCodeTable {
       partial(_partial),
       table(_partial ? 0 : TABLE_SIZE, OTHER_CATEGORY) {}
 
-  CatCodeTable (bool _partial, initializer_list<pair<const int32_t, Category>> init) :
+  CatCodeTable (bool _partial, initializer_list<CatCodeCategoryRegion> init) :
       partial(_partial),
       table(_partial ? 0 : TABLE_SIZE, OTHER_CATEGORY) {
     for (auto it = init.begin(); it != init.end(); it++) {
-      set_catcode(it->first, it->second);
+      for (int32_t ch = it->begin; ch <= it->end; ch++) {
+        set_catcode(ch, it->category);
+      }
     }
   }
 
@@ -319,7 +326,7 @@ struct Scanner {
       OP_SET,
       {
         true,
-        {{'@', LETTER_CATEGORY}}
+        {{'@', '@', LETTER_CATEGORY}}
       }
     },
     {
@@ -328,7 +335,7 @@ struct Scanner {
       OP_SET,
       {
         true,
-        {{'@', OTHER_CATEGORY}}
+        {{'@', '@', OTHER_CATEGORY}}
       }
     },
     {
@@ -338,15 +345,15 @@ struct Scanner {
       {
         true,
         {
-          {'\t', IGNORED_CATEGORY},
-          {' ',  IGNORED_CATEGORY},
-          {'"',  OTHER_CATEGORY},
-          {'&',  ALIGNMENT_TAB_CATEGORY},
-          {':',  LETTER_CATEGORY},
-          {'^',  SUPERSCRIPT_CATEGORY},
-          {'_',  LETTER_CATEGORY},
-          {'|',  OTHER_CATEGORY},
-          {'~',  SPACE_CATEGORY}
+          {'\t', '\t', IGNORED_CATEGORY},
+          {' ',  ' ',  IGNORED_CATEGORY},
+          {' ',  ' ',  OTHER_CATEGORY},
+          {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
+          {':',  ':',  LETTER_CATEGORY},
+          {'^',  '^',  SUPERSCRIPT_CATEGORY},
+          {'_',  '_',  LETTER_CATEGORY},
+          {'|',  '|',  OTHER_CATEGORY},
+          {'~',  '~',  SPACE_CATEGORY}
         }
       }
     },
@@ -357,15 +364,15 @@ struct Scanner {
       {
         true,
         {
-          {'\t', SPACE_CATEGORY},
-          {' ',  SPACE_CATEGORY},
-          {'"',  OTHER_CATEGORY},
-          {'&',  ALIGNMENT_TAB_CATEGORY},
-          {':',  OTHER_CATEGORY},
-          {'^',  SUPERSCRIPT_CATEGORY},
-          {'_',  SUBSCRIPT_CATEGORY},
-          {'|',  OTHER_CATEGORY},
-          {'~',  ACTIVE_CHAR_CATEGORY}
+          {'\t', '\t', SPACE_CATEGORY},
+          {' ',  ' ',  SPACE_CATEGORY},
+          {'"',  '"',  OTHER_CATEGORY},
+          {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
+          {':',  ':',  OTHER_CATEGORY},
+          {'^',  '^',  SUPERSCRIPT_CATEGORY},
+          {'_',  '_',  SUBSCRIPT_CATEGORY},
+          {'|',  '|',  OTHER_CATEGORY},
+          {'~',  '~',  ACTIVE_CHAR_CATEGORY}
         }
       }
     },
@@ -376,65 +383,15 @@ struct Scanner {
       {
         false,
         {
-          {'\\', ESCAPE_CATEGORY},
-          {'{', BEGIN_CATEGORY},
-          {'}', END_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'{', '{', BEGIN_CATEGORY},
+          {'}', '}', END_CATEGORY},
           // {'#', PARAMETER_CATEGORY},
-          {'\n', EOL_CATEGORY},
-          {'A', LETTER_CATEGORY},
-          {'B', LETTER_CATEGORY},
-          {'C', LETTER_CATEGORY},
-          {'D', LETTER_CATEGORY},
-          {'E', LETTER_CATEGORY},
-          {'F', LETTER_CATEGORY},
-          {'G', LETTER_CATEGORY},
-          {'H', LETTER_CATEGORY},
-          {'I', LETTER_CATEGORY},
-          {'J', LETTER_CATEGORY},
-          {'K', LETTER_CATEGORY},
-          {'L', LETTER_CATEGORY},
-          {'M', LETTER_CATEGORY},
-          {'N', LETTER_CATEGORY},
-          {'O', LETTER_CATEGORY},
-          {'P', LETTER_CATEGORY},
-          {'Q', LETTER_CATEGORY},
-          {'R', LETTER_CATEGORY},
-          {'S', LETTER_CATEGORY},
-          {'T', LETTER_CATEGORY},
-          {'U', LETTER_CATEGORY},
-          {'V', LETTER_CATEGORY},
-          {'W', LETTER_CATEGORY},
-          {'X', LETTER_CATEGORY},
-          {'Y', LETTER_CATEGORY},
-          {'Z', LETTER_CATEGORY},
-          {'a', LETTER_CATEGORY},
-          {'b', LETTER_CATEGORY},
-          {'c', LETTER_CATEGORY},
-          {'d', LETTER_CATEGORY},
-          {'e', LETTER_CATEGORY},
-          {'f', LETTER_CATEGORY},
-          {'g', LETTER_CATEGORY},
-          {'h', LETTER_CATEGORY},
-          {'i', LETTER_CATEGORY},
-          {'j', LETTER_CATEGORY},
-          {'k', LETTER_CATEGORY},
-          {'l', LETTER_CATEGORY},
-          {'m', LETTER_CATEGORY},
-          {'n', LETTER_CATEGORY},
-          {'o', LETTER_CATEGORY},
-          {'p', LETTER_CATEGORY},
-          {'q', LETTER_CATEGORY},
-          {'r', LETTER_CATEGORY},
-          {'s', LETTER_CATEGORY},
-          {'t', LETTER_CATEGORY},
-          {'u', LETTER_CATEGORY},
-          {'v', LETTER_CATEGORY},
-          {'w', LETTER_CATEGORY},
-          {'x', LETTER_CATEGORY},
-          {'y', LETTER_CATEGORY},
-          {'z', LETTER_CATEGORY},
-          {'~', ACTIVE_CHAR_CATEGORY},
-          {'%', COMMENT_CATEGORY}
+          {'\n', '\n', EOL_CATEGORY},
+          {'A', 'Z', LETTER_CATEGORY},
+          {'a', 'z', LETTER_CATEGORY},
+          {'~', '~', ACTIVE_CHAR_CATEGORY},
+          {'%', '%', COMMENT_CATEGORY}
         }
       }
     },
@@ -445,63 +402,13 @@ struct Scanner {
       {
         false,
         {
-          {'\\', ESCAPE_CATEGORY},
-          {'{', BEGIN_CATEGORY},
-          {'}', END_CATEGORY},
-          {'\n', EOL_CATEGORY},
-          {'A', LETTER_CATEGORY},
-          {'B', LETTER_CATEGORY},
-          {'C', LETTER_CATEGORY},
-          {'D', LETTER_CATEGORY},
-          {'E', LETTER_CATEGORY},
-          {'F', LETTER_CATEGORY},
-          {'G', LETTER_CATEGORY},
-          {'H', LETTER_CATEGORY},
-          {'I', LETTER_CATEGORY},
-          {'J', LETTER_CATEGORY},
-          {'K', LETTER_CATEGORY},
-          {'L', LETTER_CATEGORY},
-          {'M', LETTER_CATEGORY},
-          {'N', LETTER_CATEGORY},
-          {'O', LETTER_CATEGORY},
-          {'P', LETTER_CATEGORY},
-          {'Q', LETTER_CATEGORY},
-          {'R', LETTER_CATEGORY},
-          {'S', LETTER_CATEGORY},
-          {'T', LETTER_CATEGORY},
-          {'U', LETTER_CATEGORY},
-          {'V', LETTER_CATEGORY},
-          {'W', LETTER_CATEGORY},
-          {'X', LETTER_CATEGORY},
-          {'Y', LETTER_CATEGORY},
-          {'Z', LETTER_CATEGORY},
-          {'a', LETTER_CATEGORY},
-          {'b', LETTER_CATEGORY},
-          {'c', LETTER_CATEGORY},
-          {'d', LETTER_CATEGORY},
-          {'e', LETTER_CATEGORY},
-          {'f', LETTER_CATEGORY},
-          {'g', LETTER_CATEGORY},
-          {'h', LETTER_CATEGORY},
-          {'i', LETTER_CATEGORY},
-          {'j', LETTER_CATEGORY},
-          {'k', LETTER_CATEGORY},
-          {'l', LETTER_CATEGORY},
-          {'m', LETTER_CATEGORY},
-          {'n', LETTER_CATEGORY},
-          {'o', LETTER_CATEGORY},
-          {'p', LETTER_CATEGORY},
-          {'q', LETTER_CATEGORY},
-          {'r', LETTER_CATEGORY},
-          {'s', LETTER_CATEGORY},
-          {'t', LETTER_CATEGORY},
-          {'u', LETTER_CATEGORY},
-          {'v', LETTER_CATEGORY},
-          {'w', LETTER_CATEGORY},
-          {'x', LETTER_CATEGORY},
-          {'y', LETTER_CATEGORY},
-          {'z', LETTER_CATEGORY},
-          {'%', COMMENT_CATEGORY}
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'{', '{', BEGIN_CATEGORY},
+          {'}', '}', END_CATEGORY},
+          {'\n', '\n', EOL_CATEGORY},
+          {'A', 'Z', LETTER_CATEGORY},
+          {'a', 'z', LETTER_CATEGORY},
+          {'%', '%', COMMENT_CATEGORY}
         }
       }
     },
@@ -512,61 +419,11 @@ struct Scanner {
       {
         false,
         {
-          {'\\', ESCAPE_CATEGORY},
-          {'{', BEGIN_CATEGORY},
-          {'}', END_CATEGORY},
-          {'A', LETTER_CATEGORY},
-          {'B', LETTER_CATEGORY},
-          {'C', LETTER_CATEGORY},
-          {'D', LETTER_CATEGORY},
-          {'E', LETTER_CATEGORY},
-          {'F', LETTER_CATEGORY},
-          {'G', LETTER_CATEGORY},
-          {'H', LETTER_CATEGORY},
-          {'I', LETTER_CATEGORY},
-          {'J', LETTER_CATEGORY},
-          {'K', LETTER_CATEGORY},
-          {'L', LETTER_CATEGORY},
-          {'M', LETTER_CATEGORY},
-          {'N', LETTER_CATEGORY},
-          {'O', LETTER_CATEGORY},
-          {'P', LETTER_CATEGORY},
-          {'Q', LETTER_CATEGORY},
-          {'R', LETTER_CATEGORY},
-          {'S', LETTER_CATEGORY},
-          {'T', LETTER_CATEGORY},
-          {'U', LETTER_CATEGORY},
-          {'V', LETTER_CATEGORY},
-          {'W', LETTER_CATEGORY},
-          {'X', LETTER_CATEGORY},
-          {'Y', LETTER_CATEGORY},
-          {'Z', LETTER_CATEGORY},
-          {'a', LETTER_CATEGORY},
-          {'b', LETTER_CATEGORY},
-          {'c', LETTER_CATEGORY},
-          {'d', LETTER_CATEGORY},
-          {'e', LETTER_CATEGORY},
-          {'f', LETTER_CATEGORY},
-          {'g', LETTER_CATEGORY},
-          {'h', LETTER_CATEGORY},
-          {'i', LETTER_CATEGORY},
-          {'j', LETTER_CATEGORY},
-          {'k', LETTER_CATEGORY},
-          {'l', LETTER_CATEGORY},
-          {'m', LETTER_CATEGORY},
-          {'n', LETTER_CATEGORY},
-          {'o', LETTER_CATEGORY},
-          {'p', LETTER_CATEGORY},
-          {'q', LETTER_CATEGORY},
-          {'r', LETTER_CATEGORY},
-          {'s', LETTER_CATEGORY},
-          {'t', LETTER_CATEGORY},
-          {'u', LETTER_CATEGORY},
-          {'v', LETTER_CATEGORY},
-          {'w', LETTER_CATEGORY},
-          {'x', LETTER_CATEGORY},
-          {'y', LETTER_CATEGORY},
-          {'z', LETTER_CATEGORY}
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'{', '{', BEGIN_CATEGORY},
+          {'}', '}', END_CATEGORY},
+          {'A', 'Z', LETTER_CATEGORY},
+          {'a', 'z', LETTER_CATEGORY}
         }
       }
     }
