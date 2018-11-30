@@ -238,6 +238,26 @@ struct CatCodeTableOp {
   SymbolType end;
   BlockOperation operation;
   CatCodeTable table;
+
+  unsigned serialize(char *buffer) {
+    unsigned length = 0;
+
+    buffer[length++] = static_cast<char>(begin);
+    buffer[length++] = static_cast<char>(end);
+    buffer[length++] = static_cast<char>(operation);
+
+    return length + table.serialize(&buffer[length]);
+  }
+
+  void deserialize(const char *buffer, unsigned length) {
+    unsigned pos = 0;
+
+    begin = static_cast<SymbolType>(buffer[pos++]);
+    end = static_cast<SymbolType>(buffer[pos++]);
+    operation = static_cast<BlockOperation>(buffer[pos++]);
+
+    table.deserialize(&buffer[pos], length - pos);
+  }
 };
 
 struct Scanner {
