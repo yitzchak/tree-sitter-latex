@@ -579,12 +579,39 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "math_shift"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "math_shift"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "math_shift"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "math_shift"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "math_shift"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "exit_group"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
@@ -603,8 +630,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "end_display_math"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "end_display_math"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
@@ -769,8 +805,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "math_shift"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "math_shift"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
@@ -789,8 +834,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "end_inline_math"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "end_inline_math"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
@@ -4569,6 +4623,10 @@
     {
       "type": "SYMBOL",
       "name": "eol"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "exit_group"
     },
     {
       "type": "SYMBOL",

@@ -66,6 +66,7 @@ module.exports = grammar({
     $.comment,
     $.end_group,
     $.eol,
+    $.exit_group,
     $.magic_comment,
     $.math_shift,
     $.parameter_char,
@@ -238,13 +239,17 @@ module.exports = grammar({
     tex_display_math: $ => seq(
       $.math_shift, $.math_shift,
       repeat($._math_mode),
-      $.math_shift, $.math_shift
+      choice(
+        seq($.math_shift, $.math_shift),
+        seq($.math_shift, $.exit_group),
+        $.exit_group
+      )
     ),
 
     latex_display_math: $ => seq(
       $.begin_display_math,
       repeat1($._math_mode),
-      $.end_display_math
+      choice($.end_display_math, $.exit_group)
     ),
 
     begin_display_math: $ => seq($._escape, '['),
@@ -281,13 +286,13 @@ module.exports = grammar({
     tex_inline_math: $ => seq(
       $.math_shift,
       repeat1($._math_mode),
-      $.math_shift
+      choice($.math_shift, $.exit_group)
     ),
 
     latex_inline_math: $ => seq(
       $.begin_inline_math,
       repeat($._math_mode),
-      $.end_inline_math
+      choice($.end_inline_math, $.exit_group)
     ),
 
     begin_inline_math: $ => seq($._escape, '('),

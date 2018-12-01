@@ -1,0 +1,249 @@
+===========================================
+TeX inline math - unterminated inside group
+===========================================
+{foo$bar}
+{foo$bar{quux}wibble}
+-------------------------------------------
+(document
+  (text_group
+    (begin_group)
+    (text)
+    (tex_inline_math
+      (math_shift)
+      (text)
+      (exit_group))
+    (end_group))
+  (text)
+  (text_group
+    (begin_group)
+    (text)
+    (tex_inline_math
+      (math_shift)
+      (text)
+      (math_group (begin_group) (text) (end_group))
+      (text)
+      (exit_group))
+    (end_group)))
+
+===========================================
+TeX inline math - unterminated by EOF
+===========================================
+foo$bar
+-------------------------------------------
+(document
+  (text)
+  (tex_inline_math
+    (math_shift)
+    (text)
+    (MISSING)))
+
+===========================================
+TeX display math - unterminated inside group
+===========================================
+{foo$$bar}
+{foo$$bar{quux}wibble}
+{foo$$bar$}
+{foo$$bar{quux}wibble$}
+-------------------------------------------
+(document
+  (text_group
+    (begin_group)
+    (text)
+    (tex_display_math
+      (math_shift)
+      (math_shift)
+      (text)
+      (exit_group))
+    (end_group))
+  (text)
+  (text_group
+    (begin_group)
+    (text)
+    (tex_display_math
+      (math_shift)
+      (math_shift)
+      (text)
+      (math_group
+        (begin_group)
+        (text)
+        (end_group))
+      (text)
+      (exit_group))
+    (end_group))
+    (text)
+    (text_group
+      (begin_group)
+      (text)
+      (tex_display_math
+        (math_shift)
+        (math_shift)
+        (text)
+        (math_shift)
+        (exit_group))
+      (end_group))
+    (text)
+    (text_group
+      (begin_group)
+      (text)
+      (tex_display_math
+        (math_shift)
+        (math_shift)
+        (text)
+        (math_group
+          (begin_group)
+          (text)
+          (end_group))
+        (text)
+        (math_shift)
+        (exit_group))
+      (end_group)))
+
+===========================================
+TeX display math - unterminated by EOF
+===========================================
+foo$$bar
+-------------------------------------------
+(document
+  (text)
+  (tex_display_math
+    (math_shift)
+    (math_shift)
+    (text)
+    (MISSING)))
+
+===========================================
+TeX display math - unterminated by EOF with single math shift
+===========================================
+foo$$bar$
+-------------------------------------------
+(document
+  (text)
+  (tex_display_math
+    (math_shift)
+    (math_shift)
+    (text)
+    (math_shift)
+    (MISSING)))
+
+===========================================
+TeX inline math - unterminated inside group
+===========================================
+{foo$bar}
+{foo$bar{quux}wibble}
+-------------------------------------------
+(document
+  (text_group
+    (begin_group)
+    (text)
+    (tex_inline_math
+      (math_shift)
+      (text)
+      (exit_group))
+    (end_group))
+  (text)
+  (text_group
+    (begin_group)
+    (text)
+    (tex_inline_math
+      (math_shift)
+      (text)
+      (math_group (begin_group) (text) (end_group))
+      (text)
+      (exit_group))
+    (end_group)))
+
+===========================================
+TeX inline math - unterminated by EOF
+===========================================
+foo$bar
+-------------------------------------------
+(document
+  (text)
+  (tex_inline_math
+    (math_shift)
+    (text)
+    (MISSING)))
+
+===========================================
+LaTeX inline math - unterminated inside group
+===========================================
+{foo\(bar}
+{foo\(bar{quux}wibble}
+-------------------------------------------
+(document
+  (text_group
+    (begin_group)
+    (text)
+    (latex_inline_math
+      (begin_inline_math)
+      (text)
+      (exit_group))
+    (end_group))
+  (text)
+  (text_group
+    (begin_group)
+    (text)
+    (latex_inline_math
+      (begin_inline_math)
+      (text)
+      (math_group
+        (begin_group)
+        (text)
+        (end_group))
+      (text)
+      (exit_group))
+    (end_group)))
+
+===========================================
+LaTeX inline math - unterminated by EOF
+===========================================
+foo\(bar
+-------------------------------------------
+(document
+  (text)
+  (latex_inline_math
+    (begin_inline_math)
+    (text)
+    (MISSING)))
+
+===========================================
+LaTeX display math - unterminated inside group
+===========================================
+{foo\[bar}
+{foo\[bar{quux}wibble}
+-------------------------------------------
+(document
+  (text_group
+    (begin_group)
+    (text)
+    (latex_display_math
+      (begin_display_math)
+      (text)
+      (exit_group))
+    (end_group))
+  (text)
+  (text_group
+    (begin_group)
+    (text)
+    (latex_display_math
+      (begin_display_math)
+      (text)
+      (math_group
+        (begin_group)
+        (text)
+        (end_group))
+      (text)
+      (exit_group))
+    (end_group)))
+
+===========================================
+LaTeX display math - unterminated by EOF
+===========================================
+foo\[bar
+-------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (begin_display_math)
+    (text)
+    (MISSING)))
