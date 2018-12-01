@@ -1,10 +1,11 @@
 function cs ($, name) {
-  return seq($._escape, $._next_letter, name, $._next_non_letter)
+  return seq($._escape, $._next_letter, name, $._next_non_letter, $._end_escape)
 }
 
 function escaped ($, name) {
-  return seq($._escape, $._next_non_letter, name)
+  return seq($._escape, $._next_non_letter, name, $._end_escape)
 }
+
 // This command is a placeholder for aliasing of cs
 function cmd () {
   return seq.apply(null, Array.prototype.slice.call(arguments, 1))
@@ -50,6 +51,7 @@ module.exports = grammar({
     $._at_letter,
     $._at_other,
     $._default_catcodes,
+    $._end_escape,
     $._escape,
     $._expl_begin,
     $._expl_end,

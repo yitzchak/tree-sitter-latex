@@ -27,6 +27,7 @@ enum SymbolType {
   _AT_LETTER,
   _AT_OTHER,
   _DEFAULT_CATCODES,
+  _END_ESCAPE,
   _ESCAPE,
   _EXPL_BEGIN,
   _EXPL_END,
@@ -475,6 +476,7 @@ struct Scanner {
     }
   };
 
+  bool in_escape = false;
   int32_t start_delim = 0;
   CatCodeTable catcode_table;
 
@@ -496,6 +498,8 @@ struct Scanner {
   unsigned serialize(char *buffer) const {
     const size_t ch_size = sizeof(int32_t);
     unsigned length = 0;
+
+    buffer[length++] = static_cast<char>(in_escape);
 
     // First save the verbatim delimiter
     memcpy(&buffer[length], &start_delim, ch_size);
@@ -532,6 +536,8 @@ struct Scanner {
 
     const size_t ch_size = sizeof(int32_t);
     unsigned pos = 0;
+
+    in_escape = static_cast<bool>(buffer[pos++]);
 
     // Retrieve the verbatim start delimiter
     memcpy(&start_delim, &buffer[pos], ch_size);
@@ -714,17 +720,30 @@ struct Scanner {
 
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
-    // First look for catcode commands.
-    if (scan_catcode_commands(lexer, valid_symbols)) return true;
+    if (valid_symbols[_END_ESCAPE]) {
+      in_escape = false;
+      lexer->result_symbol = _END_ESCAPE;
+      lexer->mark_end(lexer);
+      return true;
+    }
 
     Category code = catcode_table[lexer->lookahead];
 
     // Look for simple symbols such as escape, comment, etc.
     for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {
-      if (it->categories[code] && valid_symbols[it->type]) {
+      if ((!in_escape || it->type == _NEXT_LETTER || it->type == _NEXT_NON_LETTER) &&
+          it->categories[code] && valid_symbols[it->type]) {
+        if (it->type == _ESCAPE) {
+          in_escape = true;
+        }
         return scan_symbol(lexer, *it);
       }
     }
+
+    if (in_escape) return false;
+
+    // First look for catcode commands.
+    if (scan_catcode_commands(lexer, valid_symbols)) return true;
 
     // Look for comments.
     if (code == COMMENT_CATEGORY && valid_symbols[COMMENT]) {
