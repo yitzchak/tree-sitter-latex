@@ -107,6 +107,7 @@ module.exports = grammar({
       $.ExplSyntaxOn,
       $.glue_assign,
       $.glue_space,
+      $.lua,
       $.luadirect,
       $.luaexec,
       $.luacode_env,
@@ -1002,6 +1003,16 @@ module.exports = grammar({
     hyperref_cs: $ => cs($, 'hyperref'),
 
     // luacode
+
+    lua: $ => cmd($,
+      $.lua_cs,
+      $._luadirect_begin,
+      optional($._number),
+      $.text_group,
+      $._lua_end
+    ),
+
+    lua_cs: $ => cs($, /(direct|late)lua/),
 
     luadirect: $ => cmd($,
       $.luadirect_cs,

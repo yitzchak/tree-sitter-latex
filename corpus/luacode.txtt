@@ -1,4 +1,174 @@
 ========================
+directlua
+=======================
+\directlua{
+  texio.write_nl("Special chars: _ ^ & $ { } working.\string\n"
+  .. "Backslashes need a bit of care.\string\n"
+  .. "Sharps and tildes too: # doubled, but \string# and \string~")
+  % a tex comment: no easy way to get a %
+  tex.sprint("\string\\pi \string\\neq", tostring(math.pi))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+---------------------------
+(document
+  (lua
+    (lua_cs)
+    (text_group
+      (begin_group)
+      (text)
+      (text_group (begin_group) (text) (end_group))
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (text)
+      (cs)
+      (active_char)
+      (text (comment))
+      (cs)
+      (escaped)
+      (text)
+      (cs)
+      (escaped)
+      (text (comment))
+      (cs)
+      (text)
+      (end_group))))
+
+========================
+directlua with number
+=======================
+\directlua"7F{
+  texio.write_nl("Special chars: _ ^ & $ { } working.\string\n"
+  .. "Backslashes need a bit of care.\string\n"
+  .. "Sharps and tildes too: # doubled, but \string# and \string~")
+  % a tex comment: no easy way to get a %
+  tex.sprint("\string\\pi \string\\neq", tostring(math.pi))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+---------------------------
+(document
+  (lua
+    (lua_cs)
+    (hexadecimal)
+    (text_group
+      (begin_group)
+      (text)
+      (text_group (begin_group) (text) (end_group))
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (text)
+      (cs)
+      (active_char)
+      (text (comment))
+      (cs)
+      (escaped)
+      (text)
+      (cs)
+      (escaped)
+      (text (comment))
+      (cs)
+      (text)
+      (end_group))))
+
+========================
+latelua
+=======================
+\latelua{
+  texio.write_nl("Special chars: _ ^ & $ { } working.\string\n"
+  .. "Backslashes need a bit of care.\string\n"
+  .. "Sharps and tildes too: # doubled, but \string# and \string~")
+  % a tex comment: no easy way to get a %
+  tex.sprint("\string\\pi \string\\neq", tostring(math.pi))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+---------------------------
+(document
+  (lua
+    (lua_cs)
+    (text_group
+      (begin_group)
+      (text)
+      (text_group (begin_group) (text) (end_group))
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (text)
+      (cs)
+      (active_char)
+      (text (comment))
+      (cs)
+      (escaped)
+      (text)
+      (cs)
+      (escaped)
+      (text (comment))
+      (cs)
+      (text)
+      (end_group))))
+
+========================
+latelua with number
+=======================
+\latelua"7F{
+  texio.write_nl("Special chars: _ ^ & $ { } working.\string\n"
+  .. "Backslashes need a bit of care.\string\n"
+  .. "Sharps and tildes too: # doubled, but \string# and \string~")
+  % a tex comment: no easy way to get a %
+  tex.sprint("\string\\pi \string\\neq", tostring(math.pi))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+---------------------------
+(document
+  (lua
+    (lua_cs)
+    (hexadecimal)
+    (text_group
+      (begin_group)
+      (text)
+      (text_group (begin_group) (text) (end_group))
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (cs)
+      (text)
+      (cs)
+      (text)
+      (cs)
+      (active_char)
+      (text (comment))
+      (cs)
+      (escaped)
+      (text)
+      (cs)
+      (escaped)
+      (text (comment))
+      (cs)
+      (text)
+      (end_group))))
+
+========================
 luadirect
 =======================
 \luadirect{

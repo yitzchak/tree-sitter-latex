@@ -69,6 +69,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "lua"
+        },
+        {
+          "type": "SYMBOL",
           "name": "luadirect"
         },
         {
@@ -3899,6 +3903,56 @@
         {
           "type": "STRING",
           "value": "hyperref"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "lua": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "lua_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_luadirect_begin"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_number"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lua_end"
+        }
+      ]
+    },
+    "lua_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(direct|late)lua"
         },
         {
           "type": "SYMBOL",
