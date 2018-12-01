@@ -81,6 +81,8 @@ enum SymbolWidth {
   UNLIMITED_WIDTH
 };
 
+// Description of a trivial symbol, i.e. one that is zero characters, one
+// character or unlimited characters based on a collection of categories.
 struct SymbolDescription {
   SymbolType type;
   SymbolWidth width;
@@ -97,6 +99,7 @@ struct CatCodeCategoryRegion {
   Category category;
 };
 
+// Common catcode table with overflow and support for partial catcode tables.
 class CatCodeTable {
 protected:
   static const size_t TABLE_SIZE = 256;
@@ -121,6 +124,7 @@ public:
   }
 
   void reset() {
+    // Partial tables will only use overflow.
     table.assign(partial ? 0 : TABLE_SIZE, OTHER_CATEGORY);
     overflow.clear();
   }
@@ -140,6 +144,7 @@ public:
 
     auto it = overflow.find(key);
 
+    // OTHER is the default category.
     return (it == overflow.end()) ?
       OTHER_CATEGORY :
       it->second;
@@ -184,8 +189,10 @@ public:
   unsigned serialize(char *buffer) const {
     unsigned length = 0, num_serialized = table.size();
 
+    // Save the partial flag
     buffer[length++] = static_cast<char>(partial);
 
+    // Save the table
     memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
     length += sizeof(num_serialized);
 
@@ -193,6 +200,7 @@ public:
       buffer[length++] = static_cast<char>(*it);
     }
 
+    // Save the overflow
     num_serialized = overflow.size();
     memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
     length += sizeof(num_serialized);
@@ -207,10 +215,9 @@ public:
   }
 
   unsigned deserialize(const char *buffer, unsigned length) {
+    // If there is no data available then just reset the table.
     if (length == 0) {
-      partial = false;
-      table.assign(TABLE_SIZE, OTHER_CATEGORY);
-      overflow.clear();
+      reset();
       return 0;
     }
 
@@ -219,8 +226,10 @@ public:
 
     unsigned pos = 0;
 
+    // Read the partial flag
     partial = static_cast<bool>(buffer[pos++]);
 
+    // read the table
     unsigned num_serialized;
     memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
     pos += sizeof(num_serialized);
@@ -229,6 +238,7 @@ public:
       table.push_back(static_cast<Category>(buffer[pos++]));
     }
 
+    // Read the overflow
     memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
     pos += sizeof(num_serialized);
 
@@ -243,23 +253,28 @@ public:
   }
 };
 
+// CatCode operations.
+// WRITE overwrites the current table with this table (partial or complete)
+// SAVE_AND_WRITE overwrites and saves the values (or the whole table if partial is not set) that it overwrites into POP command
+// WRITE_ONCE overwrites and removes command from future executions.
 enum CatCodeOperation {
-  OP_SET,
-  OP_PUSH,
-  OP_POP
+  OP_WRITE,
+  OP_SAVE_AND_WRITE,
+  OP_WRITE_ONCE
 };
 
+// a bulk catcode table command
 struct CatCodeCommand {
-  SymbolType begin;
-  SymbolType end;
+  SymbolType trigger;
+  SymbolType save_trigger;
   CatCodeOperation operation;
   CatCodeTable table;
 
   unsigned serialize(char *buffer) const {
     unsigned length = 0;
 
-    buffer[length++] = static_cast<char>(begin);
-    buffer[length++] = static_cast<char>(end);
+    buffer[length++] = static_cast<char>(trigger);
+    buffer[length++] = static_cast<char>(save_trigger);
     buffer[length++] = static_cast<char>(operation);
 
     return length + table.serialize(&buffer[length]);
@@ -268,8 +283,8 @@ struct CatCodeCommand {
   unsigned deserialize(const char *buffer, unsigned length) {
     unsigned pos = 0;
 
-    begin = static_cast<SymbolType>(buffer[pos++]);
-    end = static_cast<SymbolType>(buffer[pos++]);
+    trigger = static_cast<SymbolType>(buffer[pos++]);
+    save_trigger = static_cast<SymbolType>(buffer[pos++]);
     operation = static_cast<CatCodeOperation>(buffer[pos++]);
 
     return pos + table.deserialize(&buffer[pos], length - pos);
@@ -322,7 +337,7 @@ struct Scanner {
     {
       _DEFAULT_CATCODES,
       _DEFAULT_CATCODES,
-      OP_SET,
+      OP_WRITE,
       {
         false,
         {
@@ -349,7 +364,7 @@ struct Scanner {
     {
       _AT_LETTER,
       _AT_LETTER,
-      OP_SET,
+      OP_WRITE,
       {
         true,
         {
@@ -360,7 +375,7 @@ struct Scanner {
     {
       _AT_OTHER,
       _AT_OTHER,
-      OP_SET,
+      OP_WRITE,
       {
         true,
         {
@@ -371,7 +386,7 @@ struct Scanner {
     {
       _EXPL_BEGIN,
       _EXPL_END,
-      OP_PUSH,
+      OP_SAVE_AND_WRITE,
       {
         true,
         {
@@ -390,7 +405,7 @@ struct Scanner {
     { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
       _EXPL_END,
       _EXPL_END,
-      OP_SET,
+      OP_WRITE,
       {
         true,
         {
@@ -409,7 +424,7 @@ struct Scanner {
     { // \luadirect catcode table
       _LUADIRECT_BEGIN,
       _LUA_END,
-      OP_PUSH,
+      OP_SAVE_AND_WRITE,
       {
         false,
         {
@@ -427,7 +442,7 @@ struct Scanner {
     { // luaexec catcode table
       _LUAEXEC_BEGIN,
       _LUA_END,
-      OP_PUSH,
+      OP_SAVE_AND_WRITE,
       {
         false,
         {
@@ -444,7 +459,7 @@ struct Scanner {
     { // luacode catcode table
       _LUACODE_BEGIN,
       _LUA_END,
-      OP_PUSH,
+      OP_SAVE_AND_WRITE,
       {
         false,
         {
@@ -466,7 +481,7 @@ struct Scanner {
   void reset () {
     start_delim = 0;
     catcode_table.reset();
-    catcode_commands.remove_if([](CatCodeCommand b){ return b.operation == OP_POP; });
+    catcode_commands.remove_if([](CatCodeCommand b){ return b.operation == OP_WRITE_ONCE; });
   }
 
   void initialize() {
@@ -484,6 +499,7 @@ struct Scanner {
     memcpy(&buffer[length], &start_delim, ch_size);
     length += ch_size;
 
+    // Save the catcode table.
     length += catcode_table.serialize(&buffer[length]);
 
     unsigned num_serialized = 0;
@@ -491,8 +507,9 @@ struct Scanner {
 
     length += sizeof(num_serialized);
 
+    // Save the WRITE_ONCE catcode commands.
     for (auto it = catcode_commands.cbegin(); it != catcode_commands.cend(); it++) {
-      if (it->operation == OP_POP) {
+      if (it->operation == OP_WRITE_ONCE) {
         length += it->serialize(&buffer[length]);
         num_serialized++;
       }
@@ -511,8 +528,6 @@ struct Scanner {
 
     reset();
 
-    // if (length == 0) return;
-
     const size_t ch_size = sizeof(int32_t);
     unsigned pos = 0;
 
@@ -520,9 +535,10 @@ struct Scanner {
     memcpy(&start_delim, &buffer[pos], ch_size);
     pos += sizeof(start_delim);
 
+    // Read the catcode table.
     pos += catcode_table.deserialize(&buffer[pos], length - pos);
 
-    // Retrieve the catcode pairs
+    // Retrieve the catcode commands
     unsigned num_serialized;
     memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
     pos += sizeof(num_serialized);
@@ -605,6 +621,8 @@ struct Scanner {
           lexer->advance(lexer, false);
         }
         break;
+      default:
+        break;
     }
 
     lexer->result_symbol = desc.type;
@@ -657,28 +675,31 @@ struct Scanner {
     return true;
   }
 
-  bool scan(TSLexer *lexer, const bool *valid_symbols)
-  {
-    Category code = catcode_table[lexer->lookahead];
-
+  bool scan_catcode_commands(TSLexer *lexer, const bool *valid_symbols) {
+    // Loop through the command list.
     for (auto it = catcode_commands.begin(); it != catcode_commands.end(); it++) {
-      if (valid_symbols[it->begin]) {
-        lexer->result_symbol = it->begin;
+      if (valid_symbols[it->trigger]) {
+        lexer->result_symbol = it->trigger;
         lexer->mark_end(lexer);
 
         CatCodeCommand previous;
 
-        previous.begin = it->end;
-        previous.end = it->end;
-        previous.operation = (it->operation == OP_PUSH) ? OP_POP : OP_SET;
+        // Load the catcode table and save the previous.
         catcode_table.load(it->table, previous.table);
 
         switch (it->operation) {
-          case OP_PUSH:
+          case OP_SAVE_AND_WRITE:
+            // Save the previous contents as a WRITE_ONCE command. Push the
+            // result to the front of the list so it has a higher priority.
+            previous.trigger = it->save_trigger;
+            previous.save_trigger = it->save_trigger;
+            previous.operation = OP_WRITE_ONCE;
             catcode_commands.push_front(previous);
             break;
-          case OP_POP:
+          case OP_WRITE_ONCE:
             catcode_commands.erase(it);
+            break;
+          default:
             break;
         }
 
@@ -686,7 +707,17 @@ struct Scanner {
       }
     }
 
-    // First look for simple symbols such as escape, comment, etc.
+    return false;
+  }
+
+  bool scan(TSLexer *lexer, const bool *valid_symbols)
+  {
+    // First look for catcode commands.
+    if (scan_catcode_commands(lexer, valid_symbols)) return true;
+
+    Category code = catcode_table[lexer->lookahead];
+
+    // Look for simple symbols such as escape, comment, etc.
     for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {
       if (it->categories[code] && valid_symbols[it->type]) {
         return scan_symbol(lexer, *it);
