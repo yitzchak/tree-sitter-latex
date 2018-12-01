@@ -77,8 +77,9 @@ foo##1bar
 -------------
 (document
   (text)
-  (parameter (parameter_char) (decimal)) (text)
-  (parameter (parameter_char) (parameter_char) (decimal))
+  (parameter (parameter_char))
+  (text)
+  (parameter (parameter_char) (parameter_char))
   (text))
 
 =============

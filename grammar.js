@@ -13,8 +13,10 @@ function begin_cmd ($) {
     : seq($.begin_cs, $.name_group)
 }
 
-function end_cmd ($, name_group) {
-  return seq($.end_cs, name_group || $.name_group)
+function end_cmd ($) {
+  return (arguments.length > 1)
+    ? seq.apply(null, [$.end_cs].concat(Array.prototype.slice.call(arguments, 1)))
+    : seq($.end_cs, $.name_group)
 }
 
 function group ($, contents) {
@@ -42,16 +44,18 @@ module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
+    $._at_letter,
+    $._at_other,
     $._cs_end,
+    $._default_catcodes,
     $._escape,
-    $._ExplSyntaxOff_word,
-    $._ExplSyntaxOn_word,
-    $._makeatletter_word,
-    $._makeatother_word,
+    $._expl_begin,
+    $._expl_end,
+    $._lua_end,
+    $._luacode_begin,
+    $._luadirect_begin,
+    $._luaexec_begin,
     $._non_letter_or_other,
-    $._ProvidesExplClass_word,
-    $._ProvidesExplFile_word,
-    $._ProvidesExplPackage_word,
     $._space,
     $._verb_line,
     $.active_char,
@@ -103,6 +107,11 @@ module.exports = grammar({
       $.ExplSyntaxOn,
       $.glue_assign,
       $.glue_space,
+      $.lua,
+      $.luadirect,
+      $.luaexec,
+      $.luacode_env,
+      $.luacodestar_env,
       $.makeatletter,
       $.makeatother,
       $.newcommand,
@@ -203,10 +212,10 @@ module.exports = grammar({
 
     // math_mode: $ => repeat1($._math_mode),
 
-    parameter: $ => seq(
+    parameter: $ => prec.left(-1, seq(
       repeat1($.parameter_char),
-      $.decimal
-    ),
+      optional(/[1-9]/)
+    )),
 
     text_env: $ => seq(
       $.begin,
@@ -357,36 +366,33 @@ module.exports = grammar({
       $.text_group,
       $.text_group,
       $.text_group,
-      $.text_group
+      $.text_group,
+      $._expl_begin
     ),
 
-    ProvidesExplClass_cs: $ => cs($,
-      $._ProvidesExplClass_word
-    ),
+    ProvidesExplClass_cs: $ => cs($, 'ProvidesExplClass'),
 
     ProvidesExplFile: $ => cmd($,
       $.ProvidesExplFile_cs,
       $.text_group,
       $.text_group,
       $.text_group,
-      $.text_group
+      $.text_group,
+      $._expl_begin
     ),
 
-    ProvidesExplFile_cs: $ => cs($,
-      $._ProvidesExplFile_word
-    ),
+    ProvidesExplFile_cs: $ => cs($, 'ProvidesExplFile'),
 
     ProvidesExplPackage: $ => cmd($,
       $.ProvidesExplPackage_cs,
       $.text_group,
       $.text_group,
       $.text_group,
-      $.text_group
+      $.text_group,
+      $._expl_begin
     ),
 
-    ProvidesExplPackage_cs: $ => cs($,
-      $._ProvidesExplPackage_word
-    ),
+    ProvidesExplPackage_cs: $ => cs($, 'ProvidesExplPackage'),
 
     section: $ => cmd($,
       $.section_cs,
@@ -412,28 +418,32 @@ module.exports = grammar({
     footnote_cs: $ => cs($, 'footnote'),
 
     makeatletter: $ => cmd($,
-      $.makeatletter_cs
+      $.makeatletter_cs,
+      $._at_letter,
     ),
 
-    makeatletter_cs: $ => cs($, $._makeatletter_word),
+    makeatletter_cs: $ => cs($, 'makeatletter'),
 
     makeatother: $ => cmd($,
-      $.makeatother_cs
+      $.makeatother_cs,
+      $._at_other
     ),
 
-    makeatother_cs: $ => cs($, $._makeatother_word),
+    makeatother_cs: $ => cs($, 'makeatother'),
 
     ExplSyntaxOn: $ => cmd($,
-      $.ExplSyntaxOn_cs
+      $.ExplSyntaxOn_cs,
+      $._expl_begin
     ),
 
-    ExplSyntaxOn_cs: $ => cs($, $._ExplSyntaxOn_word),
+    ExplSyntaxOn_cs: $ => cs($, 'ExplSyntaxOn'),
 
     ExplSyntaxOff: $ => cmd($,
-      $.ExplSyntaxOff_cs
+      $.ExplSyntaxOff_cs,
+      $._expl_end
     ),
 
-    ExplSyntaxOff_cs: $ => cs($, $._ExplSyntaxOff_word),
+    ExplSyntaxOff_cs: $ => cs($, 'ExplSyntaxOff'),
 
     // TeX dimension commands
 
@@ -992,6 +1002,79 @@ module.exports = grammar({
 
     hyperref_cs: $ => cs($, 'hyperref'),
 
+    // luacode
+
+    lua: $ => cmd($,
+      $.lua_cs,
+      $._luadirect_begin,
+      optional($._number),
+      $.text_group,
+      $._lua_end
+    ),
+
+    lua_cs: $ => cs($, /(direct|late)lua/),
+
+    luadirect: $ => cmd($,
+      $.luadirect_cs,
+      $._luadirect_begin,
+      $.text_group,
+      $._lua_end
+    ),
+
+    luadirect_cs: $ => cs($, 'luadirect'),
+
+    luaexec: $ => cmd($,
+      $.luaexec_cs,
+      $._luaexec_begin,
+      $.text_group,
+      $._lua_end
+    ),
+
+    luaexec_cs: $ => cs($, 'luaexec'),
+
+    luacode_env: $ => seq(
+      $.luacode_begin,
+      repeat($._text_mode),
+      $.luacode_end
+    ),
+
+    luacode_begin: $ => begin_cmd($,
+      $.luacode_env_group,
+      $._luacode_begin
+    ),
+
+    luacode_end: $ => end_cmd($,
+      $.luacode_env_group,
+      $._lua_end
+    ),
+
+    luacode_env_group: $ => group($, $.luacode_env_name),
+
+    luacode_env_name: $ => 'luacode',
+
+    luacodestar_env: $ => seq(
+      $.luacodestar_begin,
+      optional($.lua_text),
+      $.luacodestar_end
+    ),
+
+    luacodestar_begin: $ => begin_cmd($,
+      $.luacodestar_env_group,
+      $.eol
+    ),
+
+    luacodestar_end: $ => end_cmd($,
+      $.luacodestar_env_group
+    ),
+
+    lua_text: $ => repeat1($._verb_line),
+
+    luacodestar_env_group: $ => group($, $.luacodestar_env_name),
+
+    luacodestar_env_name: $ => 'luacode*',
+
+    // Common rules
+
     text_group: $ => group($, repeat($._text_mode)),
 
     dimension_group: $ => group($, $.dimension),
@@ -1030,6 +1113,8 @@ module.exports = grammar({
     ),
 
     decimal: $ => /[0-9]+/,
+
+    // digit: $ => /[1-9]/,
 
     octal: $ => /'[0-7]+/,
 

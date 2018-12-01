@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <list>
 #include <map>
 #include <vector>
 #include <bitset>
@@ -14,6 +15,8 @@ namespace {
 
 using std::any_of;
 using std::bitset;
+using std::initializer_list;
+using std::list;
 using std::map;
 using std::memcpy;
 using std::pair;
@@ -21,16 +24,18 @@ using std::string;
 using std::vector;
 
 enum SymbolType {
+  _AT_LETTER,
+  _AT_OTHER,
   _CS_END,
+  _DEFAULT_CATCODES,
   _ESCAPE,
-  _EXPLSYNTAXOFF_WORD,
-  _EXPLSYNTAXON_WORD,
-  _MAKEATLETTER_WORD,
-  _MAKEATOTHER_WORD,
+  _EXPL_BEGIN,
+  _EXPL_END,
+  _LUA_END,
+  _LUACODE_BEGIN,
+  _LUADIRECT_BEGIN,
+  _LUAEXEC_BEGIN,
   _NON_LETTER_OR_OTHER,
-  _PROVIDESEXPLCLASS_WORD,
-  _PROVIDESEXPLFILE_WORD,
-  _PROVIDESEXPLPACKAGE_WORD,
   _SPACE,
   _VERB_LINE,
   ACTIVE_CHAR,
@@ -76,6 +81,8 @@ enum SymbolWidth {
   UNLIMITED_WIDTH
 };
 
+// Description of a trivial symbol, i.e. one that is zero characters, one
+// character or unlimited characters based on a collection of categories.
 struct SymbolDescription {
   SymbolType type;
   SymbolWidth width;
@@ -87,10 +94,204 @@ struct SymbolDescription {
   }
 };
 
-struct Scanner {
-  static const size_t MIN_CATCODE_TABLE_SIZE = 128;
-  static const size_t MAX_CATCODE_TABLE_SIZE = 256;
+struct CatCodeCategoryRegion {
+  int32_t begin, end;
+  Category category;
+};
 
+// Common catcode table with overflow and support for partial catcode tables.
+class CatCodeTable {
+protected:
+  static const size_t TABLE_SIZE = 256;
+
+  bool partial;
+  vector<Category> table;
+  map<int32_t, Category> overflow;
+
+public:
+  CatCodeTable (bool _partial = false) :
+      partial(_partial),
+      table(_partial ? 0 : TABLE_SIZE, OTHER_CATEGORY) {}
+
+  CatCodeTable (bool _partial, initializer_list<CatCodeCategoryRegion> init) :
+      partial(_partial),
+      table(_partial ? 0 : TABLE_SIZE, OTHER_CATEGORY) {
+    for (auto it = init.begin(); it != init.end(); it++) {
+      for (int32_t ch = it->begin; ch <= it->end; ch++) {
+        set_catcode(ch, it->category);
+      }
+    }
+  }
+
+  void reset() {
+    // Partial tables will only use overflow.
+    table.assign(partial ? 0 : TABLE_SIZE, OTHER_CATEGORY);
+    overflow.clear();
+  }
+
+  void set_catcode(const int32_t key, Category cat) {
+    if (key > -1 && key < table.size()) {
+      table[key] = cat;
+    } else {
+      overflow[key] = cat;
+    }
+  }
+
+  Category get_catcode(const int32_t key) const {
+    if (key > -1 && key < table.size()) {
+      return table[key];
+    }
+
+    auto it = overflow.find(key);
+
+    // OTHER is the default category.
+    return (it == overflow.end()) ?
+      OTHER_CATEGORY :
+      it->second;
+  }
+
+  inline Category operator[](const int32_t key) const {
+    return get_catcode(key);
+  }
+
+  void load(const CatCodeTable& other, CatCodeTable& copy) {
+    copy.partial = other.partial;
+
+    if (other.partial) {
+      copy.table.assign(other.table.size(), OTHER_CATEGORY);
+      copy.overflow.clear();
+
+      // Load the values from the other table
+      for (int32_t ch = 0; ch < other.table.size(); ch++) {
+        // Save the current value
+        copy.table[ch] = get_catcode(ch);
+        // Set the new value
+        set_catcode(ch, other.table[ch]);
+      }
+
+      // Load the values from the other overflow
+      for (auto it = other.overflow.begin(); it != other.overflow.end(); it++) {
+        // Save the current value
+        copy.overflow[it->first] = get_catcode(it->first);
+        // Set the new value
+        set_catcode(it->first, it->second);
+      }
+    } else {
+      // Save the current table
+      copy.table = table;
+      copy.overflow = overflow;
+      // Load the new table
+      table = other.table;
+      overflow = other.overflow;
+    }
+  }
+
+  unsigned serialize(char *buffer) const {
+    unsigned length = 0, num_serialized = table.size();
+
+    // Save the partial flag
+    buffer[length++] = static_cast<char>(partial);
+
+    // Save the table
+    memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
+    length += sizeof(num_serialized);
+
+    for (auto it = table.begin(); it != table.end(); it++) {
+      buffer[length++] = static_cast<char>(*it);
+    }
+
+    // Save the overflow
+    num_serialized = overflow.size();
+    memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
+    length += sizeof(num_serialized);
+
+    for (auto it = overflow.cbegin(); it != overflow.cend(); it++) {
+      memcpy(&buffer[length], &it->first, sizeof(int32_t)); // character
+      length += sizeof(int32_t);
+      buffer[length++] = static_cast<char>(it->second); // catcode
+    }
+
+    return length;
+  }
+
+  unsigned deserialize(const char *buffer, unsigned length) {
+    // If there is no data available then just reset the table.
+    if (length == 0) {
+      reset();
+      return 0;
+    }
+
+    table.clear();
+    overflow.clear();
+
+    unsigned pos = 0;
+
+    // Read the partial flag
+    partial = static_cast<bool>(buffer[pos++]);
+
+    // read the table
+    unsigned num_serialized;
+    memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
+    pos += sizeof(num_serialized);
+
+    for (unsigned i = 0; i < num_serialized; i++) {
+      table.push_back(static_cast<Category>(buffer[pos++]));
+    }
+
+    // Read the overflow
+    memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
+    pos += sizeof(num_serialized);
+
+    for (unsigned i = 0; i < num_serialized; i++) {
+      int32_t character;
+      memcpy(&character, &buffer[pos], sizeof(int32_t));
+      pos += sizeof(int32_t);
+      overflow[character] = static_cast<Category>(buffer[pos++]);
+    }
+
+    return pos;
+  }
+};
+
+// CatCode operations.
+// WRITE overwrites the current table with this table (partial or complete)
+// SAVE_AND_WRITE overwrites and saves the values (or the whole table if partial is not set) that it overwrites into POP command
+// WRITE_ONCE overwrites and removes command from future executions.
+enum CatCodeOperation {
+  OP_WRITE,
+  OP_SAVE_AND_WRITE,
+  OP_WRITE_ONCE
+};
+
+// a bulk catcode table command
+struct CatCodeCommand {
+  SymbolType trigger;
+  SymbolType save_trigger;
+  CatCodeOperation operation;
+  CatCodeTable table;
+
+  unsigned serialize(char *buffer) const {
+    unsigned length = 0;
+
+    buffer[length++] = static_cast<char>(trigger);
+    buffer[length++] = static_cast<char>(save_trigger);
+    buffer[length++] = static_cast<char>(operation);
+
+    return length + table.serialize(&buffer[length]);
+  }
+
+  unsigned deserialize(const char *buffer, unsigned length) {
+    unsigned pos = 0;
+
+    trigger = static_cast<SymbolType>(buffer[pos++]);
+    save_trigger = static_cast<SymbolType>(buffer[pos++]);
+    operation = static_cast<CatCodeOperation>(buffer[pos++]);
+
+    return pos + table.deserialize(&buffer[pos], length - pos);
+  }
+};
+
+struct Scanner {
   static const unsigned int ESCAPE_FLAG = 1 << ESCAPE_CATEGORY;
   static const unsigned int BEGIN_FLAG = 1 << BEGIN_CATEGORY;
   static const unsigned int END_FLAG = 1 << END_CATEGORY;
@@ -110,7 +311,7 @@ struct Scanner {
 
   vector<SymbolDescription> symbol_descriptions = {
     {~(LETTER_FLAG | OTHER_FLAG), _NON_LETTER_OR_OTHER, SINGLE_WIDTH},
-    {~LETTER_FLAG,                _CS_END,           ZERO_WIDTH},
+    {~LETTER_FLAG,                _CS_END,              ZERO_WIDTH},
     {ESCAPE_FLAG,                 _ESCAPE,              SINGLE_WIDTH},
     {BEGIN_FLAG,                  BEGIN_GROUP,          SINGLE_WIDTH},
     {END_FLAG,                    END_GROUP,            SINGLE_WIDTH},
@@ -124,16 +325,6 @@ struct Scanner {
     {ACTIVE_CHAR_FLAG,            ACTIVE_CHAR,          SINGLE_WIDTH}
   };
 
-  map<string, SymbolType> words = {
-    {"ExplSyntaxOff", _EXPLSYNTAXOFF_WORD},
-    {"ExplSyntaxOn", _EXPLSYNTAXON_WORD},
-    {"makeatletter", _MAKEATLETTER_WORD},
-    {"makeatother", _MAKEATOTHER_WORD},
-    {"ProvidesExplClass", _PROVIDESEXPLCLASS_WORD},
-    {"ProvidesExplFile", _PROVIDESEXPLFILE_WORD},
-    {"ProvidesExplPackage", _PROVIDESEXPLPACKAGE_WORD}
-  };
-
   map<string, SymbolType> comment_types = {
     {"arara:", ARARA_COMMENT},
     {"!Bib", BIB_COMMENT},
@@ -142,231 +333,227 @@ struct Scanner {
     {"!TEX", MAGIC_COMMENT}
   };
 
+  list<CatCodeCommand> catcode_commands = {
+    {
+      _DEFAULT_CATCODES,
+      _DEFAULT_CATCODES,
+      OP_WRITE,
+      {
+        false,
+        {
+          {'\\',   '\\',   ESCAPE_CATEGORY},
+          {'{',    '{',    BEGIN_CATEGORY},
+          {'}',    '}',    END_CATEGORY},
+          {'$',    '$',    MATH_SHIFT_CATEGORY},
+          {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
+          {'\n',   '\n',   EOL_CATEGORY},
+          {'#',    '#',    PARAMETER_CATEGORY},
+          {'^',    '^',    SUPERSCRIPT_CATEGORY},
+          {'_',    '_',    SUBSCRIPT_CATEGORY},
+          {'\0',   '\0',   IGNORED_CATEGORY},
+          {' ',    ' ',    SPACE_CATEGORY},
+          {'\t',   '\t',   SPACE_CATEGORY},
+          {'A',    'Z',    LETTER_CATEGORY},
+          {'a',    'z',    LETTER_CATEGORY},
+          {'~',    '~',    ACTIVE_CHAR_CATEGORY},
+          {'%',    '%',    COMMENT_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}
+        }
+      }
+    },
+    {
+      _AT_LETTER,
+      _AT_LETTER,
+      OP_WRITE,
+      {
+        true,
+        {
+          {'@', '@', LETTER_CATEGORY}
+        }
+      }
+    },
+    {
+      _AT_OTHER,
+      _AT_OTHER,
+      OP_WRITE,
+      {
+        true,
+        {
+          {'@', '@', OTHER_CATEGORY}
+        }
+      }
+    },
+    {
+      _EXPL_BEGIN,
+      _EXPL_END,
+      OP_SAVE_AND_WRITE,
+      {
+        true,
+        {
+          {'\t', '\t', IGNORED_CATEGORY},
+          {' ',  ' ',  IGNORED_CATEGORY},
+          {' ',  ' ',  OTHER_CATEGORY},
+          {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
+          {':',  ':',  LETTER_CATEGORY},
+          {'^',  '^',  SUPERSCRIPT_CATEGORY},
+          {'_',  '_',  LETTER_CATEGORY},
+          {'|',  '|',  OTHER_CATEGORY},
+          {'~',  '~',  SPACE_CATEGORY}
+        }
+      }
+    },
+    { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
+      _EXPL_END,
+      _EXPL_END,
+      OP_WRITE,
+      {
+        true,
+        {
+          {'\t', '\t', SPACE_CATEGORY},
+          {' ',  ' ',  SPACE_CATEGORY},
+          {'"',  '"',  OTHER_CATEGORY},
+          {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
+          {':',  ':',  OTHER_CATEGORY},
+          {'^',  '^',  SUPERSCRIPT_CATEGORY},
+          {'_',  '_',  SUBSCRIPT_CATEGORY},
+          {'|',  '|',  OTHER_CATEGORY},
+          {'~',  '~',  ACTIVE_CHAR_CATEGORY}
+        }
+      }
+    },
+    { // \luadirect catcode table
+      _LUADIRECT_BEGIN,
+      _LUA_END,
+      OP_SAVE_AND_WRITE,
+      {
+        false,
+        {
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
+          {'\n', '\n', EOL_CATEGORY},
+          {'A',  'Z',  LETTER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY},
+          {'~',  '~',  ACTIVE_CHAR_CATEGORY},
+          {'%',  '%',  COMMENT_CATEGORY}
+        }
+      }
+    },
+    { // luaexec catcode table
+      _LUAEXEC_BEGIN,
+      _LUA_END,
+      OP_SAVE_AND_WRITE,
+      {
+        false,
+        {
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
+          {'\n', '\n', EOL_CATEGORY},
+          {'A',  'Z',  LETTER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY},
+          {'%',  '%',  COMMENT_CATEGORY}
+        }
+      }
+    },
+    { // luacode catcode table
+      _LUACODE_BEGIN,
+      _LUA_END,
+      OP_SAVE_AND_WRITE,
+      {
+        false,
+        {
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
+          {'A',  'Z',  LETTER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY}
+        }
+      }
+    }
+  };
+
   int32_t start_delim = 0;
-  vector<Category> catcode_table;
-  map<int32_t, Category> overflow_catcodes;
-  map<int32_t, Category> saved_catcodes;
+  CatCodeTable catcode_table;
 
   Scanner() {}
 
   void reset () {
     start_delim = 0;
-    catcode_table.resize(MIN_CATCODE_TABLE_SIZE, OTHER_CATEGORY);
-    overflow_catcodes.clear();
-    saved_catcodes.clear();
+    catcode_table.reset();
+    catcode_commands.remove_if([](CatCodeCommand b){ return b.operation == OP_WRITE_ONCE; });
   }
 
   void initialize() {
     reset();
-
-    set_catcode('\\', ESCAPE_CATEGORY);
-    set_catcode('{', BEGIN_CATEGORY);
-    set_catcode('}', END_CATEGORY);
-    set_catcode('$', MATH_SHIFT_CATEGORY);
-    set_catcode('&', ALIGNMENT_TAB_CATEGORY);
-    set_catcode('\n', EOL_CATEGORY);
-    set_catcode('#', PARAMETER_CATEGORY);
-    set_catcode('^', SUPERSCRIPT_CATEGORY);
-    set_catcode('_', SUBSCRIPT_CATEGORY);
-    set_catcode('\0', IGNORED_CATEGORY);
-    set_catcode(' ', SPACE_CATEGORY);
-    set_catcode('\t', SPACE_CATEGORY);
-    set_catcode('A', LETTER_CATEGORY);
-    set_catcode('B', LETTER_CATEGORY);
-    set_catcode('C', LETTER_CATEGORY);
-    set_catcode('D', LETTER_CATEGORY);
-    set_catcode('E', LETTER_CATEGORY);
-    set_catcode('F', LETTER_CATEGORY);
-    set_catcode('G', LETTER_CATEGORY);
-    set_catcode('H', LETTER_CATEGORY);
-    set_catcode('I', LETTER_CATEGORY);
-    set_catcode('J', LETTER_CATEGORY);
-    set_catcode('K', LETTER_CATEGORY);
-    set_catcode('L', LETTER_CATEGORY);
-    set_catcode('M', LETTER_CATEGORY);
-    set_catcode('N', LETTER_CATEGORY);
-    set_catcode('O', LETTER_CATEGORY);
-    set_catcode('P', LETTER_CATEGORY);
-    set_catcode('Q', LETTER_CATEGORY);
-    set_catcode('R', LETTER_CATEGORY);
-    set_catcode('S', LETTER_CATEGORY);
-    set_catcode('T', LETTER_CATEGORY);
-    set_catcode('U', LETTER_CATEGORY);
-    set_catcode('V', LETTER_CATEGORY);
-    set_catcode('W', LETTER_CATEGORY);
-    set_catcode('X', LETTER_CATEGORY);
-    set_catcode('Y', LETTER_CATEGORY);
-    set_catcode('Z', LETTER_CATEGORY);
-    set_catcode('a', LETTER_CATEGORY);
-    set_catcode('b', LETTER_CATEGORY);
-    set_catcode('c', LETTER_CATEGORY);
-    set_catcode('d', LETTER_CATEGORY);
-    set_catcode('e', LETTER_CATEGORY);
-    set_catcode('f', LETTER_CATEGORY);
-    set_catcode('g', LETTER_CATEGORY);
-    set_catcode('h', LETTER_CATEGORY);
-    set_catcode('i', LETTER_CATEGORY);
-    set_catcode('j', LETTER_CATEGORY);
-    set_catcode('k', LETTER_CATEGORY);
-    set_catcode('l', LETTER_CATEGORY);
-    set_catcode('m', LETTER_CATEGORY);
-    set_catcode('n', LETTER_CATEGORY);
-    set_catcode('o', LETTER_CATEGORY);
-    set_catcode('p', LETTER_CATEGORY);
-    set_catcode('q', LETTER_CATEGORY);
-    set_catcode('r', LETTER_CATEGORY);
-    set_catcode('s', LETTER_CATEGORY);
-    set_catcode('t', LETTER_CATEGORY);
-    set_catcode('u', LETTER_CATEGORY);
-    set_catcode('v', LETTER_CATEGORY);
-    set_catcode('w', LETTER_CATEGORY);
-    set_catcode('x', LETTER_CATEGORY);
-    set_catcode('y', LETTER_CATEGORY);
-    set_catcode('z', LETTER_CATEGORY);
-    set_catcode('~', ACTIVE_CHAR_CATEGORY);
-    set_catcode('%', COMMENT_CATEGORY);
-    set_catcode('\x7f', INVALID_CATEGORY);
+    // This is a hack. I'd like to have grammer.js load this via _DEFAULT_CATCODES.
+    CatCodeTable copy;
+    catcode_table.load(catcode_commands.front().table, copy);
   }
 
-  Category get_catcode(int32_t key) {
-    if (key > -1 && key < catcode_table.size()) {
-      return catcode_table[key];
-    }
-
-    auto it = overflow_catcodes.find(key);
-
-    return (it == overflow_catcodes.end()) ?
-      OTHER_CATEGORY :
-      it->second;
-  }
-
-  void set_catcode(int32_t key, Category code) {
-    if (key > -1 && key < catcode_table.size()) {
-      catcode_table[key] = code;
-    } else if (key < MAX_CATCODE_TABLE_SIZE) {
-      catcode_table.resize(key + 1, OTHER_CATEGORY);
-      catcode_table[key] = code;
-    } else if (code == OTHER_CATEGORY) {
-      overflow_catcodes.erase(key);
-    } else {
-      overflow_catcodes[key] = code;
-    }
-  }
-
-  void push_catcode(int32_t key, Category code) {
-    saved_catcodes[key] = get_catcode(key);
-    set_catcode(key, code);
-  }
-
-  void pop_catcode(int32_t key) {
-    auto it = saved_catcodes.find(key);
-
-    if (it != saved_catcodes.end()) {
-      set_catcode(key, it->second);
-      saved_catcodes.erase(key);
-    }
-  }
-
-  unsigned serialize(char *buffer) {
+  unsigned serialize(char *buffer) const {
     const size_t ch_size = sizeof(int32_t);
+    unsigned length = 0;
 
     // First save the verbatim delimiter
-    memcpy(&buffer[0], &start_delim, ch_size);
+    memcpy(&buffer[length], &start_delim, ch_size);
+    length += ch_size;
 
-    // Next store the catcodes map as [char, char] pairs
+    // Save the catcode table.
+    length += catcode_table.serialize(&buffer[length]);
+
     unsigned num_serialized = 0;
-    unsigned length = sizeof(start_delim) + sizeof(num_serialized);
+    unsigned count_pos = length;
 
-    // TODO: Check for overflow (probably never going to happen though)
+    length += sizeof(num_serialized);
 
-    for (int32_t ch = 0; ch < catcode_table.size(); ch++) {
-      if (catcode_table[ch] != OTHER_CATEGORY) {
-        memcpy(&buffer[length], &ch, ch_size); // character
-        length += ch_size;
-        buffer[length++] = static_cast<char>(catcode_table[ch]); // catcode
+    // Save the WRITE_ONCE catcode commands.
+    for (auto it = catcode_commands.cbegin(); it != catcode_commands.cend(); it++) {
+      if (it->operation == OP_WRITE_ONCE) {
+        length += it->serialize(&buffer[length]);
         num_serialized++;
       }
     }
 
-    for (auto it = overflow_catcodes.begin(); it != overflow_catcodes.end(); ++it) {
-      memcpy(&buffer[length], &it->first, ch_size); // character
-      length += ch_size;
-      buffer[length++] = static_cast<char>(it->second); // catcode
-      num_serialized++;
-    }
-
-    memcpy(&buffer[sizeof(start_delim)], &num_serialized, sizeof(num_serialized));
-
-    // Next store the saved_catcodes map as [char, char] pairs
-    unsigned saved_cat_count_pos = length;
-    length += sizeof(saved_cat_count_pos);
-
-    num_serialized = 0;
-
-    for (auto it = saved_catcodes.begin(); it != saved_catcodes.end(); ++it) {
-      memcpy(&buffer[length], &it->first, ch_size); // character
-      length += ch_size;
-      buffer[length++] = static_cast<char>(it->second);
-      num_serialized++;
-    }
-
-    num_serialized = saved_catcodes.size();
-    memcpy(&buffer[saved_cat_count_pos], &num_serialized, sizeof(num_serialized));
+    memcpy(&buffer[count_pos], &num_serialized, sizeof(num_serialized));
 
     return length;
   }
 
   void deserialize(const char *buffer, unsigned length) {
     if (length == 0) {
-      // Initialize the scanner with a the default catcode table, start_delim, etc.
       initialize();
       return;
-    };
-
-    const size_t ch_size = sizeof(int32_t);
-
-    // Reset the scanner
-    reset();
-
-    // Retrieve the verbatim start delimiter
-    memcpy(&start_delim, &buffer[0], ch_size);
-
-    // Retrieve the catcode pairs
-    unsigned num_serialized;
-    memcpy(&num_serialized, &buffer[sizeof(start_delim)], sizeof(num_serialized));
-
-    unsigned i = sizeof(start_delim) + sizeof(num_serialized);
-    unsigned set = 0;
-    while (set < num_serialized) {
-      int32_t character;
-      memcpy(&character, &buffer[i], ch_size);
-      i += ch_size;
-      Category cat = static_cast<Category>(buffer[i++]);
-      set_catcode(character, cat);
-      set += 1;
     }
 
-    // Retrieve the saved_catcode pairs
-    saved_catcodes.clear();
+    reset();
 
-    memcpy(&num_serialized, &buffer[i], sizeof(num_serialized));
+    const size_t ch_size = sizeof(int32_t);
+    unsigned pos = 0;
 
-    i += sizeof(num_serialized);
-    set = 0;
-    while (set < num_serialized) {
-      int32_t character;
-      memcpy(&character, &buffer[i], ch_size);
-      i += ch_size;
-      Category cat = static_cast<Category>(buffer[i++]);
-      saved_catcodes[character] = cat;
-      set += 1;
+    // Retrieve the verbatim start delimiter
+    memcpy(&start_delim, &buffer[pos], ch_size);
+    pos += sizeof(start_delim);
+
+    // Read the catcode table.
+    pos += catcode_table.deserialize(&buffer[pos], length - pos);
+
+    // Retrieve the catcode commands
+    unsigned num_serialized;
+    memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
+    pos += sizeof(num_serialized);
+
+    for (unsigned i = 0; i < num_serialized; i++) {
+      CatCodeCommand c;
+      pos += c.deserialize(&buffer[pos], length - pos);
+      catcode_commands.push_front(c);
     }
   }
 
   bool scan_start_verb_delim(TSLexer *lexer) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
-    if (lexer->lookahead && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+    if (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
       lexer->result_symbol = VERB_DELIM;
@@ -386,7 +573,7 @@ struct Scanner {
       return true;
     }
 
-    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       lexer->result_symbol = VERB_DELIM; // don't eat the newline (for consistency)
       lexer->mark_end(lexer);
       start_delim = 0;
@@ -397,7 +584,7 @@ struct Scanner {
   }
 
   bool scan_verb_body(TSLexer *lexer) {
-    while (lexer->lookahead && lexer->lookahead != start_delim && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+    while (lexer->lookahead && lexer->lookahead != start_delim && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -408,11 +595,11 @@ struct Scanner {
   }
 
   bool scan_verb_line(TSLexer *lexer) {
-    while (lexer->lookahead && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+    while (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
-    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -430,74 +617,16 @@ struct Scanner {
         lexer->advance(lexer, false);
         break;
       case UNLIMITED_WIDTH:
-        while (desc.categories[get_catcode(lexer->lookahead)]) {
+        while (desc.categories[catcode_table[lexer->lookahead]]) {
           lexer->advance(lexer, false);
         }
+        break;
+      default:
         break;
     }
 
     lexer->result_symbol = desc.type;
     lexer->mark_end(lexer);
-
-    return true;
-  }
-
-  bool scan_word(TSLexer *lexer) {
-    string word;
-
-    // Keep advancing while there are letters available. Save the result for
-    // lookup in the word map.
-    while (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
-      word += lexer->lookahead;
-      lexer->advance(lexer, false);
-    }
-
-    auto it = words.find(word);
-
-    // if the word is not found then let the internal scanner have the text.
-    if (it == words.end()) {
-      return false;
-    }
-
-    lexer->result_symbol = it->second;
-    lexer->mark_end(lexer);
-
-    // Look for a word that signifies a catcode change.
-    switch (lexer->result_symbol) {
-      case _EXPLSYNTAXOFF_WORD:
-        pop_catcode('\t');
-        pop_catcode(' ');
-        pop_catcode('"');
-        pop_catcode('&');
-        pop_catcode(':');
-        pop_catcode('^');
-        pop_catcode('_');
-        pop_catcode('|');
-        pop_catcode('~');
-        // pop_catcode('\n');
-        break;
-      case _EXPLSYNTAXON_WORD:
-      case _PROVIDESEXPLCLASS_WORD:
-      case _PROVIDESEXPLFILE_WORD:
-      case _PROVIDESEXPLPACKAGE_WORD:
-        push_catcode('\t', IGNORED_CATEGORY);
-        push_catcode(' ',  IGNORED_CATEGORY);
-        push_catcode('"',  OTHER_CATEGORY);
-        push_catcode('&',  ALIGNMENT_TAB_CATEGORY);
-        push_catcode(':',  LETTER_CATEGORY);
-        push_catcode('^',  SUPERSCRIPT_CATEGORY);
-        push_catcode('_',  LETTER_CATEGORY);
-        push_catcode('|',  OTHER_CATEGORY);
-        push_catcode('~',  SPACE_CATEGORY);
-        // set_catcode('\n', IGNORED_CATEGORY);
-        break;
-      case _MAKEATOTHER_WORD:
-        set_catcode('@', OTHER_CATEGORY);
-        break;
-      case _MAKEATLETTER_WORD:
-        set_catcode('@', LETTER_CATEGORY);
-        break;
-    }
 
     return true;
   }
@@ -515,12 +644,12 @@ struct Scanner {
       lexer->result_symbol = TAG_COMMENT;
     } else {
       // Skip any leading spaces
-      while (get_catcode(lexer->lookahead) == SPACE_CATEGORY) {
+      while (catcode_table[lexer->lookahead] == SPACE_CATEGORY) {
         lexer->advance(lexer, false);
       }
 
       // Try to capture a tag
-      while (comment_type_categories[get_catcode(lexer->lookahead)]) {
+      while (comment_type_categories[catcode_table[lexer->lookahead]]) {
         comment_type += lexer->lookahead;
         lexer->advance(lexer, false);
       }
@@ -532,12 +661,12 @@ struct Scanner {
     }
 
     // Gobble the reset of the comment
-    while (comment_categories[get_catcode(lexer->lookahead)]) {
+    while (comment_categories[catcode_table[lexer->lookahead]]) {
       lexer->advance(lexer, false);
     }
 
     // Eat any EOL
-    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -546,11 +675,49 @@ struct Scanner {
     return true;
   }
 
+  bool scan_catcode_commands(TSLexer *lexer, const bool *valid_symbols) {
+    // Loop through the command list.
+    for (auto it = catcode_commands.begin(); it != catcode_commands.end(); it++) {
+      if (valid_symbols[it->trigger]) {
+        lexer->result_symbol = it->trigger;
+        lexer->mark_end(lexer);
+
+        CatCodeCommand previous;
+
+        // Load the catcode table and save the previous.
+        catcode_table.load(it->table, previous.table);
+
+        switch (it->operation) {
+          case OP_SAVE_AND_WRITE:
+            // Save the previous contents as a WRITE_ONCE command. Push the
+            // result to the front of the list so it has a higher priority.
+            previous.trigger = it->save_trigger;
+            previous.save_trigger = it->save_trigger;
+            previous.operation = OP_WRITE_ONCE;
+            catcode_commands.push_front(previous);
+            break;
+          case OP_WRITE_ONCE:
+            catcode_commands.erase(it);
+            break;
+          default:
+            break;
+        }
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
-    Category code = get_catcode(lexer->lookahead);
+    // First look for catcode commands.
+    if (scan_catcode_commands(lexer, valid_symbols)) return true;
 
-    // First look for simple symbols such as escape, comment, etc.
+    Category code = catcode_table[lexer->lookahead];
+
+    // Look for simple symbols such as escape, comment, etc.
     for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {
       if (it->categories[code] && valid_symbols[it->type]) {
         return scan_symbol(lexer, *it);
@@ -560,13 +727,6 @@ struct Scanner {
     // Look for comments.
     if (code == COMMENT_CATEGORY && valid_symbols[COMMENT]) {
       return scan_comment(lexer);
-    }
-
-    // Check for word symbols that follow an escape
-    if (code == LETTER_CATEGORY &&
-        any_of(words.begin(), words.end(),
-          [valid_symbols](pair<string, SymbolType> p){ return valid_symbols[p.second]; })) {
-      return scan_word(lexer);
     }
 
     // Look an inline verbatim delimiter and end the verbatim if one is

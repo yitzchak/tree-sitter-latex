@@ -69,6 +69,26 @@
         },
         {
           "type": "SYMBOL",
+          "name": "lua"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luadirect"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luaexec"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacode_env"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_env"
+        },
+        {
+          "type": "SYMBOL",
           "name": "makeatletter"
         },
         {
@@ -456,20 +476,32 @@
       ]
     },
     "parameter": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "parameter_char"
+      "type": "PREC_LEFT",
+      "value": -1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "REPEAT1",
+            "content": {
+              "type": "SYMBOL",
+              "name": "parameter_char"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[1-9]"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "decimal"
-        }
-      ]
+        ]
+      }
     },
     "text_env": {
       "type": "SEQ",
@@ -1138,6 +1170,10 @@
         {
           "type": "SYMBOL",
           "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_begin"
         }
       ]
     },
@@ -1149,8 +1185,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ProvidesExplClass_word"
+          "type": "STRING",
+          "value": "ProvidesExplClass"
         },
         {
           "type": "SYMBOL",
@@ -1180,6 +1216,10 @@
         {
           "type": "SYMBOL",
           "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_begin"
         }
       ]
     },
@@ -1191,8 +1231,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ProvidesExplFile_word"
+          "type": "STRING",
+          "value": "ProvidesExplFile"
         },
         {
           "type": "SYMBOL",
@@ -1222,6 +1262,10 @@
         {
           "type": "SYMBOL",
           "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_begin"
         }
       ]
     },
@@ -1233,8 +1277,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ProvidesExplPackage_word"
+          "type": "STRING",
+          "value": "ProvidesExplPackage"
         },
         {
           "type": "SYMBOL",
@@ -1370,6 +1414,10 @@
         {
           "type": "SYMBOL",
           "name": "makeatletter_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_at_letter"
         }
       ]
     },
@@ -1381,8 +1429,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_makeatletter_word"
+          "type": "STRING",
+          "value": "makeatletter"
         },
         {
           "type": "SYMBOL",
@@ -1396,6 +1444,10 @@
         {
           "type": "SYMBOL",
           "name": "makeatother_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_at_other"
         }
       ]
     },
@@ -1407,8 +1459,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_makeatother_word"
+          "type": "STRING",
+          "value": "makeatother"
         },
         {
           "type": "SYMBOL",
@@ -1422,6 +1474,10 @@
         {
           "type": "SYMBOL",
           "name": "ExplSyntaxOn_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_begin"
         }
       ]
     },
@@ -1433,8 +1489,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ExplSyntaxOn_word"
+          "type": "STRING",
+          "value": "ExplSyntaxOn"
         },
         {
           "type": "SYMBOL",
@@ -1448,6 +1504,10 @@
         {
           "type": "SYMBOL",
           "name": "ExplSyntaxOff_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expl_end"
         }
       ]
     },
@@ -1459,8 +1519,8 @@
           "name": "_escape"
         },
         {
-          "type": "SYMBOL",
-          "name": "_ExplSyntaxOff_word"
+          "type": "STRING",
+          "value": "ExplSyntaxOff"
         },
         {
           "type": "SYMBOL",
@@ -3850,6 +3910,290 @@
         }
       ]
     },
+    "lua": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "lua_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_luadirect_begin"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_number"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lua_end"
+        }
+      ]
+    },
+    "lua_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "PATTERN",
+          "value": "(direct|late)lua"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "luadirect": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "luadirect_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_luadirect_begin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lua_end"
+        }
+      ]
+    },
+    "luadirect_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "luadirect"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "luaexec": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "luaexec_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_luaexec_begin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lua_end"
+        }
+      ]
+    },
+    "luaexec_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_escape"
+        },
+        {
+          "type": "STRING",
+          "value": "luaexec"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "luacode_env": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "luacode_begin"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_text_mode"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacode_end"
+        }
+      ]
+    },
+    "luacode_begin": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacode_env_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_luacode_begin"
+        }
+      ]
+    },
+    "luacode_end": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "end_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacode_env_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lua_end"
+        }
+      ]
+    },
+    "luacode_env_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacode_env_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "luacode_env_name": {
+      "type": "STRING",
+      "value": "luacode"
+    },
+    "luacodestar_env": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_begin"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "lua_text"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_end"
+        }
+      ]
+    },
+    "luacodestar_begin": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_env_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "luacodestar_end": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "end_cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_env_group"
+        }
+      ]
+    },
+    "lua_text": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_verb_line"
+      }
+    },
+    "luacodestar_env_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacodestar_env_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "luacodestar_env_name": {
+      "type": "STRING",
+      "value": "luacode*"
+    },
     "text_group": {
       "type": "SEQ",
       "members": [
@@ -4140,7 +4484,19 @@
   "externals": [
     {
       "type": "SYMBOL",
+      "name": "_at_letter"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_at_other"
+    },
+    {
+      "type": "SYMBOL",
       "name": "_cs_end"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_default_catcodes"
     },
     {
       "type": "SYMBOL",
@@ -4148,35 +4504,31 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_ExplSyntaxOff_word"
+      "name": "_expl_begin"
     },
     {
       "type": "SYMBOL",
-      "name": "_ExplSyntaxOn_word"
+      "name": "_expl_end"
     },
     {
       "type": "SYMBOL",
-      "name": "_makeatletter_word"
+      "name": "_lua_end"
     },
     {
       "type": "SYMBOL",
-      "name": "_makeatother_word"
+      "name": "_luacode_begin"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_luadirect_begin"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_luaexec_begin"
     },
     {
       "type": "SYMBOL",
       "name": "_non_letter_or_other"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_ProvidesExplClass_word"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_ProvidesExplFile_word"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "_ProvidesExplPackage_word"
     },
     {
       "type": "SYMBOL",
