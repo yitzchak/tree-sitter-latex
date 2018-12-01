@@ -26,7 +26,6 @@ using std::vector;
 enum SymbolType {
   _AT_LETTER,
   _AT_OTHER,
-  _CS_END,
   _DEFAULT_CATCODES,
   _ESCAPE,
   _EXPL_BEGIN,
@@ -35,7 +34,8 @@ enum SymbolType {
   _LUACODE_BEGIN,
   _LUADIRECT_BEGIN,
   _LUAEXEC_BEGIN,
-  _NON_LETTER_OR_OTHER,
+  _NEXT_LETTER,
+  _NEXT_NON_LETTER,
   _SPACE,
   _VERB_LINE,
   ACTIVE_CHAR,
@@ -311,11 +311,11 @@ struct Scanner {
   static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
 
   vector<SymbolDescription> symbol_descriptions = {
-    {~(LETTER_FLAG | OTHER_FLAG), _NON_LETTER_OR_OTHER, SINGLE_WIDTH},
-    {~LETTER_FLAG,                _CS_END,              ZERO_WIDTH},
+    {LETTER_FLAG,                 _NEXT_LETTER,         ZERO_WIDTH},
+    {~LETTER_FLAG,                _NEXT_NON_LETTER,     ZERO_WIDTH},
     {ESCAPE_FLAG,                 _ESCAPE,              SINGLE_WIDTH},
     {BEGIN_FLAG,                  BEGIN_GROUP,          SINGLE_WIDTH},
-    {END_FLAG,                    EXIT_GROUP,            ZERO_WIDTH},
+    {END_FLAG,                    EXIT_GROUP,           ZERO_WIDTH},
     {END_FLAG,                    END_GROUP,            SINGLE_WIDTH},
     {MATH_SHIFT_FLAG,             MATH_SHIFT,           SINGLE_WIDTH},
     {ALIGNMENT_TAB_FLAG,          ALIGNMENT_TAB,        SINGLE_WIDTH},

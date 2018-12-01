@@ -247,3 +247,17 @@ foo\[bar
     (begin_display_math)
     (text)
     (MISSING)))
+
+===========================================
+LaTeX display math inside newenvironment
+============================================
+\newenvironment{mathluacode}{\[\luacode}{\endluacode\]}
+--------------------------------------------
+(document
+  (newenvironment
+    (newenvironment_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group
+      (begin_group) (latex_display_math (begin_display_math) (cs) (exit_group)) (end_group))
+    (text_group
+      (begin_group) (cs) (end_display_math) (end_group))))

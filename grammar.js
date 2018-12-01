@@ -1,7 +1,10 @@
 function cs ($, name) {
-  return seq($._escape, name, $._cs_end)
+  return seq($._escape, $._next_letter, name, $._next_non_letter)
 }
 
+function escaped ($, name) {
+  return seq($._escape, $._next_non_letter, name)
+}
 // This command is a placeholder for aliasing of cs
 function cmd () {
   return seq.apply(null, Array.prototype.slice.call(arguments, 1))
@@ -46,7 +49,6 @@ module.exports = grammar({
   externals: $ => [
     $._at_letter,
     $._at_other,
-    $._cs_end,
     $._default_catcodes,
     $._escape,
     $._expl_begin,
@@ -55,7 +57,8 @@ module.exports = grammar({
     $._luacode_begin,
     $._luadirect_begin,
     $._luaexec_begin,
-    $._non_letter_or_other,
+    $._next_letter,
+    $._next_non_letter,
     $._space,
     $._verb_line,
     $.active_char,
@@ -172,6 +175,8 @@ module.exports = grammar({
       $.section,
       $.use,
       $.footnote,
+      $.end_inline_math,
+      $.end_display_math,
       // LaTeX cls
       $.NeedsTeXFormat,
       $.ProvidesPackage,
@@ -252,9 +257,9 @@ module.exports = grammar({
       choice($.end_display_math, $.exit_group)
     ),
 
-    begin_display_math: $ => seq($._escape, '['),
+    begin_display_math: $ => escaped($, '['),
 
-    end_display_math: $ => prec(-3, seq($._escape, ']')),
+    end_display_math: $ => prec(-3, escaped($, ']')),
 
     display_math_env: $ => seq(
       $.display_math_begin,
@@ -295,9 +300,9 @@ module.exports = grammar({
       choice($.end_inline_math, $.exit_group)
     ),
 
-    begin_inline_math: $ => seq($._escape, '('),
+    begin_inline_math: $ => escaped($, '('),
 
-    end_inline_math: $ => seq($._escape, ')'),
+    end_inline_math: $ => escaped($, ')'),
 
     inline_math_env: $ => seq(
       $.inline_math_begin,
@@ -1102,7 +1107,7 @@ module.exports = grammar({
 
     cs: $ => cs($, repeat1(/./)),
 
-    escaped: $ => seq($._escape, $._non_letter_or_other),
+    escaped: $ => escaped($, /[^()\[\]]/),
 
     // fi introduced by LuaTeX
     unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/,
