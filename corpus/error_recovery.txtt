@@ -261,3 +261,40 @@ LaTeX display math inside newenvironment
       (begin_group) (latex_display_math (begin_display_math) (cs) (exit_group)) (end_group))
     (text_group
       (begin_group) (cs) (end_display_math) (end_group))))
+
+===========================================
+LaTeX display math inside newenvironment
+============================================
+\newenvironment{mathluacode}{\(\luacode}{\endluacode\)}
+--------------------------------------------
+(document
+  (newenvironment
+    (newenvironment_cs)
+    (text_group (begin_group) (text) (end_group))
+    (text_group
+      (begin_group) (latex_inline_math (begin_inline_math) (cs) (exit_group)) (end_group))
+    (text_group
+      (begin_group) (cs) (end_inline_math) (end_group))))
+
+==========================================
+newenvironment based on existing environment (the wrong way)
+======================================
+\newenvironment{foo}{\begin{bar}}{\end{bar}}
+--------------------------------------
+(document
+  (newenvironment
+    (newenvironment_cs)
+    (text_group
+      (begin_group)
+      (text)
+      (end_group))
+    (text_group
+      (begin_group)
+      (text_env
+        (begin (begin_cs) (name_group (begin_group) (name) (end_group)))
+        (exit_group))
+      (end_group))
+    (text_group
+      (begin_group)
+      (cs)
+      (text_group (begin_group) (text) (end_group)) (end_group))))

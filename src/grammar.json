@@ -534,8 +534,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "end"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "end"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
@@ -554,8 +563,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "end"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "end"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
@@ -721,8 +739,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "display_math_end"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "display_math_end"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
@@ -937,8 +964,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "inline_math_end"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "inline_math_end"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
@@ -3111,8 +3147,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "minipage_end"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "minipage_end"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
@@ -4721,8 +4766,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "luacode_end"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "luacode_end"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },

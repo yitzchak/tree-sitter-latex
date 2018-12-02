@@ -228,13 +228,13 @@ module.exports = grammar({
     text_env: $ => seq(
       $.begin,
       repeat($._text_mode),
-      $.end
+      choice($.end, $.exit_group)
     ),
 
     math_env: $ => seq(
       $.begin,
       repeat($._math_mode),
-      $.end
+      choice($.end, $.exit_group)
     ),
 
     _display_math: $ => choice(
@@ -266,7 +266,7 @@ module.exports = grammar({
     display_math_env: $ => seq(
       $.display_math_begin,
       repeat1($._math_mode),
-      $.display_math_end
+      choice($.display_math_end, $.exit_group)
     ),
 
     display_math_begin: $ => begin_cmd($,
@@ -309,7 +309,7 @@ module.exports = grammar({
     inline_math_env: $ => seq(
       $.inline_math_begin,
       repeat($._math_mode),
-      $.inline_math_end
+      choice($.inline_math_end, $.exit_group)
     ),
 
     inline_math_begin: $ => begin_cmd($,
@@ -338,6 +338,7 @@ module.exports = grammar({
     verbatim_env: $ => seq(
       $.verbatim_begin,
       optional($.verbatim_text),
+      // We don't allow exit_group here since braces are meaningless in verbatim.
       $.verbatim_end
     ),
 
@@ -716,7 +717,7 @@ module.exports = grammar({
     minipage_env: $ => seq(
       $.minipage_begin,
       repeat($._text_mode),
-      $.minipage_end
+      choice($.minipage_end, $.exit_group)
     ),
 
     minipage_begin: $ => begin_cmd($,
@@ -1047,7 +1048,7 @@ module.exports = grammar({
     luacode_env: $ => seq(
       $.luacode_begin,
       repeat($._text_mode),
-      $.luacode_end
+      choice($.luacode_end, $.exit_group)
     ),
 
     luacode_begin: $ => begin_cmd($,
@@ -1067,6 +1068,7 @@ module.exports = grammar({
     luacodestar_env: $ => seq(
       $.luacodestar_begin,
       optional($.lua_text),
+      // We don't allow exit_group since luacode* is a verbatim environment.
       $.luacodestar_end
     ),
 
