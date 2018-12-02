@@ -1,5 +1,9 @@
 function cs ($, name) {
-  return seq($._escape, name, $._cs_end)
+  return seq($._escape, $._next_letter, name, $._next_non_letter, $._end_escape)
+}
+
+function escaped ($, name) {
+  return seq($._escape, $._next_non_letter, name, $._end_escape)
 }
 
 // This command is a placeholder for aliasing of cs
@@ -46,8 +50,8 @@ module.exports = grammar({
   externals: $ => [
     $._at_letter,
     $._at_other,
-    $._cs_end,
     $._default_catcodes,
+    $._end_escape,
     $._escape,
     $._expl_begin,
     $._expl_end,
@@ -55,7 +59,8 @@ module.exports = grammar({
     $._luacode_begin,
     $._luadirect_begin,
     $._luaexec_begin,
-    $._non_letter_or_other,
+    $._next_letter,
+    $._next_non_letter,
     $._space,
     $._verb_line,
     $.active_char,
@@ -66,6 +71,7 @@ module.exports = grammar({
     $.comment,
     $.end_group,
     $.eol,
+    $.exit_group,
     $.magic_comment,
     $.math_shift,
     $.parameter_char,
@@ -171,6 +177,8 @@ module.exports = grammar({
       $.section,
       $.use,
       $.footnote,
+      $.end_inline_math,
+      $.end_display_math,
       // LaTeX cls
       $.NeedsTeXFormat,
       $.ProvidesPackage,
@@ -220,13 +228,13 @@ module.exports = grammar({
     text_env: $ => seq(
       $.begin,
       repeat($._text_mode),
-      $.end
+      choice($.end, $.exit_group)
     ),
 
     math_env: $ => seq(
       $.begin,
       repeat($._math_mode),
-      $.end
+      choice($.end, $.exit_group)
     ),
 
     _display_math: $ => choice(
@@ -238,23 +246,27 @@ module.exports = grammar({
     tex_display_math: $ => seq(
       $.math_shift, $.math_shift,
       repeat($._math_mode),
-      $.math_shift, $.math_shift
+      choice(
+        seq($.math_shift, $.math_shift),
+        seq($.math_shift, $.exit_group),
+        $.exit_group
+      )
     ),
 
     latex_display_math: $ => seq(
       $.begin_display_math,
       repeat1($._math_mode),
-      $.end_display_math
+      choice($.end_display_math, $.exit_group)
     ),
 
-    begin_display_math: $ => seq($._escape, '['),
+    begin_display_math: $ => escaped($, '['),
 
-    end_display_math: $ => prec(-3, seq($._escape, ']')),
+    end_display_math: $ => prec(-3, escaped($, ']')),
 
     display_math_env: $ => seq(
       $.display_math_begin,
       repeat1($._math_mode),
-      $.display_math_end
+      choice($.display_math_end, $.exit_group)
     ),
 
     display_math_begin: $ => begin_cmd($,
@@ -281,23 +293,23 @@ module.exports = grammar({
     tex_inline_math: $ => seq(
       $.math_shift,
       repeat1($._math_mode),
-      $.math_shift
+      choice($.math_shift, $.exit_group)
     ),
 
     latex_inline_math: $ => seq(
       $.begin_inline_math,
       repeat($._math_mode),
-      $.end_inline_math
+      choice($.end_inline_math, $.exit_group)
     ),
 
-    begin_inline_math: $ => seq($._escape, '('),
+    begin_inline_math: $ => escaped($, '('),
 
-    end_inline_math: $ => seq($._escape, ')'),
+    end_inline_math: $ => escaped($, ')'),
 
     inline_math_env: $ => seq(
       $.inline_math_begin,
       repeat($._math_mode),
-      $.inline_math_end
+      choice($.inline_math_end, $.exit_group)
     ),
 
     inline_math_begin: $ => begin_cmd($,
@@ -326,6 +338,7 @@ module.exports = grammar({
     verbatim_env: $ => seq(
       $.verbatim_begin,
       optional($.verbatim_text),
+      // We don't allow exit_group here since braces are meaningless in verbatim.
       $.verbatim_end
     ),
 
@@ -704,7 +717,7 @@ module.exports = grammar({
     minipage_env: $ => seq(
       $.minipage_begin,
       repeat($._text_mode),
-      $.minipage_end
+      choice($.minipage_end, $.exit_group)
     ),
 
     minipage_begin: $ => begin_cmd($,
@@ -1035,7 +1048,7 @@ module.exports = grammar({
     luacode_env: $ => seq(
       $.luacode_begin,
       repeat($._text_mode),
-      $.luacode_end
+      choice($.luacode_end, $.exit_group)
     ),
 
     luacode_begin: $ => begin_cmd($,
@@ -1055,6 +1068,7 @@ module.exports = grammar({
     luacodestar_env: $ => seq(
       $.luacodestar_begin,
       optional($.lua_text),
+      // We don't allow exit_group since luacode* is a verbatim environment.
       $.luacodestar_end
     ),
 
@@ -1097,7 +1111,7 @@ module.exports = grammar({
 
     cs: $ => cs($, repeat1(/./)),
 
-    escaped: $ => seq($._escape, $._non_letter_or_other),
+    escaped: $ => escaped($, /[^()\[\]]/),
 
     // fi introduced by LuaTeX
     unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/,
