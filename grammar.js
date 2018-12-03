@@ -7,20 +7,20 @@ function escaped ($, name) {
 }
 
 // This command is a placeholder for aliasing of cs
-function cmd () {
-  return seq.apply(null, Array.prototype.slice.call(arguments, 1))
+function cmd ($, cs) {
+  return seq.apply(null, [alias(cs, 'cs')].concat(Array.prototype.slice.call(arguments, 2)))
 }
 
 function begin_cmd ($) {
   return (arguments.length > 1)
-    ? seq.apply(null, [$.begin_cs].concat(Array.prototype.slice.call(arguments, 1)))
-    : seq($.begin_cs, $.name_group)
+    ? seq.apply(null, [alias($.begin_cs, 'cs')].concat(Array.prototype.slice.call(arguments, 1)))
+    : seq(alias($.begin_cs, 'cs'), $.name_group)
 }
 
 function end_cmd ($) {
   return (arguments.length > 1)
-    ? seq.apply(null, [$.end_cs].concat(Array.prototype.slice.call(arguments, 1)))
-    : seq($.end_cs, $.name_group)
+    ? seq.apply(null, [alias($.end_cs, 'cs')].concat(Array.prototype.slice.call(arguments, 1)))
+    : seq(alias($.end_cs, 'cs'), $.name_group)
 }
 
 function group ($, contents) {
@@ -134,7 +134,7 @@ module.exports = grammar({
       $.cs,
     ),
 
-    inline_verbatim: $ => seq(
+    inline_verbatim: $ => cmd($,
       $.verb_cs,
       $.verb_delim,
       $.verb_body,
@@ -432,9 +432,9 @@ module.exports = grammar({
       $.text_group
     ),
 
-    section_cs: $ => cs($,
-      /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/
-    ),
+    section_cs: $ => cs($, $._section_word),
+
+    _section_word: $ => /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/,
 
     storage: $ => cmd($, $.storage_cs),
 
@@ -502,22 +502,22 @@ module.exports = grammar({
       $.glue
     ),
 
-    glue_cs: $ => cs($,
-      /(((above|below)display(short)?|baseline|left|line|normalbaseline|normalline|parfill|par|right|splittop|tab|top|x?space)skip)|(small|mid|big)skipamount/
-    ),
+    glue_cs: $ => cs($, $._glue_word),
 
-    dimension_cs: $ => cs($,
-      /(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth/
-    ),
+    _glue_word: $ => /(((above|below)display(short)?|baseline|left|line|normalbaseline|normalline|parfill|par|right|splittop|tab|top|x?space)skip)|(small|mid|big)skipamount/,
+
+    dimension_cs: $ => cs($, $._dimension_word),
+
+    _dimension_word: $ => /(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth/,
 
     glue_space: $ => cmd($,
       $.glue_space_cs,
       $.glue
     ),
 
-    glue_space_cs: $ => cs($,
-      /[hmv]skip|(h|top|v)glue/
-    ),
+    glue_space_cs: $ => cs($, $._glue_space_word),
+
+    _glue_space_word: $ => /[hmv]skip|(h|top|v)glue/,
 
     mkbox: $ => cmd($,
       $.mkbox_cs,
@@ -534,7 +534,9 @@ module.exports = grammar({
       $.strut_cs
     ),
 
-    strut_cs: $ => cs($, /(math)?strut|null/),
+    strut_cs: $ => cs($, $._strut_word),
+
+    _strut_word: $ => /(math)?strut|null/,
 
     phantom_smash: $ => cmd($,
       $.phantom_smash_cs,
@@ -545,18 +547,18 @@ module.exports = grammar({
 
     _phantom_smash_word: $ => /[hv]?phantom|smash/,
 
-    mkbox_cs: $ => cs($,
-      /[hv]box|vtop/
-    ),
+    mkbox_cs: $ => cs($, $._mkbox_word),
+
+    _mkbox_word: $ => /[hv]box|vtop/,
 
     usebox: $ => cmd($,
       $.usebox_cs,
       $._number
     ),
 
-    usebox_cs: $ => cs($,
-      /(un[hv])?(box|copy)/
-    ),
+    usebox_cs: $ => cs($, $._usebox_word),
+
+    _usebox_word: $ => /(un[hv])?(box|copy)/,
 
     movebox: $ => cmd($,
       $.movebox_cs,
@@ -564,9 +566,9 @@ module.exports = grammar({
       $._box,
     ),
 
-    movebox_cs: $ => cs($,
-      /move(left|right)|raise|lower/
-    ),
+    movebox_cs: $ => cs($, $._movebox_word),
+
+    _movebox_word: $ => /move(left|right)|raise|lower/,
 
     _box: $ => choice(
       $.mkbox,
@@ -601,7 +603,7 @@ module.exports = grammar({
     glue: $ => choice(
       seq(
         optional($.fixed),
-        $.glue_cs
+        alias($.glue_cs, 'cs')
       ),
       seq(
         $.dimension,
@@ -610,7 +612,7 @@ module.exports = grammar({
       )
     ),
 
-    box_dimension_ref: $ => seq(
+    box_dimension_ref: $ => cmd($,
       $.box_dimension_cs,
       $._number
     ),
@@ -620,7 +622,7 @@ module.exports = grammar({
       choice(
         $.unit,
         $.box_dimension_ref,
-        $.dimension_cs,
+        alias($.dimension_cs, 'cs'),
         $.cs
       )
     ),
@@ -634,9 +636,9 @@ module.exports = grammar({
       $._number
     ),
 
-    catcode_cs: $ => cs($,
-      /(cat|del|kcat|lc|math|sf|uc)code/
-    ),
+    catcode_cs: $ => cs($, $._catcode_word),
+
+    _catcode_word: $ => /(cat|del|kcat|lc|math|sf|uc)code/,
 
     chardef: $ => cmd($,
       $.chardef_cs,
@@ -645,7 +647,9 @@ module.exports = grammar({
       $._number
     ),
 
-    chardef_cs: $ => cs($, /(math)?chardef/),
+    chardef_cs: $ => cs($, $._chardef_word),
+
+    _chardef_word: $ => /(math)?chardef/,
 
     catcode_ref: $ => cmd($,
       $.catcode_cs, $._number
@@ -655,7 +659,9 @@ module.exports = grammar({
       $.char_cs, $._number
     ),
 
-    char_cs: $ => cs($, /(math)?char|accent/),
+    char_cs: $ => cs($, $._char_word),
+
+    _char_word: $ => /(math)?char|accent/,
 
     // LaTex preamble commands
 
@@ -687,7 +693,9 @@ module.exports = grammar({
       optional($.text_brack_group)
     )),
 
-    use_cs: $ => cs($, /usepackage|(LoadClass|RequirePackage)(WithOptions)?/),
+    use_cs: $ => cs($, $._use_word),
+
+    _use_word: $ => /usepackage|(LoadClass|RequirePackage)(WithOptions)?/,
 
     // LaTeX definitions
 
@@ -700,7 +708,9 @@ module.exports = grammar({
       $.text_group
     ),
 
-    newcommand_cs: $ => cs($, /(DeclareRobust|Check)Command|(new|provide|renew)command/),
+    newcommand_cs: $ => cs($, $._newcommand_word),
+
+    _newcommand_word: $ => /(DeclareRobust|Check)Command|(new|provide|renew)command/,
 
     newenvironment: $ => cmd($,
       $.newenvironment_cs,
@@ -712,7 +722,9 @@ module.exports = grammar({
       $.text_group
     ),
 
-    newenvironment_cs: $ => cs($, /(re)?newenvironment/),
+    newenvironment_cs: $ => cs($, $._newenvironment_word),
+
+    _newenvironment_word: $ => /(re)?newenvironment/,
 
     // LaTeX boxes
 
@@ -725,7 +737,9 @@ module.exports = grammar({
       $.text_group
     ),
 
-    makebox_cs: $ => cs($, /(make|frame)box/),
+    makebox_cs: $ => cs($, $._makebox_word),
+
+    _makebox_word: $ => /(make|frame)box/,
 
     savebox: $ => cmd($,
       $.savebox_cs,
@@ -740,8 +754,6 @@ module.exports = grammar({
     savebox_cs: $ => cs($, $._savebox_word),
 
     _savebox_word: $ => 'savebox',
-
-    makebox_cs: $ => cs($, /(make|frame)box/),
 
     parbox: $ => cmd($,
       $.parbox_cs,
@@ -991,7 +1003,9 @@ module.exports = grammar({
       $.name_group
     ),
 
-    PassOptionTo_cs: $ => cs($, /PassOptionTo(Class|Package)/),
+    PassOptionTo_cs: $ => cs($, $._PassOptionTo_word),
+
+    _PassOptionTo_word: $ => /PassOptionTo(Class|Package)/,
 
     // LaTeX cls Delaying code
 
@@ -1000,9 +1014,9 @@ module.exports = grammar({
       $.text_group
     ),
 
-    At_cs: $ => cs($,
-      /At(EndOfClass|EndOfPackage|BeginDocument|EndDocument|BeginDvi)/
-    ),
+    At_cs: $ => cs($, $._At_word),
+
+    _At_word: $ => /At(EndOfClass|EndOfPackage|BeginDocument|EndDocument|BeginDvi)/,
 
     // LaTeX cls Option processing
 
@@ -1030,7 +1044,9 @@ module.exports = grammar({
       $.text_group
     ),
 
-    IfFileExists_cs: $ => cs($, /(Input)?IfFileExists/),
+    IfFileExists_cs: $ => cs($, $._IfFileExists_word),
+
+    _IfFileExists_word: $ => /(Input)?IfFileExists/,
 
     // LaTeX cls Reporting errors, etc
 
@@ -1041,7 +1057,9 @@ module.exports = grammar({
       $.text_group
     ),
 
-    Error_cs: $ => cs($, /(Class|Package)Error/),
+    Error_cs: $ => cs($, $._Error_word),
+
+    _Error_word: $ => /(Class|Package)Error/,
 
     WarningInfo: $ => cmd($,
       $.WarningInfo_cs,
@@ -1049,7 +1067,9 @@ module.exports = grammar({
       $.text_group
     ),
 
-    WarningInfo_cs: $ => cs($, /(Class|Package)(Warning(NoLine)?|Info)/),
+    WarningInfo_cs: $ => cs($, $._WarningInfo_word),
+
+    _WarningInfo_word: $ => /(Class|Package)(Warning(NoLine)?|Info)/,
 
     // hyperref functions
 
@@ -1069,7 +1089,9 @@ module.exports = grammar({
       $.text_group
     ),
 
-    url_cs: $ => cs($, /(nolink)?url/),
+    url_cs: $ => cs($, $._url_word),
+
+    _url_word: $ => /(nolink)?url/,
 
     hyperbaseurl: $ => cmd($,
       $.hyperbaseurl_cs,
@@ -1121,7 +1143,9 @@ module.exports = grammar({
       $._lua_end
     ),
 
-    lua_cs: $ => cs($, /(direct|late)lua/),
+    lua_cs: $ => cs($, $._lua_word),
+
+    _lua_word: $ => /(direct|late)lua/,
 
     luadirect: $ => cmd($,
       $.luadirect_cs,
@@ -1229,27 +1253,38 @@ module.exports = grammar({
     _word: $ => prec.left(-1, choice(
       seq(
         choice(
+          $._At_word,
           $._begin_word,
           $._box_dimension_word,
+          $._catcode_word,
+          $._char_word,
+          $._chardef_word,
           $._DeclareOption_word,
+          $._dimension_word,
           $._documentclass_word,
           $._documentstyle_word,
           $._emph_word,
           $._end_word,
           $._ensuremath_word,
+          $._Error_word,
           $._ExecuteOptions_word,
           $._ExplSyntaxOff_word,
           $._ExplSyntaxOn_word,
           $._footnote_word,
+          $._glue_space_word,
+          $._glue_word,
           $._href_word,
           $._hyperbaseurl_word,
           $._hyperimage_word,
           $._hyperref_word,
+          $._IfFileExists_word,
           $._include_word,
+          $._lua_word,
           $._luadirect_word,
           $._luaexec_word,
           $._makeatletter_word,
           $._makeatother_word,
+          $._makebox_word,
           $._mathbf_word,
           $._mathcal_word,
           $._mathit_word,
@@ -1257,8 +1292,13 @@ module.exports = grammar({
           $._mathrm_word,
           $._mathsf_word,
           $._mathtt_word,
+          $._mkbox_word,
+          $._movebox_word,
           $._NeedsTeXFormat_word,
+          $._newcommand_word,
+          $._newenvironment_word,
           $._parbox_word,
+          $._PassOptionTo_word,
           $._phantom_smash_word,
           $._ProcessOptions_word,
           $._ProvidesExplClass_word,
@@ -1266,8 +1306,10 @@ module.exports = grammar({
           $._ProvidesExplPackage_word,
           $._ProvidesPackage_word,
           $._savebox_word,
+          $._section_word,
           $._setbox_word,
           $._storage_word,
+          $._strut_word,
           $._tag_word,
           $._textbf_word,
           $._textit_word,
@@ -1278,7 +1320,11 @@ module.exports = grammar({
           $._textsl_word,
           $._texttt_word,
           $._textup_word,
-          $._verb_word
+          $._url_word,
+          $._use_word,
+          $._usebox_word,
+          $._verb_word,
+          $._WarningInfo_word
         ),
         repeat(/./)
       ),
@@ -1286,6 +1332,82 @@ module.exports = grammar({
     )),
 
     escaped: $ => escaped($, /[^()\[\]]/),
+
+    // This rule unused. It exists merely make aliasing of cs work.
+    _snafu: $ => seq(
+      $.At_cs,
+      $.begin_cs,
+      $.box_dimension_cs,
+      $.catcode_cs,
+      $.char_cs,
+      $.chardef_cs,
+      $.DeclareOption_cs,
+      $.dimension_cs,
+      $.documentclass_cs,
+      $.documentstyle_cs,
+      $.emph_cs,
+      $.end_cs,
+      $.ensuremath_cs,
+      $.Error_cs,
+      $.ExecuteOptions_cs,
+      $.ExplSyntaxOff_cs,
+      $.ExplSyntaxOn_cs,
+      $.footnote_cs,
+      $.glue_cs,
+      $.glue_space_cs,
+      $.href_cs,
+      $.hyperbaseurl_cs,
+      $.hyperimage_cs,
+      $.hyperref_cs,
+      $.IfFileExists_cs,
+      $.include_cs,
+      $.lua_cs,
+      $.luadirect_cs,
+      $.luaexec_cs,
+      $.makeatletter_cs,
+      $.makeatother_cs,
+      $.makebox_cs,
+      $.mathbf_cs,
+      $.mathcal_cs,
+      $.mathit_cs,
+      $.mathnormal_cs,
+      $.mathrm_cs,
+      $.mathsf_cs,
+      $.mathtt_cs,
+      $.mkbox_cs,
+      $.movebox_cs,
+      $.NeedsTeXFormat_cs,
+      $.newcommand_cs,
+      $.newenvironment_cs,
+      $.parbox_cs,
+      $.PassOptionTo_cs,
+      $.phantom_smash_cs,
+      $.ProcessOptions_cs,
+      $.ProvidesExplClass_cs,
+      $.ProvidesExplFile_cs,
+      $.ProvidesExplPackage_cs,
+      $.ProvidesPackage_cs,
+      $.savebox_cs,
+      $.section_cs,
+      $.setbox_cs,
+      $.storage_cs,
+      $.strut_cs,
+      $.tag_cs,
+      $.textbf_cs,
+      $.textit_cs,
+      $.textmd_cs,
+      $.textrm_cs,
+      $.textsc_cs,
+      $.textsf_cs,
+      $.textsl_cs,
+      $.texttt_cs,
+      $.textup_cs,
+      $.url_cs,
+      $.use_cs,
+      $.usebox_cs,
+      $.verb_cs,
+      $.WarningInfo_cs
+    ),
 
     // fi introduced by LuaTeX
     unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/,

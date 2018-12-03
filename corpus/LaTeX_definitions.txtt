@@ -5,7 +5,7 @@ Simple newcommand
 ----------------------
 (document
   (newcommand
-    (newcommand_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -16,7 +16,7 @@ newcommand with number of arguments
 ----------------------
 (document
   (newcommand
-    (newcommand_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group))))
@@ -28,7 +28,7 @@ newcommand with number of arguments and default value
 ----------------------
 (document
   (newcommand
-    (newcommand_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (text_brack_group (lbrack) (text) (rbrack))
     (text_brack_group (lbrack) (text) (rbrack))
@@ -41,7 +41,7 @@ Simple newcommand*
 ----------------------
 (document
   (newcommand
-    (newcommand_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -52,7 +52,7 @@ Simple renewcommand
 ----------------------
 (document
   (newcommand
-    (newcommand_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -63,7 +63,7 @@ Simple providecommand
 ----------------------
 (document
   (newcommand
-    (newcommand_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -74,7 +74,7 @@ Simple DeclareRobustCommand
 ----------------------
 (document
   (newcommand
-    (newcommand_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -85,7 +85,7 @@ Simple CheckCommand
 ----------------------
 (document
   (newcommand
-    (newcommand_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -96,7 +96,7 @@ Simple newenvironment
 ----------------------
 (document
   (newenvironment
-    (newenvironment_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))))
@@ -108,7 +108,7 @@ newenvironment with number of arguments
 ----------------------
 (document
   (newenvironment
-    (newenvironment_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group))
@@ -121,7 +121,7 @@ newenvironment with number of arguments and default value
 ----------------------
 (document
   (newenvironment
-    (newenvironment_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text_brack_group (lbrack) (text) (rbrack))
     (text_brack_group (lbrack) (text) (rbrack))
@@ -135,7 +135,7 @@ Simple renewenvironment
 ----------------------
 (document
   (newenvironment
-    (newenvironment_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))))

@@ -127,9 +127,9 @@ quux
 (document
   (text)
   (text_env
-    (begin (begin_cs) (name_group (begin_group) (name) (end_group)))
+    (begin (cs) (name_group (begin_group) (name) (end_group)))
     (text)
-    (end (end_cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (name_group (begin_group) (name) (end_group))))
   (text))
 
 ===========
@@ -149,7 +149,7 @@ comment eats EOL
 -----------
 (document
   (emph
-    (emph_cs)
+    (cs)
     (comment)
     (text_group (begin_group) (text) (end_group))))
 
@@ -197,8 +197,8 @@ foo\footnote[10]{bar}wibble
 ---------------------
 (document
   (text)
-  (footnote (footnote_cs) (text_group (begin_group) (text) (end_group))) (text)
-  (footnote (footnote_cs)
+  (footnote (cs) (text_group (begin_group) (text) (end_group))) (text)
+  (footnote (cs)
     (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group)))
   (text))
@@ -212,11 +212,11 @@ sections
 ---------------------
 
 (document
-  (section (section_cs) (text_group (begin_group) (text) (end_group)))
+  (section (cs) (text_group (begin_group) (text) (end_group)))
   (text)
-  (section (section_cs) (text_group (begin_group) (text) (end_group)))
+  (section (cs) (text_group (begin_group) (text) (end_group)))
   (text)
-  (section (section_cs) (text_group (begin_group) (text) (end_group))))
+  (section (cs) (text_group (begin_group) (text) (end_group))))
 
 =================
 Square brackets do not trigger text_brack_group
@@ -261,6 +261,6 @@ storage usage
 -----------------------
 (document
   (storage
-    (storage_cs))
+    (cs))
     (cs)
     (text_group (begin_group) (text) (end_group)))

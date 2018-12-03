@@ -255,7 +255,7 @@ LaTeX display math inside newenvironment
 --------------------------------------------
 (document
   (newenvironment
-    (newenvironment_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text_group
       (begin_group) (latex_display_math (begin_display_math) (cs) (exit_group)) (end_group))
@@ -269,7 +269,7 @@ LaTeX display math inside newenvironment
 --------------------------------------------
 (document
   (newenvironment
-    (newenvironment_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text_group
       (begin_group) (latex_inline_math (begin_inline_math) (cs) (exit_group)) (end_group))
@@ -283,7 +283,7 @@ newenvironment based on existing environment (the wrong way)
 --------------------------------------
 (document
   (newenvironment
-    (newenvironment_cs)
+    (cs)
     (text_group
       (begin_group)
       (text)
@@ -291,7 +291,7 @@ newenvironment based on existing environment (the wrong way)
     (text_group
       (begin_group)
       (text_env
-        (begin (begin_cs) (name_group (begin_group) (name) (end_group)))
+        (begin (cs) (name_group (begin_group) (name) (end_group)))
         (exit_group))
       (end_group))
     (text_group
@@ -313,4 +313,4 @@ verbatimfoo
 bar
 \end{verbatimfoo}
 --------------------------------------
-(document (text_env (begin (begin_cs) (name_group (begin_group) (name) (name) (end_group))) (text) (end (end_cs) (name_group (begin_group) (name) (name) (end_group)))))
+(document (text_env (begin (cs) (name_group (begin_group) (name) (name) (end_group))) (text) (end (cs) (name_group (begin_group) (name) (name) (end_group)))))

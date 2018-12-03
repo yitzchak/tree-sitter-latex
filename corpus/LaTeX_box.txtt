@@ -5,7 +5,7 @@ makebox
 -------------------
 (document
   (makebox
-    (makebox_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))))
 
 ====================
@@ -15,7 +15,7 @@ makebox with width
 -------------------
 (document
   (makebox
-    (makebox_cs)
+    (cs)
     (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
     (text_group (begin_group) (text) (end_group))))
 
@@ -26,7 +26,7 @@ makebox with width and position
 -------------------
 (document
   (makebox
-    (makebox_cs)
+    (cs)
     (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
     (text_brack_group (lbrack) (text) (rbrack))
     (text_group (begin_group) (text) (end_group))))
@@ -38,7 +38,7 @@ framebox
 -------------------
 (document
   (makebox
-    (makebox_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))))
 
 ====================
@@ -48,7 +48,7 @@ savebox
 -------------------
 (document
   (savebox
-    (savebox_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -59,7 +59,7 @@ savebox with width
 -------------------
 (document
   (savebox
-    (savebox_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
     (text_group (begin_group) (text) (end_group))))
@@ -71,7 +71,7 @@ savebox with width and position
 -------------------
 (document
   (savebox
-    (savebox_cs)
+    (cs)
     (text_group (begin_group) (cs) (end_group))
     (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
     (text_brack_group (lbrack) (text) (rbrack))
@@ -84,7 +84,7 @@ parbox
 -------------------
 (document
   (parbox
-    (parbox_cs)
+    (cs)
     (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group))
     (text_group (begin_group) (text) (end_group))))
 
@@ -95,7 +95,7 @@ parbox with position
 -------------------
 (document
   (parbox
-    (parbox_cs)
+    (cs)
     (text_brack_group (lbrack) (text) (rbrack))
     (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group))
     (text_group (begin_group) (text) (end_group))))
@@ -107,7 +107,7 @@ parbox with position and height
 -------------------
 (document
   (parbox
-    (parbox_cs)
+    (cs)
     (text_brack_group (lbrack) (text) (rbrack))
     (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
     (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group))
@@ -120,7 +120,7 @@ parbox with position and height and inner position
 -------------------
 (document
   (parbox
-    (parbox_cs)
+    (cs)
     (text_brack_group (lbrack) (text) (rbrack))
     (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
     (text_brack_group (lbrack) (text) (rbrack))
@@ -137,12 +137,12 @@ foo
 (document
   (minipage_env
     (minipage_begin
-      (begin_cs)
+      (cs)
       (minipage_env_group (begin_group) (minipage_env_name) (end_group))
       (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
     (text)
     (minipage_end
-      (end_cs)
+      (cs)
       (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
 
 ======================
@@ -155,13 +155,13 @@ foo
 (document
   (minipage_env
     (minipage_begin
-      (begin_cs)
+      (cs)
       (minipage_env_group (begin_group) (minipage_env_name) (end_group))
       (text_brack_group (lbrack) (text) (rbrack))
       (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
     (text)
     (minipage_end
-      (end_cs)
+      (cs)
       (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
 
 ======================
@@ -174,14 +174,14 @@ foo
 (document
   (minipage_env
     (minipage_begin
-      (begin_cs)
+      (cs)
       (minipage_env_group (begin_group) (minipage_env_name) (end_group))
       (text_brack_group (lbrack) (text) (rbrack))
       (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
       (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
     (text)
     (minipage_end
-      (end_cs)
+      (cs)
       (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
 
 ======================
@@ -194,7 +194,7 @@ foo
 (document
   (minipage_env
     (minipage_begin
-      (begin_cs)
+      (cs)
       (minipage_env_group (begin_group) (minipage_env_name) (end_group))
       (text_brack_group (lbrack) (text) (rbrack))
       (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
@@ -202,5 +202,5 @@ foo
       (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
     (text)
     (minipage_end
-      (end_cs)
+      (cs)
       (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))

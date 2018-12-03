@@ -12,11 +12,11 @@ quux
     (text)
     (verbatim_env
       (verbatim_begin
-        (begin_cs)
+        (cs)
         (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
         (eol))
       (verbatim_text)
-      (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+      (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
     (text))
 
 ===========================
@@ -32,11 +32,11 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ===========================
@@ -52,11 +52,11 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ===========================
@@ -72,11 +72,11 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ===========================
@@ -92,11 +92,11 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ===========================
@@ -112,11 +112,11 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ===========================
@@ -132,11 +132,11 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ===========================
@@ -152,11 +152,11 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ===========================
@@ -172,12 +172,12 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (text_brack_group (lbrack) (text) (rbrack))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ===========================
@@ -193,12 +193,12 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (text_group (begin_group) (text) (end_group))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ======================
@@ -213,10 +213,10 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (eol))
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ======================
@@ -233,11 +233,11 @@ quux
   (text)
   (verbatim_env
     (verbatim_begin
-      (begin_cs)
+      (cs)
       (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
       (eol))
     (verbatim_text)
-    (verbatim_end (end_cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
   (text))
 
 ======================
@@ -252,10 +252,10 @@ text
 ----------------------
 (document
   (text)
-  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)
-  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)
-  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text)
-  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text))
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text))
 
 ======================
 not (quite) inline verbatim
@@ -263,4 +263,4 @@ not (quite) inline verbatim
 \verb  +foo+ the space here is the actual delim, so +foo+ is plain text
 ----------------------
 (document
-  (inline_verbatim (verb_cs) (verb_delim) (verb_body) (verb_delim)) (text))
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text))

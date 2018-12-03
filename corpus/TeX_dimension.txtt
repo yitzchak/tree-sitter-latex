@@ -5,7 +5,7 @@ Dimension assign - hoffset
 --------------------------------
 (document
   (dimension_assign
-    (dimension_cs)
+    (cs)
     (dimension (fixed) (unit))))
 
 ================================
@@ -15,7 +15,7 @@ Dimension assign - hoffset missing equals sign
 --------------------------------
 (document
   (dimension_assign
-    (dimension_cs)
+    (cs)
     (dimension (fixed) (unit))))
 
 ================================
@@ -25,8 +25,8 @@ Dimension assign - hoffset using dimension parameter
 --------------------------------
 (document
   (dimension_assign
-    (dimension_cs)
-    (dimension (dimension_cs))))
+    (cs)
+    (dimension (cs))))
 
 ================================
 Dimension assign - hoffset using scalar multiple dimension parameter
@@ -35,8 +35,8 @@ Dimension assign - hoffset using scalar multiple dimension parameter
 --------------------------------
 (document
   (dimension_assign
-    (dimension_cs)
-    (dimension (fixed) (dimension_cs))))
+    (cs)
+    (dimension (fixed) (cs))))
 
 ================================
 Glue assign - leftskip
@@ -45,7 +45,7 @@ Glue assign - leftskip
 --------------------------------
 (document
   (glue_assign
-    (glue_cs)
+    (cs)
     (glue
       (dimension (fixed) (unit)))))
 
@@ -56,7 +56,7 @@ Glue assign - leftskip missing equals
 --------------------------------
 (document
   (glue_assign
-    (glue_cs)
+    (cs)
     (glue
       (dimension (fixed) (unit)))))
 
@@ -67,9 +67,9 @@ Glue assign - leftskip same as rightskip
 --------------------------------
 (document
   (glue_assign
-    (glue_cs)
+    (cs)
     (glue
-      (glue_cs))))
+      (cs))))
 
 ================================
 Glue assign - leftskip scalar multiple of rightskip
@@ -78,10 +78,10 @@ Glue assign - leftskip scalar multiple of rightskip
 --------------------------------
 (document
   (glue_assign
-    (glue_cs)
+    (cs)
     (glue
       (fixed)
-      (glue_cs))))
+      (cs))))
 
 ================================
 Glue assign - leftskip with plus
@@ -90,7 +90,7 @@ Glue assign - leftskip with plus
 --------------------------------
 (document
   (glue_assign
-    (glue_cs)
+    (cs)
     (glue
       (dimension (fixed) (unit))
       (dimension (fixed) (unit)))))
@@ -102,7 +102,7 @@ Glue assign - leftskip with minus
 --------------------------------
 (document
   (glue_assign
-    (glue_cs)
+    (cs)
     (glue
       (dimension (fixed) (unit))
       (dimension (fixed) (unit)))))
@@ -114,7 +114,7 @@ Glue assign - leftskip with plus and minus
 --------------------------------
 (document
   (glue_assign
-    (glue_cs)
+    (cs)
     (glue
       (dimension (fixed) (unit))
       (dimension (fixed) (unit))
@@ -127,7 +127,7 @@ Glue space - hskip
 ---------------------------------------
  (document
    (glue_space
-     (glue_space_cs)
+     (cs)
      (glue
        (dimension (fixed) (unit))
        (dimension (fixed) (unit))

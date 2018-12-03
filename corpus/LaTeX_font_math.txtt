@@ -8,7 +8,7 @@ $foo \mathbf{bar} wibble$
     (math_shift)
     (text)
     (mathbf
-      (mathbf_cs)
+      (cs)
       (math_group
         (begin_group)
         (text)
@@ -26,7 +26,7 @@ mathbf inline LaTeX inline math
     (begin_inline_math)
     (text)
     (mathbf
-      (mathbf_cs)
+      (cs)
       (math_group
         (begin_group)
         (text)
