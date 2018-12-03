@@ -5,7 +5,7 @@ hbox
 ----------------------
 (document
   (mkbox
-    (mkbox_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))))
 
 =======================
@@ -15,7 +15,7 @@ hbox with spread
 ----------------------
 (document
   (mkbox
-    (mkbox_cs)
+    (cs)
     (dimension (fixed) (unit))
     (text_group (begin_group) (text) (end_group))))
 
@@ -26,7 +26,7 @@ hbox with to
 ----------------------
 (document
   (mkbox
-    (mkbox_cs)
+    (cs)
     (dimension (fixed) (unit))
     (text_group (begin_group) (text) (end_group))))
 
@@ -37,10 +37,10 @@ setbox
 -------------------------
 (document
   (setbox
-    (setbox_cs)
+    (cs)
     (decimal)
     (mkbox
-      (mkbox_cs)
+      (cs)
       (dimension (fixed) (unit))
       (text_group (begin_group) (text) (end_group)))))
 
@@ -51,7 +51,7 @@ box
 ----------------------
 (document
   (usebox
-    (usebox_cs)
+    (cs)
     (decimal)))
 
 ========================
@@ -61,10 +61,10 @@ raise
 ------------------------
 (document
   (movebox
-    (movebox_cs)
+    (cs)
     (dimension (fixed) (unit))
     (usebox
-      (usebox_cs)
+      (cs)
       (decimal))))
 
 =======================
@@ -74,12 +74,12 @@ ht assign
 -----------------------
 (document
   (box_dimension_assign
-    (box_dimension_cs)
+    (cs)
     (decimal)
     (dimension
       (fixed)
       (box_dimension_ref
-        (box_dimension_cs)
+        (cs)
         (decimal)))))
 
 ===========================
@@ -89,10 +89,10 @@ strut
 -------------------------
 (document
   (setbox
-    (setbox_cs)
+    (cs)
     (decimal)
     (strut
-      (strut_cs))))
+      (cs))))
 
 ===========================
 phantom
@@ -101,8 +101,8 @@ phantom
 -------------------------
 (document
   (setbox
-    (setbox_cs)
+    (cs)
     (decimal)
     (phantom_smash
-      (phantom_smash_cs)
+      (cs)
       (text_group (begin_group) (text) (end_group)))))

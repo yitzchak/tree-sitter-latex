@@ -13,9 +13,9 @@
 \makeatletter\bar@wibble\makeatother
 ---------------------------------
 (document
-  (makeatletter (makeatletter_cs))
+  (makeatletter (cs))
   (cs)
-  (makeatother (makeatother_cs)))
+  (makeatother (cs)))
 
 ==============================
 [makeatletter] @ sign is letter in text group
@@ -23,12 +23,12 @@
 \makeatletter{\bar@wibble}\makeatother
 ----------------
 (document
-  (makeatletter (makeatletter_cs))
+  (makeatletter (cs))
   (text_group
     (begin_group)
     (cs)
     (end_group))
-  (makeatother (makeatother_cs)))
+  (makeatother (cs)))
 
 ==============================
 [makeatletter] @ sign is letter in optional text group
@@ -36,15 +36,15 @@
 \makeatletter\usepackage[foo\bar@wibble]{foo}\makeatother
 ----------------
 (document
-  (makeatletter (makeatletter_cs))
-  (use (use_cs)
+  (makeatletter (cs))
+  (use (cs)
     (text_brack_group
       (lbrack)
       (text)
       (cs)
       (rbrack))
     (name_group (begin_group) (name) (end_group)))
-  (makeatother (makeatother_cs)))
+  (makeatother (cs)))
 
 ============================
 [makeatletter] @ sign is letter then other
@@ -52,9 +52,9 @@
 \makeatletter\bar@wibble\makeatother\quux@gronk
 ----------------
 (document
-  (makeatletter (makeatletter_cs))
+  (makeatletter (cs))
   (cs)
-  (makeatother (makeatother_cs))
+  (makeatother (cs))
   (cs)
   (text))
 
@@ -75,9 +75,9 @@
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff
 ----------------
 (document
-  (ExplSyntaxOn (ExplSyntaxOn_cs))
+  (ExplSyntaxOn (cs))
   (cs)
-  (ExplSyntaxOff (ExplSyntaxOff_cs)))
+  (ExplSyntaxOff (cs)))
 
 =================
 [ProvidesExplPackage] colon/underscore is letter
@@ -87,14 +87,14 @@
 ----------------
 (document
   (ProvidesExplPackage
-    (ProvidesExplPackage_cs)
+    (cs)
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group))
     (text_group (begin_group) (text) (end_group)))
   (text)
   (cs)
-  (ExplSyntaxOff (ExplSyntaxOff_cs)))
+  (ExplSyntaxOff (cs)))
 
 ==============================
 [ExplSyntaxOn] colon/underscore is letter in text group
@@ -102,12 +102,12 @@
 \ExplSyntaxOn{\bar:wibble_wobble}\ExplSyntaxOff
 ----------------
 (document
-  (ExplSyntaxOn (ExplSyntaxOn_cs))
+  (ExplSyntaxOn (cs))
   (text_group
     (begin_group)
     (cs)
     (end_group))
-  (ExplSyntaxOff (ExplSyntaxOff_cs)))
+  (ExplSyntaxOff (cs)))
 
 ==============================
 [ExplSyntaxOn] colon/underscore is letter in optional text group
@@ -115,15 +115,15 @@
 \ExplSyntaxOn\usepackage[foo\bar:wibble_wobble]{foo}\ExplSyntaxOff
 ----------------
 (document
-  (ExplSyntaxOn (ExplSyntaxOn_cs))
-  (use (use_cs)
+  (ExplSyntaxOn (cs))
+  (use (cs)
     (text_brack_group
       (lbrack)
       (text)
       (cs)
       (rbrack))
     (name_group (begin_group) (name) (end_group)))
-  (ExplSyntaxOff (ExplSyntaxOff_cs)))
+  (ExplSyntaxOff (cs)))
 
 ============================
 [ExplSyntaxOn] colon/underscore is letter then other
@@ -131,9 +131,9 @@
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
 ----------------
 (document
-  (ExplSyntaxOn (ExplSyntaxOn_cs))
+  (ExplSyntaxOn (cs))
   (cs)
-  (ExplSyntaxOff (ExplSyntaxOff_cs))
+  (ExplSyntaxOff (cs))
   (cs)
   (text)
   (text)
@@ -145,13 +145,13 @@
 \ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\makeatother\ExplSyntaxOff\zap@zip:nil_zil
 ----------------
 (document
-  (ExplSyntaxOn (ExplSyntaxOn_cs))
+  (ExplSyntaxOn (cs))
   (cs)
   (text)
-  (makeatletter (makeatletter_cs))
+  (makeatletter (cs))
   (cs)
-  (makeatother (makeatother_cs))
-  (ExplSyntaxOff (ExplSyntaxOff_cs))
+  (makeatother (cs))
+  (ExplSyntaxOff (cs))
   (cs)
   (text)
   (text)
@@ -163,14 +163,14 @@
 \ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\ExplSyntaxOff\zap@zip\makeatother
 -----------------------------------------------
 (document
-  (ExplSyntaxOn (ExplSyntaxOn_cs))
+  (ExplSyntaxOn (cs))
   (cs)
   (text)
-  (makeatletter (makeatletter_cs))
+  (makeatletter (cs))
   (cs)
-  (ExplSyntaxOff (ExplSyntaxOff_cs))
+  (ExplSyntaxOff (cs))
   (cs)
-  (makeatother (makeatother_cs)))
+  (makeatother (cs)))
 
 ========================
 catcode with decimal number
@@ -179,7 +179,7 @@ catcode with decimal number
 ----------------------
 (document
   (catcode
-    (catcode_cs)
+    (cs)
     (decimal)
     (decimal)))
 
@@ -190,7 +190,7 @@ catcode with octal number
 ----------------------
 (document
   (catcode
-    (catcode_cs)
+    (cs)
     (octal)
     (decimal)))
 
@@ -201,7 +201,7 @@ catcode with octal number
 ----------------------
 (document
   (catcode
-    (catcode_cs)
+    (cs)
     (hexadecimal)
     (decimal)))
 
@@ -212,7 +212,7 @@ catcode with char code by letter
 ----------------------
 (document
   (catcode
-    (catcode_cs)
+    (cs)
     (charcode)
     (decimal)))
 
@@ -223,6 +223,6 @@ catcode with char code by escaped character
 ----------------------
 (document
   (catcode
-    (catcode_cs)
+    (cs)
     (charcode (escaped))
     (decimal)))

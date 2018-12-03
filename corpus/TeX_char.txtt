@@ -5,7 +5,7 @@ chardef
 --------------------
 (document
   (chardef
-    (chardef_cs)
+    (cs)
     (cs)
     (decimal)))
 
@@ -16,7 +16,7 @@ mathchardef
 --------------------
 (document
   (chardef
-    (chardef_cs)
+    (cs)
     (cs)
     (decimal)))
 
@@ -27,7 +27,7 @@ char
 --------------------
 (document
   (char
-    (char_cs)
+    (cs)
     (decimal)))
 
 =====================
@@ -37,7 +37,7 @@ accent
 --------------------
 (document
   (char
-    (char_cs)
+    (cs)
     (decimal)))
 
 =====================
@@ -47,5 +47,5 @@ mathchar
 --------------------
 (document
   (char
-    (char_cs)
+    (cs)
     (decimal)))

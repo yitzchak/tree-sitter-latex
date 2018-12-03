@@ -13,7 +13,7 @@ directlua
 ---------------------------
 (document
   (lua
-    (lua_cs)
+    (cs)
     (text_group
       (begin_group)
       (text)
@@ -55,7 +55,7 @@ directlua with number
 ---------------------------
 (document
   (lua
-    (lua_cs)
+    (cs)
     (hexadecimal)
     (text_group
       (begin_group)
@@ -98,7 +98,7 @@ latelua
 ---------------------------
 (document
   (lua
-    (lua_cs)
+    (cs)
     (text_group
       (begin_group)
       (text)
@@ -140,7 +140,7 @@ latelua with number
 ---------------------------
 (document
   (lua
-    (lua_cs)
+    (cs)
     (hexadecimal)
     (text_group
       (begin_group)
@@ -183,7 +183,7 @@ luadirect
 ---------------------------
 (document
   (luadirect
-    (luadirect_cs)
+    (cs)
     (text_group
       (begin_group)
       (text)
@@ -225,7 +225,7 @@ luaexec
 ----------------------------
 (document
   (luaexec
-    (luaexec_cs)
+    (cs)
     (text_group
       (begin_group)
       (text)
@@ -263,7 +263,7 @@ luacode environment
 ---------------------
 (document
   (luacode_env
-    (luacode_begin (begin_cs) (luacode_env_group (begin_group) (luacode_env_name) (end_group)))
+    (luacode_begin (cs) (luacode_env_group (begin_group) (luacode_env_name) (end_group)))
     (text)
     (text_group (begin_group) (text) (end_group))
     (text)
@@ -281,7 +281,7 @@ luacode environment
     (text)
     (cs)
     (text)
-    (luacode_end (end_cs) (luacode_env_group (begin_group) (luacode_env_name) (end_group)))))
+    (luacode_end (cs) (luacode_env_group (begin_group) (luacode_env_name) (end_group)))))
 
 
 ==========================
@@ -297,8 +297,8 @@ luacode* environment
 (document
   (luacodestar_env
     (luacodestar_begin
-      (begin_cs)
+      (cs)
       (luacodestar_env_group (begin_group) (luacodestar_env_name) (end_group)) (eol))
     (lua_text)
-    (luacodestar_end (end_cs)
+    (luacodestar_end (cs)
       (luacodestar_env_group (begin_group) (luacodestar_env_name) (end_group)))))
