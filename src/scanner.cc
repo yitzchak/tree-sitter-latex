@@ -33,7 +33,6 @@ enum SymbolType {
   _ESCAPED_END,
   _EXPL_BEGIN,
   _EXPL_END,
-  // _IS_LETTER,
   _LUA_END,
   _LUACODE_BEGIN,
   _LUADIRECT_BEGIN,
@@ -313,9 +312,6 @@ struct Scanner {
   static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
 
   vector<SymbolDescription> symbol_descriptions = {
-    // {LETTER_FLAG,                 _IS_LETTER,         ZERO_WIDTH},
-    // {~LETTER_FLAG,                _NEXT_NON_LETTER,     ZERO_WIDTH},
-    // {ESCAPE_FLAG,                 _ESCAPE,              SINGLE_WIDTH},
     {BEGIN_FLAG,                  BEGIN_GROUP,          SINGLE_WIDTH},
     {END_FLAG,                    EXIT_GROUP,           ZERO_WIDTH},
     {END_FLAG,                    END_GROUP,            SINGLE_WIDTH},
@@ -721,39 +717,58 @@ struct Scanner {
     return false;
   }
 
-  bool scan(TSLexer *lexer, const bool *valid_symbols)
-  {
-    Category code = catcode_table[lexer->lookahead];
-
-    if ((valid_symbols[_CS_BEGIN] || valid_symbols[_ESCAPED_BEGIN]) && code == ESCAPE_CATEGORY) {
-      lexer->advance(lexer, false);
-
-      if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
-        in_cs = true;
-        lexer->result_symbol = _CS_BEGIN;
-      } else {
-        in_escaped = true;
-        lexer->result_symbol = _ESCAPED_BEGIN;
-      }
-      lexer->mark_end(lexer);
-      return true;
-    }
-
-    if (valid_symbols[_ESCAPED_END] && in_escaped) {
-      in_escaped = false;
-      lexer->result_symbol = _ESCAPED_END;
-      lexer->mark_end(lexer);
-      return true;
-    }
-
-    if (valid_symbols[_CS_END] && in_cs && code != LETTER_CATEGORY) {
+  bool scan_in_cs(TSLexer *lexer, const bool *valid_symbols) {
+    if (valid_symbols[_CS_END] && catcode_table[lexer->lookahead] != LETTER_CATEGORY) {
       in_cs = false;
       lexer->result_symbol = _CS_END;
       lexer->mark_end(lexer);
       return true;
     }
 
-    if (in_escaped || in_cs) return false;
+    return false;
+  }
+
+  bool scan_in_escaped(TSLexer *lexer, const bool *valid_symbols) {
+    if (valid_symbols[_ESCAPED_END]) {
+      in_escaped = false;
+      lexer->result_symbol = _ESCAPED_END;
+      lexer->mark_end(lexer);
+      return true;
+    }
+
+    return false;
+  }
+
+  bool scan_escape(TSLexer *lexer) {
+    lexer->advance(lexer, false);
+
+    if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
+      in_cs = true;
+      lexer->result_symbol = _CS_BEGIN;
+    } else {
+      in_escaped = true;
+      lexer->result_symbol = _ESCAPED_BEGIN;
+    }
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan(TSLexer *lexer, const bool *valid_symbols)
+  {
+    if (in_escaped) {
+      return scan_in_escaped(lexer, valid_symbols);
+    }
+
+    if (in_cs) {
+      return scan_in_cs(lexer, valid_symbols);
+    }
+
+    Category code = catcode_table[lexer->lookahead];
+
+    if ((valid_symbols[_CS_BEGIN] || valid_symbols[_ESCAPED_BEGIN]) && code == ESCAPE_CATEGORY) {
+      return scan_escape(lexer);
+    }
 
     // Look for simple symbols such as escape, comment, etc.
     for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {
