@@ -298,3 +298,19 @@ newenvironment based on existing environment (the wrong way)
       (begin_group)
       (cs)
       (text_group (begin_group) (text) (end_group)) (end_group))))
+
+=====================================
+defu
+=====================================
+\defu
+--------------------------------------
+(document (cs))
+
+=====================================
+verbatimfoo
+=====================================
+\begin{verbatimfoo}
+bar
+\end{verbatimfoo}
+--------------------------------------
+(document (text_env (begin (begin_cs) (name_group (begin_group) (name) (name) (end_group))) (text) (end (end_cs) (name_group (begin_group) (name) (name) (end_group)))))
