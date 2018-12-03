@@ -1226,8 +1226,8 @@ module.exports = grammar({
 
     cs: $ =>  cs($, $._word),
 
-    _word: $ => seq(
-      optional(
+    _word: $ => prec.left(-1, choice(
+      seq(
         choice(
           $._begin_word,
           $._box_dimension_word,
@@ -1279,10 +1279,11 @@ module.exports = grammar({
           $._texttt_word,
           $._textup_word,
           $._verb_word
-        )
+        ),
+        repeat(/./)
       ),
       repeat1(/./)
-    ),
+    )),
 
     escaped: $ => escaped($, /[^()\[\]]/),
 

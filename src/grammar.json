@@ -4741,229 +4741,237 @@
       ]
     },
     "_word": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_begin_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_box_dimension_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_DeclareOption_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_documentclass_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_documentstyle_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_emph_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_end_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_ensuremath_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_ExecuteOptions_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_ExplSyntaxOff_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_ExplSyntaxOn_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_footnote_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_href_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_hyperbaseurl_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_hyperimage_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_hyperref_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_include_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_luadirect_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_luaexec_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_makeatletter_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_makeatother_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_mathbf_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_mathcal_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_mathit_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_mathnormal_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_mathrm_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_mathsf_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_mathtt_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_NeedsTeXFormat_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_parbox_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_phantom_smash_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_ProcessOptions_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_ProvidesExplClass_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_ProvidesExplFile_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_ProvidesExplPackage_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_ProvidesPackage_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_savebox_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_setbox_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_storage_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_tag_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_textbf_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_textit_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_textmd_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_textrm_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_textsc_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_textsf_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_textsl_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_texttt_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_textup_word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_verb_word"
+      "type": "PREC_LEFT",
+      "value": -1,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_begin_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_box_dimension_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_DeclareOption_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_documentclass_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_documentstyle_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_emph_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_end_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ensuremath_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ExecuteOptions_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ExplSyntaxOff_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ExplSyntaxOn_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_footnote_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_href_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_hyperbaseurl_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_hyperimage_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_hyperref_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_include_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_luadirect_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_luaexec_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_makeatletter_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_makeatother_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_mathbf_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_mathcal_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_mathit_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_mathnormal_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_mathrm_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_mathsf_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_mathtt_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_NeedsTeXFormat_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_parbox_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_phantom_smash_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ProcessOptions_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ProvidesExplClass_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ProvidesExplFile_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ProvidesExplPackage_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ProvidesPackage_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_savebox_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_setbox_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_storage_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_tag_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_textbf_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_textit_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_textmd_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_textrm_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_textsc_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_textsf_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_textsl_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_texttt_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_textup_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_verb_word"
+                  }
+                ]
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "PATTERN",
+                  "value": "."
                 }
-              ]
-            },
-            {
-              "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "REPEAT1",
+            "content": {
+              "type": "PATTERN",
+              "value": "."
             }
-          ]
-        },
-        {
-          "type": "REPEAT1",
-          "content": {
-            "type": "PATTERN",
-            "value": "."
           }
-        }
-      ]
+        ]
+      }
     },
     "escaped": {
       "type": "SEQ",
