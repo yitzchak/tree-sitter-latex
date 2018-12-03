@@ -26,17 +26,17 @@ using std::vector;
 enum SymbolType {
   _AT_LETTER,
   _AT_OTHER,
+  _CS_BEGIN,
+  _CS_END,
   _DEFAULT_CATCODES,
-  _END_ESCAPE,
-  _ESCAPE,
+  _ESCAPED_BEGIN,
+  _ESCAPED_END,
   _EXPL_BEGIN,
   _EXPL_END,
   _LUA_END,
   _LUACODE_BEGIN,
   _LUADIRECT_BEGIN,
   _LUAEXEC_BEGIN,
-  _NEXT_LETTER,
-  _NEXT_NON_LETTER,
   _SPACE,
   _VERB_LINE,
   ACTIVE_CHAR,
@@ -312,9 +312,9 @@ struct Scanner {
   static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
 
   vector<SymbolDescription> symbol_descriptions = {
-    {LETTER_FLAG,                 _NEXT_LETTER,         ZERO_WIDTH},
-    {~LETTER_FLAG,                _NEXT_NON_LETTER,     ZERO_WIDTH},
-    {ESCAPE_FLAG,                 _ESCAPE,              SINGLE_WIDTH},
+    // {LETTER_FLAG,                 _NEXT_LETTER,         ZERO_WIDTH},
+    // {~LETTER_FLAG,                _NEXT_NON_LETTER,     ZERO_WIDTH},
+    // {ESCAPE_FLAG,                 _ESCAPE,              SINGLE_WIDTH},
     {BEGIN_FLAG,                  BEGIN_GROUP,          SINGLE_WIDTH},
     {END_FLAG,                    EXIT_GROUP,           ZERO_WIDTH},
     {END_FLAG,                    END_GROUP,            SINGLE_WIDTH},
@@ -476,7 +476,7 @@ struct Scanner {
     }
   };
 
-  bool in_escape = false;
+  bool in_escaped = false, in_cs = false;
   int32_t start_delim = 0;
   CatCodeTable catcode_table;
 
@@ -499,7 +499,8 @@ struct Scanner {
     const size_t ch_size = sizeof(int32_t);
     unsigned length = 0;
 
-    buffer[length++] = static_cast<char>(in_escape);
+    buffer[length++] = static_cast<char>(in_cs);
+    buffer[length++] = static_cast<char>(in_escaped);
 
     // First save the verbatim delimiter
     memcpy(&buffer[length], &start_delim, ch_size);
@@ -537,7 +538,8 @@ struct Scanner {
     const size_t ch_size = sizeof(int32_t);
     unsigned pos = 0;
 
-    in_escape = static_cast<bool>(buffer[pos++]);
+    in_cs = static_cast<bool>(buffer[pos++]);
+    in_escaped = static_cast<bool>(buffer[pos++]);
 
     // Retrieve the verbatim start delimiter
     memcpy(&start_delim, &buffer[pos], ch_size);
@@ -720,27 +722,46 @@ struct Scanner {
 
   bool scan(TSLexer *lexer, const bool *valid_symbols)
   {
-    if (valid_symbols[_END_ESCAPE]) {
-      in_escape = false;
-      lexer->result_symbol = _END_ESCAPE;
+    Category code = catcode_table[lexer->lookahead];
+
+    if ((valid_symbols[_CS_BEGIN] || valid_symbols[_ESCAPED_BEGIN]) && code == ESCAPE_CATEGORY) {
+      lexer->advance(lexer, false);
+
+      if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
+        in_cs = true;
+        lexer->result_symbol = _CS_BEGIN;
+      } else {
+        in_escaped = true;
+        lexer->result_symbol = _ESCAPED_BEGIN;
+      }
       lexer->mark_end(lexer);
       return true;
     }
 
-    Category code = catcode_table[lexer->lookahead];
+    if (valid_symbols[_ESCAPED_END] && in_escaped) {
+      std::cout << "_ESCAPED_END success" << std::endl;
+      in_escaped = false;
+      lexer->result_symbol = _ESCAPED_END;
+      lexer->mark_end(lexer);
+      return true;
+    }
+
+    if (valid_symbols[_CS_END] && in_cs && code != LETTER_CATEGORY) {
+      std::cout << "_CS_END success" << std::endl;
+      in_cs = false;
+      lexer->result_symbol = _CS_END;
+      lexer->mark_end(lexer);
+      return true;
+    }
+
+    if (in_escaped || in_cs) return false;
 
     // Look for simple symbols such as escape, comment, etc.
     for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {
-      if ((!in_escape || it->type == _NEXT_LETTER || it->type == _NEXT_NON_LETTER) &&
-          it->categories[code] && valid_symbols[it->type]) {
-        if (it->type == _ESCAPE) {
-          in_escape = true;
-        }
+      if (it->categories[code] && valid_symbols[it->type]) {
         return scan_symbol(lexer, *it);
       }
     }
-
-    if (in_escape) return false;
 
     // First look for catcode commands.
     if (scan_catcode_commands(lexer, valid_symbols)) return true;

@@ -1,9 +1,9 @@
 function cs ($, name) {
-  return seq($._escape, $._next_letter, name, $._next_non_letter, $._end_escape)
+  return prec.right(10, seq($._cs_begin, name, $._cs_end))
 }
 
 function escaped ($, name) {
-  return seq($._escape, $._next_non_letter, name, $._end_escape)
+  return seq($._escaped_begin, name, $._escaped_end)
 }
 
 // This command is a placeholder for aliasing of cs
@@ -50,17 +50,17 @@ module.exports = grammar({
   externals: $ => [
     $._at_letter,
     $._at_other,
+    $._cs_begin,
+    $._cs_end,
     $._default_catcodes,
-    $._end_escape,
-    $._escape,
+    $._escaped_begin,
+    $._escaped_end,
     $._expl_begin,
     $._expl_end,
     $._lua_end,
     $._luacode_begin,
     $._luadirect_begin,
     $._luaexec_begin,
-    $._next_letter,
-    $._next_non_letter,
     $._space,
     $._verb_line,
     $.active_char,
@@ -92,7 +92,7 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    [$._math_mode]
+    [$._storage_word, $._cs_word]
   ],
 
   rules: {
@@ -131,7 +131,7 @@ module.exports = grammar({
       $.text,
       $.include,
       $.storage,
-      $.cs
+      $.cs,
     ),
 
     inline_verbatim: $ => seq(
@@ -420,7 +420,9 @@ module.exports = grammar({
 
     storage: $ => cmd($, $.storage_cs),
 
-    storage_cs: $ => cs($, /[egx]?def/),
+    storage_cs: $ => cs($, $._storage_word),
+
+    _storage_word: $ => /[egx]?def/,
 
     footnote: $ => cmd($,
       $.footnote_cs,
@@ -1109,7 +1111,9 @@ module.exports = grammar({
 
     text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
 
-    cs: $ => cs($, repeat1(/./)),
+    cs: $ =>  cs($, $._cs_word),
+
+    _cs_word: $ => prec.right(10, repeat1(/./)),
 
     escaped: $ => escaped($, /[^()\[\]]/),
 
