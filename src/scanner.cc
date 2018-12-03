@@ -782,8 +782,7 @@ struct Scanner {
       return scan_escape(lexer);
     }
 
-    // Look an inline verbatim delimiter and end the verbatim if one is
-    // currently open. Otherwise start a new one.
+    // Look for an inline verbatim delimiter and start VERB_MODE.
     if (valid_symbols[VERB_DELIM]) {
       return scan_start_verb_delim(lexer);
     }
