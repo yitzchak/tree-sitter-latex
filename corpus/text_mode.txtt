@@ -253,3 +253,14 @@ Escaped comment
 \%f
 -------------------------------
 (document (escaped) (text))
+
+==========================
+storage usage
+=========================
+\def\foo{bar}
+-----------------------
+(document
+  (storage
+    (storage_cs))
+    (cs)
+    (text_group (begin_group) (text) (end_group)))

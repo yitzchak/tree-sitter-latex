@@ -33,6 +33,7 @@ enum SymbolType {
   _ESCAPED_END,
   _EXPL_BEGIN,
   _EXPL_END,
+  // _IS_LETTER,
   _LUA_END,
   _LUACODE_BEGIN,
   _LUADIRECT_BEGIN,
@@ -312,7 +313,7 @@ struct Scanner {
   static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
 
   vector<SymbolDescription> symbol_descriptions = {
-    // {LETTER_FLAG,                 _NEXT_LETTER,         ZERO_WIDTH},
+    // {LETTER_FLAG,                 _IS_LETTER,         ZERO_WIDTH},
     // {~LETTER_FLAG,                _NEXT_NON_LETTER,     ZERO_WIDTH},
     // {ESCAPE_FLAG,                 _ESCAPE,              SINGLE_WIDTH},
     {BEGIN_FLAG,                  BEGIN_GROUP,          SINGLE_WIDTH},
@@ -739,7 +740,6 @@ struct Scanner {
     }
 
     if (valid_symbols[_ESCAPED_END] && in_escaped) {
-      std::cout << "_ESCAPED_END success" << std::endl;
       in_escaped = false;
       lexer->result_symbol = _ESCAPED_END;
       lexer->mark_end(lexer);
@@ -747,7 +747,6 @@ struct Scanner {
     }
 
     if (valid_symbols[_CS_END] && in_cs && code != LETTER_CATEGORY) {
-      std::cout << "_CS_END success" << std::endl;
       in_cs = false;
       lexer->result_symbol = _CS_END;
       lexer->mark_end(lexer);

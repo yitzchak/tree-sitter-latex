@@ -313,4 +313,4 @@ verbatimfoo
 bar
 \end{verbatimfoo}
 --------------------------------------
-(document (cs))
+(document (text_env (begin (begin_cs) (name_group (begin_group) (name) (name) (end_group))) (text) (end (end_cs) (name_group (begin_group) (name) (name) (end_group)))))
