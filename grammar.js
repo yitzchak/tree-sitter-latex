@@ -8,19 +8,19 @@ function escaped ($, name) {
 
 // This command is a placeholder for aliasing of cs
 function cmd ($, cs) {
-  return seq.apply(null, [alias(cs, 'cs')].concat(Array.prototype.slice.call(arguments, 2)))
+  return seq.apply(null, [alias(cs, $.cs)].concat(Array.prototype.slice.call(arguments, 2)))
 }
 
 function begin_cmd ($) {
   return (arguments.length > 1)
-    ? seq.apply(null, [alias($.begin_cs, 'cs')].concat(Array.prototype.slice.call(arguments, 1)))
-    : seq(alias($.begin_cs, 'cs'), $.name_group)
+    ? seq.apply(null, [alias($.begin_cs, $.cs)].concat(Array.prototype.slice.call(arguments, 1)))
+    : seq(alias($.begin_cs, $.cs), $.name_group)
 }
 
 function end_cmd ($) {
   return (arguments.length > 1)
-    ? seq.apply(null, [alias($.end_cs, 'cs')].concat(Array.prototype.slice.call(arguments, 1)))
-    : seq(alias($.end_cs, 'cs'), $.name_group)
+    ? seq.apply(null, [alias($.end_cs, $.cs)].concat(Array.prototype.slice.call(arguments, 1)))
+    : seq(alias($.end_cs, $.cs), $.name_group)
 }
 
 function group ($, contents) {
@@ -604,7 +604,7 @@ module.exports = grammar({
     glue: $ => choice(
       seq(
         optional($.fixed),
-        alias($.glue_cs, 'cs')
+        alias($.glue_cs, $.cs)
       ),
       seq(
         $.dimension,
@@ -623,7 +623,7 @@ module.exports = grammar({
       choice(
         $.unit,
         $.box_dimension_ref,
-        alias($.dimension_cs, 'cs'),
+        alias($.dimension_cs, $.cs),
         $.cs
       )
     ),
@@ -1354,82 +1354,6 @@ module.exports = grammar({
     )),
 
     escaped: $ => escaped($, /[^()\[\]]/),
-
-    // This rule unused. It exists merely make aliasing of cs work.
-    _snafu: $ => seq(
-      $.At_cs,
-      $.begin_cs,
-      $.box_dimension_cs,
-      $.catcode_cs,
-      $.char_cs,
-      $.chardef_cs,
-      $.DeclareOption_cs,
-      $.dimension_cs,
-      $.documentclass_cs,
-      $.documentstyle_cs,
-      $.emph_cs,
-      $.end_cs,
-      $.ensuremath_cs,
-      $.Error_cs,
-      $.ExecuteOptions_cs,
-      $.ExplSyntaxOff_cs,
-      $.ExplSyntaxOn_cs,
-      $.footnote_cs,
-      $.glue_cs,
-      $.glue_space_cs,
-      $.href_cs,
-      $.hyperbaseurl_cs,
-      $.hyperimage_cs,
-      $.hyperref_cs,
-      $.IfFileExists_cs,
-      $.include_cs,
-      $.lua_cs,
-      $.luadirect_cs,
-      $.luaexec_cs,
-      $.makeatletter_cs,
-      $.makeatother_cs,
-      $.makebox_cs,
-      $.mathbf_cs,
-      $.mathcal_cs,
-      $.mathit_cs,
-      $.mathnormal_cs,
-      $.mathrm_cs,
-      $.mathsf_cs,
-      $.mathtt_cs,
-      $.mkbox_cs,
-      $.movebox_cs,
-      $.NeedsTeXFormat_cs,
-      $.newcommand_cs,
-      $.newenvironment_cs,
-      $.parbox_cs,
-      $.PassOptionTo_cs,
-      $.phantom_smash_cs,
-      $.ProcessOptions_cs,
-      $.ProvidesExplClass_cs,
-      $.ProvidesExplFile_cs,
-      $.ProvidesExplPackage_cs,
-      $.ProvidesPackage_cs,
-      $.savebox_cs,
-      $.section_cs,
-      $.setbox_cs,
-      $.storage_cs,
-      $.strut_cs,
-      $.tag_cs,
-      $.textbf_cs,
-      $.textit_cs,
-      $.textmd_cs,
-      $.textrm_cs,
-      $.textsc_cs,
-      $.textsf_cs,
-      $.textsl_cs,
-      $.texttt_cs,
-      $.textup_cs,
-      $.url_cs,
-      $.use_cs,
-      $.usebox_cs,
-      $.verb_cs,
-      $.WarningInfo_cs
-    ),
 
     // fi introduced by LuaTeX
     unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/,

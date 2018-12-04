@@ -158,7 +158,7 @@
             "type": "SYMBOL",
             "name": "verb_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -759,7 +759,7 @@
             "type": "SYMBOL",
             "name": "begin_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -808,7 +808,7 @@
               "type": "SYMBOL",
               "name": "end_cs"
             },
-            "named": false,
+            "named": true,
             "value": "cs"
           },
           {
@@ -986,7 +986,7 @@
             "type": "SYMBOL",
             "name": "begin_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1007,7 +1007,7 @@
               "type": "SYMBOL",
               "name": "end_cs"
             },
-            "named": false,
+            "named": true,
             "value": "cs"
           },
           {
@@ -1047,7 +1047,7 @@
             "type": "SYMBOL",
             "name": "ensuremath_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1086,7 +1086,7 @@
             "type": "SYMBOL",
             "name": "tag_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1150,7 +1150,7 @@
             "type": "SYMBOL",
             "name": "begin_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1196,7 +1196,7 @@
             "type": "SYMBOL",
             "name": "end_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1242,7 +1242,7 @@
             "type": "SYMBOL",
             "name": "begin_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1281,7 +1281,7 @@
             "type": "SYMBOL",
             "name": "end_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1320,7 +1320,7 @@
             "type": "SYMBOL",
             "name": "include_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1359,7 +1359,7 @@
             "type": "SYMBOL",
             "name": "ProvidesExplClass_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1414,7 +1414,7 @@
             "type": "SYMBOL",
             "name": "ProvidesExplFile_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1469,7 +1469,7 @@
             "type": "SYMBOL",
             "name": "ProvidesExplPackage_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1524,7 +1524,7 @@
             "type": "SYMBOL",
             "name": "section_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1587,7 +1587,7 @@
             "type": "SYMBOL",
             "name": "storage_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         }
       ]
@@ -1622,7 +1622,7 @@
             "type": "SYMBOL",
             "name": "footnote_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1673,7 +1673,7 @@
             "type": "SYMBOL",
             "name": "makeatletter_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1712,7 +1712,7 @@
             "type": "SYMBOL",
             "name": "makeatother_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1751,7 +1751,7 @@
             "type": "SYMBOL",
             "name": "ExplSyntaxOn_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1790,7 +1790,7 @@
             "type": "SYMBOL",
             "name": "ExplSyntaxOff_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1829,7 +1829,7 @@
             "type": "SYMBOL",
             "name": "dimension_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1859,7 +1859,7 @@
             "type": "SYMBOL",
             "name": "glue_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1931,7 +1931,7 @@
             "type": "SYMBOL",
             "name": "glue_space_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -1970,7 +1970,7 @@
             "type": "SYMBOL",
             "name": "mkbox_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2018,7 +2018,7 @@
             "type": "SYMBOL",
             "name": "strut_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         }
       ]
@@ -2053,7 +2053,7 @@
             "type": "SYMBOL",
             "name": "phantom_smash_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2113,7 +2113,7 @@
             "type": "SYMBOL",
             "name": "usebox_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2152,7 +2152,7 @@
             "type": "SYMBOL",
             "name": "movebox_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2220,7 +2220,7 @@
             "type": "SYMBOL",
             "name": "setbox_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2275,7 +2275,7 @@
             "type": "SYMBOL",
             "name": "box_dimension_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2345,7 +2345,7 @@
                 "type": "SYMBOL",
                 "name": "glue_cs"
               },
-              "named": false,
+              "named": true,
               "value": "cs"
             }
           ]
@@ -2412,7 +2412,7 @@
             "type": "SYMBOL",
             "name": "box_dimension_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2453,7 +2453,7 @@
                 "type": "SYMBOL",
                 "name": "dimension_cs"
               },
-              "named": false,
+              "named": true,
               "value": "cs"
             },
             {
@@ -2473,7 +2473,7 @@
             "type": "SYMBOL",
             "name": "catcode_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2528,7 +2528,7 @@
             "type": "SYMBOL",
             "name": "chardef_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2583,7 +2583,7 @@
             "type": "SYMBOL",
             "name": "catcode_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2601,7 +2601,7 @@
             "type": "SYMBOL",
             "name": "char_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2643,7 +2643,7 @@
               "type": "SYMBOL",
               "name": "documentclass_cs"
             },
-            "named": false,
+            "named": true,
             "value": "cs"
           },
           {
@@ -2707,7 +2707,7 @@
             "type": "SYMBOL",
             "name": "documentstyle_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2761,7 +2761,7 @@
               "type": "SYMBOL",
               "name": "use_cs"
             },
-            "named": false,
+            "named": true,
             "value": "cs"
           },
           {
@@ -2825,7 +2825,7 @@
             "type": "SYMBOL",
             "name": "newcommand_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2904,7 +2904,7 @@
             "type": "SYMBOL",
             "name": "newenvironment_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -2987,7 +2987,7 @@
             "type": "SYMBOL",
             "name": "makebox_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3055,7 +3055,7 @@
             "type": "SYMBOL",
             "name": "savebox_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3127,7 +3127,7 @@
             "type": "SYMBOL",
             "name": "parbox_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3245,7 +3245,7 @@
             "type": "SYMBOL",
             "name": "begin_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3313,7 +3313,7 @@
             "type": "SYMBOL",
             "name": "end_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3352,7 +3352,7 @@
             "type": "SYMBOL",
             "name": "textrm_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3391,7 +3391,7 @@
             "type": "SYMBOL",
             "name": "textsf_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3430,7 +3430,7 @@
             "type": "SYMBOL",
             "name": "texttt_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3469,7 +3469,7 @@
             "type": "SYMBOL",
             "name": "textmd_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3508,7 +3508,7 @@
             "type": "SYMBOL",
             "name": "textbf_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3547,7 +3547,7 @@
             "type": "SYMBOL",
             "name": "textup_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3586,7 +3586,7 @@
             "type": "SYMBOL",
             "name": "textit_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3625,7 +3625,7 @@
             "type": "SYMBOL",
             "name": "textsl_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3664,7 +3664,7 @@
             "type": "SYMBOL",
             "name": "textsc_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3703,7 +3703,7 @@
             "type": "SYMBOL",
             "name": "emph_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3742,7 +3742,7 @@
             "type": "SYMBOL",
             "name": "mathrm_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3781,7 +3781,7 @@
             "type": "SYMBOL",
             "name": "mathnormal_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3820,7 +3820,7 @@
             "type": "SYMBOL",
             "name": "mathcal_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3859,7 +3859,7 @@
             "type": "SYMBOL",
             "name": "mathbf_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3898,7 +3898,7 @@
             "type": "SYMBOL",
             "name": "mathsf_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3937,7 +3937,7 @@
             "type": "SYMBOL",
             "name": "mathtt_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -3976,7 +3976,7 @@
             "type": "SYMBOL",
             "name": "mathit_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4015,7 +4015,7 @@
             "type": "SYMBOL",
             "name": "NeedsTeXFormat_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4057,7 +4057,7 @@
               "type": "SYMBOL",
               "name": "ProvidesPackage_cs"
             },
-            "named": false,
+            "named": true,
             "value": "cs"
           },
           {
@@ -4109,7 +4109,7 @@
             "type": "SYMBOL",
             "name": "DeclareOption_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4161,7 +4161,7 @@
             "type": "SYMBOL",
             "name": "PassOptionTo_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4204,7 +4204,7 @@
             "type": "SYMBOL",
             "name": "At_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4243,7 +4243,7 @@
             "type": "SYMBOL",
             "name": "ProcessOptions_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4290,7 +4290,7 @@
             "type": "SYMBOL",
             "name": "ExecuteOptions_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4329,7 +4329,7 @@
             "type": "SYMBOL",
             "name": "IfFileExists_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4376,7 +4376,7 @@
             "type": "SYMBOL",
             "name": "Error_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4423,7 +4423,7 @@
             "type": "SYMBOL",
             "name": "WarningInfo_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4466,7 +4466,7 @@
             "type": "SYMBOL",
             "name": "href_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4521,7 +4521,7 @@
             "type": "SYMBOL",
             "name": "url_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4560,7 +4560,7 @@
             "type": "SYMBOL",
             "name": "hyperbaseurl_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4599,7 +4599,7 @@
             "type": "SYMBOL",
             "name": "hyperimage_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4645,7 +4645,7 @@
                 "type": "SYMBOL",
                 "name": "hyperref_cs"
               },
-              "named": false,
+              "named": true,
               "value": "cs"
             },
             {
@@ -4678,7 +4678,7 @@
                   "type": "SYMBOL",
                   "name": "hyperref_cs"
                 },
-                "named": false,
+                "named": true,
                 "value": "cs"
               },
               {
@@ -4732,7 +4732,7 @@
             "type": "SYMBOL",
             "name": "lua_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4791,7 +4791,7 @@
             "type": "SYMBOL",
             "name": "luadirect_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4838,7 +4838,7 @@
             "type": "SYMBOL",
             "name": "luaexec_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4914,7 +4914,7 @@
             "type": "SYMBOL",
             "name": "begin_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -4936,7 +4936,7 @@
             "type": "SYMBOL",
             "name": "end_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -5004,7 +5004,7 @@
             "type": "SYMBOL",
             "name": "begin_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -5026,7 +5026,7 @@
             "type": "SYMBOL",
             "name": "end_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -5101,7 +5101,7 @@
             "type": "SYMBOL",
             "name": "begin_cs"
           },
-          "named": false,
+          "named": true,
           "value": "cs"
         },
         {
@@ -5122,7 +5122,7 @@
               "type": "SYMBOL",
               "name": "end_cs"
             },
-            "named": false,
+            "named": true,
             "value": "cs"
           },
           {
@@ -5706,299 +5706,6 @@
         {
           "type": "SYMBOL",
           "name": "_escaped_end"
-        }
-      ]
-    },
-    "_snafu": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "At_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "begin_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "box_dimension_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "catcode_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "char_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "chardef_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "DeclareOption_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "dimension_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "documentclass_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "documentstyle_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "emph_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "end_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ensuremath_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "Error_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ExecuteOptions_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ExplSyntaxOff_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ExplSyntaxOn_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "footnote_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "glue_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "glue_space_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "href_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "hyperbaseurl_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "hyperimage_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "hyperref_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "IfFileExists_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "include_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "lua_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "luadirect_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "luaexec_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "makeatletter_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "makeatother_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "makebox_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "mathbf_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "mathcal_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "mathit_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "mathnormal_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "mathrm_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "mathsf_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "mathtt_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "mkbox_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "movebox_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "NeedsTeXFormat_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "newcommand_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "newenvironment_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "parbox_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "PassOptionTo_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "phantom_smash_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ProcessOptions_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ProvidesExplClass_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ProvidesExplFile_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ProvidesExplPackage_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ProvidesPackage_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "savebox_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "section_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "setbox_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "storage_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "strut_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "tag_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textbf_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textit_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textmd_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textrm_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textsc_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textsf_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textsl_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "texttt_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "textup_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "url_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "use_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "usebox_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "verb_cs"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "WarningInfo_cs"
         }
       ]
     },
