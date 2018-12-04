@@ -264,3 +264,38 @@ not (quite) inline verbatim
 ----------------------
 (document
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text))
+
+========================
+inline verbatim using various special character
+========================
+\verb%foo%
+\verb\bar\
+\verb~baz~
+\verb#wibble#
+\verb{quux{
+\verb}gronk}
+\verb^nub^
+\verb_baffle_
+\verb&crank&
+\verb$conn$
+------------------------
+(document
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
+  (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
+  (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
+  (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
+  (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
+  (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
+  (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
+  (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
+  (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
+  (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)))

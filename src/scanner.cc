@@ -132,7 +132,7 @@ public:
   }
 
   void set_catcode(const int32_t key, Category cat) {
-    if (key > -1 && key < table.size()) {
+    if (static_cast<size_t>(key) < table.size()) {
       table[key] = cat;
     } else {
       overflow[key] = cat;
@@ -140,7 +140,7 @@ public:
   }
 
   Category get_catcode(const int32_t key) const {
-    if (key > -1 && key < table.size()) {
+    if (static_cast<size_t>(key) < table.size()) {
       return table[key];
     }
 
@@ -164,7 +164,7 @@ public:
       copy.overflow.clear();
 
       // Load the values from the other table
-      for (int32_t ch = 0; ch < other.table.size(); ch++) {
+      for (size_t ch = 0; ch < other.table.size(); ch++) {
         // Save the current value
         copy.table[ch] = get_catcode(ch);
         // Set the new value
@@ -293,6 +293,13 @@ struct CatCodeCommand {
   }
 };
 
+enum ScannerMode {
+  CS_MODE,
+  ESCAPED_MODE,
+  NORMAL_MODE,
+  VERB_MODE
+};
+
 struct Scanner {
   static const unsigned int ESCAPE_FLAG = 1 << ESCAPE_CATEGORY;
   static const unsigned int BEGIN_FLAG = 1 << BEGIN_CATEGORY;
@@ -312,17 +319,17 @@ struct Scanner {
   static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
 
   vector<SymbolDescription> symbol_descriptions = {
-    {BEGIN_FLAG,                  BEGIN_GROUP,          SINGLE_WIDTH},
-    {END_FLAG,                    EXIT_GROUP,           ZERO_WIDTH},
-    {END_FLAG,                    END_GROUP,            SINGLE_WIDTH},
-    {MATH_SHIFT_FLAG,             MATH_SHIFT,           SINGLE_WIDTH},
-    {ALIGNMENT_TAB_FLAG,          ALIGNMENT_TAB,        SINGLE_WIDTH},
-    {EOL_FLAG,                    EOL,                  SINGLE_WIDTH},
-    {PARAMETER_FLAG,              PARAMETER_CHAR,       SINGLE_WIDTH},
-    {SUPERSCRIPT_FLAG,            SUPERSCRIPT,          SINGLE_WIDTH},
-    {SUBSCRIPT_FLAG,              SUBSCRIPT,            SINGLE_WIDTH},
-    {SPACE_FLAG,                  _SPACE,               UNLIMITED_WIDTH},
-    {ACTIVE_CHAR_FLAG,            ACTIVE_CHAR,          SINGLE_WIDTH}
+    {BEGIN_FLAG,         BEGIN_GROUP,    SINGLE_WIDTH},
+    {END_FLAG,           EXIT_GROUP,     ZERO_WIDTH},
+    {END_FLAG,           END_GROUP,      SINGLE_WIDTH},
+    {MATH_SHIFT_FLAG,    MATH_SHIFT,     SINGLE_WIDTH},
+    {ALIGNMENT_TAB_FLAG, ALIGNMENT_TAB,  SINGLE_WIDTH},
+    {EOL_FLAG,           EOL,            SINGLE_WIDTH},
+    {PARAMETER_FLAG,     PARAMETER_CHAR, SINGLE_WIDTH},
+    {SUPERSCRIPT_FLAG,   SUPERSCRIPT,    SINGLE_WIDTH},
+    {SUBSCRIPT_FLAG,     SUBSCRIPT,      SINGLE_WIDTH},
+    {SPACE_FLAG,         _SPACE,         UNLIMITED_WIDTH},
+    {ACTIVE_CHAR_FLAG,   ACTIVE_CHAR,    SINGLE_WIDTH}
   };
 
   map<string, SymbolType> comment_types = {
@@ -473,7 +480,7 @@ struct Scanner {
     }
   };
 
-  bool in_escaped = false, in_cs = false;
+  ScannerMode mode = NORMAL_MODE;
   int32_t start_delim = 0;
   CatCodeTable catcode_table;
 
@@ -496,10 +503,10 @@ struct Scanner {
     const size_t ch_size = sizeof(int32_t);
     unsigned length = 0;
 
-    buffer[length++] = static_cast<char>(in_cs);
-    buffer[length++] = static_cast<char>(in_escaped);
+    // Save the mode
+    buffer[length++] = static_cast<char>(mode);
 
-    // First save the verbatim delimiter
+    // Save the verbatim delimiter
     memcpy(&buffer[length], &start_delim, ch_size);
     length += ch_size;
 
@@ -535,8 +542,8 @@ struct Scanner {
     const size_t ch_size = sizeof(int32_t);
     unsigned pos = 0;
 
-    in_cs = static_cast<bool>(buffer[pos++]);
-    in_escaped = static_cast<bool>(buffer[pos++]);
+    // Load the mode
+    mode = static_cast<ScannerMode>(buffer[pos++]);
 
     // Retrieve the verbatim start delimiter
     memcpy(&start_delim, &buffer[pos], ch_size);
@@ -561,6 +568,7 @@ struct Scanner {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
     if (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
+      mode = VERB_MODE;
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
       lexer->result_symbol = VERB_DELIM;
@@ -573,17 +581,17 @@ struct Scanner {
 
   bool scan_end_verb_delim(TSLexer *lexer) {
     if (lexer->lookahead == start_delim) {
+      mode = NORMAL_MODE;
       lexer->advance(lexer, false);
       lexer->result_symbol = VERB_DELIM;
       lexer->mark_end(lexer);
-      start_delim = 0;
       return true;
     }
 
     if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
+      mode = NORMAL_MODE;
       lexer->result_symbol = VERB_DELIM; // don't eat the newline (for consistency)
       lexer->mark_end(lexer);
-      start_delim = 0;
       return true;
     }
 
@@ -717,9 +725,9 @@ struct Scanner {
     return false;
   }
 
-  bool scan_in_cs(TSLexer *lexer, const bool *valid_symbols) {
+  bool scan_cs_mode(TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[_CS_END] && catcode_table[lexer->lookahead] != LETTER_CATEGORY) {
-      in_cs = false;
+      mode = NORMAL_MODE;
       lexer->result_symbol = _CS_END;
       lexer->mark_end(lexer);
       return true;
@@ -728,9 +736,9 @@ struct Scanner {
     return false;
   }
 
-  bool scan_in_escaped(TSLexer *lexer, const bool *valid_symbols) {
+  bool scan_escaped_mode(TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[_ESCAPED_END]) {
-      in_escaped = false;
+      mode = NORMAL_MODE;
       lexer->result_symbol = _ESCAPED_END;
       lexer->mark_end(lexer);
       return true;
@@ -743,10 +751,10 @@ struct Scanner {
     lexer->advance(lexer, false);
 
     if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
-      in_cs = true;
+      mode = CS_MODE;
       lexer->result_symbol = _CS_BEGIN;
     } else {
-      in_escaped = true;
+      mode = ESCAPED_MODE;
       lexer->result_symbol = _ESCAPED_BEGIN;
     }
     lexer->mark_end(lexer);
@@ -754,48 +762,43 @@ struct Scanner {
     return true;
   }
 
-  bool scan(TSLexer *lexer, const bool *valid_symbols)
-  {
-    if (in_escaped) {
-      return scan_in_escaped(lexer, valid_symbols);
+  bool scan_verb_mode(TSLexer *lexer, const bool *valid_symbols) {
+    // Look for an inline verbatim delimiter and end the verbatim.
+    if (valid_symbols[VERB_DELIM]) {
+      return scan_end_verb_delim(lexer);
     }
 
-    if (in_cs) {
-      return scan_in_cs(lexer, valid_symbols);
+    // Scan an inline verbatim body.
+    if (valid_symbols[VERB_BODY]) {
+      return scan_verb_body(lexer);
     }
 
+    return false;
+  }
+
+  bool scan_normal_mode(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
 
+    // Look for control sequences
     if ((valid_symbols[_CS_BEGIN] || valid_symbols[_ESCAPED_BEGIN]) && code == ESCAPE_CATEGORY) {
       return scan_escape(lexer);
     }
 
-    // Look for simple symbols such as escape, comment, etc.
+    // Look for an inline verbatim delimiter and start VERB_MODE.
+    if (valid_symbols[VERB_DELIM]) {
+      return scan_start_verb_delim(lexer);
+    }
+
+    // Look for simple symbols such as active character, parameter character, etc.
     for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {
       if (it->categories[code] && valid_symbols[it->type]) {
         return scan_symbol(lexer, *it);
       }
     }
 
-    // First look for catcode commands.
-    if (scan_catcode_commands(lexer, valid_symbols)) return true;
-
     // Look for comments.
     if (code == COMMENT_CATEGORY && valid_symbols[COMMENT]) {
       return scan_comment(lexer);
-    }
-
-    // Look an inline verbatim delimiter and end the verbatim if one is
-    // currently open. Otherwise start a new one.
-    if (valid_symbols[VERB_DELIM]) {
-      return (start_delim) ?
-        scan_end_verb_delim(lexer) :
-        scan_start_verb_delim(lexer);
-    }
-
-    // Scan an inline verbatim body.
-    if (start_delim && valid_symbols[VERB_BODY]) {
-      return scan_verb_body(lexer);
     }
 
     // Scan a single line in a verbatim environment.
@@ -804,7 +807,22 @@ struct Scanner {
       return scan_verb_line(lexer);
     }
 
-    return false;
+    // Look for catcode commands.
+    return scan_catcode_commands(lexer, valid_symbols);
+  }
+
+  bool scan(TSLexer *lexer, const bool *valid_symbols)
+  {
+    switch (mode) {
+      case CS_MODE:
+        return scan_cs_mode(lexer, valid_symbols);
+      case ESCAPED_MODE:
+        return scan_escaped_mode(lexer, valid_symbols);
+      case VERB_MODE:
+        return scan_verb_mode(lexer, valid_symbols);
+      default:
+        return scan_normal_mode(lexer, valid_symbols);
+    }
   }
 
 };
