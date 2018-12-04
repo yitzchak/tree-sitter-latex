@@ -106,32 +106,33 @@ module.exports = grammar({
       $.catcode,
       $.char,
       $.chardef,
+      $.cs,
       $.dimension_assign,
-      $.escaped,
       $.ensuremath,
+      $.escaped,
       $.ExplSyntaxOff,
       $.ExplSyntaxOn,
       $.glue_assign,
       $.glue_space,
+      $.include,
       $.lua,
-      $.luadirect,
-      $.luaexec,
       $.luacode_env,
       $.luacodestar_env,
+      $.luadirect,
+      $.luaexec,
       $.makeatletter,
       $.makeatother,
+      $.makebox,
+      $.minipage_env,
       $.newcommand,
       $.newenvironment,
-      $.makebox,
-      $.parbox,
-      $.minipage_env,
-      $.savebox,
       $.parameter,
+      $.parbox,
+      $.savebox,
       $.setbox,
-      $.text,
-      $.include,
       $.storage,
-      $.cs,
+      $.text,
+      $.tikzpicture_env
     ),
 
     inline_verbatim: $ => cmd($,
@@ -1211,6 +1212,26 @@ module.exports = grammar({
 
     luacodestar_env_name: $ => 'luacode*',
 
+    // pgf/tikz
+
+    tikzpicture_env: $ => seq(
+      $.tikzpicture_begin,
+      repeat($._text_mode),
+      choice($.tikzpicture_end, $.exit_group)
+    ),
+
+    tikzpicture_begin: $ => begin_cmd($,
+      $.tikzpicture_env_group
+    ),
+
+    tikzpicture_end: $ => prec(-3, end_cmd($,
+      $.tikzpicture_env_group
+    )),
+
+    tikzpicture_env_group: $ => group($, $.tikzpicture_env_name),
+
+    tikzpicture_env_name: $ => 'tikzpicture',
+
     // Common rules
 
     text_group: $ => group($, repeat($._text_mode)),
@@ -1228,6 +1249,7 @@ module.exports = grammar({
             $.luacode_env_name,
             $.luacodestar_env_name,
             $.minipage_env_name,
+            $.tikzpicture_env_name,
             $.verbatim_env_name
           )
         ),

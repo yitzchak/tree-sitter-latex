@@ -41,15 +41,19 @@
         },
         {
           "type": "SYMBOL",
+          "name": "cs"
+        },
+        {
+          "type": "SYMBOL",
           "name": "dimension_assign"
         },
         {
           "type": "SYMBOL",
-          "name": "escaped"
+          "name": "ensuremath"
         },
         {
           "type": "SYMBOL",
-          "name": "ensuremath"
+          "name": "escaped"
         },
         {
           "type": "SYMBOL",
@@ -69,15 +73,11 @@
         },
         {
           "type": "SYMBOL",
+          "name": "include"
+        },
+        {
+          "type": "SYMBOL",
           "name": "lua"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "luadirect"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "luaexec"
         },
         {
           "type": "SYMBOL",
@@ -89,11 +89,27 @@
         },
         {
           "type": "SYMBOL",
+          "name": "luadirect"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luaexec"
+        },
+        {
+          "type": "SYMBOL",
           "name": "makeatletter"
         },
         {
           "type": "SYMBOL",
           "name": "makeatother"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "makebox"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "minipage_env"
         },
         {
           "type": "SYMBOL",
@@ -105,7 +121,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "makebox"
+          "name": "parameter"
         },
         {
           "type": "SYMBOL",
@@ -113,15 +129,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "minipage_env"
-        },
-        {
-          "type": "SYMBOL",
           "name": "savebox"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "parameter"
         },
         {
           "type": "SYMBOL",
@@ -129,19 +137,15 @@
         },
         {
           "type": "SYMBOL",
-          "name": "text"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "include"
-        },
-        {
-          "type": "SYMBOL",
           "name": "storage"
         },
         {
           "type": "SYMBOL",
-          "name": "cs"
+          "name": "text"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tikzpicture_env"
         }
       ]
     },
@@ -5059,6 +5063,96 @@
       "type": "STRING",
       "value": "luacode*"
     },
+    "tikzpicture_env": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "tikzpicture_begin"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_text_mode"
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "tikzpicture_end"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
+        }
+      ]
+    },
+    "tikzpicture_begin": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "begin_cs"
+          },
+          "named": false,
+          "value": "cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tikzpicture_env_group"
+        }
+      ]
+    },
+    "tikzpicture_end": {
+      "type": "PREC",
+      "value": -3,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "end_cs"
+            },
+            "named": false,
+            "value": "cs"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "tikzpicture_env_group"
+          }
+        ]
+      }
+    },
+    "tikzpicture_env_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "begin_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "tikzpicture_env_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_group"
+        }
+      ]
+    },
+    "tikzpicture_env_name": {
+      "type": "STRING",
+      "value": "tikzpicture"
+    },
     "text_group": {
       "type": "SEQ",
       "members": [
@@ -5150,6 +5244,10 @@
                       {
                         "type": "SYMBOL",
                         "name": "minipage_env_name"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "tikzpicture_env_name"
                       },
                       {
                         "type": "SYMBOL",
