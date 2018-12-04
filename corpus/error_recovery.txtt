@@ -256,7 +256,7 @@ LaTeX display math inside newenvironment
 (document
   (newenvironment
     (cs)
-    (text_group (begin_group) (text) (end_group))
+    (name_group (begin_group) (name) (name) (end_group))
     (text_group
       (begin_group) (latex_display_math (begin_display_math) (cs) (exit_group)) (end_group))
     (text_group
@@ -270,7 +270,7 @@ LaTeX display math inside newenvironment
 (document
   (newenvironment
     (cs)
-    (text_group (begin_group) (text) (end_group))
+    (name_group (begin_group) (name) (name) (end_group))
     (text_group
       (begin_group) (latex_inline_math (begin_inline_math) (cs) (exit_group)) (end_group))
     (text_group
@@ -284,10 +284,7 @@ newenvironment based on existing environment (the wrong way)
 (document
   (newenvironment
     (cs)
-    (text_group
-      (begin_group)
-      (text)
-      (end_group))
+    (name_group (begin_group) (name) (end_group))
     (text_group
       (begin_group)
       (text_env

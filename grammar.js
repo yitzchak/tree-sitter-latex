@@ -130,6 +130,7 @@ module.exports = grammar({
       $.parbox,
       $.savebox,
       $.setbox,
+      $.setlength,
       $.storage,
       $.text,
       $.tikzpicture_env
@@ -152,16 +153,16 @@ module.exports = grammar({
       // some package define underscore to produce \tex­tun­der­score. We assume
       // that this has been done since underscore is never actually subscript
       // in text mode.
-      alias($.subscript, 'text'),
-      alias($.superscript, 'text'),
+      alias($.subscript, $.text),
+      alias($.superscript, $.text),
       $.verbatim_env,
       $.inline_verbatim,
       $._display_math,
       $._inline_math,
       $.text_env,
       $.text_group,
-      prec(-1, alias($.lbrack, 'text')),
-      prec(-1, alias($.rbrack, 'text')),
+      prec(-1, alias($.lbrack, $.text)),
+      prec(-1, alias($.rbrack, $.text)),
       $.emph,
       $.textrm,
       $.textsf,
@@ -209,8 +210,8 @@ module.exports = grammar({
       $.superscript,
       $.math_env,
       $.math_group,
-      prec(-1, alias($.lbrack, 'text')),
-      prec(-1, alias($.rbrack, 'text')),
+      prec(-1, alias($.lbrack, $.text)),
+      prec(-1, alias($.rbrack, $.text)),
       $.mathrm,
       $.mathnormal,
       $.mathcal,
@@ -703,7 +704,7 @@ module.exports = grammar({
     newcommand: $ => cmd($,
       $.newcommand_cs,
       optional('*'),
-      $.text_group,
+      $.cs_group,
       optional($.text_brack_group),
       optional($.text_brack_group),
       $.text_group
@@ -716,7 +717,7 @@ module.exports = grammar({
     newenvironment: $ => cmd($,
       $.newenvironment_cs,
       optional('*'),
-      $.text_group,
+      $.name_group,
       optional($.text_brack_group),
       optional($.text_brack_group),
       $.text_group,
@@ -794,6 +795,18 @@ module.exports = grammar({
     minipage_env_group: $ => group($, $.minipage_env_name),
 
     minipage_env_name: $ => 'minipage',
+
+    // LaTeX lengths
+
+    setlength: $ => cmd($,
+      $.setlength_cs,
+      $.cs_group,
+      $.dimension_group
+    ),
+
+    setlength_cs: $ => cs($, $._setlength_word),
+
+    _setlength_word: $ => 'setlength',
 
     // LaTeX Measuring things
 
@@ -1240,6 +1253,8 @@ module.exports = grammar({
 
     dimension_brack_group: $ => brack_group($, $.dimension),
 
+    cs_group: $ => choice($.cs, group($, $.cs)),
+
     name_group: $ => group($, alias(
       seq(
         optional(
@@ -1255,7 +1270,7 @@ module.exports = grammar({
         ),
         $.text
       ),
-      'name')
+      $.name)
     ),
 
     text_brack_group: $ => brack_group($, repeat($._text_mode)),
@@ -1330,6 +1345,7 @@ module.exports = grammar({
           $._savebox_word,
           $._section_word,
           $._setbox_word,
+          $._setlength_word,
           $._storage_word,
           $._strut_word,
           $._tag_word,
