@@ -503,9 +503,10 @@ struct Scanner {
     const size_t ch_size = sizeof(int32_t);
     unsigned length = 0;
 
+    // Save the mode
     buffer[length++] = static_cast<char>(mode);
 
-    // First save the verbatim delimiter
+    // Save the verbatim delimiter
     memcpy(&buffer[length], &start_delim, ch_size);
     length += ch_size;
 
@@ -541,6 +542,7 @@ struct Scanner {
     const size_t ch_size = sizeof(int32_t);
     unsigned pos = 0;
 
+    // Load the mode
     mode = static_cast<ScannerMode>(buffer[pos++]);
 
     // Retrieve the verbatim start delimiter
@@ -761,7 +763,7 @@ struct Scanner {
   }
 
   bool scan_verb_mode(TSLexer *lexer, const bool *valid_symbols) {
-    // Look an inline verbatim delimiter and end the verbatim.
+    // Look for an inline verbatim delimiter and end the verbatim.
     if (valid_symbols[VERB_DELIM]) {
       return scan_end_verb_delim(lexer);
     }
