@@ -136,14 +136,14 @@ foo
 ----------------------
 (document
   (minipage_env
-    (minipage_begin
+    (begin
       (cs)
-      (minipage_env_group (begin_group) (minipage_env_name) (end_group))
+      (name_group (begin_group) (name) (end_group))
       (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
     (text)
-    (minipage_end
+    (end
       (cs)
-      (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
+      (name_group (begin_group) (name) (end_group)))))
 
 ======================
 minipage with position
@@ -154,15 +154,15 @@ foo
 ----------------------
 (document
   (minipage_env
-    (minipage_begin
+    (begin
       (cs)
-      (minipage_env_group (begin_group) (minipage_env_name) (end_group))
+      (name_group (begin_group) (name) (end_group))
       (text_brack_group (lbrack) (text) (rbrack))
       (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
     (text)
-    (minipage_end
+    (end
       (cs)
-      (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
+      (name_group (begin_group) (name) (end_group)))))
 
 ======================
 minipage with position and height
@@ -173,16 +173,16 @@ foo
 ----------------------
 (document
   (minipage_env
-    (minipage_begin
+    (begin
       (cs)
-      (minipage_env_group (begin_group) (minipage_env_name) (end_group))
+      (name_group (begin_group) (name) (end_group))
       (text_brack_group (lbrack) (text) (rbrack))
       (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
       (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
     (text)
-    (minipage_end
+    (end
       (cs)
-      (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
+      (name_group (begin_group) (name) (end_group)))))
 
 ======================
 minipage with position and height and inner position
@@ -193,14 +193,14 @@ foo
 ----------------------
 (document
   (minipage_env
-    (minipage_begin
+    (begin
       (cs)
-      (minipage_env_group (begin_group) (minipage_env_name) (end_group))
+      (name_group (begin_group) (name) (end_group))
       (text_brack_group (lbrack) (text) (rbrack))
       (dimension_brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
       (text_brack_group (lbrack) (text) (rbrack))
       (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))
     (text)
-    (minipage_end
+    (end
       (cs)
-      (minipage_env_group (begin_group) (minipage_env_name) (end_group)))))
+      (name_group (begin_group) (name) (end_group)))))

@@ -263,7 +263,7 @@ luacode environment
 ---------------------
 (document
   (luacode_env
-    (luacode_begin (cs) (luacode_env_group (begin_group) (luacode_env_name) (end_group)))
+    (begin (cs) (name_group (begin_group) (name) (end_group)))
     (text)
     (text_group (begin_group) (text) (end_group))
     (text)
@@ -281,7 +281,7 @@ luacode environment
     (text)
     (cs)
     (text)
-    (luacode_end (cs) (luacode_env_group (begin_group) (luacode_env_name) (end_group)))))
+    (end (cs) (name_group (begin_group) (name) (end_group)))))
 
 
 ==========================
@@ -296,9 +296,9 @@ luacode* environment
 -----------------------------
 (document
   (luacodestar_env
-    (luacodestar_begin
+    (begin
       (cs)
-      (luacodestar_env_group (begin_group) (luacodestar_env_name) (end_group)) (eol))
+      (name_group (begin_group) (name) (end_group)) (eol))
     (lua_text)
-    (luacodestar_end (cs)
-      (luacodestar_env_group (begin_group) (luacodestar_env_name) (end_group)))))
+    (end (cs)
+      (name_group (begin_group) (name) (end_group)))))

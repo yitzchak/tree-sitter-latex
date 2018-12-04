@@ -9,9 +9,9 @@ tikzpicture
 --------------------
 (document
   (tikzpicture_env
-    (tikzpicture_begin (cs) (tikzpicture_env_group (begin_group) (tikzpicture_env_name) (end_group)))
+    (begin (cs) (name_group (begin_group) (name) (end_group)))
     (text)
     (cs) (text) (text) (text) (text) (text)
     (cs) (text) (text) (text) (text) (text)
     (cs) (text) (text) (text) (text)
-  (tikzpicture_end (cs) (tikzpicture_env_group (begin_group) (tikzpicture_env_name) (end_group))))) 
+  (end (cs) (name_group (begin_group) (name) (end_group))))) 
