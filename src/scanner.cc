@@ -132,7 +132,7 @@ public:
   }
 
   void set_catcode(const int32_t key, Category cat) {
-    if (key > -1 && key < table.size()) {
+    if (static_cast<size_t>(key) < table.size()) {
       table[key] = cat;
     } else {
       overflow[key] = cat;
@@ -140,7 +140,7 @@ public:
   }
 
   Category get_catcode(const int32_t key) const {
-    if (key > -1 && key < table.size()) {
+    if (static_cast<size_t>(key) < table.size()) {
       return table[key];
     }
 
@@ -164,7 +164,7 @@ public:
       copy.overflow.clear();
 
       // Load the values from the other table
-      for (int32_t ch = 0; ch < other.table.size(); ch++) {
+      for (size_t ch = 0; ch < other.table.size(); ch++) {
         // Save the current value
         copy.table[ch] = get_catcode(ch);
         // Set the new value
