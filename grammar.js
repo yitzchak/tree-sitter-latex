@@ -129,6 +129,7 @@ module.exports = grammar({
       $.newenvironment,
       $.parameter,
       $.parbox,
+      $.ref,
       $.savebox,
       $.setbox,
       $.setlength,
@@ -1004,6 +1005,12 @@ module.exports = grammar({
 
     _cite_word: $ => /(no)?cite|cite(t|p|lt|lp|text|alt|alp|num|author|year|yearpar|fullauthor|talias|palias)|Cite(t|p|alt|alp|author)/,
 
+    ref: $ => cmd($, $.ref_cs, $.name_group),
+
+    ref_cs: $ => cs($, $._ref_word),
+
+    _ref_word: $ => /(auto|name|page|eq)ref/,
+
     // LaTeX cls identification
 
     NeedsTeXFormat: $ => cmd($,
@@ -1369,6 +1376,7 @@ module.exports = grammar({
           $._ProvidesExplFile_word,
           $._ProvidesExplPackage_word,
           $._ProvidesPackage_word,
+          $._ref_word,
           $._savebox_word,
           $._section_word,
           $._setbox_word,

@@ -133,6 +133,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "ref"
+        },
+        {
+          "type": "SYMBOL",
           "name": "savebox"
         },
         {
@@ -4262,6 +4266,45 @@
       "type": "PATTERN",
       "value": "(no)?cite|cite(t|p|lt|lp|text|alt|alp|num|author|year|yearpar|fullauthor|talias|palias)|Cite(t|p|alt|alp|author)"
     },
+    "ref": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "ref_cs"
+          },
+          "named": true,
+          "value": "cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "name_group"
+        }
+      ]
+    },
+    "ref_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_cs_begin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_ref_word"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "_ref_word": {
+      "type": "PATTERN",
+      "value": "(auto|name|page|eq)ref"
+    },
     "NeedsTeXFormat": {
       "type": "SEQ",
       "members": [
@@ -5951,6 +5994,10 @@
                   {
                     "type": "SYMBOL",
                     "name": "_ProvidesPackage_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_ref_word"
                   },
                   {
                     "type": "SYMBOL",

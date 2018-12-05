@@ -329,3 +329,24 @@ storage with exisiting command
     (cs)
     (cs)
     (text_group (begin_group) (text) (end_group))))
+
+
+==========================
+storage with comment
+=========================
+\def\foo%
+{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (comment)
+    (text_group (begin_group) (text) (end_group))))
+
+========================
+ref
+========================
+\ref{eq:foo}
+-----------------------
+(document (cs) (text_group (begin_group) (text) (end_group)))
