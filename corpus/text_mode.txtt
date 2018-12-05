@@ -261,6 +261,71 @@ storage usage
 -----------------------
 (document
   (storage
-    (cs))
     (cs)
-    (text_group (begin_group) (text) (end_group)))
+    (cs)
+    (text_group (begin_group) (text) (end_group))))
+
+==========================
+storage with single parameter
+=========================
+\def\foo#1{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (parameter (parameter_char))
+    (text_group (begin_group) (text) (end_group))))
+
+==========================
+storage with multiple parameters
+=========================
+\def\foo#1#2{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (parameter (parameter_char))
+    (parameter (parameter_char))
+    (text_group (begin_group) (text) (end_group))))
+
+==========================
+storage with multiple parameters and dangling parameter character
+=========================
+\def\foo#1#2#{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (parameter (parameter_char))
+    (parameter (parameter_char))
+    (parameter (parameter_char))
+    (text_group (begin_group) (text) (end_group))))
+
+==========================
+storage with multiple parameters with brackets
+=========================
+\def\foo[#1]#2{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (text)
+    (parameter (parameter_char))
+    (text)
+    (parameter (parameter_char))
+    (text_group (begin_group) (text) (end_group))))
+
+==========================
+storage with exisiting command
+=========================
+\def\section{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (text_group (begin_group) (text) (end_group))))

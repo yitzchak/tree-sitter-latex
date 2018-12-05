@@ -41,6 +41,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "cite"
+        },
+        {
+          "type": "SYMBOL",
           "name": "cs"
         },
         {
@@ -1668,6 +1672,48 @@
           },
           "named": true,
           "value": "cs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cs"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "parameter"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "text"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "lbrack"
+                },
+                "named": true,
+                "value": "text"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "rbrack"
+                },
+                "named": true,
+                "value": "text"
+              }
+            ]
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
         }
       ]
     },
@@ -4153,6 +4199,69 @@
       "type": "STRING",
       "value": "mathit"
     },
+    "cite": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "cite_cs"
+          },
+          "named": true,
+          "value": "cs"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "*"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "text_brack_group"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "name_group"
+        }
+      ]
+    },
+    "cite_cs": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_cs_begin"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cite_word"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_cs_end"
+        }
+      ]
+    },
+    "_cite_word": {
+      "type": "PATTERN",
+      "value": "(no)?cite|cite(t|p|lt|lp|text|alt|alp|num|author|year|yearpar|fullauthor|talias|palias)|Cite(t|p|alt|alp|author)"
+    },
     "NeedsTeXFormat": {
       "type": "SEQ",
       "members": [
@@ -5654,6 +5763,10 @@
                   {
                     "type": "SYMBOL",
                     "name": "_chardef_word"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_cite_word"
                   },
                   {
                     "type": "SYMBOL",

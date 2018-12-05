@@ -106,6 +106,7 @@ module.exports = grammar({
       $.catcode,
       $.char,
       $.chardef,
+      $.cite,
       $.cs,
       $.dimension_assign,
       $.ensuremath,
@@ -438,7 +439,19 @@ module.exports = grammar({
 
     _section_word: $ => /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/,
 
-    storage: $ => cmd($, $.storage_cs),
+    storage: $ => cmd($,
+      $.storage_cs,
+      $.cs,
+      repeat(
+        choice(
+          $.parameter,
+          $.text,
+          alias($.lbrack, $.text),
+          alias($.rbrack, $.text)
+        )
+      ),
+      $.text_group
+    ),
 
     storage_cs: $ => cs($, $._storage_word),
 
@@ -978,6 +991,19 @@ module.exports = grammar({
 
     _mathit_word: $ => 'mathit',
 
+    // LaTeX cite, etc.
+
+    cite: $ => cmd($,
+      $.cite_cs,
+      optional('*'),
+      optional($.text_brack_group),
+      $.name_group
+    ),
+
+    cite_cs: $ => cs($, $._cite_word),
+
+    _cite_word: $ => /(no)?cite|cite(t|p|lt|lp|text|alt|alp|num|author|year|yearpar|fullauthor|talias|palias)|Cite(t|p|alt|alp|author)/,
+
     // LaTeX cls identification
 
     NeedsTeXFormat: $ => cmd($,
@@ -1296,6 +1322,7 @@ module.exports = grammar({
           $._catcode_word,
           $._char_word,
           $._chardef_word,
+          $._cite_word,
           $._DeclareOption_word,
           $._dimension_word,
           $._documentclass_word,

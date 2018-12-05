@@ -1,0 +1,40 @@
+=================
+cite
+=================
+\cite{foo}
+-----------------
+(document
+  (cite
+    (cs)
+    (name_group (begin_group) (name) (end_group))))
+
+=================
+cite with optional
+=================
+\cite[baz]{foo}
+-----------------
+(document
+  (cite
+    (cs)
+    (text_brack_group (lbrack) (text) (rbrack))
+    (name_group (begin_group) (name) (end_group))))
+
+=================
+nocite
+=================
+\nocite{*}
+-----------------
+(document
+  (cite
+    (cs)
+    (name_group (begin_group) (name) (end_group))))
+
+=================
+citep*
+=================
+\citep*{foo}
+-----------------
+(document
+  (cite
+    (cs)
+    (name_group (begin_group) (name) (end_group))))
