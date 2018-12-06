@@ -305,14 +305,6 @@ struct Scanner {
   static const unsigned int COMMENT_FLAG = 1 << COMMENT_CATEGORY;
   static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
 
-  map<string, SymbolType> comment_types = {
-    {"arara:", ARARA_COMMENT},
-    {"!Bib", BIB_COMMENT},
-    {"!BIB", BIB_COMMENT},
-    {"!TeX", MAGIC_COMMENT},
-    {"!TEX", MAGIC_COMMENT}
-  };
-
   list<CatCodeCommand> catcode_commands = {
     {
       _DEFAULT_CATCODES,
@@ -597,15 +589,30 @@ struct Scanner {
     return true;
   }
 
+  int match_length(TSLexer *lexer, string value, bitset<16> terminator = ~0) {
+    size_t length = 0;
+
+    for (char ch: value) {
+      if (std::tolower(lexer->lookahead) == ch) {
+        length++;
+        lexer->advance(lexer, false);
+      } else {
+        return length;
+      }
+    }
+
+    return (terminator[catcode_table[lexer->lookahead]]) ? -1 : length;
+  }
+
   bool scan_comment(TSLexer *lexer) {
-    bitset<16> comment_type_categories = ~(EOL_FLAG | SPACE_FLAG | IGNORED_FLAG),
-      comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
+    bitset<16> comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
     string comment_type;
 
     // Skip the comment char
     lexer->advance(lexer, false);
+    lexer->result_symbol = COMMENT;
 
-    if (lexer->lookahead == ':') {
+    if (match_length(lexer, ":") == -1) {
       lexer->advance(lexer, false);
       lexer->result_symbol = TAG_COMMENT;
     } else {
@@ -614,16 +621,18 @@ struct Scanner {
         lexer->advance(lexer, false);
       }
 
-      // Try to capture a tag
-      while (comment_type_categories[catcode_table[lexer->lookahead]]) {
-        comment_type += lexer->lookahead;
-        lexer->advance(lexer, false);
+      int len = match_length(lexer, "arara:");
+
+      if (len == -1) {
+        lexer->result_symbol = ARARA_COMMENT;
+      } else if (len == 0) {
+        len = match_length(lexer, "!tex", EOL_FLAG | SPACE_FLAG | IGNORED_FLAG);
+        if (len == -1) {
+          lexer->result_symbol = MAGIC_COMMENT;
+        } else if (len == 1 && match_length(lexer, "bib", EOL_FLAG | SPACE_FLAG | IGNORED_FLAG) == -1) {
+          lexer->result_symbol = BIB_COMMENT;
+        }
       }
-
-      // Look for a valid comment tag
-      auto it = comment_types.find(comment_type);
-
-      lexer->result_symbol = (it == comment_types.end()) ? COMMENT : it->second;
     }
 
     // Gobble the reset of the comment
