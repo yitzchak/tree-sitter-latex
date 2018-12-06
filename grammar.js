@@ -718,7 +718,7 @@ module.exports = grammar({
     newcommand: $ => cmd($,
       $.newcommand_cs,
       optional('*'),
-      $.cs_group,
+      $._cs_argument,
       optional($.brack_group),
       optional($.brack_group),
       $._argument
@@ -814,7 +814,7 @@ module.exports = grammar({
 
     setlength: $ => cmd($,
       $.setlength_cs,
-      $.cs_group,
+      $._cs_argument,
       alias($.dimension_group, $.group)
     ),
 
@@ -1288,7 +1288,9 @@ module.exports = grammar({
 
     dimension_brack_group: $ => brack_group($, $.dimension),
 
-    cs_group: $ => choice($.cs, group($, $.cs)),
+    _cs_argument: $ => choice($.cs, alias($.cs_group, $.group)),
+
+    cs_group: $ => group($, $.cs),
 
     name_group: $ => group($, alias(
       seq(

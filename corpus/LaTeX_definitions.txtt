@@ -6,7 +6,7 @@ Simple newcommand
 (document
   (newcommand
     (cs)
-    (cs_group (begin_group) (cs) (end_group))
+    (group (begin_group) (cs) (end_group))
     (group (begin_group) (text) (end_group))))
 
 ======================
@@ -17,7 +17,7 @@ newcommand with number of arguments
 (document
   (newcommand
     (cs)
-    (cs_group (begin_group) (cs) (end_group))
+    (group (begin_group) (cs) (end_group))
     (brack_group (lbrack) (text) (rbrack))
     (group (begin_group) (text) (end_group))))
 
@@ -29,7 +29,7 @@ newcommand with number of arguments and default value
 (document
   (newcommand
     (cs)
-    (cs_group (begin_group) (cs) (end_group))
+    (group (begin_group) (cs) (end_group))
     (brack_group (lbrack) (text) (rbrack))
     (brack_group (lbrack) (text) (rbrack))
     (group (begin_group) (text) (end_group))))
@@ -42,7 +42,7 @@ Simple newcommand*
 (document
   (newcommand
     (cs)
-    (cs_group (begin_group) (cs) (end_group))
+    (group (begin_group) (cs) (end_group))
     (group (begin_group) (text) (end_group))))
 
 ======================
@@ -53,7 +53,7 @@ Simple renewcommand
 (document
   (newcommand
     (cs)
-    (cs_group (begin_group) (cs) (end_group))
+    (group (begin_group) (cs) (end_group))
     (group (begin_group) (text) (end_group))))
 
 ======================
@@ -64,7 +64,7 @@ Simple providecommand
 (document
   (newcommand
     (cs)
-    (cs_group (begin_group) (cs) (end_group))
+    (group (begin_group) (cs) (end_group))
     (group (begin_group) (text) (end_group))))
 
 ======================
@@ -75,7 +75,7 @@ Simple DeclareRobustCommand
 (document
   (newcommand
     (cs)
-    (cs_group (begin_group) (cs) (end_group))
+    (group (begin_group) (cs) (end_group))
     (group (begin_group) (text) (end_group))))
 
 ======================
@@ -86,7 +86,7 @@ Simple CheckCommand
 (document
   (newcommand
     (cs)
-    (cs_group (begin_group) (cs) (end_group))
+    (group (begin_group) (cs) (end_group))
     (group (begin_group) (text) (end_group))))
 
 ======================

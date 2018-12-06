@@ -6,5 +6,5 @@ setlength
 (document
   (setlength
     (cs)
-    (cs_group (begin_group) (cs) (end_group))
+    (group (begin_group) (cs) (end_group))
     (group (begin_group) (dimension (fixed) (unit)) (end_group)))) 
