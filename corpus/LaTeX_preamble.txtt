@@ -6,8 +6,8 @@ documentclass
 (document
   (documentclass
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (name_group (begin_group) (name) (end_group))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (begin_group) (name) (end_group))))
 
 =============
 documentclass with date
@@ -17,9 +17,9 @@ documentclass with date
 (document
   (documentclass
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (name_group (begin_group) (name) (end_group))
-    (text_brack_group (lbrack) (text) (rbrack))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (begin_group) (name) (end_group))
+    (brack_group (lbrack) (text) (rbrack))))
 
 =============
 documentstyle
@@ -29,8 +29,8 @@ documentstyle
 (document
   (documentstyle
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (name_group (begin_group) (name) (end_group))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (begin_group) (name) (end_group))))
 
 ======================
 usepackage
@@ -40,8 +40,8 @@ usepackage
 (document
   (use
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (name_group (begin_group) (name) (end_group))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (begin_group) (name) (end_group))))
 
 =============
 usepackage with date
@@ -51,6 +51,6 @@ usepackage with date
 (document
   (use
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (name_group (begin_group) (name) (end_group))
-    (text_brack_group (lbrack) (text) (rbrack))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (begin_group) (name) (end_group))
+    (brack_group (lbrack) (text) (rbrack))))

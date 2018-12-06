@@ -13,10 +13,10 @@ quux
     (verbatim_env
       (begin
         (cs)
-        (name_group (begin_group) (name) (end_group))
+        (group (begin_group) (name) (end_group))
         (eol))
       (verbatim_text)
-      (end (cs) (name_group (begin_group) (name) (end_group))))
+      (end (cs) (group (begin_group) (name) (end_group))))
     (text))
 
 ===========================
@@ -33,10 +33,10 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
+      (group (begin_group) (name) (end_group))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ===========================
@@ -53,10 +53,10 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
+      (group (begin_group) (name) (end_group))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ===========================
@@ -73,10 +73,10 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
+      (group (begin_group) (name) (end_group))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ===========================
@@ -93,10 +93,10 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
+      (group (begin_group) (name) (end_group))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ===========================
@@ -113,10 +113,10 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
+      (group (begin_group) (name) (end_group))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ===========================
@@ -133,10 +133,10 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
+      (group (begin_group) (name) (end_group))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ===========================
@@ -153,10 +153,10 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
+      (group (begin_group) (name) (end_group))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ===========================
@@ -173,11 +173,11 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
-      (text_brack_group (lbrack) (text) (rbrack))
+      (group (begin_group) (name) (end_group))
+      (brack_group (lbrack) (text) (rbrack))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ===========================
@@ -194,11 +194,11 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
-      (text_group (begin_group) (text) (end_group))
+      (group (begin_group) (name) (end_group))
+      (group (begin_group) (text) (end_group))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ======================
@@ -214,9 +214,9 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
+      (group (begin_group) (name) (end_group))
       (eol))
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ======================
@@ -234,10 +234,10 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (name_group (begin_group) (name) (end_group))
+      (group (begin_group) (name) (end_group))
       (eol))
     (verbatim_text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))
 
 ======================

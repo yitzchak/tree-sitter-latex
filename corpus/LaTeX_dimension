@@ -7,4 +7,4 @@ setlength
   (setlength
     (cs)
     (cs_group (begin_group) (cs) (end_group))
-    (dimension_group (begin_group) (dimension (fixed) (unit)) (end_group)))) 
+    (group (begin_group) (dimension (fixed) (unit)) (end_group)))) 

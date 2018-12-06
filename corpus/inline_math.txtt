@@ -67,7 +67,7 @@ quux
 (document
   (text)
   (inline_math_env
-    (begin (cs) (name_group (begin_group) (name) (end_group)))
+    (begin (cs) (group (begin_group) (name) (end_group)))
     (text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (begin_group) (name) (end_group))))
   (text))

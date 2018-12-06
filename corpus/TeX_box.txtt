@@ -6,7 +6,7 @@ hbox
 (document
   (mkbox
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (begin_group) (text) (end_group))))
 
 =======================
 hbox with spread
@@ -17,7 +17,7 @@ hbox with spread
   (mkbox
     (cs)
     (dimension (fixed) (unit))
-    (text_group (begin_group) (text) (end_group))))
+    (group (begin_group) (text) (end_group))))
 
 =======================
 hbox with to
@@ -28,7 +28,7 @@ hbox with to
   (mkbox
     (cs)
     (dimension (fixed) (unit))
-    (text_group (begin_group) (text) (end_group))))
+    (group (begin_group) (text) (end_group))))
 
 =======================
 setbox
@@ -42,7 +42,7 @@ setbox
     (mkbox
       (cs)
       (dimension (fixed) (unit))
-      (text_group (begin_group) (text) (end_group)))))
+      (group (begin_group) (text) (end_group)))))
 
 =======================
 box
@@ -105,4 +105,4 @@ phantom
     (decimal)
     (phantom_smash
       (cs)
-      (text_group (begin_group) (text) (end_group)))))
+      (group (begin_group) (text) (end_group)))))

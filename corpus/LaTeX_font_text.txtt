@@ -5,7 +5,7 @@ foo\emph{bar}wibble
 ---------------------
 (document
   (text)
-  (emph (cs) (text_group (begin_group) (text) (end_group)))
+  (emph (cs) (group (begin_group) (text) (end_group)))
   (text))
 
 =====================
@@ -19,7 +19,7 @@ foo\emph%baz
   (emph
     (cs)
     (comment)
-    (text_group (begin_group) (text) (end_group)))
+    (group (begin_group) (text) (end_group)))
   (text))
 
 =====================
@@ -29,7 +29,7 @@ foo\textbf{bar}wibble
 ---------------------
 (document
   (text)
-  (textbf (cs) (text_group (begin_group) (text) (end_group)))
+  (textbf (cs) (group (begin_group) (text) (end_group)))
   (text))
 
 =====================
@@ -39,7 +39,7 @@ foo\textit{bar}wibble
 ---------------------
 (document
   (text)
-  (textit (cs) (text_group (begin_group) (text) (end_group)))
+  (textit (cs) (group (begin_group) (text) (end_group)))
   (text))
 
 =====================
@@ -49,5 +49,5 @@ foo\texttt{bar}wibble
 ---------------------
 (document
   (text)
-  (texttt (cs) (text_group (begin_group) (text) (end_group)))
+  (texttt (cs) (group (begin_group) (text) (end_group)))
   (text))

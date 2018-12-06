@@ -6,7 +6,7 @@ cite
 (document
   (cite
     (cs)
-    (name_group (begin_group) (name) (end_group))))
+    (group (begin_group) (name) (end_group))))
 
 =================
 cite with optional
@@ -16,8 +16,8 @@ cite with optional
 (document
   (cite
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (name_group (begin_group) (name) (end_group))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (begin_group) (name) (end_group))))
 
 =================
 nocite
@@ -27,7 +27,7 @@ nocite
 (document
   (cite
     (cs)
-    (name_group (begin_group) (name) (end_group))))
+    (group (begin_group) (name) (end_group))))
 
 =================
 citep*
@@ -37,4 +37,4 @@ citep*
 (document
   (cite
     (cs)
-    (name_group (begin_group) (name) (end_group))))
+    (group (begin_group) (name) (end_group))))

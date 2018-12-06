@@ -24,7 +24,7 @@
 ----------------
 (document
   (makeatletter (cs))
-  (text_group
+  (group
     (begin_group)
     (cs)
     (end_group))
@@ -38,12 +38,12 @@
 (document
   (makeatletter (cs))
   (use (cs)
-    (text_brack_group
+    (brack_group
       (lbrack)
       (text)
       (cs)
       (rbrack))
-    (name_group (begin_group) (name) (end_group)))
+    (group (begin_group) (name) (end_group)))
   (makeatother (cs)))
 
 ============================
@@ -88,10 +88,10 @@
 (document
   (ProvidesExplPackage
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group)))
+    (group (begin_group) (text) (end_group))
+    (group (begin_group) (text) (end_group))
+    (group (begin_group) (text) (end_group))
+    (group (begin_group) (text) (end_group)))
   (text)
   (cs)
   (ExplSyntaxOff (cs)))
@@ -103,7 +103,7 @@
 ----------------
 (document
   (ExplSyntaxOn (cs))
-  (text_group
+  (group
     (begin_group)
     (cs)
     (end_group))
@@ -117,12 +117,12 @@
 (document
   (ExplSyntaxOn (cs))
   (use (cs)
-    (text_brack_group
+    (brack_group
       (lbrack)
       (text)
       (cs)
       (rbrack))
-    (name_group (begin_group) (name) (end_group)))
+    (group (begin_group) (name) (end_group)))
   (ExplSyntaxOff (cs)))
 
 ============================

@@ -6,9 +6,9 @@ href command
 (document
   (href
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (begin_group) (text) (end_group))
+    (group (begin_group) (text) (end_group))))
 
 =============================
 url command
@@ -18,7 +18,7 @@ url command
 (document
   (url
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (begin_group) (text) (end_group))))
 
 =============================
 nolinkurl command
@@ -28,7 +28,7 @@ nolinkurl command
 (document
   (url
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (begin_group) (text) (end_group))))
 
 =============================
 hyperbaseurl command
@@ -38,7 +38,7 @@ hyperbaseurl command
 (document
   (hyperbaseurl
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (begin_group) (text) (end_group))))
 
 =============================
 hyperimage command
@@ -48,8 +48,8 @@ hyperimage command
 (document
   (hyperimage
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (begin_group) (text) (end_group))
+    (group (begin_group) (text) (end_group))))
 
 =============================
 hyperref command
@@ -59,10 +59,10 @@ hyperref command
 (document
   (hyperref
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (begin_group) (text) (end_group))
+    (group (begin_group) (text) (end_group))
+    (group (begin_group) (text) (end_group))
+    (group (begin_group) (text) (end_group))))
 
 =============================
 hyperref local command
@@ -72,5 +72,5 @@ hyperref local command
 (document
   (hyperref
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (text_group (begin_group) (text) (end_group))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (begin_group) (text) (end_group))))

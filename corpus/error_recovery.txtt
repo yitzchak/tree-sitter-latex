@@ -5,7 +5,7 @@ TeX inline math - unterminated inside group
 {foo$bar{quux}wibble}
 -------------------------------------------
 (document
-  (text_group
+  (group
     (begin_group)
     (text)
     (tex_inline_math
@@ -14,13 +14,13 @@ TeX inline math - unterminated inside group
       (exit_group))
     (end_group))
   (text)
-  (text_group
+  (group
     (begin_group)
     (text)
     (tex_inline_math
       (math_shift)
       (text)
-      (math_group (begin_group) (text) (end_group))
+      (group (begin_group) (text) (end_group))
       (text)
       (exit_group))
     (end_group)))
@@ -46,7 +46,7 @@ TeX display math - unterminated inside group
 {foo$$bar{quux}wibble$}
 -------------------------------------------
 (document
-  (text_group
+  (group
     (begin_group)
     (text)
     (tex_display_math
@@ -56,14 +56,14 @@ TeX display math - unterminated inside group
       (exit_group))
     (end_group))
   (text)
-  (text_group
+  (group
     (begin_group)
     (text)
     (tex_display_math
       (math_shift)
       (math_shift)
       (text)
-      (math_group
+      (group
         (begin_group)
         (text)
         (end_group))
@@ -71,7 +71,7 @@ TeX display math - unterminated inside group
       (exit_group))
     (end_group))
     (text)
-    (text_group
+    (group
       (begin_group)
       (text)
       (tex_display_math
@@ -82,14 +82,14 @@ TeX display math - unterminated inside group
         (exit_group))
       (end_group))
     (text)
-    (text_group
+    (group
       (begin_group)
       (text)
       (tex_display_math
         (math_shift)
         (math_shift)
         (text)
-        (math_group
+        (group
           (begin_group)
           (text)
           (end_group))
@@ -132,7 +132,7 @@ TeX inline math - unterminated inside group
 {foo$bar{quux}wibble}
 -------------------------------------------
 (document
-  (text_group
+  (group
     (begin_group)
     (text)
     (tex_inline_math
@@ -141,13 +141,13 @@ TeX inline math - unterminated inside group
       (exit_group))
     (end_group))
   (text)
-  (text_group
+  (group
     (begin_group)
     (text)
     (tex_inline_math
       (math_shift)
       (text)
-      (math_group (begin_group) (text) (end_group))
+      (group (begin_group) (text) (end_group))
       (text)
       (exit_group))
     (end_group)))
@@ -171,7 +171,7 @@ LaTeX inline math - unterminated inside group
 {foo\(bar{quux}wibble}
 -------------------------------------------
 (document
-  (text_group
+  (group
     (begin_group)
     (text)
     (latex_inline_math
@@ -180,13 +180,13 @@ LaTeX inline math - unterminated inside group
       (exit_group))
     (end_group))
   (text)
-  (text_group
+  (group
     (begin_group)
     (text)
     (latex_inline_math
       (begin_inline_math)
       (text)
-      (math_group
+      (group
         (begin_group)
         (text)
         (end_group))
@@ -213,7 +213,7 @@ LaTeX display math - unterminated inside group
 {foo\[bar{quux}wibble}
 -------------------------------------------
 (document
-  (text_group
+  (group
     (begin_group)
     (text)
     (latex_display_math
@@ -222,13 +222,13 @@ LaTeX display math - unterminated inside group
       (exit_group))
     (end_group))
   (text)
-  (text_group
+  (group
     (begin_group)
     (text)
     (latex_display_math
       (begin_display_math)
       (text)
-      (math_group
+      (group
         (begin_group)
         (text)
         (end_group))
@@ -256,10 +256,10 @@ LaTeX display math inside newenvironment
 (document
   (newenvironment
     (cs)
-    (name_group (begin_group) (name) (name) (end_group))
-    (text_group
+    (group (begin_group) (name) (name) (end_group))
+    (group
       (begin_group) (latex_display_math (begin_display_math) (cs) (exit_group)) (end_group))
-    (text_group
+    (group
       (begin_group) (cs) (end_display_math) (end_group))))
 
 ===========================================
@@ -270,10 +270,10 @@ LaTeX display math inside newenvironment
 (document
   (newenvironment
     (cs)
-    (name_group (begin_group) (name) (name) (end_group))
-    (text_group
+    (group (begin_group) (name) (name) (end_group))
+    (group
       (begin_group) (latex_inline_math (begin_inline_math) (cs) (exit_group)) (end_group))
-    (text_group
+    (group
       (begin_group) (cs) (end_inline_math) (end_group))))
 
 ==========================================
@@ -284,17 +284,17 @@ newenvironment based on existing environment (the wrong way)
 (document
   (newenvironment
     (cs)
-    (name_group (begin_group) (name) (end_group))
-    (text_group
+    (group (begin_group) (name) (end_group))
+    (group
       (begin_group)
       (text_env
-        (begin (cs) (name_group (begin_group) (name) (end_group)))
+        (begin (cs) (group (begin_group) (name) (end_group)))
         (exit_group))
       (end_group))
-    (text_group
+    (group
       (begin_group)
       (cs)
-      (text_group (begin_group) (text) (end_group)) (end_group))))
+      (group (begin_group) (text) (end_group)) (end_group))))
 
 =====================================
 defu
@@ -310,11 +310,11 @@ verbatimfoo
 bar
 \end{verbatimfoo}
 --------------------------------------
-(document (text_env (begin (cs) (name_group (begin_group) (name) (name) (end_group))) (text) (end (cs) (name_group (begin_group) (name) (name) (end_group)))))
+(document (text_env (begin (cs) (group (begin_group) (name) (name) (end_group))) (text) (end (cs) (group (begin_group) (name) (name) (end_group)))))
 
 =====================================
 missing section arguments
 =====================================
 \foo{\section}
 -------------------------------------
-(document (cs) (text_group (begin_group) (section (cs) (exit_group)) (end_group)))
+(document (cs) (group (begin_group) (section (cs) (exit_group)) (end_group)))
