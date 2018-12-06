@@ -226,10 +226,10 @@ module.exports = grammar({
 
     // math_mode: $ => repeat1($._math_mode),
 
-    parameter: $ => prec.left(-1, seq(
-      repeat1($.parameter_char),
+    parameter: $ => seq(
+      $.parameter_char,
       optional(/[1-9]/)
-    )),
+    ),
 
     text_env: $ => seq(
       $.begin,

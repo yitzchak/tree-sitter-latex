@@ -83,19 +83,6 @@ enum SymbolWidth {
   UNLIMITED_WIDTH
 };
 
-// Description of a trivial symbol, i.e. one that is zero characters, one
-// character or unlimited characters based on a collection of categories.
-struct SymbolDescription {
-  SymbolType type;
-  SymbolWidth width;
-  bitset<16> categories;
-
-  SymbolDescription(unsigned int cats, SymbolType t, SymbolWidth w): categories(cats) {
-    type = t;
-    width = w;
-  }
-};
-
 struct CatCodeCategoryRegion {
   int32_t begin, end;
   Category category;
@@ -317,20 +304,6 @@ struct Scanner {
   static const unsigned int ACTIVE_CHAR_FLAG = 1 << ACTIVE_CHAR_CATEGORY;
   static const unsigned int COMMENT_FLAG = 1 << COMMENT_CATEGORY;
   static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
-
-  vector<SymbolDescription> symbol_descriptions = {
-    {BEGIN_FLAG,         BEGIN_GROUP,    SINGLE_WIDTH},
-    {END_FLAG,           EXIT_GROUP,     ZERO_WIDTH},
-    {END_FLAG,           END_GROUP,      SINGLE_WIDTH},
-    {MATH_SHIFT_FLAG,    MATH_SHIFT,     SINGLE_WIDTH},
-    {ALIGNMENT_TAB_FLAG, ALIGNMENT_TAB,  SINGLE_WIDTH},
-    {EOL_FLAG,           EOL,            SINGLE_WIDTH},
-    {PARAMETER_FLAG,     PARAMETER_CHAR, SINGLE_WIDTH},
-    {SUPERSCRIPT_FLAG,   SUPERSCRIPT,    SINGLE_WIDTH},
-    {SUBSCRIPT_FLAG,     SUBSCRIPT,      SINGLE_WIDTH},
-    {SPACE_FLAG,         _SPACE,         UNLIMITED_WIDTH},
-    {ACTIVE_CHAR_FLAG,   ACTIVE_CHAR,    SINGLE_WIDTH}
-  };
 
   map<string, SymbolType> comment_types = {
     {"arara:", ARARA_COMMENT},
@@ -624,28 +597,6 @@ struct Scanner {
     return true;
   }
 
-  bool scan_symbol(TSLexer *lexer, SymbolDescription desc) {
-    // Accumulate characters as long as they match the catcode and are allowed
-    // by the symbol width.
-    switch (desc.width) {
-      case SINGLE_WIDTH:
-        lexer->advance(lexer, false);
-        break;
-      case UNLIMITED_WIDTH:
-        while (desc.categories[catcode_table[lexer->lookahead]]) {
-          lexer->advance(lexer, false);
-        }
-        break;
-      default:
-        break;
-    }
-
-    lexer->result_symbol = desc.type;
-    lexer->mark_end(lexer);
-
-    return true;
-  }
-
   bool scan_comment(TSLexer *lexer) {
     bitset<16> comment_type_categories = ~(EOL_FLAG | SPACE_FLAG | IGNORED_FLAG),
       comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
@@ -776,29 +727,106 @@ struct Scanner {
     return false;
   }
 
+  inline bool scan_empty_symbol(TSLexer *lexer, SymbolType symbol) {
+    lexer->result_symbol = symbol;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  inline bool scan_single_char_symbol(TSLexer *lexer, SymbolType symbol) {
+    lexer->advance(lexer, false);
+
+    lexer->result_symbol = symbol;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  inline bool scan_multi_char_symbol(TSLexer *lexer, SymbolType symbol, Category code) {
+    do {
+      lexer->advance(lexer, false);
+    } while (catcode_table[lexer->lookahead] == code);
+
+    lexer->result_symbol = symbol;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan_normal_mode(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
-
-    // Look for control sequences
-    if ((valid_symbols[_CS_BEGIN] || valid_symbols[_ESCAPED_BEGIN]) && code == ESCAPE_CATEGORY) {
-      return scan_escape(lexer);
-    }
 
     // Look for an inline verbatim delimiter and start VERB_MODE.
     if (valid_symbols[VERB_DELIM]) {
       return scan_start_verb_delim(lexer);
     }
 
-    // Look for simple symbols such as active character, parameter character, etc.
-    for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {
-      if (it->categories[code] && valid_symbols[it->type]) {
-        return scan_symbol(lexer, *it);
-      }
-    }
-
-    // Look for comments.
-    if (code == COMMENT_CATEGORY && valid_symbols[COMMENT]) {
-      return scan_comment(lexer);
+    switch (code) {
+      case ESCAPE_CATEGORY:
+        if (valid_symbols[_CS_BEGIN] || valid_symbols[_ESCAPED_BEGIN]) {
+          return scan_escape(lexer);
+        }
+        break;
+      case BEGIN_CATEGORY:
+        if (valid_symbols[BEGIN_GROUP]) {
+          return scan_single_char_symbol(lexer, BEGIN_GROUP);
+        }
+        break;
+      case END_CATEGORY:
+        if (valid_symbols[EXIT_GROUP]) {
+          return scan_empty_symbol(lexer, EXIT_GROUP);
+        } else if (valid_symbols[END_GROUP]) {
+          return scan_single_char_symbol(lexer, END_GROUP);
+        }
+        break;
+      case MATH_SHIFT_CATEGORY:
+        if (valid_symbols[MATH_SHIFT]) {
+          return scan_single_char_symbol(lexer, MATH_SHIFT);
+        }
+        break;
+      case ALIGNMENT_TAB_CATEGORY:
+        if (valid_symbols[ALIGNMENT_TAB]) {
+          return scan_single_char_symbol(lexer, ALIGNMENT_TAB);
+        }
+        break;
+      case EOL_CATEGORY:
+        if (valid_symbols[EOL]) {
+          return scan_single_char_symbol(lexer, EOL);
+        }
+        break;
+      case PARAMETER_CATEGORY:
+        if (valid_symbols[PARAMETER_CHAR]) {
+          return scan_multi_char_symbol(lexer, PARAMETER_CHAR, PARAMETER_CATEGORY);
+        }
+        break;
+      case SUPERSCRIPT_CATEGORY:
+        if (valid_symbols[SUPERSCRIPT]) {
+          return scan_single_char_symbol(lexer, SUPERSCRIPT);
+        }
+        break;
+      case SUBSCRIPT_CATEGORY:
+        if (valid_symbols[SUBSCRIPT]) {
+          return scan_single_char_symbol(lexer, SUBSCRIPT);
+        }
+        break;
+      case SPACE_CATEGORY:
+        if (valid_symbols[_SPACE]) {
+          return scan_multi_char_symbol(lexer, _SPACE, SPACE_CATEGORY);
+        }
+        break;
+      case ACTIVE_CHAR_CATEGORY:
+        if (valid_symbols[SUBSCRIPT]) {
+          return scan_single_char_symbol(lexer, ACTIVE_CHAR);
+        }
+        break;
+      case COMMENT_CATEGORY:
+        if (valid_symbols[COMMENT]) {
+          return scan_comment(lexer);
+        }
+        break;
+      default:
+        break;
     }
 
     // Scan a single line in a verbatim environment.

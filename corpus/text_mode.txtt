@@ -79,7 +79,7 @@ foo##1bar
   (text)
   (parameter (parameter_char))
   (text)
-  (parameter (parameter_char) (parameter_char))
+  (parameter (parameter_char))
   (text))
 
 =============

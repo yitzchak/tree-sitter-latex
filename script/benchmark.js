@@ -28,7 +28,7 @@ const fs = require('fs')
 const Parser = require('tree-sitter')
 const language = require('..')
 
-const ITERATION_COUNT = 50
+const ITERATION_COUNT = 100
 
 if (process.argv.length < 3) {
   console.log('Usage: script/benchmark.js <file>')
