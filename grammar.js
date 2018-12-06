@@ -433,7 +433,7 @@ module.exports = grammar({
       $.section_cs,
       optional('*'),
       optional($.text_brack_group),
-      $.text_group
+      choice($.text_group, $.exit_group),
     ),
 
     section_cs: $ => cs($, $._section_word),

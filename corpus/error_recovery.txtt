@@ -311,3 +311,10 @@ bar
 \end{verbatimfoo}
 --------------------------------------
 (document (text_env (begin (cs) (name_group (begin_group) (name) (name) (end_group))) (text) (end (cs) (name_group (begin_group) (name) (name) (end_group)))))
+
+=====================================
+missing section arguments
+=====================================
+\foo{\section}
+-------------------------------------
+(document (cs) (text_group (begin_group) (section (cs) (exit_group)) (end_group)))

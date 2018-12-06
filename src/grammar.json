@@ -1632,8 +1632,17 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "text_group"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "text_group"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "exit_group"
+            }
+          ]
         }
       ]
     },
