@@ -4243,7 +4243,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "name_group"
+          "name": "_name_argument"
         }
       ]
     },
@@ -5549,6 +5549,19 @@
         }
       ]
     },
+    "_argument": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "text_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cs"
+        }
+      ]
+    },
     "dimension_group": {
       "type": "SEQ",
       "members": [
@@ -5674,6 +5687,19 @@
         {
           "type": "SYMBOL",
           "name": "end_group"
+        }
+      ]
+    },
+    "_name_argument": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "name_group"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cs"
         }
       ]
     },

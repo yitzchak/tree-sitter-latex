@@ -998,7 +998,7 @@ module.exports = grammar({
       $.cite_cs,
       optional('*'),
       optional($.text_brack_group),
-      $.name_group
+      $._name_argument
     ),
 
     cite_cs: $ => cs($, $._cite_word),
@@ -1282,6 +1282,8 @@ module.exports = grammar({
 
     text_group: $ => group($, repeat($._text_mode)),
 
+    _argument: $ => choice($.text_group, $.cs),
+
     dimension_group: $ => group($, $.dimension),
 
     dimension_brack_group: $ => brack_group($, $.dimension),
@@ -1305,6 +1307,8 @@ module.exports = grammar({
       ),
       $.name)
     ),
+
+    _name_argument: $ => choice($.name_group, $.cs),
 
     text_brack_group: $ => brack_group($, repeat($._text_mode)),
 
