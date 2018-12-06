@@ -6,24 +6,24 @@ TeX inline math - unterminated inside group
 -------------------------------------------
 (document
   (group
-    (begin_group)
+    (l)
     (text)
     (tex_inline_math
       (math_shift)
       (text)
-      (exit_group))
-    (end_group))
+      (exit))
+    (r))
   (text)
   (group
-    (begin_group)
+    (l)
     (text)
     (tex_inline_math
       (math_shift)
       (text)
-      (group (begin_group) (text) (end_group))
+      (group (l) (text) (r))
       (text)
-      (exit_group))
-    (end_group)))
+      (exit))
+    (r)))
 
 ===========================================
 TeX inline math - unterminated by EOF
@@ -47,56 +47,56 @@ TeX display math - unterminated inside group
 -------------------------------------------
 (document
   (group
-    (begin_group)
+    (l)
     (text)
     (tex_display_math
       (math_shift)
       (math_shift)
       (text)
-      (exit_group))
-    (end_group))
+      (exit))
+    (r))
   (text)
   (group
-    (begin_group)
+    (l)
     (text)
     (tex_display_math
       (math_shift)
       (math_shift)
       (text)
       (group
-        (begin_group)
+        (l)
         (text)
-        (end_group))
+        (r))
       (text)
-      (exit_group))
-    (end_group))
+      (exit))
+    (r))
     (text)
     (group
-      (begin_group)
+      (l)
       (text)
       (tex_display_math
         (math_shift)
         (math_shift)
         (text)
         (math_shift)
-        (exit_group))
-      (end_group))
+        (exit))
+      (r))
     (text)
     (group
-      (begin_group)
+      (l)
       (text)
       (tex_display_math
         (math_shift)
         (math_shift)
         (text)
         (group
-          (begin_group)
+          (l)
           (text)
-          (end_group))
+          (r))
         (text)
         (math_shift)
-        (exit_group))
-      (end_group)))
+        (exit))
+      (r)))
 
 ===========================================
 TeX display math - unterminated by EOF
@@ -133,24 +133,24 @@ TeX inline math - unterminated inside group
 -------------------------------------------
 (document
   (group
-    (begin_group)
+    (l)
     (text)
     (tex_inline_math
       (math_shift)
       (text)
-      (exit_group))
-    (end_group))
+      (exit))
+    (r))
   (text)
   (group
-    (begin_group)
+    (l)
     (text)
     (tex_inline_math
       (math_shift)
       (text)
-      (group (begin_group) (text) (end_group))
+      (group (l) (text) (r))
       (text)
-      (exit_group))
-    (end_group)))
+      (exit))
+    (r)))
 
 ===========================================
 TeX inline math - unterminated by EOF
@@ -172,27 +172,27 @@ LaTeX inline math - unterminated inside group
 -------------------------------------------
 (document
   (group
-    (begin_group)
+    (l)
     (text)
     (latex_inline_math
       (begin_inline_math)
       (text)
-      (exit_group))
-    (end_group))
+      (exit))
+    (r))
   (text)
   (group
-    (begin_group)
+    (l)
     (text)
     (latex_inline_math
       (begin_inline_math)
       (text)
       (group
-        (begin_group)
+        (l)
         (text)
-        (end_group))
+        (r))
       (text)
-      (exit_group))
-    (end_group)))
+      (exit))
+    (r)))
 
 ===========================================
 LaTeX inline math - unterminated by EOF
@@ -214,27 +214,27 @@ LaTeX display math - unterminated inside group
 -------------------------------------------
 (document
   (group
-    (begin_group)
+    (l)
     (text)
     (latex_display_math
       (begin_display_math)
       (text)
-      (exit_group))
-    (end_group))
+      (exit))
+    (r))
   (text)
   (group
-    (begin_group)
+    (l)
     (text)
     (latex_display_math
       (begin_display_math)
       (text)
       (group
-        (begin_group)
+        (l)
         (text)
-        (end_group))
+        (r))
       (text)
-      (exit_group))
-    (end_group)))
+      (exit))
+    (r)))
 
 ===========================================
 LaTeX display math - unterminated by EOF
@@ -256,11 +256,11 @@ LaTeX display math inside newenvironment
 (document
   (newenvironment
     (cs)
-    (group (begin_group) (name) (name) (end_group))
+    (group (l) (name) (name) (r))
     (group
-      (begin_group) (latex_display_math (begin_display_math) (cs) (exit_group)) (end_group))
+      (l) (latex_display_math (begin_display_math) (cs) (exit)) (r))
     (group
-      (begin_group) (cs) (end_display_math) (end_group))))
+      (l) (cs) (end_display_math) (r))))
 
 ===========================================
 LaTeX display math inside newenvironment
@@ -270,11 +270,11 @@ LaTeX display math inside newenvironment
 (document
   (newenvironment
     (cs)
-    (group (begin_group) (name) (name) (end_group))
+    (group (l) (name) (name) (r))
     (group
-      (begin_group) (latex_inline_math (begin_inline_math) (cs) (exit_group)) (end_group))
+      (l) (latex_inline_math (begin_inline_math) (cs) (exit)) (r))
     (group
-      (begin_group) (cs) (end_inline_math) (end_group))))
+      (l) (cs) (end_inline_math) (r))))
 
 ==========================================
 newenvironment based on existing environment (the wrong way)
@@ -284,17 +284,17 @@ newenvironment based on existing environment (the wrong way)
 (document
   (newenvironment
     (cs)
-    (group (begin_group) (name) (end_group))
+    (group (l) (name) (r))
     (group
-      (begin_group)
+      (l)
       (text_env
-        (begin (cs) (group (begin_group) (name) (end_group)))
-        (exit_group))
-      (end_group))
+        (begin (cs) (group (l) (name) (r)))
+        (exit))
+      (r))
     (group
-      (begin_group)
+      (l)
       (cs)
-      (group (begin_group) (text) (end_group)) (end_group))))
+      (group (l) (text) (r)) (r))))
 
 =====================================
 defu
@@ -310,11 +310,11 @@ verbatimfoo
 bar
 \end{verbatimfoo}
 --------------------------------------
-(document (text_env (begin (cs) (group (begin_group) (name) (name) (end_group))) (text) (end (cs) (group (begin_group) (name) (name) (end_group)))))
+(document (text_env (begin (cs) (group (l) (name) (name) (r))) (text) (end (cs) (group (l) (name) (name) (r)))))
 
 =====================================
 missing section arguments
 =====================================
 \foo{\section}
 -------------------------------------
-(document (cs) (group (begin_group) (section (cs) (exit_group)) (end_group)))
+(document (cs) (group (l) (section (cs) (exit)) (r)))

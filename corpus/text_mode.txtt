@@ -24,7 +24,7 @@ fubar\quux{bar} wibble
 (document
   (text)
   (cs)
-  (group (begin_group) (text) (end_group))
+  (group (l) (text) (r))
   (text))
 
 ==================
@@ -35,7 +35,7 @@ fubar\quux  {bar} wibble
 (document
   (text)
   (cs)
-  (group (begin_group) (text) (end_group))
+  (group (l) (text) (r))
   (text))
 
 ==================
@@ -46,7 +46,7 @@ fubar\quux  {bar} wibble
 (document
   (text)
   (cs)
-  (group (begin_group) (text) (end_group))
+  (group (l) (text) (r))
   (text))
 
 =============
@@ -110,9 +110,9 @@ foo{bar}wibble
 (document
   (text)
   (group
-    (begin_group)
+    (l)
     (text)
-    (end_group))
+    (r))
   (text))
 
 =============
@@ -127,9 +127,9 @@ quux
 (document
   (text)
   (text_env
-    (begin (cs) (group (begin_group) (name) (end_group)))
+    (begin (cs) (group (l) (name) (r)))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========
@@ -151,7 +151,7 @@ comment eats EOL
   (emph
     (cs)
     (comment)
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ===========
 arara comment
@@ -197,10 +197,10 @@ foo\footnote[10]{bar}wibble
 ---------------------
 (document
   (text)
-  (footnote (cs) (group (begin_group) (text) (end_group))) (text)
+  (footnote (cs) (group (l) (text) (r))) (text)
   (footnote (cs)
     (brack_group (lbrack) (text) (rbrack))
-    (group (begin_group) (text) (end_group)))
+    (group (l) (text) (r)))
   (text))
 
 =====================
@@ -212,11 +212,11 @@ sections
 ---------------------
 
 (document
-  (section (cs) (group (begin_group) (text) (end_group)))
+  (section (cs) (group (l) (text) (r)))
   (text)
-  (section (cs) (group (begin_group) (text) (end_group)))
+  (section (cs) (group (l) (text) (r)))
   (text)
-  (section (cs) (group (begin_group) (text) (end_group))))
+  (section (cs) (group (l) (text) (r))))
 
 =================
 Square brackets do not trigger brack_group
@@ -263,7 +263,7 @@ storage usage
   (storage
     (cs)
     (cs)
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ==========================
 storage with single parameter
@@ -275,7 +275,7 @@ storage with single parameter
     (cs)
     (cs)
     (parameter (parameter_char))
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ==========================
 storage with multiple parameters
@@ -288,7 +288,7 @@ storage with multiple parameters
     (cs)
     (parameter (parameter_char))
     (parameter (parameter_char))
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ==========================
 storage with multiple parameters and dangling parameter character
@@ -302,7 +302,7 @@ storage with multiple parameters and dangling parameter character
     (parameter (parameter_char))
     (parameter (parameter_char))
     (parameter (parameter_char))
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ==========================
 storage with multiple parameters with brackets
@@ -317,7 +317,7 @@ storage with multiple parameters with brackets
     (parameter (parameter_char))
     (text)
     (parameter (parameter_char))
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ==========================
 storage with exisiting command
@@ -328,7 +328,7 @@ storage with exisiting command
   (storage
     (cs)
     (cs)
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 
 ==========================
@@ -342,11 +342,11 @@ storage with comment
     (cs)
     (cs)
     (comment)
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ========================
 ref
 ========================
 \ref{eq:foo}
 -----------------------
-(document (cs) (group (begin_group) (text) (end_group)))
+(document (cs) (group (l) (text) (r)))

@@ -48,9 +48,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -65,9 +65,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -82,9 +82,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -99,9 +99,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -116,9 +116,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -135,11 +135,11 @@ quux
   (display_math_env
     (begin
       (cs)
-      (group (begin_group) (name) (end_group))
-      (group (begin_group) (text) (end_group))
+      (group (l) (name) (r))
+      (group (l) (text) (r))
       (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -156,11 +156,11 @@ quux
   (display_math_env
     (begin
       (cs)
-      (group (begin_group) (name) (end_group))
-      (group (begin_group) (text) (end_group))
+      (group (l) (name) (r))
+      (group (l) (text) (r))
       (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -175,9 +175,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -192,9 +192,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -209,9 +209,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -226,9 +226,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -243,9 +243,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -260,9 +260,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -277,9 +277,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -294,9 +294,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -311,9 +311,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =============
@@ -328,9 +328,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =========================
@@ -345,9 +345,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ==========================
@@ -362,9 +362,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =========================
@@ -379,9 +379,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ==========================
@@ -396,9 +396,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =========================
@@ -413,9 +413,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ==========================
@@ -430,9 +430,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 =========================
@@ -447,9 +447,9 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ==========================
@@ -464,7 +464,7 @@ quux
 (document
   (text)
   (display_math_env
-    (begin (cs) (group (begin_group) (name) (end_group)) (eol))
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
-    (end (cs) (group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))

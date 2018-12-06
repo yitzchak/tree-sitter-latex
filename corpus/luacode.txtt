@@ -15,9 +15,9 @@ directlua
   (lua
     (cs)
     (group
-      (begin_group)
+      (l)
       (text)
-      (group (begin_group) (text) (end_group))
+      (group (l) (text) (r))
       (text)
       (cs)
       (cs)
@@ -38,7 +38,7 @@ directlua
       (text (comment))
       (cs)
       (text)
-      (end_group))))
+      (r))))
 
 ========================
 directlua with number
@@ -58,9 +58,9 @@ directlua with number
     (cs)
     (hexadecimal)
     (group
-      (begin_group)
+      (l)
       (text)
-      (group (begin_group) (text) (end_group))
+      (group (l) (text) (r))
       (text)
       (cs)
       (cs)
@@ -81,7 +81,7 @@ directlua with number
       (text (comment))
       (cs)
       (text)
-      (end_group))))
+      (r))))
 
 ========================
 latelua
@@ -100,9 +100,9 @@ latelua
   (lua
     (cs)
     (group
-      (begin_group)
+      (l)
       (text)
-      (group (begin_group) (text) (end_group))
+      (group (l) (text) (r))
       (text)
       (cs)
       (cs)
@@ -123,7 +123,7 @@ latelua
       (text (comment))
       (cs)
       (text)
-      (end_group))))
+      (r))))
 
 ========================
 latelua with number
@@ -143,9 +143,9 @@ latelua with number
     (cs)
     (hexadecimal)
     (group
-      (begin_group)
+      (l)
       (text)
-      (group (begin_group) (text) (end_group))
+      (group (l) (text) (r))
       (text)
       (cs)
       (cs)
@@ -166,7 +166,7 @@ latelua with number
       (text (comment))
       (cs)
       (text)
-      (end_group))))
+      (r))))
 
 ========================
 luadirect
@@ -185,9 +185,9 @@ luadirect
   (luadirect
     (cs)
     (group
-      (begin_group)
+      (l)
       (text)
-      (group (begin_group) (text) (end_group))
+      (group (l) (text) (r))
       (text)
       (cs)
       (cs)
@@ -208,7 +208,7 @@ luadirect
       (text (comment))
       (cs)
       (text)
-      (end_group))))
+      (r))))
 
 =======================
 luaexec
@@ -227,9 +227,9 @@ luaexec
   (luaexec
     (cs)
     (group
-      (begin_group)
+      (l)
       (text)
-      (group (begin_group) (text) (end_group))
+      (group (l) (text) (r))
       (text)
       (cs)
       (cs)
@@ -247,7 +247,7 @@ luaexec
       (text (comment))
       (cs)
       (text)
-      (end_group))))
+      (r))))
 
 =================
 luacode environment
@@ -263,9 +263,9 @@ luacode environment
 ---------------------
 (document
   (luacode_env
-    (begin (cs) (group (begin_group) (name) (end_group)))
+    (begin (cs) (group (l) (name) (r)))
     (text)
-    (group (begin_group) (text) (end_group))
+    (group (l) (text) (r))
     (text)
     (cs)
     (cs)
@@ -281,7 +281,7 @@ luacode environment
     (text)
     (cs)
     (text)
-    (end (cs) (group (begin_group) (name) (end_group)))))
+    (end (cs) (group (l) (name) (r)))))
 
 
 ==========================
@@ -298,7 +298,7 @@ luacode* environment
   (luacodestar_env
     (begin
       (cs)
-      (group (begin_group) (name) (end_group)) (eol))
+      (group (l) (name) (r)) (eol))
     (lua_text)
     (end (cs)
-      (group (begin_group) (name) (end_group)))))
+      (group (l) (name) (r)))))

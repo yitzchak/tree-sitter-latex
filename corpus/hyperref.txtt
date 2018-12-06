@@ -7,8 +7,8 @@ href command
   (href
     (cs)
     (brack_group (lbrack) (text) (rbrack))
-    (group (begin_group) (text) (end_group))
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 =============================
 url command
@@ -18,7 +18,7 @@ url command
 (document
   (url
     (cs)
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 =============================
 nolinkurl command
@@ -28,7 +28,7 @@ nolinkurl command
 (document
   (url
     (cs)
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 =============================
 hyperbaseurl command
@@ -38,7 +38,7 @@ hyperbaseurl command
 (document
   (hyperbaseurl
     (cs)
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 =============================
 hyperimage command
@@ -48,8 +48,8 @@ hyperimage command
 (document
   (hyperimage
     (cs)
-    (group (begin_group) (text) (end_group))
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 =============================
 hyperref command
@@ -59,10 +59,10 @@ hyperref command
 (document
   (hyperref
     (cs)
-    (group (begin_group) (text) (end_group))
-    (group (begin_group) (text) (end_group))
-    (group (begin_group) (text) (end_group))
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 =============================
 hyperref local command
@@ -73,4 +73,4 @@ hyperref local command
   (hyperref
     (cs)
     (brack_group (lbrack) (text) (rbrack))
-    (group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))

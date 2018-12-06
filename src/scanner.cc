@@ -42,15 +42,15 @@ enum SymbolType {
   ACTIVE_CHAR,
   ALIGNMENT_TAB,
   ARARA_COMMENT,
-  BEGIN_GROUP,
   BIB_COMMENT,
   COMMENT,
-  END_GROUP,
   EOL,
-  EXIT_GROUP,
+  EXIT,
+  L,
   MAGIC_COMMENT,
   MATH_SHIFT,
   PARAMETER_CHAR,
+  R,
   SUBSCRIPT,
   SUPERSCRIPT,
   TAG_COMMENT,
@@ -778,15 +778,15 @@ struct Scanner {
         }
         break;
       case BEGIN_CATEGORY:
-        if (valid_symbols[BEGIN_GROUP]) {
-          return scan_single_char_symbol(lexer, BEGIN_GROUP);
+        if (valid_symbols[L]) {
+          return scan_single_char_symbol(lexer, L);
         }
         break;
       case END_CATEGORY:
-        if (valid_symbols[EXIT_GROUP]) {
-          return scan_empty_symbol(lexer, EXIT_GROUP);
-        } else if (valid_symbols[END_GROUP]) {
-          return scan_single_char_symbol(lexer, END_GROUP);
+        if (valid_symbols[EXIT]) {
+          return scan_empty_symbol(lexer, EXIT);
+        } else if (valid_symbols[R]) {
+          return scan_single_char_symbol(lexer, R);
         }
         break;
       case MATH_SHIFT_CATEGORY:

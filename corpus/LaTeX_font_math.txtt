@@ -10,9 +10,9 @@ $foo \mathbf{bar} wibble$
     (mathbf
       (cs)
       (group
-        (begin_group)
+        (l)
         (text)
-        (end_group)))
+        (r)))
     (text)
     (math_shift)))
 
@@ -28,8 +28,8 @@ mathbf inline LaTeX inline math
     (mathbf
       (cs)
       (group
-        (begin_group)
+        (l)
         (text)
-        (end_group)))
+        (r)))
     (text)
     (end_inline_math)))

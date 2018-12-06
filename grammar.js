@@ -24,7 +24,7 @@ function end_cmd ($) {
 }
 
 function group ($, contents) {
-  return seq($.begin_group, contents, $.end_group)
+  return seq($.l, contents, $.r)
 }
 
 function brack_group ($, contents) {
@@ -66,15 +66,15 @@ module.exports = grammar({
     $.active_char,
     $.alignment_tab,
     $.arara_comment,
-    $.begin_group,
     $.bib_comment,
     $.comment,
-    $.end_group,
     $.eol,
-    $.exit_group,
+    $.exit,
+    $.l,
     $.magic_comment,
     $.math_shift,
     $.parameter_char,
+    $.r,
     $.subscript,
     $.superscript,
     $.tag_comment,
@@ -234,13 +234,13 @@ module.exports = grammar({
     text_env: $ => seq(
       $.begin,
       repeat($._text_mode),
-      choice($.end, $.exit_group)
+      choice($.end, $.exit)
     ),
 
     math_env: $ => seq(
       $.begin,
       repeat($._math_mode),
-      choice($.end, $.exit_group)
+      choice($.end, $.exit)
     ),
 
     _display_math: $ => choice(
@@ -254,15 +254,15 @@ module.exports = grammar({
       repeat($._math_mode),
       choice(
         seq($.math_shift, $.math_shift),
-        seq($.math_shift, $.exit_group),
-        $.exit_group
+        seq($.math_shift, $.exit),
+        $.exit
       )
     ),
 
     latex_display_math: $ => seq(
       $.begin_display_math,
       repeat1($._math_mode),
-      choice($.end_display_math, $.exit_group)
+      choice($.end_display_math, $.exit)
     ),
 
     begin_display_math: $ => escaped($, '['),
@@ -272,7 +272,7 @@ module.exports = grammar({
     display_math_env: $ => seq(
       alias($.display_math_begin, $.begin),
       repeat1($._math_mode),
-      choice(alias($.display_math_end, $.end), $.exit_group)
+      choice(alias($.display_math_end, $.end), $.exit)
     ),
 
     display_math_begin: $ => begin_cmd($,
@@ -299,13 +299,13 @@ module.exports = grammar({
     tex_inline_math: $ => seq(
       $.math_shift,
       repeat1($._math_mode),
-      choice($.math_shift, $.exit_group)
+      choice($.math_shift, $.exit)
     ),
 
     latex_inline_math: $ => seq(
       $.begin_inline_math,
       repeat($._math_mode),
-      choice($.end_inline_math, $.exit_group)
+      choice($.end_inline_math, $.exit)
     ),
 
     begin_inline_math: $ => escaped($, '('),
@@ -315,7 +315,7 @@ module.exports = grammar({
     inline_math_env: $ => seq(
       alias($.inline_math_begin, $.begin),
       repeat($._math_mode),
-      choice(alias($.inline_math_end, $.end), $.exit_group)
+      choice(alias($.inline_math_end, $.end), $.exit)
     ),
 
     inline_math_begin: $ => begin_cmd($,
@@ -348,7 +348,7 @@ module.exports = grammar({
     verbatim_env: $ => seq(
       alias($.verbatim_begin, $.begin),
       optional($.verbatim_text),
-      // We don't allow exit_group here since braces are meaningless in verbatim.
+      // We don't allow exit here since braces are meaningless in verbatim.
       alias($.verbatim_end, $.end)
     ),
 
@@ -433,7 +433,7 @@ module.exports = grammar({
       $.section_cs,
       optional('*'),
       optional($.brack_group),
-      choice($._argument, $.exit_group),
+      choice($._argument, $.exit),
     ),
 
     section_cs: $ => cs($, $._section_word),
@@ -789,7 +789,7 @@ module.exports = grammar({
     minipage_env: $ => seq(
       alias($.minipage_begin, $.begin),
       repeat($._text_mode),
-      choice(alias($.minipage_end, $.end), $.exit_group)
+      choice(alias($.minipage_end, $.end), $.exit)
     ),
 
     minipage_begin: $ => begin_cmd($,
@@ -1219,7 +1219,7 @@ module.exports = grammar({
     luacode_env: $ => seq(
       alias($.luacode_begin, $.begin),
       repeat($._text_mode),
-      choice(alias($.luacode_end, $.end), $.exit_group)
+      choice(alias($.luacode_end, $.end), $.exit)
     ),
 
     luacode_begin: $ => begin_cmd($,
@@ -1239,7 +1239,7 @@ module.exports = grammar({
     luacodestar_env: $ => seq(
       alias($.luacodestar_begin, $.begin),
       optional($.lua_text),
-      // We don't allow exit_group since luacode* is a verbatim environment.
+      // We don't allow exit since luacode* is a verbatim environment.
       alias($.luacodestar_end, $.end)
     ),
 
@@ -1263,7 +1263,7 @@ module.exports = grammar({
     tikzpicture_env: $ => seq(
       alias($.tikzpicture_begin, $.begin),
       repeat($._text_mode),
-      choice(alias($.tikzpicture_end, $.end), $.exit_group)
+      choice(alias($.tikzpicture_end, $.end), $.exit)
     ),
 
     tikzpicture_begin: $ => begin_cmd($,
