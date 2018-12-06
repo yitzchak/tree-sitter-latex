@@ -11,12 +11,12 @@ quux
 (document
     (text)
     (verbatim_env
-      (verbatim_begin
+      (begin
         (cs)
-        (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+        (group (l) (name) (r))
         (eol))
       (verbatim_text)
-      (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+      (end (cs) (group (l) (name) (r))))
     (text))
 
 ===========================
@@ -31,12 +31,12 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (group (l) (name) (r))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -51,12 +51,12 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (group (l) (name) (r))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -71,12 +71,12 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (group (l) (name) (r))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -91,12 +91,12 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (group (l) (name) (r))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -111,12 +111,12 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (group (l) (name) (r))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -131,12 +131,12 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (group (l) (name) (r))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -151,12 +151,12 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (group (l) (name) (r))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -171,13 +171,13 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-      (text_brack_group (lbrack) (text) (rbrack))
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -192,13 +192,13 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
-      (text_group (begin_group) (text) (end_group))
+      (group (l) (name) (r))
+      (group (l) (text) (r))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ======================
@@ -212,11 +212,11 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (group (l) (name) (r))
       (eol))
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ======================
@@ -232,12 +232,12 @@ quux
 (document
   (text)
   (verbatim_env
-    (verbatim_begin
+    (begin
       (cs)
-      (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))
+      (group (l) (name) (r))
       (eol))
     (verbatim_text)
-    (verbatim_end (cs) (verbatim_env_group (begin_group) (verbatim_env_name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ======================

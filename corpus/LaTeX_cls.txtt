@@ -6,7 +6,7 @@ NeedsTeXFormat
 (document
   (NeedsTeXFormat
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ===========================
 ProvidesPackage
@@ -16,7 +16,7 @@ ProvidesPackage
 (document
   (ProvidesPackage
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ===========================
 ProvidesPackage with optional date
@@ -26,8 +26,8 @@ ProvidesPackage with optional date
 (document
   (ProvidesPackage
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_brack_group (lbrack) (text) (rbrack))))
+    (group (l) (text) (r))
+    (brack_group (lbrack) (text) (rbrack))))
 
 ===========================
 RequirePackage
@@ -37,7 +37,7 @@ RequirePackage
 (document
   (use
     (cs)
-    (name_group (begin_group) (name) (end_group))))
+    (group (l) (name) (r))))
 
 ===========================
 RequirePackage with options
@@ -47,8 +47,8 @@ RequirePackage with options
 (document
   (use
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (name_group (begin_group) (name) (end_group))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (name) (r))))
 
 ===========================
 RequirePackage with date
@@ -58,8 +58,8 @@ RequirePackage with date
 (document
   (use
     (cs)
-    (name_group (begin_group) (name) (end_group))
-    (text_brack_group (lbrack) (text) (rbrack))))
+    (group (l) (name) (r))
+    (brack_group (lbrack) (text) (rbrack))))
 
 ===========================
 RequirePackage with options and date
@@ -69,9 +69,9 @@ RequirePackage with options and date
 (document
   (use
     (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (name_group (begin_group) (name) (end_group))
-    (text_brack_group (lbrack) (text) (rbrack))))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (name) (r))
+    (brack_group (lbrack) (text) (rbrack))))
 
 ===========================
 DeclareOption
@@ -81,8 +81,8 @@ DeclareOption
 (document
   (DeclareOption
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 ===========================
 DeclareOption*
@@ -92,7 +92,7 @@ DeclareOption*
 (document
   (DeclareOption
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ===========================
 PassOptionToClass
@@ -102,8 +102,8 @@ PassOptionToClass
 (document
   (PassOptionTo
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (name_group (begin_group) (name) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (name) (r))))
 
 ===========================
 PassOptionToPackage
@@ -113,8 +113,8 @@ PassOptionToPackage
 (document
   (PassOptionTo
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (name_group (begin_group) (name) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (name) (r))))
 
 ============================
 AtEndOfClass
@@ -124,7 +124,7 @@ AtEndOfClass
 (document
   (At
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ============================
 AtEndOfPackage
@@ -134,7 +134,7 @@ AtEndOfPackage
 (document
   (At
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ============================
 AtBeginDocument
@@ -144,7 +144,7 @@ AtBeginDocument
 (document
   (At
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ============================
 AtEndDocument
@@ -154,7 +154,7 @@ AtEndDocument
 (document
   (At
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ============================
 AtBeginDvi
@@ -164,7 +164,7 @@ AtBeginDvi
 (document
   (At
     (cs)
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ============================
 ProcessOptions
@@ -192,7 +192,7 @@ ExecuteOptions
 (document
   (ExecuteOptions
     (cs)
-    (name_group (begin_group) (name) (end_group))))
+    (group (l) (name) (r))))
 
 ============================
 IfFileExists
@@ -202,9 +202,9 @@ IfFileExists
 (document
   (IfFileExists
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 ============================
 InputIfFileExists
@@ -214,9 +214,9 @@ InputIfFileExists
 (document
   (IfFileExists
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 ============================
 ClassError
@@ -226,9 +226,9 @@ ClassError
 (document
   (Error
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 ============================
 PackageError
@@ -238,9 +238,9 @@ PackageError
 (document
   (Error
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 ============================
 ClassWarning
@@ -250,8 +250,8 @@ ClassWarning
 (document
   (WarningInfo
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 ============================
 ClassWarningNoLine
@@ -261,8 +261,8 @@ ClassWarningNoLine
 (document
   (WarningInfo
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 ============================
 PackageInfo
@@ -272,8 +272,8 @@ PackageInfo
 (document
   (WarningInfo
     (cs)
-    (text_group (begin_group) (text) (end_group))
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
 
 ============================
 ensuremath
@@ -283,7 +283,7 @@ ensuremath
 (document
   (ensuremath
     (cs)
-    (math_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ============================
 ensuremath inside inline math
@@ -295,5 +295,5 @@ ensuremath inside inline math
     (begin_inline_math)
     (ensuremath
       (cs)
-      (math_group (begin_group) (text) (end_group)))
+      (group (l) (text) (r)))
     (end_inline_math)))

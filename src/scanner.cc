@@ -42,15 +42,15 @@ enum SymbolType {
   ACTIVE_CHAR,
   ALIGNMENT_TAB,
   ARARA_COMMENT,
-  BEGIN_GROUP,
   BIB_COMMENT,
   COMMENT,
-  END_GROUP,
   EOL,
-  EXIT_GROUP,
+  EXIT,
+  L,
   MAGIC_COMMENT,
   MATH_SHIFT,
   PARAMETER_CHAR,
+  R,
   SUBSCRIPT,
   SUPERSCRIPT,
   TAG_COMMENT,
@@ -81,19 +81,6 @@ enum SymbolWidth {
   ZERO_WIDTH,
   SINGLE_WIDTH,
   UNLIMITED_WIDTH
-};
-
-// Description of a trivial symbol, i.e. one that is zero characters, one
-// character or unlimited characters based on a collection of categories.
-struct SymbolDescription {
-  SymbolType type;
-  SymbolWidth width;
-  bitset<16> categories;
-
-  SymbolDescription(unsigned int cats, SymbolType t, SymbolWidth w): categories(cats) {
-    type = t;
-    width = w;
-  }
 };
 
 struct CatCodeCategoryRegion {
@@ -317,28 +304,6 @@ struct Scanner {
   static const unsigned int ACTIVE_CHAR_FLAG = 1 << ACTIVE_CHAR_CATEGORY;
   static const unsigned int COMMENT_FLAG = 1 << COMMENT_CATEGORY;
   static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
-
-  vector<SymbolDescription> symbol_descriptions = {
-    {BEGIN_FLAG,         BEGIN_GROUP,    SINGLE_WIDTH},
-    {END_FLAG,           EXIT_GROUP,     ZERO_WIDTH},
-    {END_FLAG,           END_GROUP,      SINGLE_WIDTH},
-    {MATH_SHIFT_FLAG,    MATH_SHIFT,     SINGLE_WIDTH},
-    {ALIGNMENT_TAB_FLAG, ALIGNMENT_TAB,  SINGLE_WIDTH},
-    {EOL_FLAG,           EOL,            SINGLE_WIDTH},
-    {PARAMETER_FLAG,     PARAMETER_CHAR, SINGLE_WIDTH},
-    {SUPERSCRIPT_FLAG,   SUPERSCRIPT,    SINGLE_WIDTH},
-    {SUBSCRIPT_FLAG,     SUBSCRIPT,      SINGLE_WIDTH},
-    {SPACE_FLAG,         _SPACE,         UNLIMITED_WIDTH},
-    {ACTIVE_CHAR_FLAG,   ACTIVE_CHAR,    SINGLE_WIDTH}
-  };
-
-  map<string, SymbolType> comment_types = {
-    {"arara:", ARARA_COMMENT},
-    {"!Bib", BIB_COMMENT},
-    {"!BIB", BIB_COMMENT},
-    {"!TeX", MAGIC_COMMENT},
-    {"!TEX", MAGIC_COMMENT}
-  };
 
   list<CatCodeCommand> catcode_commands = {
     {
@@ -624,37 +589,30 @@ struct Scanner {
     return true;
   }
 
-  bool scan_symbol(TSLexer *lexer, SymbolDescription desc) {
-    // Accumulate characters as long as they match the catcode and are allowed
-    // by the symbol width.
-    switch (desc.width) {
-      case SINGLE_WIDTH:
+  int match_length(TSLexer *lexer, string value, bitset<16> terminator = ~0) {
+    size_t length = 0;
+
+    for (char ch: value) {
+      if (std::tolower(lexer->lookahead) == ch) {
+        length++;
         lexer->advance(lexer, false);
-        break;
-      case UNLIMITED_WIDTH:
-        while (desc.categories[catcode_table[lexer->lookahead]]) {
-          lexer->advance(lexer, false);
-        }
-        break;
-      default:
-        break;
+      } else {
+        return length;
+      }
     }
 
-    lexer->result_symbol = desc.type;
-    lexer->mark_end(lexer);
-
-    return true;
+    return (terminator[catcode_table[lexer->lookahead]]) ? -1 : length;
   }
 
   bool scan_comment(TSLexer *lexer) {
-    bitset<16> comment_type_categories = ~(EOL_FLAG | SPACE_FLAG | IGNORED_FLAG),
-      comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
+    bitset<16> comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
     string comment_type;
 
     // Skip the comment char
     lexer->advance(lexer, false);
+    lexer->result_symbol = COMMENT;
 
-    if (lexer->lookahead == ':') {
+    if (match_length(lexer, ":") == -1) {
       lexer->advance(lexer, false);
       lexer->result_symbol = TAG_COMMENT;
     } else {
@@ -663,16 +621,18 @@ struct Scanner {
         lexer->advance(lexer, false);
       }
 
-      // Try to capture a tag
-      while (comment_type_categories[catcode_table[lexer->lookahead]]) {
-        comment_type += lexer->lookahead;
-        lexer->advance(lexer, false);
+      int len = match_length(lexer, "arara:");
+
+      if (len == -1) {
+        lexer->result_symbol = ARARA_COMMENT;
+      } else if (len == 0) {
+        len = match_length(lexer, "!tex", EOL_FLAG | SPACE_FLAG | IGNORED_FLAG);
+        if (len == -1) {
+          lexer->result_symbol = MAGIC_COMMENT;
+        } else if (len == 1 && match_length(lexer, "bib", EOL_FLAG | SPACE_FLAG | IGNORED_FLAG) == -1) {
+          lexer->result_symbol = BIB_COMMENT;
+        }
       }
-
-      // Look for a valid comment tag
-      auto it = comment_types.find(comment_type);
-
-      lexer->result_symbol = (it == comment_types.end()) ? COMMENT : it->second;
     }
 
     // Gobble the reset of the comment
@@ -776,29 +736,106 @@ struct Scanner {
     return false;
   }
 
+  inline bool scan_empty_symbol(TSLexer *lexer, SymbolType symbol) {
+    lexer->result_symbol = symbol;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  inline bool scan_single_char_symbol(TSLexer *lexer, SymbolType symbol) {
+    lexer->advance(lexer, false);
+
+    lexer->result_symbol = symbol;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  inline bool scan_multi_char_symbol(TSLexer *lexer, SymbolType symbol, Category code) {
+    do {
+      lexer->advance(lexer, false);
+    } while (catcode_table[lexer->lookahead] == code);
+
+    lexer->result_symbol = symbol;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan_normal_mode(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
-
-    // Look for control sequences
-    if ((valid_symbols[_CS_BEGIN] || valid_symbols[_ESCAPED_BEGIN]) && code == ESCAPE_CATEGORY) {
-      return scan_escape(lexer);
-    }
 
     // Look for an inline verbatim delimiter and start VERB_MODE.
     if (valid_symbols[VERB_DELIM]) {
       return scan_start_verb_delim(lexer);
     }
 
-    // Look for simple symbols such as active character, parameter character, etc.
-    for (auto it = symbol_descriptions.begin(); it != symbol_descriptions.end(); it++) {
-      if (it->categories[code] && valid_symbols[it->type]) {
-        return scan_symbol(lexer, *it);
-      }
-    }
-
-    // Look for comments.
-    if (code == COMMENT_CATEGORY && valid_symbols[COMMENT]) {
-      return scan_comment(lexer);
+    switch (code) {
+      case ESCAPE_CATEGORY:
+        if (valid_symbols[_CS_BEGIN] || valid_symbols[_ESCAPED_BEGIN]) {
+          return scan_escape(lexer);
+        }
+        break;
+      case BEGIN_CATEGORY:
+        if (valid_symbols[L]) {
+          return scan_single_char_symbol(lexer, L);
+        }
+        break;
+      case END_CATEGORY:
+        if (valid_symbols[EXIT]) {
+          return scan_empty_symbol(lexer, EXIT);
+        } else if (valid_symbols[R]) {
+          return scan_single_char_symbol(lexer, R);
+        }
+        break;
+      case MATH_SHIFT_CATEGORY:
+        if (valid_symbols[MATH_SHIFT]) {
+          return scan_single_char_symbol(lexer, MATH_SHIFT);
+        }
+        break;
+      case ALIGNMENT_TAB_CATEGORY:
+        if (valid_symbols[ALIGNMENT_TAB]) {
+          return scan_single_char_symbol(lexer, ALIGNMENT_TAB);
+        }
+        break;
+      case EOL_CATEGORY:
+        if (valid_symbols[EOL]) {
+          return scan_single_char_symbol(lexer, EOL);
+        }
+        break;
+      case PARAMETER_CATEGORY:
+        if (valid_symbols[PARAMETER_CHAR]) {
+          return scan_multi_char_symbol(lexer, PARAMETER_CHAR, PARAMETER_CATEGORY);
+        }
+        break;
+      case SUPERSCRIPT_CATEGORY:
+        if (valid_symbols[SUPERSCRIPT]) {
+          return scan_single_char_symbol(lexer, SUPERSCRIPT);
+        }
+        break;
+      case SUBSCRIPT_CATEGORY:
+        if (valid_symbols[SUBSCRIPT]) {
+          return scan_single_char_symbol(lexer, SUBSCRIPT);
+        }
+        break;
+      case SPACE_CATEGORY:
+        if (valid_symbols[_SPACE]) {
+          return scan_multi_char_symbol(lexer, _SPACE, SPACE_CATEGORY);
+        }
+        break;
+      case ACTIVE_CHAR_CATEGORY:
+        if (valid_symbols[SUBSCRIPT]) {
+          return scan_single_char_symbol(lexer, ACTIVE_CHAR);
+        }
+        break;
+      case COMMENT_CATEGORY:
+        if (valid_symbols[COMMENT]) {
+          return scan_comment(lexer);
+        }
+        break;
+      default:
+        break;
     }
 
     // Scan a single line in a verbatim environment.

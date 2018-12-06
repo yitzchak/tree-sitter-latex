@@ -24,7 +24,7 @@ fubar\quux{bar} wibble
 (document
   (text)
   (cs)
-  (text_group (begin_group) (text) (end_group))
+  (group (l) (text) (r))
   (text))
 
 ==================
@@ -35,7 +35,7 @@ fubar\quux  {bar} wibble
 (document
   (text)
   (cs)
-  (text_group (begin_group) (text) (end_group))
+  (group (l) (text) (r))
   (text))
 
 ==================
@@ -46,7 +46,7 @@ fubar\quux  {bar} wibble
 (document
   (text)
   (cs)
-  (text_group (begin_group) (text) (end_group))
+  (group (l) (text) (r))
   (text))
 
 =============
@@ -79,7 +79,7 @@ foo##1bar
   (text)
   (parameter (parameter_char))
   (text)
-  (parameter (parameter_char) (parameter_char))
+  (parameter (parameter_char))
   (text))
 
 =============
@@ -109,10 +109,10 @@ foo{bar}wibble
 -------------
 (document
   (text)
-  (text_group
-    (begin_group)
+  (group
+    (l)
     (text)
-    (end_group))
+    (r))
   (text))
 
 =============
@@ -127,9 +127,9 @@ quux
 (document
   (text)
   (text_env
-    (begin (cs) (name_group (begin_group) (name) (end_group)))
+    (begin (cs) (group (l) (name) (r)))
     (text)
-    (end (cs) (name_group (begin_group) (name) (end_group))))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========
@@ -151,7 +151,7 @@ comment eats EOL
   (emph
     (cs)
     (comment)
-    (text_group (begin_group) (text) (end_group))))
+    (group (l) (text) (r))))
 
 ===========
 arara comment
@@ -197,10 +197,10 @@ foo\footnote[10]{bar}wibble
 ---------------------
 (document
   (text)
-  (footnote (cs) (text_group (begin_group) (text) (end_group))) (text)
+  (footnote (cs) (group (l) (text) (r))) (text)
   (footnote (cs)
-    (text_brack_group (lbrack) (text) (rbrack))
-    (text_group (begin_group) (text) (end_group)))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r)))
   (text))
 
 =====================
@@ -212,14 +212,14 @@ sections
 ---------------------
 
 (document
-  (section (cs) (text_group (begin_group) (text) (end_group)))
+  (section (cs) (group (l) (text) (r)))
   (text)
-  (section (cs) (text_group (begin_group) (text) (end_group)))
+  (section (cs) (group (l) (text) (r)))
   (text)
-  (section (cs) (text_group (begin_group) (text) (end_group))))
+  (section (cs) (group (l) (text) (r))))
 
 =================
-Square brackets do not trigger text_brack_group
+Square brackets do not trigger brack_group
 ================
 foo[bar]wibble
 ---------------
@@ -261,6 +261,92 @@ storage usage
 -----------------------
 (document
   (storage
-    (cs))
     (cs)
-    (text_group (begin_group) (text) (end_group)))
+    (cs)
+    (group (l) (text) (r))))
+
+==========================
+storage with single parameter
+=========================
+\def\foo#1{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (parameter (parameter_char))
+    (group (l) (text) (r))))
+
+==========================
+storage with multiple parameters
+=========================
+\def\foo#1#2{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (parameter (parameter_char))
+    (parameter (parameter_char))
+    (group (l) (text) (r))))
+
+==========================
+storage with multiple parameters and dangling parameter character
+=========================
+\def\foo#1#2#{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (parameter (parameter_char))
+    (parameter (parameter_char))
+    (parameter (parameter_char))
+    (group (l) (text) (r))))
+
+==========================
+storage with multiple parameters with brackets
+=========================
+\def\foo[#1]#2{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (text)
+    (parameter (parameter_char))
+    (text)
+    (parameter (parameter_char))
+    (group (l) (text) (r))))
+
+==========================
+storage with exisiting command
+=========================
+\def\section{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (group (l) (text) (r))))
+
+
+==========================
+storage with comment
+=========================
+\def\foo%
+{bar}
+-----------------------
+(document
+  (storage
+    (cs)
+    (cs)
+    (comment)
+    (group (l) (text) (r))))
+
+========================
+ref
+========================
+\ref{eq:foo}
+-----------------------
+(document (cs) (group (l) (text) (r)))
