@@ -1,2 +1,7 @@
-/src/** linguist-vendored
-/examples/* linguist-vendored
+src/tree_sitter/* linguist-vendored
+src/binding.cc linguist-vendored
+src/grammar.json linguist-vendored
+src/parser.c linguist-vendored
+index.js linguist-vendored
+package-lock.json linguist-vendored
+build/* linguist-vendored
