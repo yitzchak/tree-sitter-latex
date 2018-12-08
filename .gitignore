@@ -3,3 +3,8 @@
 build
 node_modules
 package-lock.json
+
+# See https://github.com/tree-sitter/tree-sitter/issues/240
+index.js
+src/*
+!src/scanner.cc
