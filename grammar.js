@@ -91,10 +91,6 @@ module.exports = grammar({
     $.tag_comment,
   ],
 
-  conflicts: $ => [
-    [$._word, $._word]
-  ],
-
   rules: {
     document: $ => repeat($._text_mode),
 

@@ -848,8 +848,7 @@ struct Scanner {
     return scan_catcode_commands(lexer, valid_symbols);
   }
 
-  bool scan(TSLexer *lexer, const bool *valid_symbols)
-  {
+  bool scan(TSLexer *lexer, const bool *valid_symbols) {
     switch (mode) {
       case CS_MODE:
         return scan_cs_mode(lexer, valid_symbols);
