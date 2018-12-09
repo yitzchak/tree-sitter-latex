@@ -7,19 +7,19 @@ function escaped ($, name) {
 }
 
 // This command is a placeholder for aliasing of cs
-function cmd ($, cs) {
-  return seq.apply(null, [alias(cs, $.cs)].concat(Array.prototype.slice.call(arguments, 2)))
+function cmd ($, cs, ...args) {
+  return seq(alias(cs, $.cs), ...args)
 }
 
-function begin_cmd ($) {
+function begin_cmd ($, ...args) {
   return (arguments.length > 1)
-    ? seq.apply(null, [alias($.begin_cs, $.cs)].concat(Array.prototype.slice.call(arguments, 1)))
+    ? seq(alias($.begin_cs, $.cs), ...args)
     : seq(alias($.begin_cs, $.cs), alias($.name_group, $.group))
 }
 
-function end_cmd ($) {
+function end_cmd ($, ...args) {
   return (arguments.length > 1)
-    ? seq.apply(null, [alias($.end_cs, $.cs)].concat(Array.prototype.slice.call(arguments, 1)))
+    ? seq(alias($.end_cs, $.cs), ...args)
     : seq(alias($.end_cs, $.cs), alias($.name_group, $.group))
 }
 
