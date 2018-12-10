@@ -826,7 +826,7 @@ module.exports = grammar({
     setlength: $ => cmd($,
       $.setlength_cs,
       $._cs_parameter,
-      alias($.dimension_group, $.group)
+      alias($.glue_group, $.group)
     ),
 
     setlength_cs: $ => cs($, $._setlength_word),
@@ -1296,6 +1296,10 @@ module.exports = grammar({
     dimension_group: $ => group($, $.dimension),
 
     dimension_brack_group: $ => brack_group($, $.dimension),
+
+    glue_group: $ => group($, $.glue),
+
+    glue_brack_group: $ => brack_group($, $.glue),
 
     _cs_parameter: $ => choice($.cs, alias($.cs_group, $.group)),
 
