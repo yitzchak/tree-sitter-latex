@@ -77,9 +77,9 @@ foo##1bar
 -------------
 (document
   (text)
-  (parameter (parameter_char))
+  (parameter_ref (parameter_char))
   (text)
-  (parameter (parameter_char))
+  (parameter_ref (parameter_char))
   (text))
 
 =============
@@ -274,7 +274,7 @@ storage with single parameter
   (storage
     (cs)
     (cs)
-    (parameter (parameter_char))
+    (parameter_ref (parameter_char))
     (group (l) (text) (r))))
 
 ==========================
@@ -286,8 +286,8 @@ storage with multiple parameters
   (storage
     (cs)
     (cs)
-    (parameter (parameter_char))
-    (parameter (parameter_char))
+    (parameter_ref (parameter_char))
+    (parameter_ref (parameter_char))
     (group (l) (text) (r))))
 
 ==========================
@@ -299,9 +299,9 @@ storage with multiple parameters and dangling parameter character
   (storage
     (cs)
     (cs)
-    (parameter (parameter_char))
-    (parameter (parameter_char))
-    (parameter (parameter_char))
+    (parameter_ref (parameter_char))
+    (parameter_ref (parameter_char))
+    (parameter_ref (parameter_char))
     (group (l) (text) (r))))
 
 ==========================
@@ -314,9 +314,9 @@ storage with multiple parameters with brackets
     (cs)
     (cs)
     (text)
-    (parameter (parameter_char))
+    (parameter_ref (parameter_char))
     (text)
-    (parameter (parameter_char))
+    (parameter_ref (parameter_char))
     (group (l) (text) (r))))
 
 ==========================

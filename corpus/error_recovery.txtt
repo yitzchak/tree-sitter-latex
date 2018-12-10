@@ -317,4 +317,4 @@ missing section arguments
 =====================================
 \foo{\section}
 -------------------------------------
-(document (cs) (group (l) (section (cs) (exit)) (r)))
+(document (cs) (group (l) (section (cs)) (r)))
