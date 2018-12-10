@@ -7,7 +7,11 @@ function escaped ($, name) {
 }
 
 function cmd ($, cs, ...args) {
-  return seq(alias(cs, $.cs), ...args)
+  cs = alias(cs, $.cs)
+
+  return (args.length === 0)
+    ? cs
+    : seq(cs, ...args)
 }
 
 function cmd_opt ($, cs, ...args) {
