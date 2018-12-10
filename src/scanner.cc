@@ -459,6 +459,7 @@ struct Scanner {
 
   void initialize() {
     reset();
+    mode = NORMAL_MODE;
     // This is a hack. I'd like to have grammer.js load this via _DEFAULT_CATCODES.
     CatCodeTable copy;
     catcode_table.load(catcode_commands.front().table, copy);
