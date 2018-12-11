@@ -1036,6 +1036,7 @@ module.exports = grammar({
     ProvidesPackage: $ => prec.right(-2, cmd($,
       $.ProvidesPackage_cs,
       $._parameter,
+      $._at_letter,
       optional($.brack_group)
     )),
 
