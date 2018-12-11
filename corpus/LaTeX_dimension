@@ -7,4 +7,4 @@ setlength
   (setlength
     (cs)
     (group (l) (cs) (r))
-    (group (l) (dimension (fixed) (unit)) (r)))) 
+    (group (l) (glue (dimension (fixed) (unit))) (r)))) 
