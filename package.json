@@ -28,7 +28,9 @@
   },
   "homepage": "https://github.com/yitzchak/tree-sitter-latex",
   "dependencies": {
-    "nan": "^2.11.1",
+    "nan": "^2.11.1"
+  },
+  "devDependencies": {
     "tree-sitter-cli": "^0.13.10"
   }
 }
