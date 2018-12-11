@@ -4,7 +4,7 @@
   "description": "LaTeX grammar for tree-sitter",
   "main": "index.js",
   "scripts": {
-    "install": "tree-sitter generate && node-gyp configure && node-gyp build",
+    "prepare": "tree-sitter generate && node-gyp configure && node-gyp build",
     "benchmark": "node script/benchmark.js",
     "build": "tree-sitter generate && node-gyp build",
     "parse": "tree-sitter parse",
