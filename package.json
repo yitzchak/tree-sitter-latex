@@ -4,9 +4,8 @@
   "description": "LaTeX grammar for tree-sitter",
   "main": "index.js",
   "scripts": {
-    "prepare": "tree-sitter generate && node-gyp configure && node-gyp build",
+    "install": "tree-sitter generate && node-gyp configure && node-gyp build",
     "benchmark": "node script/benchmark.js",
-    "build": "tree-sitter generate && node-gyp build",
     "parse": "tree-sitter parse",
     "test": "tree-sitter test"
   },
@@ -29,9 +28,7 @@
   },
   "homepage": "https://github.com/yitzchak/tree-sitter-latex",
   "dependencies": {
-    "nan": "^2.11.1"
-  },
-  "devDependencies": {
+    "nan": "^2.11.1",
     "tree-sitter-cli": "^0.13.10"
   }
 }
