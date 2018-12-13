@@ -186,9 +186,7 @@ module.exports = grammar({
       $.textit,
       $.textsl,
       $.textsc,
-      $.ProvidesExplClass,
-      $.ProvidesExplFile,
-      $.ProvidesExplPackage,
+      $.ProvidesExpl,
       $.documentclass,
       $.documentstyle,
       $.section,
@@ -198,7 +196,7 @@ module.exports = grammar({
       $.end_display_math,
       // LaTeX cls
       $.NeedsTeXFormat,
-      $.ProvidesPackage,
+      $.Provides,
       $.DeclareOption,
       $.PassOptionTo,
       $.At,
@@ -401,8 +399,8 @@ module.exports = grammar({
 
     _include_word: $ => /include|input/,
 
-    ProvidesExplClass: $ => cmd_opt($,
-      $.ProvidesExplClass_cs,
+    ProvidesExpl: $ => cmd_opt($,
+      $.ProvidesExpl_cs,
       $._parameter,
       $._parameter,
       $._parameter,
@@ -410,35 +408,9 @@ module.exports = grammar({
       $._expl_begin
     ),
 
-    ProvidesExplClass_cs: $ => cs($, $._ProvidesExplClass_word),
+    ProvidesExpl_cs: $ => cs($, $._ProvidesExpl_word),
 
-    _ProvidesExplClass_word: $ => 'ProvidesExplClass',
-
-    ProvidesExplFile: $ => cmd_opt($,
-      $.ProvidesExplFile_cs,
-      $._parameter,
-      $._parameter,
-      $._parameter,
-      $._parameter,
-      $._expl_begin
-    ),
-
-    ProvidesExplFile_cs: $ => cs($, $._ProvidesExplFile_word),
-
-    _ProvidesExplFile_word: $ => 'ProvidesExplFile',
-
-    ProvidesExplPackage: $ => cmd_opt($,
-      $.ProvidesExplPackage_cs,
-      $._parameter,
-      $._parameter,
-      $._parameter,
-      $._parameter,
-      $._expl_begin
-    ),
-
-    ProvidesExplPackage_cs: $ => cs($, $._ProvidesExplPackage_word),
-
-    _ProvidesExplPackage_word: $ => 'ProvidesExplPackage',
+    _ProvidesExpl_word: $ => /ProvidesExpl(Class|File|Package)/,
 
     section: $ => cmd_opt($,
       $.section_cs,
@@ -823,7 +795,7 @@ module.exports = grammar({
 
     // LaTeX lengths
 
-    setlength: $ => cmd($,
+    setlength: $ => cmd_opt($,
       $.setlength_cs,
       $._cs_parameter,
       alias($.glue_group, $.group)
@@ -1033,16 +1005,16 @@ module.exports = grammar({
 
     _NeedsTeXFormat_word: $ => 'NeedsTeXFormat',
 
-    ProvidesPackage: $ => prec.right(-2, cmd($,
-      $.ProvidesPackage_cs,
+    Provides: $ => prec.right(-2, cmd($,
+      $.Provides_cs,
       $._parameter,
       $._at_letter,
       optional($.brack_group)
     )),
 
-    ProvidesPackage_cs: $ => cs($, $._ProvidesPackage_word),
+    Provides_cs: $ => cs($, $._Provides_word),
 
-    _ProvidesPackage_word: $ => 'ProvidesPackage',
+    _Provides_word: $ => /Provides(Class|Package|File)/,
 
     // LaTeX cls declaring options
 
@@ -1392,10 +1364,8 @@ module.exports = grammar({
           $._PassOptionTo_word,
           $._phantom_smash_word,
           $._ProcessOptions_word,
-          $._ProvidesExplClass_word,
-          $._ProvidesExplFile_word,
-          $._ProvidesExplPackage_word,
-          $._ProvidesPackage_word,
+          $._ProvidesExpl_word,
+          $._Provides_word,
           $._ref_word,
           $._savebox_word,
           $._section_word,
@@ -1429,7 +1399,7 @@ module.exports = grammar({
     // fi introduced by LuaTeX
     unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/,
 
-    fixed: $ => /[+-]?([0-9]+(\.[0-9]*)?|[0-9]\.[0-9]+)/,
+    fixed: $ => /[+-]?([0-9]+(\.[0-9]*)?|[0-9]?\.[0-9]+)/,
 
     _number: $ => choice(
       $.decimal,
