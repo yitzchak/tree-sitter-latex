@@ -32,6 +32,7 @@
     "nan": "^2.11.1"
   },
   "devDependencies": {
+    "chalk": "^2.4.1",
     "readdir-enhanced": "^2.2.2",
     "tree-sitter": "^0.13.23",
     "tree-sitter-cli": "^0.13.15"
