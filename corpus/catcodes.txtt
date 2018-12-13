@@ -83,19 +83,18 @@
 [ProvidesExplPackage] colon/underscore is letter
 =================
 \ProvidesExplPackage{foo}{bar}{wibble}{wobble}
-\bar:wibble_wobble\ExplSyntaxOff
+\bar:wibble_wobble
 ----------------
 (document
-  (ProvidesExplPackage
+  (ProvidesExpl
     (cs)
     (group (l) (text) (r))
     (group (l) (text) (r))
     (group (l) (text) (r))
     (group (l) (text) (r)))
   (text)
-  (cs)
-  (ExplSyntaxOff (cs)))
-
+  (cs))
+  
 ==============================
 [ExplSyntaxOn] colon/underscore is letter in text group
 ==============================

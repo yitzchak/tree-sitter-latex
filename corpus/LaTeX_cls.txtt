@@ -14,7 +14,7 @@ ProvidesPackage
 \ProvidesPackage{foo}
 ---------------------------
 (document
-  (ProvidesPackage
+  (Provides
     (cs)
     (group (l) (text) (r))))
 
@@ -24,7 +24,7 @@ ProvidesPackage with optional date
 \ProvidesPackage{foo}[2000/01/01]
 ---------------------------
 (document
-  (ProvidesPackage
+  (Provides
     (cs)
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))))
