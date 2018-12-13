@@ -764,6 +764,30 @@ struct Scanner {
     return true;
   }
 
+  bool scan_space(TSLexer *lexer) {
+    Category code = catcode_table[lexer->lookahead];
+    bool eol = false;
+
+    do {
+      if (code == EOL_CATEGORY) {
+        // If we are ready have an EOL then do not scan as space since this is
+        // a paragraph break.
+        if (eol) {
+          return false;
+        }
+        eol = true;
+      }
+
+      lexer->advance(lexer, false);
+      code = catcode_table[lexer->lookahead];
+    } while (code == SPACE_CATEGORY || code == EOL_CATEGORY);
+
+    lexer->result_symbol = _SPACE;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan_normal_mode(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
 
@@ -804,6 +828,9 @@ struct Scanner {
         if (valid_symbols[EOL]) {
           return scan_single_char_symbol(lexer, EOL);
         }
+        if (valid_symbols[_SPACE]) {
+          return scan_space(lexer);
+        }
         break;
       case PARAMETER_CATEGORY:
         if (valid_symbols[PARAMETER_CHAR]) {
@@ -822,7 +849,7 @@ struct Scanner {
         break;
       case SPACE_CATEGORY:
         if (valid_symbols[_SPACE]) {
-          return scan_multi_char_symbol(lexer, _SPACE, SPACE_CATEGORY);
+          return scan_space(lexer);
         }
         break;
       case ACTIVE_CHAR_CATEGORY:
