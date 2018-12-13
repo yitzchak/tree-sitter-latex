@@ -12,6 +12,6 @@ branches:
     - master
 
 install:
-  - npm install --no-save tree-sitter-cli
+  - npm install --no-save nan tree-sitter-cli
   - npm run build
   - npm install
