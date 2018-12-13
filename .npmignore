@@ -1,0 +1,9 @@
+.vscode
+.gitattributes
+.travis.yml
+*.tgz
+*.log
+build
+corpus
+node_modules
+package-lock.json

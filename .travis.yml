@@ -10,3 +10,8 @@ node_js:
 branches:
   only:
     - master
+
+install:
+  - npm install --no-save nan tree-sitter-cli
+  - npm run build
+  - npm install
