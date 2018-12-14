@@ -67,7 +67,6 @@ module.exports = grammar({
     $._at_other,
     $._cs_begin,
     $._cs_end,
-    $._default_catcodes,
     $._escaped_begin,
     $._escaped_end,
     $._expl_begin,
@@ -76,6 +75,8 @@ module.exports = grammar({
     $._luacode_begin,
     $._luadirect_begin,
     $._luaexec_begin,
+    $._scope_begin,
+    $._scope_end,
     $._space,
     $._verb_line,
     $.active_char,
@@ -1017,8 +1018,8 @@ module.exports = grammar({
 
     Provides: $ => prec.right(-2, cmd($,
       $.Provides_cs,
-      $._parameter,
       $._at_letter,
+      $._parameter,
       optional($.brack_group)
     )),
 
@@ -1406,11 +1407,11 @@ module.exports = grammar({
 
     escaped: $ => escaped($, /[^()\[\]]/),
 
-    begingroup: $ => cmd($, $.begingroup_cs),
+    begingroup: $ => cmd($, $.begingroup_cs, $._scope_begin),
 
     begingroup_cs: $ => cs($, 'begingroup'),
 
-    endgroup: $ => cmd($, $.endgroup_cs),
+    endgroup: $ => cmd($, $.endgroup_cs, $._scope_end),
 
     endgroup_cs: $ => cs($, 'endgroup'),
 
