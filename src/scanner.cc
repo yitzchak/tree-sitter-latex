@@ -95,20 +95,26 @@ struct CatCodeCategoryRegion {
 // Common catcode table with overflow and support for partial catcode tables.
 class CatCodeTable {
 protected:
-  static const size_t TABLE_SIZE = 128;
-
-  bool partial;
-  vector<Category> table;
-  map<int32_t, Category> overflow;
+  unordered_map<int32_t, map<uint8_t, Category>> codes;
 
 public:
-  CatCodeTable (bool _partial = false) :
-      partial(_partial),
-      table(_partial ? 0 : TABLE_SIZE, OTHER_CATEGORY) {}
+  CatCodeTable () {}
 
-  CatCodeTable (bool _partial, initializer_list<CatCodeCategoryRegion> init) :
-      partial(_partial),
-      table(_partial ? 0 : TABLE_SIZE, OTHER_CATEGORY) {
+  CatCodeTable (initializer_list<CatCodeCategoryRegion> init) {
+    initialize(init);
+  }
+
+  // CatCodeTable(const CatCodeTable& other): codes(other.codes) {}
+  //     partial(other.partial), table(other.table), overflow(other.overflow) {}
+
+  void reset() {
+    // Partial tables will only use overflow.
+    // table.assign(partial ? 0 : TABLE_SIZE, OTHER_CATEGORY);
+    // overflow.clear();
+    codes.clear();
+  }
+
+  void initialize(initializer_list<CatCodeCategoryRegion> init) {
     for (auto it = init.begin(); it != init.end(); it++) {
       for (int32_t ch = it->begin; ch <= it->end; ch++) {
         set_catcode(ch, it->category);
@@ -116,34 +122,21 @@ public:
     }
   }
 
-  CatCodeTable(const CatCodeTable& other):
-      partial(other.partial), table(other.table), overflow(other.overflow) {}
-
-  void reset() {
-    // Partial tables will only use overflow.
-    table.assign(partial ? 0 : TABLE_SIZE, OTHER_CATEGORY);
-    overflow.clear();
-  }
-
-  void set_catcode(const int32_t key, Category cat) {
-    if (static_cast<size_t>(key) < table.size()) {
-      table[key] = cat;
+  void set_catcode(const int32_t key, Category cat, uint8_t level = 0) {
+    if (level == 0 && cat == OTHER_CATEGORY) {
+      codes.erase(key);
     } else {
-      overflow[key] = cat;
+      codes[key][level] = cat;
     }
   }
 
   Category get_catcode(const int32_t key) const {
-    if (static_cast<size_t>(key) < table.size()) {
-      return table[key];
-    }
-
-    auto it = overflow.find(key);
+    auto it = codes.find(key);
 
     // OTHER is the default category.
-    return (it == overflow.end()) ?
+    return (it == codes.cend() || it->second.empty()) ?
       OTHER_CATEGORY :
-      it->second;
+      it->second.crbegin()->second;
   }
 
   inline Category operator[](const int32_t key) const {
@@ -151,60 +144,31 @@ public:
   }
 
   void load(const CatCodeTable& other, CatCodeTable& copy) {
-    copy.partial = other.partial;
-
-    if (other.partial) {
-      copy.table.assign(other.table.size(), OTHER_CATEGORY);
-      copy.overflow.clear();
-
-      // Load the values from the other table
-      for (size_t ch = 0; ch < other.table.size(); ch++) {
-        // Save the current value
-        copy.table[ch] = get_catcode(ch);
-        // Set the new value
-        set_catcode(ch, other.table[ch]);
+    for (auto it = other.codes.cbegin(); it != other.codes.cend(); it++) {
+      for (auto lit = it->second.cbegin(); lit != it->second.cend(); lit++) {
+        copy.set_catcode(it->first, get_catcode(it->first), lit->first);
+        set_catcode(it->first, lit->second, lit->first);
       }
-
-      // Load the values from the other overflow
-      for (auto it = other.overflow.begin(); it != other.overflow.end(); it++) {
-        // Save the current value
-        copy.overflow[it->first] = get_catcode(it->first);
-        // Set the new value
-        set_catcode(it->first, it->second);
-      }
-    } else {
-      // Save the current table
-      copy.table = table;
-      copy.overflow = overflow;
-      // Load the new table
-      table = other.table;
-      overflow = other.overflow;
     }
   }
 
   unsigned serialize(char *buffer) const {
-    unsigned length = 0, num_serialized = table.size();
-
-    // Save the partial flag
-    buffer[length++] = static_cast<char>(partial);
+    unsigned length = 0, num_serialized = codes.size();
 
     // Save the table
     memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
     length += sizeof(num_serialized);
 
-    for (auto it = table.begin(); it != table.end(); it++) {
-      buffer[length++] = static_cast<char>(*it);
-    }
-
-    // Save the overflow
-    num_serialized = overflow.size();
-    memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
-    length += sizeof(num_serialized);
-
-    for (auto it = overflow.cbegin(); it != overflow.cend(); it++) {
+    for (auto it = codes.cbegin(); it != codes.cend(); it++) {
       memcpy(&buffer[length], &it->first, sizeof(int32_t)); // character
       length += sizeof(int32_t);
-      buffer[length++] = static_cast<char>(it->second); // catcode
+      num_serialized = it->second.size();
+      memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
+      length += sizeof(num_serialized);
+      for (auto lit = it->second.cbegin(); lit != it->second.cend(); lit++) {
+        buffer[length++] = static_cast<char>(lit->first);
+        buffer[length++] = static_cast<char>(lit->second);
+      }
     }
 
     return length;
@@ -217,32 +181,26 @@ public:
       return 0;
     }
 
-    table.clear();
-    overflow.clear();
+    codes.clear();
 
     unsigned pos = 0;
-
-    // Read the partial flag
-    partial = static_cast<bool>(buffer[pos++]);
 
     // read the table
     unsigned num_serialized;
     memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
     pos += sizeof(num_serialized);
 
-    for (unsigned i = 0; i < num_serialized; i++) {
-      table.push_back(static_cast<Category>(buffer[pos++]));
-    }
-
-    // Read the overflow
-    memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
-    pos += sizeof(num_serialized);
-
-    for (unsigned i = 0; i < num_serialized; i++) {
+    for (unsigned i = num_serialized; i > 0; i--) {
       int32_t character;
       memcpy(&character, &buffer[pos], sizeof(int32_t));
       pos += sizeof(int32_t);
-      overflow[character] = static_cast<Category>(buffer[pos++]);
+      memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
+      pos += sizeof(num_serialized);
+      for (unsigned j = num_serialized; j > 0; j--) {
+        uint8_t level = static_cast<uint8_t>(buffer[pos++]);
+        Category cat = static_cast<Category>(buffer[pos++]);
+        codes[character][level] = cat;
+      }
     }
 
     return pos;
@@ -287,45 +245,45 @@ struct CatCodeCommand {
   }
 };
 
-struct Frame {
-  CatCodeTable table;
-  list<CatCodeCommand> commands;
-
-  Frame() {}
-
-
-  Frame(const CatCodeTable& other_table, const list<CatCodeCommand>& other_commands): table(other_table), commands(other_commands) {}
-//  Frame(const Frame& other): table(other.table), commands(other.commands) {}
-
-  unsigned serialize(char *buffer) const {
-    unsigned length = table.serialize(buffer);
-
-    unsigned num_serialized = commands.size();
-    memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
-    length += sizeof(num_serialized);
-
-    for (auto it = commands.cbegin(); it != commands.cend(); it++) {
-      length += it->serialize(&buffer[length]);
-    }
-
-    return length;
-  }
-
-  unsigned deserialize(const char *buffer, unsigned length) {
-    unsigned pos = table.deserialize(buffer, length);
-
-    unsigned num_serialized;
-    memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
-    pos += sizeof(num_serialized);
-    commands.resize(num_serialized);
-
-    for (auto it = commands.begin(); it != commands.end(); it++) {
-      pos += it->deserialize(&buffer[pos], length - pos);
-    }
-
-    return pos;
-  }
-};
+// struct Frame {
+//   CatCodeTable table;
+//   list<CatCodeCommand> commands;
+//
+//   Frame() {}
+//
+//
+//   Frame(const CatCodeTable& other_table, const list<CatCodeCommand>& other_commands): table(other_table), commands(other_commands) {}
+// //  Frame(const Frame& other): table(other.table), commands(other.commands) {}
+//
+//   unsigned serialize(char *buffer) const {
+//     unsigned length = table.serialize(buffer);
+//
+//     unsigned num_serialized = commands.size();
+//     memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
+//     length += sizeof(num_serialized);
+//
+//     for (auto it = commands.cbegin(); it != commands.cend(); it++) {
+//       length += it->serialize(&buffer[length]);
+//     }
+//
+//     return length;
+//   }
+//
+//   unsigned deserialize(const char *buffer, unsigned length) {
+//     unsigned pos = table.deserialize(buffer, length);
+//
+//     unsigned num_serialized;
+//     memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
+//     pos += sizeof(num_serialized);
+//     commands.resize(num_serialized);
+//
+//     for (auto it = commands.begin(); it != commands.end(); it++) {
+//       pos += it->deserialize(&buffer[pos], length - pos);
+//     }
+//
+//     return pos;
+//   }
+// };
 
 enum ScannerMode {
   CS_MODE,
@@ -352,319 +310,312 @@ struct Scanner {
   static const unsigned int COMMENT_FLAG = 1 << COMMENT_CATEGORY;
   static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
 
-  deque<Frame> frames;
-  // list<CatCodeCommand> catcode_commands = {
-  //   {
-  //     _DEFAULT_CATCODES,
-  //     _DEFAULT_CATCODES,
-  //     OP_WRITE,
-  //     {
-  //       false,
-  //       {
-  //         {'\\',   '\\',   ESCAPE_CATEGORY},
-  //         {'{',    '{',    BEGIN_CATEGORY},
-  //         {'}',    '}',    END_CATEGORY},
-  //         {'$',    '$',    MATH_SHIFT_CATEGORY},
-  //         {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
-  //         {'\n',   '\n',   EOL_CATEGORY},
-  //         {'#',    '#',    PARAMETER_CATEGORY},
-  //         {'^',    '^',    SUPERSCRIPT_CATEGORY},
-  //         {'_',    '_',    SUBSCRIPT_CATEGORY},
-  //         {'\0',   '\0',   IGNORED_CATEGORY},
-  //         {' ',    ' ',    SPACE_CATEGORY},
-  //         {'\t',   '\t',   SPACE_CATEGORY},
-  //         {'A',    'Z',    LETTER_CATEGORY},
-  //         {'a',    'z',    LETTER_CATEGORY},
-  //         {'~',    '~',    ACTIVE_CHAR_CATEGORY},
-  //         {'%',    '%',    COMMENT_CATEGORY},
-  //         {'\x7f', '\x7f', INVALID_CATEGORY}
-  //       }
-  //     }
-  //   },
-  //   {
-  //     _AT_LETTER,
-  //     _AT_LETTER,
-  //     OP_WRITE,
-  //     {
-  //       true,
-  //       {
-  //         {'@', '@', LETTER_CATEGORY}
-  //       }
-  //     }
-  //   },
-  //   {
-  //     _AT_OTHER,
-  //     _AT_OTHER,
-  //     OP_WRITE,
-  //     {
-  //       true,
-  //       {
-  //         {'@', '@', OTHER_CATEGORY}
-  //       }
-  //     }
-  //   },
-  //   {
-  //     _EXPL_BEGIN,
-  //     _EXPL_END,
-  //     OP_SAVE_AND_WRITE,
-  //     {
-  //       true,
-  //       {
-  //         {'\t', '\t', IGNORED_CATEGORY},
-  //         {' ',  ' ',  IGNORED_CATEGORY},
-  //         {' ',  ' ',  OTHER_CATEGORY},
-  //         {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
-  //         {':',  ':',  LETTER_CATEGORY},
-  //         {'^',  '^',  SUPERSCRIPT_CATEGORY},
-  //         {'_',  '_',  LETTER_CATEGORY},
-  //         {'|',  '|',  OTHER_CATEGORY},
-  //         {'~',  '~',  SPACE_CATEGORY}
-  //       }
-  //     }
-  //   },
-  //   { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
-  //     _EXPL_END,
-  //     _EXPL_END,
-  //     OP_WRITE,
-  //     {
-  //       true,
-  //       {
-  //         {'\t', '\t', SPACE_CATEGORY},
-  //         {' ',  ' ',  SPACE_CATEGORY},
-  //         {'"',  '"',  OTHER_CATEGORY},
-  //         {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
-  //         {':',  ':',  OTHER_CATEGORY},
-  //         {'^',  '^',  SUPERSCRIPT_CATEGORY},
-  //         {'_',  '_',  SUBSCRIPT_CATEGORY},
-  //         {'|',  '|',  OTHER_CATEGORY},
-  //         {'~',  '~',  ACTIVE_CHAR_CATEGORY}
-  //       }
-  //     }
-  //   },
-  //   { // \luadirect catcode table
-  //     _LUADIRECT_BEGIN,
-  //     _LUA_END,
-  //     OP_SAVE_AND_WRITE,
-  //     {
-  //       false,
-  //       {
-  //         {'\\', '\\', ESCAPE_CATEGORY},
-  //         {'{',  '{',  BEGIN_CATEGORY},
-  //         {'}',  '}',  END_CATEGORY},
-  //         {'\n', '\n', EOL_CATEGORY},
-  //         {'A',  'Z',  LETTER_CATEGORY},
-  //         {'a',  'z',  LETTER_CATEGORY},
-  //         {'~',  '~',  ACTIVE_CHAR_CATEGORY},
-  //         {'%',  '%',  COMMENT_CATEGORY}
-  //       }
-  //     }
-  //   },
-  //   { // luaexec catcode table
-  //     _LUAEXEC_BEGIN,
-  //     _LUA_END,
-  //     OP_SAVE_AND_WRITE,
-  //     {
-  //       false,
-  //       {
-  //         {'\\', '\\', ESCAPE_CATEGORY},
-  //         {'{',  '{',  BEGIN_CATEGORY},
-  //         {'}',  '}',  END_CATEGORY},
-  //         {'\n', '\n', EOL_CATEGORY},
-  //         {'A',  'Z',  LETTER_CATEGORY},
-  //         {'a',  'z',  LETTER_CATEGORY},
-  //         {'%',  '%',  COMMENT_CATEGORY}
-  //       }
-  //     }
-  //   },
-  //   { // luacode catcode table
-  //     _LUACODE_BEGIN,
-  //     _LUA_END,
-  //     OP_SAVE_AND_WRITE,
-  //     {
-  //       false,
-  //       {
-  //         {'{',  '{',  BEGIN_CATEGORY},
-  //         {'\\', '\\', ESCAPE_CATEGORY},
-  //         {'}',  '}',  END_CATEGORY},
-  //         {'A',  'Z',  LETTER_CATEGORY},
-  //         {'a',  'z',  LETTER_CATEGORY}
-  //       }
-  //     }
-  //   }
-  // };
+  // deque<Frame> frames;
+  list<CatCodeCommand> catcode_commands = {
+    // {
+    //   _DEFAULT_CATCODES,
+    //   _DEFAULT_CATCODES,
+    //   OP_WRITE,
+    //   {
+    //     {
+    //       {'\\',   '\\',   ESCAPE_CATEGORY},
+    //       {'{',    '{',    BEGIN_CATEGORY},
+    //       {'}',    '}',    END_CATEGORY},
+    //       {'$',    '$',    MATH_SHIFT_CATEGORY},
+    //       {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
+    //       {'\n',   '\n',   EOL_CATEGORY},
+    //       {'#',    '#',    PARAMETER_CATEGORY},
+    //       {'^',    '^',    SUPERSCRIPT_CATEGORY},
+    //       {'_',    '_',    SUBSCRIPT_CATEGORY},
+    //       {'\0',   '\0',   IGNORED_CATEGORY},
+    //       {' ',    ' ',    SPACE_CATEGORY},
+    //       {'\t',   '\t',   SPACE_CATEGORY},
+    //       {'A',    'Z',    LETTER_CATEGORY},
+    //       {'a',    'z',    LETTER_CATEGORY},
+    //       {'~',    '~',    ACTIVE_CHAR_CATEGORY},
+    //       {'%',    '%',    COMMENT_CATEGORY},
+    //       {'\x7f', '\x7f', INVALID_CATEGORY}
+    //     }
+    //   }
+    // },
+    {
+      _AT_LETTER,
+      _AT_LETTER,
+      OP_WRITE,
+      {
+        {
+          {'@', '@', LETTER_CATEGORY}
+        }
+      }
+    },
+    {
+      _AT_OTHER,
+      _AT_OTHER,
+      OP_WRITE,
+      {
+        {
+          {'@', '@', OTHER_CATEGORY}
+        }
+      }
+    },
+    {
+      _EXPL_BEGIN,
+      _EXPL_END,
+      OP_SAVE_AND_WRITE,
+      {
+        {
+          {'\t', '\t', IGNORED_CATEGORY},
+          {' ',  ' ',  IGNORED_CATEGORY},
+          {' ',  ' ',  OTHER_CATEGORY},
+          {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
+          {':',  ':',  LETTER_CATEGORY},
+          {'^',  '^',  SUPERSCRIPT_CATEGORY},
+          {'_',  '_',  LETTER_CATEGORY},
+          {'|',  '|',  OTHER_CATEGORY},
+          {'~',  '~',  SPACE_CATEGORY}
+        }
+      }
+    },
+    { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
+      _EXPL_END,
+      _EXPL_END,
+      OP_WRITE,
+      {
+        {
+          {'\t', '\t', SPACE_CATEGORY},
+          {' ',  ' ',  SPACE_CATEGORY},
+          {'"',  '"',  OTHER_CATEGORY},
+          {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
+          {':',  ':',  OTHER_CATEGORY},
+          {'^',  '^',  SUPERSCRIPT_CATEGORY},
+          {'_',  '_',  SUBSCRIPT_CATEGORY},
+          {'|',  '|',  OTHER_CATEGORY},
+          {'~',  '~',  ACTIVE_CHAR_CATEGORY}
+        }
+      }
+    },
+    { // \luadirect catcode table
+      _LUADIRECT_BEGIN,
+      _LUA_END,
+      OP_SAVE_AND_WRITE,
+      {
+        {
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
+          {'\n', '\n', EOL_CATEGORY},
+          {'A',  'Z',  LETTER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY},
+          {'~',  '~',  ACTIVE_CHAR_CATEGORY},
+          {'%',  '%',  COMMENT_CATEGORY}
+        }
+      }
+    },
+    { // luaexec catcode table
+      _LUAEXEC_BEGIN,
+      _LUA_END,
+      OP_SAVE_AND_WRITE,
+      {
+        {
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
+          {'\n', '\n', EOL_CATEGORY},
+          {'A',  'Z',  LETTER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY},
+          {'%',  '%',  COMMENT_CATEGORY}
+        }
+      }
+    },
+    { // luacode catcode table
+      _LUACODE_BEGIN,
+      _LUA_END,
+      OP_SAVE_AND_WRITE,
+      {
+        {
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
+          {'A',  'Z',  LETTER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY}
+        }
+      }
+    }
+  };
 
   ScannerMode mode = NORMAL_MODE;
   int32_t start_delim = 0;
-  // CatCodeTable catcode_table;
+  CatCodeTable catcode_table;
 
   Scanner() {}
 
   void reset () {
     mode = NORMAL_MODE;
-    frames.clear();
+    // frames.clear();
     start_delim = 0;
-    frames.push_back({
-      {
-        false, {
-          {'\\',   '\\',   ESCAPE_CATEGORY},
-          {'{',    '{',    BEGIN_CATEGORY},
-          {'}',    '}',    END_CATEGORY},
-          {'$',    '$',    MATH_SHIFT_CATEGORY},
-          {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
-          {'\n',   '\n',   EOL_CATEGORY},
-          {'#',    '#',    PARAMETER_CATEGORY},
-          {'^',    '^',    SUPERSCRIPT_CATEGORY},
-          {'_',    '_',    SUBSCRIPT_CATEGORY},
-          {'\0',   '\0',   IGNORED_CATEGORY},
-          {' ',    ' ',    SPACE_CATEGORY},
-          {'\t',   '\t',   SPACE_CATEGORY},
-          {'A',    'Z',    LETTER_CATEGORY},
-          {'a',    'z',    LETTER_CATEGORY},
-          {'~',    '~',    ACTIVE_CHAR_CATEGORY},
-          {'%',    '%',    COMMENT_CATEGORY},
-          {'\x7f', '\x7f', INVALID_CATEGORY}
-        }
-      },
-      {
-        {
-          _DEFAULT_CATCODES,
-          _DEFAULT_CATCODES,
-          OP_WRITE,
-          {
-            false,
-            {
-              {'\\',   '\\',   ESCAPE_CATEGORY},
-              {'{',    '{',    BEGIN_CATEGORY},
-              {'}',    '}',    END_CATEGORY},
-              {'$',    '$',    MATH_SHIFT_CATEGORY},
-              {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
-              {'\n',   '\n',   EOL_CATEGORY},
-              {'#',    '#',    PARAMETER_CATEGORY},
-              {'^',    '^',    SUPERSCRIPT_CATEGORY},
-              {'_',    '_',    SUBSCRIPT_CATEGORY},
-              {'\0',   '\0',   IGNORED_CATEGORY},
-              {' ',    ' ',    SPACE_CATEGORY},
-              {'\t',   '\t',   SPACE_CATEGORY},
-              {'A',    'Z',    LETTER_CATEGORY},
-              {'a',    'z',    LETTER_CATEGORY},
-              {'~',    '~',    ACTIVE_CHAR_CATEGORY},
-              {'%',    '%',    COMMENT_CATEGORY},
-              {'\x7f', '\x7f', INVALID_CATEGORY}
-            }
-          }
-        },
-        {
-          _AT_LETTER,
-          _AT_LETTER,
-          OP_WRITE,
-          {
-            true,
-            {
-              {'@', '@', LETTER_CATEGORY}
-            }
-          }
-        },
-        {
-          _AT_OTHER,
-          _AT_OTHER,
-          OP_WRITE,
-          {
-            true,
-            {
-              {'@', '@', OTHER_CATEGORY}
-            }
-          }
-        },
-        {
-          _EXPL_BEGIN,
-          _EXPL_END,
-          OP_SAVE_AND_WRITE,
-          {
-            true,
-            {
-              {'\t', '\t', IGNORED_CATEGORY},
-              {' ',  ' ',  IGNORED_CATEGORY},
-              {' ',  ' ',  OTHER_CATEGORY},
-              {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
-              {':',  ':',  LETTER_CATEGORY},
-              {'^',  '^',  SUPERSCRIPT_CATEGORY},
-              {'_',  '_',  LETTER_CATEGORY},
-              {'|',  '|',  OTHER_CATEGORY},
-              {'~',  '~',  SPACE_CATEGORY}
-            }
-          }
-        },
-        { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
-          _EXPL_END,
-          _EXPL_END,
-          OP_WRITE,
-          {
-            true,
-            {
-              {'\t', '\t', SPACE_CATEGORY},
-              {' ',  ' ',  SPACE_CATEGORY},
-              {'"',  '"',  OTHER_CATEGORY},
-              {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
-              {':',  ':',  OTHER_CATEGORY},
-              {'^',  '^',  SUPERSCRIPT_CATEGORY},
-              {'_',  '_',  SUBSCRIPT_CATEGORY},
-              {'|',  '|',  OTHER_CATEGORY},
-              {'~',  '~',  ACTIVE_CHAR_CATEGORY}
-            }
-          }
-        },
-        { // \luadirect catcode table
-          _LUADIRECT_BEGIN,
-          _LUA_END,
-          OP_SAVE_AND_WRITE,
-          {
-            false,
-            {
-              {'\\', '\\', ESCAPE_CATEGORY},
-              {'{',  '{',  BEGIN_CATEGORY},
-              {'}',  '}',  END_CATEGORY},
-              {'\n', '\n', EOL_CATEGORY},
-              {'A',  'Z',  LETTER_CATEGORY},
-              {'a',  'z',  LETTER_CATEGORY},
-              {'~',  '~',  ACTIVE_CHAR_CATEGORY},
-              {'%',  '%',  COMMENT_CATEGORY}
-            }
-          }
-        },
-        { // luaexec catcode table
-          _LUAEXEC_BEGIN,
-          _LUA_END,
-          OP_SAVE_AND_WRITE,
-          {
-            false,
-            {
-              {'\\', '\\', ESCAPE_CATEGORY},
-              {'{',  '{',  BEGIN_CATEGORY},
-              {'}',  '}',  END_CATEGORY},
-              {'\n', '\n', EOL_CATEGORY},
-              {'A',  'Z',  LETTER_CATEGORY},
-              {'a',  'z',  LETTER_CATEGORY},
-              {'%',  '%',  COMMENT_CATEGORY}
-            }
-          }
-        },
-        { // luacode catcode table
-          _LUACODE_BEGIN,
-          _LUA_END,
-          OP_SAVE_AND_WRITE,
-          {
-            false,
-            {
-              {'{',  '{',  BEGIN_CATEGORY},
-              {'\\', '\\', ESCAPE_CATEGORY},
-              {'}',  '}',  END_CATEGORY},
-              {'A',  'Z',  LETTER_CATEGORY},
-              {'a',  'z',  LETTER_CATEGORY}
-            }
-          }
-        }
-      }
-    });
+    catcode_table.reset();
+    // frames.push_back({
+    //   {
+    //     false, {
+    //       {'\\',   '\\',   ESCAPE_CATEGORY},
+    //       {'{',    '{',    BEGIN_CATEGORY},
+    //       {'}',    '}',    END_CATEGORY},
+    //       {'$',    '$',    MATH_SHIFT_CATEGORY},
+    //       {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
+    //       {'\n',   '\n',   EOL_CATEGORY},
+    //       {'#',    '#',    PARAMETER_CATEGORY},
+    //       {'^',    '^',    SUPERSCRIPT_CATEGORY},
+    //       {'_',    '_',    SUBSCRIPT_CATEGORY},
+    //       {'\0',   '\0',   IGNORED_CATEGORY},
+    //       {' ',    ' ',    SPACE_CATEGORY},
+    //       {'\t',   '\t',   SPACE_CATEGORY},
+    //       {'A',    'Z',    LETTER_CATEGORY},
+    //       {'a',    'z',    LETTER_CATEGORY},
+    //       {'~',    '~',    ACTIVE_CHAR_CATEGORY},
+    //       {'%',    '%',    COMMENT_CATEGORY},
+    //       {'\x7f', '\x7f', INVALID_CATEGORY}
+    //     }
+    //   },
+    //   {
+    //     {
+    //       _DEFAULT_CATCODES,
+    //       _DEFAULT_CATCODES,
+    //       OP_WRITE,
+    //       {
+    //         false,
+    //         {
+    //           {'\\',   '\\',   ESCAPE_CATEGORY},
+    //           {'{',    '{',    BEGIN_CATEGORY},
+    //           {'}',    '}',    END_CATEGORY},
+    //           {'$',    '$',    MATH_SHIFT_CATEGORY},
+    //           {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
+    //           {'\n',   '\n',   EOL_CATEGORY},
+    //           {'#',    '#',    PARAMETER_CATEGORY},
+    //           {'^',    '^',    SUPERSCRIPT_CATEGORY},
+    //           {'_',    '_',    SUBSCRIPT_CATEGORY},
+    //           {'\0',   '\0',   IGNORED_CATEGORY},
+    //           {' ',    ' ',    SPACE_CATEGORY},
+    //           {'\t',   '\t',   SPACE_CATEGORY},
+    //           {'A',    'Z',    LETTER_CATEGORY},
+    //           {'a',    'z',    LETTER_CATEGORY},
+    //           {'~',    '~',    ACTIVE_CHAR_CATEGORY},
+    //           {'%',    '%',    COMMENT_CATEGORY},
+    //           {'\x7f', '\x7f', INVALID_CATEGORY}
+    //         }
+    //       }
+    //     },
+    //     {
+    //       _AT_LETTER,
+    //       _AT_LETTER,
+    //       OP_WRITE,
+    //       {
+    //         true,
+    //         {
+    //           {'@', '@', LETTER_CATEGORY}
+    //         }
+    //       }
+    //     },
+    //     {
+    //       _AT_OTHER,
+    //       _AT_OTHER,
+    //       OP_WRITE,
+    //       {
+    //         true,
+    //         {
+    //           {'@', '@', OTHER_CATEGORY}
+    //         }
+    //       }
+    //     },
+    //     {
+    //       _EXPL_BEGIN,
+    //       _EXPL_END,
+    //       OP_SAVE_AND_WRITE,
+    //       {
+    //         true,
+    //         {
+    //           {'\t', '\t', IGNORED_CATEGORY},
+    //           {' ',  ' ',  IGNORED_CATEGORY},
+    //           {' ',  ' ',  OTHER_CATEGORY},
+    //           {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
+    //           {':',  ':',  LETTER_CATEGORY},
+    //           {'^',  '^',  SUPERSCRIPT_CATEGORY},
+    //           {'_',  '_',  LETTER_CATEGORY},
+    //           {'|',  '|',  OTHER_CATEGORY},
+    //           {'~',  '~',  SPACE_CATEGORY}
+    //         }
+    //       }
+    //     },
+    //     { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
+    //       _EXPL_END,
+    //       _EXPL_END,
+    //       OP_WRITE,
+    //       {
+    //         true,
+    //         {
+    //           {'\t', '\t', SPACE_CATEGORY},
+    //           {' ',  ' ',  SPACE_CATEGORY},
+    //           {'"',  '"',  OTHER_CATEGORY},
+    //           {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
+    //           {':',  ':',  OTHER_CATEGORY},
+    //           {'^',  '^',  SUPERSCRIPT_CATEGORY},
+    //           {'_',  '_',  SUBSCRIPT_CATEGORY},
+    //           {'|',  '|',  OTHER_CATEGORY},
+    //           {'~',  '~',  ACTIVE_CHAR_CATEGORY}
+    //         }
+    //       }
+    //     },
+    //     { // \luadirect catcode table
+    //       _LUADIRECT_BEGIN,
+    //       _LUA_END,
+    //       OP_SAVE_AND_WRITE,
+    //       {
+    //         false,
+    //         {
+    //           {'\\', '\\', ESCAPE_CATEGORY},
+    //           {'{',  '{',  BEGIN_CATEGORY},
+    //           {'}',  '}',  END_CATEGORY},
+    //           {'\n', '\n', EOL_CATEGORY},
+    //           {'A',  'Z',  LETTER_CATEGORY},
+    //           {'a',  'z',  LETTER_CATEGORY},
+    //           {'~',  '~',  ACTIVE_CHAR_CATEGORY},
+    //           {'%',  '%',  COMMENT_CATEGORY}
+    //         }
+    //       }
+    //     },
+    //     { // luaexec catcode table
+    //       _LUAEXEC_BEGIN,
+    //       _LUA_END,
+    //       OP_SAVE_AND_WRITE,
+    //       {
+    //         false,
+    //         {
+    //           {'\\', '\\', ESCAPE_CATEGORY},
+    //           {'{',  '{',  BEGIN_CATEGORY},
+    //           {'}',  '}',  END_CATEGORY},
+    //           {'\n', '\n', EOL_CATEGORY},
+    //           {'A',  'Z',  LETTER_CATEGORY},
+    //           {'a',  'z',  LETTER_CATEGORY},
+    //           {'%',  '%',  COMMENT_CATEGORY}
+    //         }
+    //       }
+    //     },
+    //     { // luacode catcode table
+    //       _LUACODE_BEGIN,
+    //       _LUA_END,
+    //       OP_SAVE_AND_WRITE,
+    //       {
+    //         false,
+    //         {
+    //           {'{',  '{',  BEGIN_CATEGORY},
+    //           {'\\', '\\', ESCAPE_CATEGORY},
+    //           {'}',  '}',  END_CATEGORY},
+    //           {'A',  'Z',  LETTER_CATEGORY},
+    //           {'a',  'z',  LETTER_CATEGORY}
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
 
     // catcode_table.reset();
     // catcode_commands.remove_if([](CatCodeCommand b){ return b.operation == OP_WRITE_ONCE; });
@@ -672,6 +623,26 @@ struct Scanner {
 
   void initialize() {
     reset();
+
+    catcode_table.initialize({
+      {'\\',   '\\',   ESCAPE_CATEGORY},
+      {'{',    '{',    BEGIN_CATEGORY},
+      {'}',    '}',    END_CATEGORY},
+      {'$',    '$',    MATH_SHIFT_CATEGORY},
+      {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
+      {'\n',   '\n',   EOL_CATEGORY},
+      {'#',    '#',    PARAMETER_CATEGORY},
+      {'^',    '^',    SUPERSCRIPT_CATEGORY},
+      {'_',    '_',    SUBSCRIPT_CATEGORY},
+      {'\0',   '\0',   IGNORED_CATEGORY},
+      {' ',    ' ',    SPACE_CATEGORY},
+      {'\t',   '\t',   SPACE_CATEGORY},
+      {'A',    'Z',    LETTER_CATEGORY},
+      {'a',    'z',    LETTER_CATEGORY},
+      {'~',    '~',    ACTIVE_CHAR_CATEGORY},
+      {'%',    '%',    COMMENT_CATEGORY},
+      {'\x7f', '\x7f', INVALID_CATEGORY}
+    });
 
     // This is a hack. I'd like to have grammer.js load this via _DEFAULT_CATCODES.
     // CatCodeTable copy;
@@ -690,21 +661,23 @@ struct Scanner {
     length += ch_size;
 
     // Save the catcode table.
-    // length += catcode_table.serialize(&buffer[length]);
+    length += catcode_table.serialize(&buffer[length]);
 
-    unsigned num_serialized = frames.size() - 1;
-    memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
-
-    length += sizeof(num_serialized);
-
-    for (auto it = frames.cbegin() + 1; it != frames.cend(); it++) {
-      length += it->serialize(&buffer[length]);
-    }
+    // unsigned num_serialized = frames.size() - 1;
+    // memcpy(&buffer[length], &num_serialized, sizeof(num_serialized));
+    //
+    // length += sizeof(num_serialized);
+    //
+    // for (auto it = frames.cbegin() + 1; it != frames.cend(); it++) {
+    //   length += it->serialize(&buffer[length]);
+    // }
 
     return length;
   }
 
   void deserialize(const char *buffer, unsigned length) {
+    std::cout << "deserialize " << length << std::endl;
+
     if (length == 0) {
       initialize();
       return;
@@ -723,27 +696,27 @@ struct Scanner {
     pos += sizeof(start_delim);
 
     // Read the catcode table.
-    // pos += catcode_table.deserialize(&buffer[pos], length - pos);
+    pos += catcode_table.deserialize(&buffer[pos], length - pos);
 
-    // Retrieve the catcode commands
-    unsigned num_serialized;
-    memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
-    pos += sizeof(num_serialized);
-    frames.resize(num_serialized + 1);
-
-    for (auto it = frames.begin() + 1; it < frames.end(); it++) {
-      pos += it->deserialize(&buffer[pos], length - pos);
-    }
+    // // Retrieve the catcode commands
+    // unsigned num_serialized;
+    // memcpy(&num_serialized, &buffer[pos], sizeof(num_serialized));
+    // pos += sizeof(num_serialized);
+    // frames.resize(num_serialized + 1);
+    //
+    // for (auto it = frames.begin() + 1; it < frames.end(); it++) {
+    //   pos += it->deserialize(&buffer[pos], length - pos);
+    // }
   }
 
-  Category get_catcode(int32_t ch) const {
-    return frames.back().table[ch];
-  }
+  // Category catcode_table[int32_t ch] const {
+  //   return frames.back().table[ch];
+  // }
 
   bool scan_start_verb_delim(TSLexer *lexer) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
-    if (lexer->lookahead && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+    if (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       mode = VERB_MODE;
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
@@ -764,7 +737,7 @@ struct Scanner {
       return true;
     }
 
-    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       mode = NORMAL_MODE;
       lexer->result_symbol = VERB_DELIM; // don't eat the newline (for consistency)
       lexer->mark_end(lexer);
@@ -775,7 +748,7 @@ struct Scanner {
   }
 
   bool scan_verb_body(TSLexer *lexer) {
-    while (lexer->lookahead && lexer->lookahead != start_delim && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+    while (lexer->lookahead && lexer->lookahead != start_delim && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -786,11 +759,11 @@ struct Scanner {
   }
 
   bool scan_verb_line(TSLexer *lexer) {
-    while (lexer->lookahead && get_catcode(lexer->lookahead) != EOL_CATEGORY) {
+    while (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
-    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -812,7 +785,7 @@ struct Scanner {
       }
     }
 
-    return (terminator[get_catcode(lexer->lookahead)]) ? -1 : length;
+    return (terminator[catcode_table[lexer->lookahead]]) ? -1 : length;
   }
 
   bool scan_comment(TSLexer *lexer) {
@@ -828,7 +801,7 @@ struct Scanner {
       lexer->result_symbol = TAG_COMMENT;
     } else {
       // Skip any leading spaces
-      while (get_catcode(lexer->lookahead) == SPACE_CATEGORY) {
+      while (catcode_table[lexer->lookahead] == SPACE_CATEGORY) {
         lexer->advance(lexer, false);
       }
 
@@ -847,12 +820,12 @@ struct Scanner {
     }
 
     // Gobble the reset of the comment
-    while (comment_categories[get_catcode(lexer->lookahead)]) {
+    while (comment_categories[catcode_table[lexer->lookahead]]) {
       lexer->advance(lexer, false);
     }
 
     // Eat any EOL
-    if (get_catcode(lexer->lookahead) == EOL_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -862,35 +835,34 @@ struct Scanner {
   }
 
   bool scan_catcode_commands(TSLexer *lexer, const bool *valid_symbols) {
-    for (auto frame_it = frames.rbegin(); frame_it != frames.rend(); frame_it++) {
-      for (auto it = frame_it->commands.begin(); it != frame_it->commands.end(); it++) {
-        if (valid_symbols[it->trigger]) {
-          lexer->result_symbol = it->trigger;
-          lexer->mark_end(lexer);
+    // Loop through the command list.
+    for (auto it = catcode_commands.begin(); it != catcode_commands.end(); it++) {
+      if (valid_symbols[it->trigger]) {
+        lexer->result_symbol = it->trigger;
+        lexer->mark_end(lexer);
 
-          CatCodeCommand previous;
+        CatCodeCommand previous;
 
-          // Load the catcode table and save the previous.
-          frames.back().table.load(it->table, previous.table);
+        // Load the catcode table and save the previous.
+        catcode_table.load(it->table, previous.table);
 
-          switch (it->operation) {
-            case OP_SAVE_AND_WRITE:
-              // Save the previous contents as a WRITE_ONCE command. Push the
-              // result to the front of the list so it has a higher priority.
-              previous.trigger = it->save_trigger;
-              previous.save_trigger = it->save_trigger;
-              previous.operation = OP_WRITE_ONCE;
-              frames.back().commands.push_front(previous);
-              break;
-            case OP_WRITE_ONCE:
-              frame_it->commands.erase(it);
-              break;
-            default:
-              break;
-          }
-
-          return true;
+        switch (it->operation) {
+          case OP_SAVE_AND_WRITE:
+            // Save the previous contents as a WRITE_ONCE command. Push the
+            // result to the front of the list so it has a higher priority.
+            previous.trigger = it->save_trigger;
+            previous.save_trigger = it->save_trigger;
+            previous.operation = OP_WRITE_ONCE;
+            catcode_commands.push_front(previous);
+            break;
+          case OP_WRITE_ONCE:
+            catcode_commands.erase(it);
+            break;
+          default:
+            break;
         }
+
+        return true;
       }
     }
 
@@ -898,7 +870,7 @@ struct Scanner {
   }
 
   bool scan_cs_mode(TSLexer *lexer, const bool *valid_symbols) {
-    if (valid_symbols[_CS_END] && get_catcode(lexer->lookahead) != LETTER_CATEGORY) {
+    if (valid_symbols[_CS_END] && catcode_table[lexer->lookahead] != LETTER_CATEGORY) {
       mode = NORMAL_MODE;
       lexer->result_symbol = _CS_END;
       lexer->mark_end(lexer);
@@ -922,7 +894,7 @@ struct Scanner {
   bool scan_escape(TSLexer *lexer) {
     lexer->advance(lexer, false);
 
-    if (get_catcode(lexer->lookahead) == LETTER_CATEGORY) {
+    if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
       mode = CS_MODE;
       lexer->result_symbol = _CS_BEGIN;
     } else {
@@ -967,7 +939,7 @@ struct Scanner {
   inline bool scan_multi_char_symbol(TSLexer *lexer, SymbolType symbol, Category code) {
     do {
       lexer->advance(lexer, false);
-    } while (get_catcode(lexer->lookahead) == code);
+    } while (catcode_table[lexer->lookahead] == code);
 
     lexer->result_symbol = symbol;
     lexer->mark_end(lexer);
@@ -976,7 +948,7 @@ struct Scanner {
   }
 
   bool scan_space(TSLexer *lexer) {
-    Category code = get_catcode(lexer->lookahead);
+    Category code = catcode_table[lexer->lookahead];
     bool eol = false;
 
     do {
@@ -990,7 +962,7 @@ struct Scanner {
       }
 
       lexer->advance(lexer, false);
-      code = get_catcode(lexer->lookahead);
+      code = catcode_table[lexer->lookahead];
     } while (code == SPACE_CATEGORY || code == EOL_CATEGORY);
 
     lexer->result_symbol = _SPACE;
@@ -1000,7 +972,7 @@ struct Scanner {
   }
 
   bool scan_normal_mode(TSLexer *lexer, const bool *valid_symbols) {
-    Category code = get_catcode(lexer->lookahead);
+    Category code = catcode_table[lexer->lookahead];
 
     // Look for an inline verbatim delimiter and start VERB_MODE.
     if (valid_symbols[VERB_DELIM]) {
