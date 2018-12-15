@@ -1023,12 +1023,12 @@ module.exports = grammar({
 
     _NeedsTeXFormat_word: $ => 'NeedsTeXFormat',
 
-    Provides: $ => prec.right(-2, cmd($,
+    Provides: $ => cmd_opt($,
       $.Provides_cs,
-      $._at_letter,
       $._parameter,
+      $._at_letter,
       optional($.brack_group)
-    )),
+    ),
 
     Provides_cs: $ => cs($, $._Provides_word),
 
@@ -1337,6 +1337,8 @@ module.exports = grammar({
         choice(
           $._At_word,
           $._begin_word,
+          $._begingroup_word,
+          $._bgroup_word,
           $._box_dimension_word,
           $._catcode_word,
           $._char_word,
@@ -1346,8 +1348,10 @@ module.exports = grammar({
           $._dimension_word,
           $._documentclass_word,
           $._documentstyle_word,
+          $._egroup_word,
           $._emph_word,
           $._end_word,
+          $._endgroup_word,
           $._ensuremath_word,
           $._Error_word,
           $._ExecuteOptions_word,
@@ -1384,8 +1388,8 @@ module.exports = grammar({
           $._PassOptionTo_word,
           $._phantom_smash_word,
           $._ProcessOptions_word,
-          $._ProvidesExpl_word,
           $._Provides_word,
+          $._ProvidesExpl_word,
           $._ref_word,
           $._savebox_word,
           $._section_word,
@@ -1418,19 +1422,27 @@ module.exports = grammar({
 
     begingroup: $ => cmd($, $.begingroup_cs),
 
-    begingroup_cs: $ => cs($, 'begingroup'),
+    begingroup_cs: $ => cs($, $._begingroup_word),
+
+    _begingroup_word: $ => 'begingroup',
 
     endgroup: $ => cmd($, $.endgroup_cs),
 
-    endgroup_cs: $ => cs($, 'endgroup'),
+    endgroup_cs: $ => cs($, $._endgroup_word),
+
+    _endgroup_word: $ => 'endgroup',
 
     bgroup: $ => cmd($, $.bgroup_cs),
 
-    bgroup_cs: $ => cs($, 'bgroup'),
+    bgroup_cs: $ => cs($, $._bgroup_word),
+
+    _bgroup_word: $ => 'bgroup',
 
     egroup: $ => cmd($, $.egroup_cs),
 
-    egroup_cs: $ => cs($, 'egroup'),
+    egroup_cs: $ => cs($, $._egroup_word),
+
+    _egroup_word: $ => 'egroup',
 
     // fi introduced by LuaTeX
     unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/,
