@@ -141,17 +141,19 @@ public:
   }
 
   void reset() {
-    for (auto it = codes.begin(), it_end = codes.end(); it != it_end; it++) {
-      for (auto lit = it->second.begin(), lit_end = it->second.end(); lit != lit_end; lit++) {
+    for (auto it = codes.begin(), it_end = codes.end(); it != it_end;) {
+      for (auto lit = it->second.begin(), lit_end = it->second.end(); lit != lit_end;) {
         if (lit->first != 0) {
-          it->second.erase(lit);
+          lit = it->second.erase(lit);
+        } else {
+          lit++;
         }
       }
-    }
 
-    for (auto it = codes.begin(), it_end = codes.end(); it != it_end; it++) {
       if (it->second.empty()) {
-        codes.erase(it->first);
+        it = codes.erase(it);
+      } else {
+        it++;
       }
     }
   }
@@ -165,11 +167,16 @@ public:
   }
 
   void set_catcode(const int32_t key, Category cat, uint8_t level = 0) {
-    if (level == 0 && cat == OTHER_CATEGORY) {
+    if (cat == OTHER_CATEGORY && level == 0) {
       codes.erase(key);
-    } else {
-      codes[key][level] = cat;
+      return;
     }
+
+    codes[key][level] = cat;
+
+    // if (all_of(codes[key].begin(), codes[key].end(), [](pair<uint8_t, Category> p){ return p.second == OTHER_CATEGORY; })) {
+    //   codes.erase(key);
+    // }
   }
 
   Category get_catcode(const int32_t key) const {
@@ -679,7 +686,7 @@ struct Scanner {
     }
 
     if (valid_symbols[_SCOPE_END]) {
-      if (level != 0) catcode_table.pop(level--);
+      if (level > 1) catcode_table.pop(level--);
       lexer->mark_end(lexer);
       lexer->result_symbol = _SCOPE_END;
       return true;
@@ -701,7 +708,7 @@ struct Scanner {
         if (valid_symbols[EXIT]) {
           return scan_empty_symbol(lexer, EXIT);
         } else if (valid_symbols[R]) {
-          if (level > 0) catcode_table.pop(level--);
+          if (level > 1) catcode_table.pop(level--);
           return scan_single_char_symbol(lexer, R);
         }
         break;
