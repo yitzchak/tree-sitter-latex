@@ -692,6 +692,10 @@ struct Scanner {
       return true;
     }
 
+    if (lexer->lookahead == 0 && valid_symbols[EXIT]) {
+      return scan_empty_symbol(lexer, EXIT);
+    }
+
     switch (code) {
       case ESCAPE_CATEGORY:
         if (valid_symbols[_CS_BEGIN] || valid_symbols[_ESCAPED_BEGIN]) {
@@ -700,7 +704,6 @@ struct Scanner {
         break;
       case BEGIN_CATEGORY:
         if (valid_symbols[L]) {
-          level++;
           return scan_single_char_symbol(lexer, L);
         }
         break;
@@ -708,7 +711,6 @@ struct Scanner {
         if (valid_symbols[EXIT]) {
           return scan_empty_symbol(lexer, EXIT);
         } else if (valid_symbols[R]) {
-          if (level > 1) catcode_table.pop(level--);
           return scan_single_char_symbol(lexer, R);
         }
         break;
