@@ -504,7 +504,7 @@ struct Scanner {
   }
 
   bool scan_comment(TSLexer *lexer) {
-    bitset<16> comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
+    // bitset<16> comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
     string comment_type;
 
     // Skip the comment char
@@ -535,7 +535,7 @@ struct Scanner {
     }
 
     // Gobble the reset of the comment
-    while (comment_categories[catcode_table[lexer->lookahead]]) {
+    while (lexer->lookahead != 0 && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
