@@ -39,7 +39,15 @@ function end_cmd ($, ...args) {
 }
 
 function group ($, contents) {
-  return seq($.l, contents, $.r)
+  return seq($.l, $._scope_begin, contents, $.r, $._scope_end)
+}
+
+function simple_group ($, contents) {
+  return seq(choice($.l, $.bgroup), $._scope_begin, contents, choice($.r, $.egroup), $._scope_end)
+}
+
+function semi_simple_group ($, contents) {
+  return seq($.begingroup, $._scope_begin, contents, choice($.endgroup, $.exit), $._scope_end)
 }
 
 function brack_group ($, contents) {
@@ -114,8 +122,6 @@ module.exports = grammar({
       // $._box,
       $.active_char,
       $.alignment_tab,
-      $.begingroup,
-      $.endgroup,
       // $.box_dimension_assign,
       // $.catcode,
       // $.char,
@@ -203,6 +209,7 @@ module.exports = grammar({
       $.NeedsTeXFormat,
       $.Provides,
       $.DeclareOption,
+      $.semi_simple_group,
       // $.PassOptionTo,
       // $.At,
       // $.ProcessOptions,
@@ -275,7 +282,7 @@ module.exports = grammar({
 
     latex_display_math: $ => seq(
       $.begin_display_math,
-      repeat1($._math_mode),
+      repeat($._math_mode),
       choice($.end_display_math, $.exit)
     ),
 
@@ -1275,6 +1282,8 @@ module.exports = grammar({
 
     group: $ => group($, repeat($._text_mode)),
 
+    semi_simple_group: $ => semi_simple_group($, repeat($._text_mode)),
+
     _parameter: $ => choice($.group, $.cs),
 
     dimension_group: $ => group($, $.dimension),
@@ -1407,13 +1416,21 @@ module.exports = grammar({
 
     escaped: $ => escaped($, /[^()\[\]]/),
 
-    begingroup: $ => cmd($, $.begingroup_cs, $._scope_begin),
+    begingroup: $ => cmd($, $.begingroup_cs),
 
     begingroup_cs: $ => cs($, 'begingroup'),
 
-    endgroup: $ => cmd($, $.endgroup_cs, $._scope_end),
+    endgroup: $ => cmd($, $.endgroup_cs),
 
     endgroup_cs: $ => cs($, 'endgroup'),
+
+    bgroup: $ => cmd($, $.bgroup_cs),
+
+    bgroup_cs: $ => cs($, 'bgroup'),
+
+    egroup: $ => cmd($, $.egroup_cs),
+
+    egroup_cs: $ => cs($, 'egroup'),
 
     // fi introduced by LuaTeX
     unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/,
