@@ -205,10 +205,12 @@ public:
   }
 
   void pop(uint8_t level) {
-    for (auto it = codes.begin(); it != codes.end(); it++) {
+    for (auto it = codes.begin(); it != codes.end();) {
       it->second.erase(level);
       if (it->second.empty()) {
-        codes.erase(it);
+        it = codes.erase(it);
+      } else {
+        it++;
       }
     }
   }
@@ -565,7 +567,7 @@ struct Scanner {
   }
 
   bool scan_verbatim_body(TSLexer *lexer, const bool *valid_symbols) {
-    for (VerbatimEnv env: verbatims) {
+    for (const VerbatimEnv& env: verbatims) {
       if (valid_symbols[env.symbol]) {
 
         lexer->mark_end(lexer);
@@ -642,12 +644,12 @@ struct Scanner {
 
   bool scan_catcode_commands(TSLexer *lexer, const bool *valid_symbols) {
     // Loop through the command list.
-    for (auto it = catcode_commands.begin(); it != catcode_commands.end(); it++) {
-      if (valid_symbols[it->symbol]) {
-        lexer->result_symbol = it->symbol;
+    for (const CatCodeCommand& cmd: catcode_commands) {
+      if (valid_symbols[cmd.symbol]) {
+        lexer->result_symbol = cmd.symbol;
         lexer->mark_end(lexer);
 
-        catcode_table.load(it->table, level);
+        catcode_table.load(cmd.table, level);
 
         return true;
       }
