@@ -30,7 +30,7 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -50,7 +50,7 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatimstar_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -70,7 +70,7 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (BVerbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -90,7 +90,7 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (BVerbatimstar_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -110,7 +110,7 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (LVerbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -130,7 +130,7 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (LVerbatimstar_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -150,7 +150,7 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (lstlisting_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -170,7 +170,7 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (lstlisting_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -191,7 +191,7 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (minted_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -216,6 +216,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -276,7 +277,7 @@ text
   (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
+  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text))
 
 ======================
@@ -303,21 +304,12 @@ inline verbatim using various special character
 ------------------------
 (document
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)))

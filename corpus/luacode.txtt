@@ -299,6 +299,6 @@ luacode* environment
     (begin
       (cs)
       (group (l) (name) (r)) (eol))
-    (lua_text)
+    (verbatim_text)
     (end (cs)
       (group (l) (name) (r)))))
