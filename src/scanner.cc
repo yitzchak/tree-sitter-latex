@@ -40,6 +40,7 @@ enum SymbolType {
   _SCOPE_BEGIN,
   _SCOPE_END,
   _SPACE,
+  _VERB_END,
   _VERB_LINE,
   ACTIVE_CHAR,
   ALIGNMENT_TAB,
@@ -474,6 +475,13 @@ struct Scanner {
   }
 
   bool scan_verb_line(TSLexer *lexer) {
+    lexer->mark_end(lexer);
+
+    if (match_length(lexer, "\\end{verbatim}") == -1) {
+      lexer->result_symbol = _VERB_END;
+      return true;
+    }
+
     while (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
@@ -678,6 +686,12 @@ struct Scanner {
       return scan_start_verb_delim(lexer);
     }
 
+    // Scan a single line in a verbatim environment.
+    // NOTE: This is a kludge. Verbatim environments actually detect the corrent \end
+    if (valid_symbols[_VERB_LINE]) {
+      return scan_verb_line(lexer);
+    }
+
     if (valid_symbols[_SCOPE_BEGIN]) {
       level++;
       lexer->mark_end(lexer);
@@ -769,12 +783,6 @@ struct Scanner {
         break;
       default:
         break;
-    }
-
-    // Scan a single line in a verbatim environment.
-    // NOTE: This is a kludge. Verbatim environments actually detect the corrent \end
-    if (valid_symbols[_VERB_LINE] && code != ESCAPE_CATEGORY) {
-      return scan_verb_line(lexer);
     }
 
     // Look for catcode commands.

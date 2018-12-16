@@ -86,6 +86,7 @@ module.exports = grammar({
     $._scope_begin,
     $._scope_end,
     $._space,
+    $._verb_end,
     $._verb_line,
     $.active_char,
     $.alignment_tab,
@@ -370,6 +371,7 @@ module.exports = grammar({
       alias($.verbatim_begin, $.begin),
       optional($.verbatim_text),
       // We don't allow exit here since braces are meaningless in verbatim.
+      $._verb_end,
       alias($.verbatim_end, $.end)
     ),
 

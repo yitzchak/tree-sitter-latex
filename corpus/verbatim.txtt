@@ -241,6 +241,28 @@ quux
   (text))
 
 ======================
+verbatim environment with embedded environment
+======================
+foo
+\begin{verbatim}
+\begin{foo}
+quux
+\end{foo}
+\end{verbatim}
+quux
+----------------------
+(document
+    (text)
+    (verbatim_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (eol))
+      (verbatim_text)
+      (end (cs) (group (l) (name) (r))))
+    (text))
+
+======================
 inline verbatim
 ======================
 text
