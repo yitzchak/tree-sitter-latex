@@ -8,20 +8,7 @@ using std::pair;
 using std::map;
 using std::vector;
 
-void CatCodeTable::set_catcode(const int32_t key, Category cat) {
-  if (cat == OTHER_CATEGORY && level == 0) {
-    codes.erase(key);
-    return;
-  }
-
-  codes[key][level] = cat;
-
-  // if (all_of(codes[key].begin(), codes[key].end(), [](pair<uint8_t, Category> p){ return p.second == OTHER_CATEGORY; })) {
-  //   codes.erase(key);
-  // }
-}
-
-Category CatCodeTable::get_catcode(const int32_t key) const {
+Category CatCodeTable::operator[](const int32_t key) const {
   auto it = codes.find(key);
 
   // OTHER is the default category.
@@ -30,13 +17,12 @@ Category CatCodeTable::get_catcode(const int32_t key) const {
     it->second.crbegin()->second;
 }
 
-void CatCodeTable::reset(uint8_t init_protect_level) {
-  level = init_protect_level;
-  protect_level = init_protect_level;
+void CatCodeTable::reset() {
+  level = 1;
 
   for (auto it = codes.begin(), it_end = codes.end(); it != it_end;) {
     for (auto lit = it->second.begin(), lit_end = it->second.end(); lit != lit_end;) {
-      if (lit->first > protect_level) {
+      if (lit->first != 0) {
         lit = it->second.erase(lit);
       } else {
         lit++;
@@ -54,20 +40,17 @@ void CatCodeTable::reset(uint8_t init_protect_level) {
 void CatCodeTable::set(const vector<CatCodeInterval>& intervals) {
   for (const CatCodeInterval& interval: intervals) {
     for (int32_t ch = interval.begin; ch <= interval.end; ch++) {
-      set_catcode(ch, interval.category);
+      codes[ch][level] = interval.category;
     }
   }
 }
 
-void CatCodeTable::push(bool protect) {
+void CatCodeTable::push() {
   level++;
-  if (protect) {
-    protect_level = level;
-  }
 }
 
 void CatCodeTable::pop() {
-  if (level > protect_level) {
+  if (level > 1) {
     for (auto it = codes.begin(); it != codes.end();) {
       it->second.erase(level);
       if (it->second.empty()) {
@@ -88,7 +71,7 @@ SerializationBuffer& operator <<(SerializationBuffer& buffer, const CatCodeTable
       return any_of(p.second.cbegin(), p.second.cend(), [](pair<uint8_t, Category> p2) { return p2.first != 0; });
     });
 
-  buffer << table.level << table.protect_level << ch_count;
+  buffer << table.level << ch_count;
 
   for (auto it = table.codes.cbegin(); it != table.codes.cend(); it++) {
     uint8_t level_count = count_if(it->second.cbegin(), it->second.cend(), [](const pair<uint8_t, Category>& p){ return p.first != 0; });
@@ -116,7 +99,7 @@ DeserializationBuffer& operator >>(DeserializationBuffer& buffer, CatCodeTable& 
     uint8_t level, level_count;
     Category cat;
 
-    buffer >> table.level >> table.protect_level >> ch_count;
+    buffer >> table.level >> ch_count;
 
     for (; ch_count > 0; ch_count--) {
       buffer >> ch >> level_count;
