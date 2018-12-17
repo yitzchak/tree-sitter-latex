@@ -8,7 +8,7 @@ const chalk = require('chalk')
 const root = process.argv[2]
 let failure_count = 0
 
-readdir.stream(root, { deep: true, filter: '**/*.{cls,tex,sty}' })
+readdir.stream(root, { deep: true, filter: '**/*.{cls,ltx,tex,sty}' })
   .on('data', () => {})
   .on('file', (filePath) => {
     const code = fs.readFileSync(path.join(root, filePath), 'utf8')
