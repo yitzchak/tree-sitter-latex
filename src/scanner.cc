@@ -25,6 +25,7 @@ using std::unordered_map;
 using std::vector;
 
 enum SymbolType {
+  _alltt_begin,
   _at_letter,
   _at_other,
   _BVerbatim_body,
@@ -38,7 +39,6 @@ enum SymbolType {
   _filecontents_body,
   _filecontentsstar_body,
   _lstlisting_body,
-  _lua_end,
   _luacode_begin,
   _luacodestar_body,
   _luadirect_begin,
@@ -388,11 +388,37 @@ struct Scanner {
       _luacode_begin,
       {
         {
+          {1,    '@',  OTHER_CATEGORY},
+          {'[',  '[',  OTHER_CATEGORY},
+          {']',  '`',  OTHER_CATEGORY},
           {'{',  '{',  BEGIN_CATEGORY},
-          {'\\', '\\', ESCAPE_CATEGORY},
           {'}',  '}',  END_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'|',  '|',  OTHER_CATEGORY},
+          {'~',  '~',  OTHER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY},
           {'A',  'Z',  LETTER_CATEGORY},
-          {'a',  'z',  LETTER_CATEGORY}
+        }
+      }
+    },
+    { // alltt catcode table
+      _alltt_begin,
+      {
+        {
+          {' ', ' ', OTHER_CATEGORY},
+          {'_', '_', OTHER_CATEGORY},
+          {'{',  '{',  BEGIN_CATEGORY},
+          {'}',  '}',  END_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {'\t',   '\t',   OTHER_CATEGORY},
+          {'&', '&', OTHER_CATEGORY},
+          {'#', '#', OTHER_CATEGORY},
+          {'%', '%', OTHER_CATEGORY},
+          {'^', '^', OTHER_CATEGORY},
+          {'~', '~', OTHER_CATEGORY},
+          {'$', '$', OTHER_CATEGORY},
+          {'a',  'z',  LETTER_CATEGORY},
+          {'A',  'Z',  LETTER_CATEGORY},
         }
       }
     }
@@ -402,25 +428,25 @@ struct Scanner {
   int32_t start_delim = 0;
   uint8_t level = 1;
   CatCodeTable catcode_table = {
-    {'\\',   '\\',   ESCAPE_CATEGORY},
+    {' ',    ' ',    SPACE_CATEGORY},
+    {'_',    '_',    SUBSCRIPT_CATEGORY},
     {'{',    '{',    BEGIN_CATEGORY},
     {'}',    '}',    END_CATEGORY},
-    {'$',    '$',    MATH_SHIFT_CATEGORY},
-    {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
-    {'\n',   '\n',   EOL_CATEGORY},
-    {'#',    '#',    PARAMETER_CATEGORY},
-    {'^',    '^',    SUPERSCRIPT_CATEGORY},
-    {'_',    '_',    SUBSCRIPT_CATEGORY},
+    {'\\',   '\\',   ESCAPE_CATEGORY},
     // NUL is technically ignored, but tree sitter seems to use it to indicate
     // EOF.
     // {'\0',   '\0',   IGNORED_CATEGORY},
-    {' ',    ' ',    SPACE_CATEGORY},
+    {'\n',   '\n',   EOL_CATEGORY},
     {'\t',   '\t',   SPACE_CATEGORY},
-    {'A',    'Z',    LETTER_CATEGORY},
-    {'a',    'z',    LETTER_CATEGORY},
-    {'~',    '~',    ACTIVE_CHAR_CATEGORY},
+    {'\x7f', '\x7f', INVALID_CATEGORY},
+    {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
+    {'#',    '#',    PARAMETER_CATEGORY},
     {'%',    '%',    COMMENT_CATEGORY},
-    {'\x7f', '\x7f', INVALID_CATEGORY}
+    {'^',    '^',    SUPERSCRIPT_CATEGORY},
+    {'~',    '~',    ACTIVE_CHAR_CATEGORY},
+    {'$',    '$',    MATH_SHIFT_CATEGORY},
+    {'a',    'z',    LETTER_CATEGORY},
+    {'A',    'Z',    LETTER_CATEGORY},
   };
 
   vector<VerbatimEnv> verbatims = {

@@ -313,3 +313,21 @@ inline verbatim using various special character
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
   (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)))
+
+===========================
+alltt environment
+============================
+\begin{alltt}
+$foo$ \(bar\) \emph{quux} ~ % wibble
+\end{alltt}
+---------------------------
+(document
+  (alltt_env
+    (begin (cs) (group (l) (name) (r)))
+    (text)
+    (latex_inline_math (begin_inline_math) (text) (end_inline_math))
+    (text)
+    (cs)
+    (group (l) (text) (r))
+    (text)
+    (end (cs) (group (l) (name) (r)))))

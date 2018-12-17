@@ -71,6 +71,7 @@ module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
+    $._alltt_begin,
     $._at_letter,
     $._at_other,
     $._BVerbatim_body,
@@ -84,7 +85,6 @@ module.exports = grammar({
     $._filecontents_body,
     $._filecontentsstar_body,
     $._lstlisting_body,
-    $._lua_end,
     $._luacode_begin,
     $._luacodestar_body,
     $._luadirect_begin,
@@ -149,7 +149,7 @@ module.exports = grammar({
       // $.glue_space,
       // $.include,
       // $.lua,
-      // $.luacode_env,
+      $.luacode_env,
       $.luacodestar_env,
       // $.luadirect,
       // $.luaexec,
@@ -202,6 +202,7 @@ module.exports = grammar({
       $.lstlisting_env,
       $.minted_env,
       $.inline_verbatim,
+      $.alltt_env,
       $._display_math,
       $._inline_math,
       $.text_env,
@@ -1386,14 +1387,37 @@ module.exports = grammar({
 
     _hyperref_word: $ => 'hyperref',
 
+    // alltt - alltt is not a true verbatim environment since it understands
+    // control sequences and groups.
+
+    alltt_env: $ => seq(
+      alias($.alltt_begin, $.begin),
+      $._scope_begin,
+      $._alltt_begin,
+      repeat($._text_mode),
+      choice(alias($.alltt_end, $.end), $.exit),
+      $._scope_end
+    ),
+
+    alltt_begin: $ => begin_cmd($,
+      alias($.alltt_env_group, $.group)
+    ),
+
+    alltt_end: $ => end_cmd($,
+      alias($.alltt_env_group, $.group),
+    ),
+
+    alltt_env_group: $ => group($, alias($.alltt_env_name, $.name)),
+
+    alltt_env_name: $ => 'alltt',
+
     // luacode
 
     lua: $ => cmd($,
       $.lua_cs,
       $._luadirect_begin,
       optional($._number),
-      $._parameter,
-      $._lua_end
+      $._parameter
     ),
 
     lua_cs: $ => cs($, $._lua_word),
@@ -1403,8 +1427,7 @@ module.exports = grammar({
     luadirect: $ => cmd($,
       $.luadirect_cs,
       $._luadirect_begin,
-      $._parameter,
-      $._lua_end
+      $._parameter
     ),
 
     luadirect_cs: $ => cs($, $._luadirect_word),
@@ -1414,8 +1437,7 @@ module.exports = grammar({
     luaexec: $ => cmd($,
       $.luaexec_cs,
       $._luaexec_begin,
-      $._parameter,
-      $._lua_end
+      $._parameter
     ),
 
     luaexec_cs: $ => cs($, $._luaexec_word),
@@ -1424,18 +1446,19 @@ module.exports = grammar({
 
     luacode_env: $ => seq(
       alias($.luacode_begin, $.begin),
+      $._scope_begin,
+      $._luacode_begin,
       repeat($._text_mode),
-      choice(alias($.luacode_end, $.end), $.exit)
+      choice(alias($.luacode_end, $.end), $.exit),
+      $._scope_end
     ),
 
     luacode_begin: $ => begin_cmd($,
-      alias($.luacode_env_group, $.group),
-      $._luacode_begin
+      alias($.luacode_env_group, $.group)
     ),
 
     luacode_end: $ => end_cmd($,
-      alias($.luacode_env_group, $.group),
-      $._lua_end
+      alias($.luacode_env_group, $.group)
     ),
 
     luacode_env_group: $ => group($, alias($.luacode_env_name, $.name)),
