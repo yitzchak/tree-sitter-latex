@@ -38,16 +38,16 @@ function end_cmd ($, ...args) {
     : seq(cs, ...args)
 }
 
-function group ($, contents) {
-  return seq($.l, $._scope_begin, contents, $.r, $._scope_end)
+function group ($, ...contents) {
+  return seq($.l, $._scope_begin, ...contents, $.r, $._scope_end)
 }
 
-function simple_group ($, contents) {
-  return seq(choice($.l, $.bgroup), $._scope_begin, contents, choice($.r, $.egroup), $._scope_end)
+function simple_group ($, ...contents) {
+  return seq(choice($.l, $.bgroup), $._scope_begin, ...contents, choice($.r, $.egroup), $._scope_end)
 }
 
-function semi_simple_group ($, contents) {
-  return seq($.begingroup, $._scope_begin, contents, choice($.endgroup, $.exit), $._scope_end)
+function semi_simple_group ($, ...contents) {
+  return seq($.begingroup, $._scope_begin, ...contents, choice($.endgroup, $.exit), $._scope_end)
 }
 
 function brack_group ($, contents) {
@@ -1416,42 +1416,41 @@ module.exports = grammar({
 
     // luacode
 
-    lua: $ => cmd($,
+    lua: $ => cmd_opt($,
       $.lua_cs,
-      $._scope_begin,
-      $._luadirect_begin,
       optional($._number),
-      $._parameter,
-      $._scope_end
+      $._luadirect_parameter,
     ),
 
     lua_cs: $ => cs($, $._lua_word),
 
     _lua_word: $ => /(direct|late)lua/,
 
-    luadirect: $ => cmd($,
+    _luadirect_parameter: $ => choice($.cs, alias($.luadirect_group, $.group)),
+
+    luadirect_group: $ => group($, $._luadirect_begin, repeat($._text_mode)),
+
+    luadirect: $ => cmd_opt($,
       $.luadirect_cs,
-      $._scope_begin,
-      $._luadirect_begin,
-      $._parameter,
-      $._scope_end
+      $._luadirect_parameter,
     ),
 
     luadirect_cs: $ => cs($, $._luadirect_word),
 
     _luadirect_word: $ => 'luadirect',
 
-    luaexec: $ => cmd($,
+    luaexec: $ => cmd_opt($,
       $.luaexec_cs,
-      $._scope_begin,
-      $._luaexec_begin,
-      $._parameter,
-      $._scope_end
+      $._luaexec_parameter,
     ),
 
     luaexec_cs: $ => cs($, $._luaexec_word),
 
     _luaexec_word: $ => 'luaexec',
+
+    _luaexec_parameter: $ => choice($.cs, alias($.luaexec_group, $.group)),
+
+    luaexec_group: $ => group($, $._luaexec_begin, repeat($._text_mode)),
 
     luacode_env: $ => seq(
       alias($.luacode_begin, $.begin),
