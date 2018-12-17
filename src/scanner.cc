@@ -370,7 +370,7 @@ struct Scanner {
           lexer->advance(lexer, false);
           break;
         case ' ':
-          while (catcode_table[lexer->lookahead] == SPACE_CATEGORY) {
+          while (lexer->lookahead && catcode_table[lexer->lookahead] == SPACE_CATEGORY) {
             lexer->advance(lexer, false);
           }
           break;
@@ -429,7 +429,7 @@ struct Scanner {
       lexer->result_symbol = tag_comment;
     } else {
       // Skip any leading spaces
-      while (catcode_table[lexer->lookahead] == SPACE_CATEGORY) {
+      while (lexer->lookahead && catcode_table[lexer->lookahead] == SPACE_CATEGORY) {
         lexer->advance(lexer, false);
       }
 
@@ -448,7 +448,7 @@ struct Scanner {
     }
 
     // Gobble the reset of the comment
-    while (lexer->lookahead != 0 && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
+    while (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       lexer->advance(lexer, false);
     }
 
@@ -548,7 +548,7 @@ struct Scanner {
   inline bool scan_multi_char_symbol(TSLexer *lexer, SymbolType symbol, Category code) {
     do {
       lexer->advance(lexer, false);
-    } while (catcode_table[lexer->lookahead] == code);
+    } while (lexer->lookahead && catcode_table[lexer->lookahead] == code);
 
     lexer->result_symbol = symbol;
     lexer->mark_end(lexer);
@@ -572,7 +572,7 @@ struct Scanner {
 
       lexer->advance(lexer, false);
       code = catcode_table[lexer->lookahead];
-    } while (code == SPACE_CATEGORY || code == EOL_CATEGORY);
+    } while (lexer->lookahead && (code == SPACE_CATEGORY || code == EOL_CATEGORY));
 
     lexer->result_symbol = _space;
     lexer->mark_end(lexer);
