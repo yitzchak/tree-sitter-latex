@@ -168,7 +168,7 @@ module.exports = grammar({
       // $.storage,
       $.string,
       $.text,
-      // $.tikzpicture_env,
+      $.tikzpicture_env,
       // $.eol
     ),
 
@@ -1508,9 +1508,9 @@ module.exports = grammar({
       alias($.tikzpicture_env_group, $.group)
     ),
 
-    tikzpicture_end: $ => prec(-3, end_cmd($,
+    tikzpicture_end: $ => end_cmd($,
       alias($.tikzpicture_env_group, $.group)
-    )),
+    ),
 
     tikzpicture_env_group: $ => group($, alias($.tikzpicture_env_name, $.name)),
 
@@ -1540,13 +1540,23 @@ module.exports = grammar({
       seq(
         optional(
           choice(
+            $.alltt_env_name,
+            $.BVerbatim_env_name,
+            $.BVerbatimstar_env_name,
             $.display_math_env_name,
             $.inline_math_env_name,
+            $.lstlisting_env_name,
             $.luacode_env_name,
             $.luacodestar_env_name,
+            $.LVerbatim_env_name,
+            $.LVerbatimstar_env_name,
             $.minipage_env_name,
+            $.minted_env_name,
             $.tikzpicture_env_name,
-            $.verbatim_env_name
+            $.verbatim_env_name,
+            $.Verbatim_env_name,
+            $.verbatimstar_env_name,
+            $.Verbatimstar_env_name
           )
         ),
         $.text

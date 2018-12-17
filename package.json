@@ -6,7 +6,7 @@
   "scripts": {
     "benchmark": "node script/benchmark.js",
     "build": "tree-sitter generate && node-gyp configure",
-    "bulk-parse": "node script/bulk-parse.js",
+    "parse-test": "node script/parse-test.js",
     "parse": "tree-sitter parse",
     "test": "tree-sitter test"
   },

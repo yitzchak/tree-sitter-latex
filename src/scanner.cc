@@ -129,56 +129,17 @@ struct DeserializationBuffer {
   }
 };
 
-enum SymbolWidth: uint8_t {
-  ZERO_WIDTH,
-  SINGLE_WIDTH,
-  UNLIMITED_WIDTH
-};
-
-struct CatCodeCategoryRegion {
+struct CatCodeInterval {
   int32_t begin, end;
   Category category;
 };
 
-// Common catcode table with overflow and support for partial catcode tables.
 class CatCodeTable {
 protected:
+  uint8_t level = 0;
   unordered_map<int32_t, map<uint8_t, Category>> codes;
 
-public:
-  CatCodeTable () {}
-
-  CatCodeTable (initializer_list<CatCodeCategoryRegion> init) {
-    load(init);
-  }
-
-  void reset() {
-    for (auto it = codes.begin(), it_end = codes.end(); it != it_end;) {
-      for (auto lit = it->second.begin(), lit_end = it->second.end(); lit != lit_end;) {
-        if (lit->first != 0) {
-          lit = it->second.erase(lit);
-        } else {
-          lit++;
-        }
-      }
-
-      if (it->second.empty()) {
-        it = codes.erase(it);
-      } else {
-        it++;
-      }
-    }
-  }
-
-  void load(const vector<CatCodeCategoryRegion>& init, uint8_t level = 0) {
-    for (auto it = init.cbegin(); it != init.cend(); it++) {
-      for (int32_t ch = it->begin; ch <= it->end; ch++) {
-        set_catcode(ch, it->category, level);
-      }
-    }
-  }
-
-  void set_catcode(const int32_t key, Category cat, uint8_t level = 0) {
+  void set_catcode(const int32_t key, Category cat) {
     if (cat == OTHER_CATEGORY && level == 0) {
       codes.erase(key);
       return;
@@ -200,11 +161,50 @@ public:
       it->second.crbegin()->second;
   }
 
+public:
+  CatCodeTable () {}
+
+  CatCodeTable (initializer_list<CatCodeInterval> init) {
+    set(init);
+  }
+
+  void reset() {
+    level = 0;
+
+    for (auto it = codes.begin(), it_end = codes.end(); it != it_end;) {
+      for (auto lit = it->second.begin(), lit_end = it->second.end(); lit != lit_end;) {
+        if (lit->first != 0) {
+          lit = it->second.erase(lit);
+        } else {
+          lit++;
+        }
+      }
+
+      if (it->second.empty()) {
+        it = codes.erase(it);
+      } else {
+        it++;
+      }
+    }
+  }
+
+  void set(const vector<CatCodeInterval>& intervals) {
+    for (const CatCodeInterval& interval: intervals) {
+      for (int32_t ch = interval.begin; ch <= interval.end; ch++) {
+        set_catcode(ch, interval.category);
+      }
+    }
+  }
+
   inline Category operator[](const int32_t key) const {
     return get_catcode(key);
   }
 
-  void pop(uint8_t level) {
+  void push() {
+    level++;
+  }
+
+  void pop() {
     for (auto it = codes.begin(); it != codes.end();) {
       it->second.erase(level);
       if (it->second.empty()) {
@@ -213,6 +213,8 @@ public:
         it++;
       }
     }
+
+    level--;
   }
 
   friend SerializationBuffer& operator <<(SerializationBuffer& buffer, const CatCodeTable& table) {
@@ -222,7 +224,7 @@ public:
         return any_of(p.second.cbegin(), p.second.cend(), [](pair<uint8_t, Category> p2) { return p2.first != 0; });
       });
 
-    buffer << ch_count;
+    buffer << table.level << ch_count;
 
     for (auto it = table.codes.cbegin(); it != table.codes.cend(); it++) {
       uint8_t level_count = count_if(it->second.cbegin(), it->second.cend(), [](const pair<uint8_t, Category>& p){ return p.first != 0; });
@@ -250,7 +252,7 @@ public:
       uint8_t level, level_count;
       Category cat;
 
-      buffer >> ch_count;
+      buffer >> table.level >> ch_count;
 
       for (; ch_count > 0; ch_count--) {
         buffer >> ch >> level_count;
@@ -268,7 +270,7 @@ public:
 // a bulk catcode table command
 struct CatCodeCommand {
   SymbolType symbol;
-  vector<CatCodeCategoryRegion> table;
+  vector<CatCodeInterval> intervals;
 };
 
 struct VerbatimEnv {
@@ -277,7 +279,7 @@ struct VerbatimEnv {
 
   VerbatimEnv(SymbolType sym, string name) {
     symbol = sym;
-    terminator = "\\end {" + name + "}";
+    terminator = " \\end {" + name + "}";
   }
 };
 
@@ -442,7 +444,6 @@ struct Scanner {
 
   ScannerMode mode = NORMAL_MODE;
   int32_t start_delim = 0;
-  uint8_t level = 1;
   CatCodeTable catcode_table = {
     {' ',    ' ',    SPACE_CATEGORY},
     {'_',    '_',    SUBSCRIPT_CATEGORY},
@@ -486,16 +487,17 @@ struct Scanner {
   void reset () {
     mode = NORMAL_MODE;
     start_delim = 0;
-    level = 1;
     catcode_table.reset();
+    // Push the catcode table once to protect the default catcodes.
+    catcode_table.push();
   }
 
   unsigned serialize(char *buffer) const {
-    SerializationBuffer sb(buffer);
+    SerializationBuffer buf(buffer);
 
-    sb << mode << level << start_delim << catcode_table;
+    buf << mode << start_delim << catcode_table;
 
-    return sb.length;
+    return buf.length;
   }
 
   void deserialize(const char *buffer, unsigned length) {
@@ -505,9 +507,9 @@ struct Scanner {
       return;
     }
 
-    DeserializationBuffer sb(buffer, length);
+    DeserializationBuffer buf(buffer, length);
 
-    sb >> mode >> level >> start_delim >> catcode_table;
+    buf >> mode >> start_delim >> catcode_table;
   }
 
   bool scan_start_verb_delim(TSLexer *lexer) {
@@ -691,7 +693,7 @@ struct Scanner {
         lexer->result_symbol = cmd.symbol;
         lexer->mark_end(lexer);
 
-        catcode_table.load(cmd.table, level);
+        catcode_table.set(cmd.intervals);
 
         return true;
       }
@@ -817,14 +819,14 @@ struct Scanner {
     if (res) return true;
 
     if (valid_symbols[_scope_begin]) {
-      level++;
+      catcode_table.push();
       lexer->mark_end(lexer);
       lexer->result_symbol = _scope_begin;
       return true;
     }
 
     if (valid_symbols[_scope_end]) {
-      if (level > 1) catcode_table.pop(level--);
+      catcode_table.pop();
       lexer->mark_end(lexer);
       lexer->result_symbol = _scope_end;
       return true;
