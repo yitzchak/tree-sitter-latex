@@ -165,7 +165,7 @@ module.exports = grammar({
       // $.savebox,
       // $.setbox,
       // $.setlength,
-      // $.storage,
+      $.storage,
       $.string,
       $.text,
       $.tikzpicture_env,
@@ -642,15 +642,17 @@ module.exports = grammar({
 
     _section_word: $ => /section|subsection|subsubsection|paragraph|subparagraph|chapter|part|addpart|addchap|addsec|minisec/,
 
-    storage: $ => cmd($,
+    storage: $ => cmd_opt($,
       $.storage_cs,
-      $.cs,
+      choice($.cs, $.escaped),
       repeat(
         choice(
           $.parameter_ref,
           $.text,
           alias($.lbrack, $.text),
-          alias($.rbrack, $.text)
+          alias($.rbrack, $.text),
+          $.text,
+          $.escaped
         )
       ),
       $._parameter
@@ -1531,9 +1533,26 @@ module.exports = grammar({
 
     glue_brack_group: $ => brack_group($, $.glue),
 
-    _cs_parameter: $ => choice($.cs, alias($.cs_group, $.group)),
+    _cs_parameter: $ => choice(
+      $.begin_display_math,
+      $.begin_inline_math,
+      $.cs,
+      $.end_display_math,
+      $.end_inline_math,
+      $.escaped,
+      alias($.cs_group, $.group)
+    ),
 
-    cs_group: $ => group($, $.cs),
+    cs_group: $ => group($,
+      choice(
+        $.begin_display_math,
+        $.begin_inline_math,
+        $.cs,
+        $.end_display_math,
+        $.end_inline_math,
+        $.escaped
+      )
+    ),
 
     name_group: $ => group($, alias(
       seq(
