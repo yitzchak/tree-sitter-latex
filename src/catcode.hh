@@ -54,7 +54,7 @@ struct CatCodeInterval {
 
 class CatCodeTable {
 protected:
-  uint8_t level = 0;
+  uint8_t level = 0, protect_level = 0;
   std::unordered_map<int32_t, std::map<uint8_t, Category>> codes;
 
   void set_catcode(const int32_t key, Category cat);
@@ -68,7 +68,7 @@ public:
     set(init);
   }
 
-  void reset();
+  void reset(uint8_t init_protect_level = 0);
 
   void set(const std::vector<CatCodeInterval>& intervals);
 
@@ -76,7 +76,7 @@ public:
     return get_catcode(key);
   }
 
-  void push();
+  void push(bool protect = false);
 
   void pop();
 

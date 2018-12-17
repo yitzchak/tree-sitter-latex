@@ -30,12 +30,13 @@ Category CatCodeTable::get_catcode(const int32_t key) const {
     it->second.crbegin()->second;
 }
 
-void CatCodeTable::reset() {
-  level = 0;
+void CatCodeTable::reset(uint8_t init_protect_level) {
+  level = init_protect_level;
+  protect_level = init_protect_level;
 
   for (auto it = codes.begin(), it_end = codes.end(); it != it_end;) {
     for (auto lit = it->second.begin(), lit_end = it->second.end(); lit != lit_end;) {
-      if (lit->first != 0) {
+      if (lit->first > protect_level) {
         lit = it->second.erase(lit);
       } else {
         lit++;
@@ -58,21 +59,26 @@ void CatCodeTable::set(const vector<CatCodeInterval>& intervals) {
   }
 }
 
-void CatCodeTable::push() {
+void CatCodeTable::push(bool protect) {
   level++;
+  if (protect) {
+    protect_level = level;
+  }
 }
 
 void CatCodeTable::pop() {
-  for (auto it = codes.begin(); it != codes.end();) {
-    it->second.erase(level);
-    if (it->second.empty()) {
-      it = codes.erase(it);
-    } else {
-      it++;
+  if (level > protect_level) {
+    for (auto it = codes.begin(); it != codes.end();) {
+      it->second.erase(level);
+      if (it->second.empty()) {
+        it = codes.erase(it);
+      } else {
+        it++;
+      }
     }
-  }
 
-  level--;
+    level--;
+  }
 }
 
 SerializationBuffer& operator <<(SerializationBuffer& buffer, const CatCodeTable& table) {
@@ -82,7 +88,7 @@ SerializationBuffer& operator <<(SerializationBuffer& buffer, const CatCodeTable
       return any_of(p.second.cbegin(), p.second.cend(), [](pair<uint8_t, Category> p2) { return p2.first != 0; });
     });
 
-  buffer << table.level << ch_count;
+  buffer << table.level << table.protect_level << ch_count;
 
   for (auto it = table.codes.cbegin(); it != table.codes.cend(); it++) {
     uint8_t level_count = count_if(it->second.cbegin(), it->second.cend(), [](const pair<uint8_t, Category>& p){ return p.first != 0; });
@@ -110,7 +116,7 @@ DeserializationBuffer& operator >>(DeserializationBuffer& buffer, CatCodeTable& 
     uint8_t level, level_count;
     Category cat;
 
-    buffer >> table.level >> ch_count;
+    buffer >> table.level >> table.protect_level >> ch_count;
 
     for (; ch_count > 0; ch_count--) {
       buffer >> ch >> level_count;

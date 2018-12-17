@@ -265,7 +265,7 @@ struct Scanner {
     start_delim = 0;
     catcode_table.reset();
     // Push the catcode table once to protect the default catcodes.
-    catcode_table.push();
+    catcode_table.push(true);
   }
 
   unsigned serialize(char *buffer) const {
