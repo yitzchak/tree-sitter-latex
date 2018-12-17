@@ -9,6 +9,7 @@
       "sources": [
         "src/parser.c",
         "src/binding.cc",
+        "src/catcode.cc",
         "src/scanner.cc"
       ],
       "cflags_c": [

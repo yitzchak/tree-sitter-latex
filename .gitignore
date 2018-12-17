@@ -8,3 +8,6 @@ package-lock.json
 index.js
 src/*
 !src/scanner.cc
+!src/catcode.cc
+!src/catcode.hh
+!src/serialization.hh

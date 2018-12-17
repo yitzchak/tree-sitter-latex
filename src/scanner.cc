@@ -1,27 +1,16 @@
-#include <algorithm>
 #include <bitset>
-#include <cstring>
-#include <cwctype>
-#include <iostream>
-#include <list>
-#include <map>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include "tree_sitter/parser.h"
 
+#include "serialization.hh"
+#include "catcode.hh"
 
-namespace {
+namespace LaTeX {
 
-using std::any_of;
 using std::bitset;
-using std::initializer_list;
-using std::map;
-using std::memcpy;
-using std::pair;
 using std::string;
-using std::unordered_map;
 using std::vector;
 
 enum SymbolType {
@@ -72,202 +61,6 @@ enum SymbolType {
   verb_delim
 };
 
-enum Category: uint8_t {
-  ESCAPE_CATEGORY,
-  BEGIN_CATEGORY,
-  END_CATEGORY,
-  MATH_SHIFT_CATEGORY,
-  ALIGNMENT_TAB_CATEGORY,
-  EOL_CATEGORY,
-  PARAMETER_CATEGORY,
-  SUPERSCRIPT_CATEGORY,
-  SUBSCRIPT_CATEGORY,
-  IGNORED_CATEGORY,
-  SPACE_CATEGORY,
-  LETTER_CATEGORY,
-  OTHER_CATEGORY,
-  ACTIVE_CHAR_CATEGORY,
-  COMMENT_CATEGORY,
-  INVALID_CATEGORY
-};
-
-
-struct SerializationBuffer {
-  char* buffer;
-  unsigned length = 0;
-
-  SerializationBuffer(char* b) {
-    buffer = b;
-  }
-
-  template<class T> SerializationBuffer& operator <<(const T& value) {
-    memcpy(buffer, &value, sizeof(T));
-
-    buffer += sizeof(T);
-    length += sizeof(T);
-
-    return *this;
-  }
-};
-
-struct DeserializationBuffer {
-  const char* buffer;
-  unsigned length;
-
-  DeserializationBuffer(const char* b, unsigned l) {
-    buffer = b;
-    length = l;
-  }
-
-  template<class T> DeserializationBuffer& operator >>(T& value) {
-    memcpy(&value, buffer, sizeof(T));
-
-    buffer += sizeof(T);
-    length -= sizeof(T);
-
-    return *this;
-  }
-};
-
-struct CatCodeInterval {
-  int32_t begin, end;
-  Category category;
-};
-
-class CatCodeTable {
-protected:
-  uint8_t level = 0;
-  unordered_map<int32_t, map<uint8_t, Category>> codes;
-
-  void set_catcode(const int32_t key, Category cat) {
-    if (cat == OTHER_CATEGORY && level == 0) {
-      codes.erase(key);
-      return;
-    }
-
-    codes[key][level] = cat;
-
-    // if (all_of(codes[key].begin(), codes[key].end(), [](pair<uint8_t, Category> p){ return p.second == OTHER_CATEGORY; })) {
-    //   codes.erase(key);
-    // }
-  }
-
-  Category get_catcode(const int32_t key) const {
-    auto it = codes.find(key);
-
-    // OTHER is the default category.
-    return (it == codes.cend() || it->second.empty()) ?
-      OTHER_CATEGORY :
-      it->second.crbegin()->second;
-  }
-
-public:
-  CatCodeTable () {}
-
-  CatCodeTable (initializer_list<CatCodeInterval> init) {
-    set(init);
-  }
-
-  void reset() {
-    level = 0;
-
-    for (auto it = codes.begin(), it_end = codes.end(); it != it_end;) {
-      for (auto lit = it->second.begin(), lit_end = it->second.end(); lit != lit_end;) {
-        if (lit->first != 0) {
-          lit = it->second.erase(lit);
-        } else {
-          lit++;
-        }
-      }
-
-      if (it->second.empty()) {
-        it = codes.erase(it);
-      } else {
-        it++;
-      }
-    }
-  }
-
-  void set(const vector<CatCodeInterval>& intervals) {
-    for (const CatCodeInterval& interval: intervals) {
-      for (int32_t ch = interval.begin; ch <= interval.end; ch++) {
-        set_catcode(ch, interval.category);
-      }
-    }
-  }
-
-  inline Category operator[](const int32_t key) const {
-    return get_catcode(key);
-  }
-
-  void push() {
-    level++;
-  }
-
-  void pop() {
-    for (auto it = codes.begin(); it != codes.end();) {
-      it->second.erase(level);
-      if (it->second.empty()) {
-        it = codes.erase(it);
-      } else {
-        it++;
-      }
-    }
-
-    level--;
-  }
-
-  friend SerializationBuffer& operator <<(SerializationBuffer& buffer, const CatCodeTable& table) {
-    // Count the characters that have non-zero level.
-    unsigned ch_count = count_if(table.codes.cbegin(), table.codes.cend(),
-      [](pair<int32_t, map<uint8_t, Category>> p) {
-        return any_of(p.second.cbegin(), p.second.cend(), [](pair<uint8_t, Category> p2) { return p2.first != 0; });
-      });
-
-    buffer << table.level << ch_count;
-
-    for (auto it = table.codes.cbegin(); it != table.codes.cend(); it++) {
-      uint8_t level_count = count_if(it->second.cbegin(), it->second.cend(), [](const pair<uint8_t, Category>& p){ return p.first != 0; });
-
-      if (level_count > 0) {
-        buffer << it->first << level_count;
-
-        for (auto lit = it->second.cbegin(); lit != it->second.cend(); lit++) {
-          if (lit->first != 0) {
-            buffer << lit->first << lit->second;
-          }
-        }
-      }
-    }
-
-    return buffer;
-  }
-
-  friend DeserializationBuffer& operator >>(DeserializationBuffer& buffer, CatCodeTable& table)  {
-    table.reset();
-
-    if (buffer.length != 0) {
-      int32_t ch;
-      unsigned ch_count;
-      uint8_t level, level_count;
-      Category cat;
-
-      buffer >> table.level >> ch_count;
-
-      for (; ch_count > 0; ch_count--) {
-        buffer >> ch >> level_count;
-        for (; level_count > 0; level_count--) {
-          buffer >> level >> cat;
-          table.codes[ch][level] = cat;
-        }
-      }
-    }
-
-    return buffer;
-  }
-};
-
-// a bulk catcode table command
 struct CatCodeCommand {
   SymbolType symbol;
   vector<CatCodeInterval> intervals;
@@ -291,23 +84,6 @@ enum ScannerMode: uint8_t {
 };
 
 struct Scanner {
-  static const unsigned int ESCAPE_FLAG = 1 << ESCAPE_CATEGORY;
-  static const unsigned int BEGIN_FLAG = 1 << BEGIN_CATEGORY;
-  static const unsigned int END_FLAG = 1 << END_CATEGORY;
-  static const unsigned int MATH_SHIFT_FLAG = 1 << MATH_SHIFT_CATEGORY;
-  static const unsigned int ALIGNMENT_TAB_FLAG = 1 << ALIGNMENT_TAB_CATEGORY;
-  static const unsigned int EOL_FLAG = 1 << EOL_CATEGORY;
-  static const unsigned int PARAMETER_FLAG = 1 << PARAMETER_CATEGORY;
-  static const unsigned int SUPERSCRIPT_FLAG = 1 << SUPERSCRIPT_CATEGORY;
-  static const unsigned int SUBSCRIPT_FLAG = 1 << SUBSCRIPT_CATEGORY;
-  static const unsigned int IGNORED_FLAG = 1 << IGNORED_CATEGORY;
-  static const unsigned int SPACE_FLAG = 1 << SPACE_CATEGORY;
-  static const unsigned int LETTER_FLAG = 1 << LETTER_CATEGORY;
-  static const unsigned int OTHER_FLAG = 1 << OTHER_CATEGORY;
-  static const unsigned int ACTIVE_CHAR_FLAG = 1 << ACTIVE_CHAR_CATEGORY;
-  static const unsigned int COMMENT_FLAG = 1 << COMMENT_CATEGORY;
-  static const unsigned int INVALID_FLAG = 1 << INVALID_CATEGORY;
-
   vector<CatCodeCommand> catcode_commands = {
     {
       _at_letter,
@@ -939,26 +715,26 @@ struct Scanner {
 extern "C" {
 
 void *tree_sitter_latex_external_scanner_create() {
-  return new Scanner();
+  return new LaTeX::Scanner();
 }
 
 bool tree_sitter_latex_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
-  Scanner *scanner = static_cast<Scanner *>(payload);
+  LaTeX::Scanner *scanner = static_cast<LaTeX::Scanner *>(payload);
   return scanner->scan(lexer, valid_symbols);
 }
 
 unsigned tree_sitter_latex_external_scanner_serialize(void *payload, char *buffer) {
-  Scanner *scanner = static_cast<Scanner *>(payload);
+  LaTeX::Scanner *scanner = static_cast<LaTeX::Scanner *>(payload);
   return scanner->serialize(buffer);
 }
 
 void tree_sitter_latex_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
-  Scanner *scanner = static_cast<Scanner *>(payload);
+  LaTeX::Scanner *scanner = static_cast<LaTeX::Scanner *>(payload);
   scanner->deserialize(buffer, length);
 }
 
 void tree_sitter_latex_external_scanner_destroy(void *payload) {
-  Scanner *scanner = static_cast<Scanner *>(payload);
+  LaTeX::Scanner *scanner = static_cast<LaTeX::Scanner *>(payload);
   delete scanner;
 }
 
