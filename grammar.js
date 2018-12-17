@@ -148,11 +148,11 @@ module.exports = grammar({
       // $.glue_assign,
       // $.glue_space,
       // $.include,
-      // $.lua,
+      $.lua,
       $.luacode_env,
       $.luacodestar_env,
-      // $.luadirect,
-      // $.luaexec,
+      $.luadirect,
+      $.luaexec,
       $.makeatletter,
       $.makeatother,
       // $.makebox,
@@ -706,7 +706,10 @@ module.exports = grammar({
 
     _ExplSyntaxOff_word: $ => 'ExplSyntaxOff',
 
-    string: $ => cmd_opt($, $.string_cs, $.cs),
+    string: $ => cmd_opt($,
+      $.string_cs,
+      choice($.cs, $.active_char, $.parameter_char, $.escaped)
+    ),
 
     string_cs: $ => cs($, $._string_word),
 
@@ -1415,9 +1418,11 @@ module.exports = grammar({
 
     lua: $ => cmd($,
       $.lua_cs,
+      $._scope_begin,
       $._luadirect_begin,
       optional($._number),
-      $._parameter
+      $._parameter,
+      $._scope_end
     ),
 
     lua_cs: $ => cs($, $._lua_word),
@@ -1426,8 +1431,10 @@ module.exports = grammar({
 
     luadirect: $ => cmd($,
       $.luadirect_cs,
+      $._scope_begin,
       $._luadirect_begin,
-      $._parameter
+      $._parameter,
+      $._scope_end
     ),
 
     luadirect_cs: $ => cs($, $._luadirect_word),
@@ -1436,8 +1443,10 @@ module.exports = grammar({
 
     luaexec: $ => cmd($,
       $.luaexec_cs,
+      $._scope_begin,
       $._luaexec_begin,
-      $._parameter
+      $._parameter,
+      $._scope_end
     ),
 
     luaexec_cs: $ => cs($, $._luaexec_word),

@@ -311,7 +311,7 @@ struct Scanner {
       _at_letter,
       {
         {
-          {'@', '@', LETTER_CATEGORY}
+          {'@',   '@',   LETTER_CATEGORY}
         }
       }
     },
@@ -319,7 +319,7 @@ struct Scanner {
       _at_other,
       {
         {
-          {'@', '@', OTHER_CATEGORY}
+          {'@',   '@',   OTHER_CATEGORY}
         }
       }
     },
@@ -327,15 +327,15 @@ struct Scanner {
       _expl_begin,
       {
         {
-          {'\t', '\t', IGNORED_CATEGORY},
-          {' ',  ' ',  IGNORED_CATEGORY},
-          {'"',  '"',  OTHER_CATEGORY},
-          {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
-          {':',  ':',  LETTER_CATEGORY},
-          {'^',  '^',  SUPERSCRIPT_CATEGORY},
-          {'_',  '_',  LETTER_CATEGORY},
-          {'|',  '|',  OTHER_CATEGORY},
-          {'~',  '~',  SPACE_CATEGORY}
+          {'\t',   '\t',   IGNORED_CATEGORY},
+          {' ',    ' ',    IGNORED_CATEGORY},
+          {'"',    '"',    OTHER_CATEGORY},
+          {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
+          {':',    ':',    LETTER_CATEGORY},
+          {'^',    '^',    SUPERSCRIPT_CATEGORY},
+          {'_',    '_',    LETTER_CATEGORY},
+          {'|',    '|',    OTHER_CATEGORY},
+          {'~',    '~',    SPACE_CATEGORY}
         }
       }
     },
@@ -343,15 +343,15 @@ struct Scanner {
       _expl_end,
       {
         {
-          {'\t', '\t', SPACE_CATEGORY},
-          {' ',  ' ',  SPACE_CATEGORY},
-          {'"',  '"',  OTHER_CATEGORY},
-          {'&',  '&',  ALIGNMENT_TAB_CATEGORY},
-          {':',  ':',  OTHER_CATEGORY},
-          {'^',  '^',  SUPERSCRIPT_CATEGORY},
-          {'_',  '_',  SUBSCRIPT_CATEGORY},
-          {'|',  '|',  OTHER_CATEGORY},
-          {'~',  '~',  ACTIVE_CHAR_CATEGORY}
+          {'\t',   '\t',   SPACE_CATEGORY},
+          {' ',    ' ',    SPACE_CATEGORY},
+          {'"',    '"',    OTHER_CATEGORY},
+          {'&',    '&',    ALIGNMENT_TAB_CATEGORY},
+          {':',    ':',    OTHER_CATEGORY},
+          {'^',    '^',    SUPERSCRIPT_CATEGORY},
+          {'_',    '_',    SUBSCRIPT_CATEGORY},
+          {'|',    '|',    OTHER_CATEGORY},
+          {'~',    '~',    ACTIVE_CHAR_CATEGORY}
         }
       }
     },
@@ -359,14 +359,21 @@ struct Scanner {
       _luadirect_begin,
       {
         {
-          {'\\', '\\', ESCAPE_CATEGORY},
-          {'{',  '{',  BEGIN_CATEGORY},
-          {'}',  '}',  END_CATEGORY},
-          {'\n', '\n', EOL_CATEGORY},
-          {'A',  'Z',  LETTER_CATEGORY},
-          {'a',  'z',  LETTER_CATEGORY},
-          {'~',  '~',  ACTIVE_CHAR_CATEGORY},
-          {'%',  '%',  COMMENT_CATEGORY}
+          {1,      9,      EOL_CATEGORY},
+          {'\n',   '\n',   EOL_CATEGORY},
+          {11,     '$',    OTHER_CATEGORY},
+          {'%',    '%',    COMMENT_CATEGORY},
+          {'&',    '@',    OTHER_CATEGORY},
+          {'A',    'Z',    LETTER_CATEGORY},
+          {'[',    '[',    OTHER_CATEGORY},
+          {'\\',   '\\',   ESCAPE_CATEGORY},
+          {']',    '`',    OTHER_CATEGORY},
+          {'a',    'z',    LETTER_CATEGORY},
+          {'{',    '{',    BEGIN_CATEGORY},
+          {'|',    '|',    OTHER_CATEGORY},
+          {'}',    '}',    END_CATEGORY},
+          {'~',    '~',    ACTIVE_CHAR_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}
         }
       }
     },
@@ -374,13 +381,21 @@ struct Scanner {
       _luaexec_begin,
       {
         {
-          {'\\', '\\', ESCAPE_CATEGORY},
-          {'{',  '{',  BEGIN_CATEGORY},
-          {'}',  '}',  END_CATEGORY},
-          {'\n', '\n', EOL_CATEGORY},
-          {'A',  'Z',  LETTER_CATEGORY},
-          {'a',  'z',  LETTER_CATEGORY},
-          {'%',  '%',  COMMENT_CATEGORY}
+          {1,      9,      EOL_CATEGORY},
+          {'\n',   '\n',   EOL_CATEGORY},
+          {11,     '$',    OTHER_CATEGORY},
+          {'%',    '%',    COMMENT_CATEGORY},
+          {'&',    '@',    OTHER_CATEGORY},
+          {'A',    'Z',    LETTER_CATEGORY},
+          {'[',    '[',    OTHER_CATEGORY},
+          {'\\',   '\\',   ESCAPE_CATEGORY},
+          {']',    '`',    OTHER_CATEGORY},
+          {'a',    'z',    LETTER_CATEGORY},
+          {'{',    '{',    BEGIN_CATEGORY},
+          {'|',    '|',    OTHER_CATEGORY},
+          {'}',    '}',    END_CATEGORY},
+          {'~',    '~',    OTHER_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}
         }
       }
     },
@@ -388,16 +403,17 @@ struct Scanner {
       _luacode_begin,
       {
         {
-          {1,    '@',  OTHER_CATEGORY},
-          {'[',  '[',  OTHER_CATEGORY},
-          {']',  '`',  OTHER_CATEGORY},
-          {'{',  '{',  BEGIN_CATEGORY},
-          {'}',  '}',  END_CATEGORY},
-          {'\\', '\\', ESCAPE_CATEGORY},
-          {'|',  '|',  OTHER_CATEGORY},
-          {'~',  '~',  OTHER_CATEGORY},
-          {'a',  'z',  LETTER_CATEGORY},
-          {'A',  'Z',  LETTER_CATEGORY},
+          {1,      '@',    OTHER_CATEGORY},
+          {'A',    'Z',    LETTER_CATEGORY},
+          {'[',    '[',    OTHER_CATEGORY},
+          {'\\',   '\\',   ESCAPE_CATEGORY},
+          {']',    '`',    OTHER_CATEGORY},
+          {'a',    'z',    LETTER_CATEGORY},
+          {'{',    '{',    BEGIN_CATEGORY},
+          {'|',    '|',    OTHER_CATEGORY},
+          {'}',    '}',    END_CATEGORY},
+          {'~',    '~',    OTHER_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}
         }
       }
     },
@@ -405,20 +421,20 @@ struct Scanner {
       _alltt_begin,
       {
         {
-          {' ', ' ', OTHER_CATEGORY},
-          {'_', '_', OTHER_CATEGORY},
-          {'{',  '{',  BEGIN_CATEGORY},
-          {'}',  '}',  END_CATEGORY},
-          {'\\', '\\', ESCAPE_CATEGORY},
           {'\t',   '\t',   OTHER_CATEGORY},
-          {'&', '&', OTHER_CATEGORY},
-          {'#', '#', OTHER_CATEGORY},
-          {'%', '%', OTHER_CATEGORY},
-          {'^', '^', OTHER_CATEGORY},
-          {'~', '~', OTHER_CATEGORY},
-          {'$', '$', OTHER_CATEGORY},
-          {'a',  'z',  LETTER_CATEGORY},
-          {'A',  'Z',  LETTER_CATEGORY},
+          {' ',    ' ',    OTHER_CATEGORY},
+          {'#',   '#',     OTHER_CATEGORY},
+          {'$',   '$',     OTHER_CATEGORY},
+          {'%',   '%',     OTHER_CATEGORY},
+          {'&',   '&',     OTHER_CATEGORY},
+          {'A',   'Z',     LETTER_CATEGORY},
+          {'\\',  '\\',    ESCAPE_CATEGORY},
+          {'^',   '^',     OTHER_CATEGORY},
+          {'_',   '_',     OTHER_CATEGORY},
+          {'a',   'z',     LETTER_CATEGORY},
+          {'{',   '{',     BEGIN_CATEGORY},
+          {'}',   '}',     END_CATEGORY},
+          {'~',   '~',     OTHER_CATEGORY}
         }
       }
     }
