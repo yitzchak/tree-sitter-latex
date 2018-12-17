@@ -15,7 +15,7 @@ quux
         (cs)
         (group (l) (name) (r))
         (eol))
-      (verbatim_text)
+      (text)
       (end (cs) (group (l) (name) (r))))
     (text))
 
@@ -35,7 +35,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -55,7 +55,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -75,7 +75,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -95,7 +95,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -115,7 +115,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -135,7 +135,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -155,7 +155,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -176,7 +176,7 @@ quux
       (group (l) (name) (r))
       (brack_group (lbrack) (text) (rbrack))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -197,7 +197,7 @@ quux
       (group (l) (name) (r))
       (group (l) (text) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -216,7 +216,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -237,7 +237,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -259,7 +259,7 @@ quux
         (cs)
         (group (l) (name) (r))
         (eol))
-      (verbatim_text)
+      (text)
       (end (cs) (group (l) (name) (r))))
     (text))
 
@@ -275,10 +275,10 @@ text
 ----------------------
 (document
   (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text))
+  (verb (cs) (verb_delim) (text) (verb_delim)) (text)
+  (verb (cs) (verb_delim) (text) (verb_delim)) (text)
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim)) (text))
 
 ======================
 not (quite) inline verbatim
@@ -286,7 +286,7 @@ not (quite) inline verbatim
 \verb  +foo+ the space here is the actual delim, so +foo+ is plain text
 ----------------------
 (document
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text))
+  (verb (cs) (verb_delim) (text) (verb_delim)) (text))
 
 ========================
 inline verbatim using various special character
@@ -303,16 +303,16 @@ inline verbatim using various special character
 \verb$conn$
 ------------------------
 (document
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim)))
 
 ===========================
 alltt environment
