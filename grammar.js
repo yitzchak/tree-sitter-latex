@@ -1,3 +1,4 @@
+const DECIMAL_DIGIT = choice('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 const FIXED_PATTERN = /([+-]?\d+(\.\d*)?|[+-]?\.\d+|[+-])/
 
 function cs ($, name) {
@@ -137,7 +138,7 @@ module.exports = grammar({
       $.active_char,
       $.alignment_tab,
       // $.box_dimension_assign,
-      // $.catcode,
+      $.catcode,
       // $.char,
       // $.chardef,
       $.cite,
@@ -857,12 +858,12 @@ module.exports = grammar({
 
     // TeX character functions
 
-    catcode: $ => cmd($,
+    catcode: $ => prec.right(-1, cmd($,
       $.catcode_cs,
-      $._number,
+      optional(choice($._number, $.cs)),
       optional('='),
-      $._number
-    ),
+      optional(choice($._number, $.cs))
+    )),
 
     catcode_cs: $ => cs($, $._catcode_word),
 
@@ -1727,12 +1728,12 @@ module.exports = grammar({
       $.catcode_ref
     ),
 
-    decimal: $ => /[0-9]+/,
+    decimal: $ => token(prec.right(2, repeat1(DECIMAL_DIGIT))),
 
     octal: $ => /'[0-7]+/,
 
     hexadecimal: $ => /"[0-9a-fA-F]+/,
 
-    charcode: $ => seq('`', choice($.escaped, /./))
+    charcode: $ => seq('`', choice($.escaped, /./, $.cs))
   }
 })
