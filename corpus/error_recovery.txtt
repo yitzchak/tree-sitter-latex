@@ -1,5 +1,5 @@
 ===========================================
-TeX inline math - unterminated inside group
+TeX inline math - unterminated inside group #1
 ===========================================
 {foo$bar}
 {foo$bar{quux}wibble}
@@ -122,7 +122,7 @@ foo$$bar$
     (exit)))
 
 ===========================================
-TeX inline math - unterminated inside group
+TeX inline math - unterminated inside group #2
 ===========================================
 {foo$bar}
 {foo$bar{quux}wibble}
@@ -136,7 +136,6 @@ TeX inline math - unterminated inside group
       (text)
       (exit))
     (r))
-  (text)
   (group
     (l)
     (text)
