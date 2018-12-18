@@ -129,10 +129,6 @@ module.exports = grammar({
     $.tag_comment,
   ],
 
-  conflicts: $ => [
-    [$.text, $.dimension, $.fixed]
-  ],
-
   rules: {
     document: $ => repeat($._text_mode),
 
@@ -153,7 +149,7 @@ module.exports = grammar({
       $.ExplSyntaxOn,
       // $.glue_assign,
       // $.glue_space,
-      // $.include,
+      $.include,
       $.lua,
       $.luacode_env,
       $.luacodestar_env,
@@ -167,9 +163,8 @@ module.exports = grammar({
       $.newenvironment,
       $.parameter_ref,
       $.parbox,
-      // $.ref,
+      $.ref,
       $.savebox,
-      // $.setbox,
       // $.setlength,
       $.storage,
       $.string,
@@ -252,8 +247,6 @@ module.exports = grammar({
       $.hyperref
     ),
 
-    // text_mode: $ => repeat1($._text_mode),
-
     _math_mode: $ => choice(
       $._common,
       $.subscript,
@@ -271,8 +264,6 @@ module.exports = grammar({
       $.mathit,
       $.tag
     ),
-
-    // math_mode: $ => repeat1($._math_mode),
 
     parameter_ref: $ => seq(
       $.parameter_char,
@@ -753,86 +744,87 @@ module.exports = grammar({
 
     _glue_space_word: $ => /[hmv]skip|(h|top|v)glue/,
 
-    mkbox: $ => cmd($,
-      $.mkbox_cs,
-      optional(
-        seq(
-          choice('to', 'spread'),
-          $.dimension
-        )
-      ),
-      $._parameter
-    ),
-
-    strut: $ => cmd($,
-      $.strut_cs
-    ),
-
-    strut_cs: $ => cs($, $._strut_word),
-
-    _strut_word: $ => /(math)?strut|null/,
-
-    phantom_smash: $ => cmd_opt($,
-      $.phantom_smash_cs,
-      $._parameter
-    ),
-
-    phantom_smash_cs: $ => cs($, $._phantom_smash_word),
-
-    _phantom_smash_word: $ => /[hv]?phantom|smash/,
-
-    mkbox_cs: $ => cs($, $._mkbox_word),
-
-    _mkbox_word: $ => /[hv]box|vtop/,
-
-    usebox: $ => cmd($,
-      $.usebox_cs,
-      $._number
-    ),
-
-    usebox_cs: $ => cs($, $._usebox_word),
-
-    _usebox_word: $ => /(un[hv])?(box|copy)/,
-
-    movebox: $ => cmd($,
-      $.movebox_cs,
-      $.dimension,
-      $._box,
-    ),
-
-    movebox_cs: $ => cs($, $._movebox_word),
-
-    _movebox_word: $ => /move(left|right)|raise|lower/,
-
-    _box: $ => choice(
-      $.mkbox,
-      $.movebox,
-      $.phantom_smash,
-      $.strut,
-      $.usebox
-    ),
-
-    setbox: $ => cmd($,
-      $.setbox_cs,
-      $._number,
-      optional('='),
-      $._box
-    ),
-
-    setbox_cs: $ => cs($, $._setbox_word),
-
-    _setbox_word: $ => 'setbox',
-
-    box_dimension_assign: $ => cmd($,
-      $.box_dimension_cs,
-      $._number,
-      optional('='),
-      $.dimension
-    ),
-
-    box_dimension_cs: $ => cs($, $._box_dimension_word),
-
-    _box_dimension_word: $ => /ht|dp|wd/,
+    // mkbox: $ => cmd($,
+    //   $.mkbox_cs,
+    //   optional(
+    //     seq(
+    //       choice('to', 'spread'),
+    //       $._dimension_with_cs
+    //     )
+    //   ),
+    //   $._parameter
+    // ),
+    //
+    // strut: $ => cmd($,
+    //   $.strut_cs
+    // ),
+    //
+    // strut_cs: $ => cs($, $._strut_word),
+    //
+    // _strut_word: $ => /(math)?strut|null/,
+    //
+    // phantom_smash: $ => cmd_opt($,
+    //   $.phantom_smash_cs,
+    //   $._parameter
+    // ),
+    //
+    // phantom_smash_cs: $ => cs($, $._phantom_smash_word),
+    //
+    // _phantom_smash_word: $ => /[hv]?phantom|smash/,
+    //
+    // mkbox_cs: $ => cs($, $._mkbox_word),
+    //
+    // _mkbox_word: $ => /[hv]box|vtop/,
+    //
+    // usebox: $ => cmd($,
+    //   $.usebox_cs,
+    //   choice($._number, $.cs)
+    // ),
+    //
+    // usebox_cs: $ => cs($, $._usebox_word),
+    //
+    // _usebox_word: $ => /(un[hv])?(box|copy)/,
+    //
+    // movebox: $ => cmd($,
+    //   $.movebox_cs,
+    //   $._dimension_with_cs,
+    //   $._box,
+    // ),
+    //
+    // movebox_cs: $ => cs($, $._movebox_word),
+    //
+    // _movebox_word: $ => /move(left|right)|raise|lower/,
+    //
+    // _box: $ => choice(
+    //   $.mkbox,
+    //   $.movebox,
+    //   $.phantom_smash,
+    //   $.strut,
+    //   $.usebox,
+    //   $.setbox
+    // ),
+    //
+    // setbox: $ => cmd_opt($,
+    //   $.setbox_cs,
+    //   choice($._number, $.cs),
+    //   optional('='),
+    //   $._box
+    // ),
+    //
+    // setbox_cs: $ => cs($, $._setbox_word),
+    //
+    // _setbox_word: $ => 'setbox',
+    //
+    // box_dimension_assign: $ => cmd($,
+    //   $.box_dimension_cs,
+    //   choice($._number, $.cs),
+    //   optional('='),
+    //   $._dimension_with_cs
+    // ),
+    //
+    // box_dimension_cs: $ => cs($, $._box_dimension_word),
+    //
+    // _box_dimension_word: $ => /ht|dp|wd/,
 
     glue: $ => choice(
       seq(
@@ -846,20 +838,20 @@ module.exports = grammar({
       )
     ),
 
-    box_dimension_ref: $ => cmd($,
-      $.box_dimension_cs,
-      $._number
-    ),
+    // box_dimension_ref: $ => cmd($,
+    //   $.box_dimension_cs,
+    //   choice($._number, $.cs)
+    // ),
 
     _dimension: $ => choice(
       $.dimension,
-      seq(optional($.fixed), $.box_dimension_ref),
+      // seq(optional($.fixed), $.box_dimension_ref),
       seq($.fixed, $.cs)
     ),
 
     _dimension_with_cs: $ => choice(
       $.dimension,
-      seq(optional($.fixed), $.box_dimension_ref),
+      // seq(optional($.fixed), $.box_dimension_ref),
       seq(optional($.fixed), $.cs)
     ),
 
@@ -1612,7 +1604,7 @@ module.exports = grammar({
           $._begin_word,
           $._begingroup_word,
           $._bgroup_word,
-          $._box_dimension_word,
+          // $._box_dimension_word,
           $._catcode_word,
           $._char_word,
           $._chardef_word,
@@ -1652,24 +1644,24 @@ module.exports = grammar({
           $._mathrm_word,
           $._mathsf_word,
           $._mathtt_word,
-          $._mkbox_word,
-          $._movebox_word,
+          // $._mkbox_word,
+          // $._movebox_word,
           $._NeedsTeXFormat_word,
           $._newcommand_word,
           $._newenvironment_word,
           $._parbox_word,
           $._PassOptionTo_word,
-          $._phantom_smash_word,
+          // $._phantom_smash_word,
           $._ProcessOptions_word,
           $._Provides_word,
           $._ProvidesExpl_word,
           $._ref_word,
           $._savebox_word,
           $._section_word,
-          $._setbox_word,
+          // $._setbox_word,
           $._setlength_word,
           $._storage_word,
-          $._strut_word,
+          // $._strut_word,
           $._tag_word,
           $._textbf_word,
           $._textit_word,
@@ -1682,7 +1674,7 @@ module.exports = grammar({
           $._textup_word,
           $._url_word,
           $._use_word,
-          $._usebox_word,
+          // $._usebox_word,
           $._verb_word,
           $._WarningInfo_word
         ),
