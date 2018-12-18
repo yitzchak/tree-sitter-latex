@@ -1,5 +1,12 @@
 const DECIMAL_DIGIT = choice('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
-const FIXED_PATTERN = /([+-]?\d+(\.\d*)?|[+-]?\.\d+|[+-])/
+const ONE_MORE_DECIMAL_DIGITS = prec.right(2, repeat1(DECIMAL_DIGIT))
+const ZERO_MORE_DECIMAL_DIGITS = prec.right(2, repeat(DECIMAL_DIGIT))
+const SIGN = choice('+', '-')
+const FIXED_PATTERN = choice(
+  SIGN,
+  seq(optional(SIGN), ONE_MORE_DECIMAL_DIGITS, optional(seq('.', ZERO_MORE_DECIMAL_DIGITS))),
+  seq(optional(SIGN), '.', ONE_MORE_DECIMAL_DIGITS)
+)
 
 function cs ($, name) {
   return seq($._cs_begin, name, $._cs_end)
@@ -139,8 +146,8 @@ module.exports = grammar({
       $.alignment_tab,
       // $.box_dimension_assign,
       $.catcode,
-      // $.char,
-      // $.chardef,
+      $.char,
+      $.chardef,
       $.cite,
       $.cs,
       $.dimension_assign,
@@ -779,7 +786,7 @@ module.exports = grammar({
     //
     // usebox: $ => cmd($,
     //   $.usebox_cs,
-    //   choice($._number, $.cs)
+    //   choice($._number, $.cs, $.parameter_ref)
     // ),
     //
     // usebox_cs: $ => cs($, $._usebox_word),
@@ -807,7 +814,7 @@ module.exports = grammar({
     //
     // setbox: $ => cmd_opt($,
     //   $.setbox_cs,
-    //   choice($._number, $.cs),
+    //   choice($._number, $.cs, $.parameter_ref),
     //   optional('='),
     //   $._box
     // ),
@@ -818,7 +825,7 @@ module.exports = grammar({
     //
     // box_dimension_assign: $ => cmd($,
     //   $.box_dimension_cs,
-    //   choice($._number, $.cs),
+    //   choice($._number, $.cs, $.parameter_ref),
     //   optional('='),
     //   $._dimension_with_cs
     // ),
@@ -841,7 +848,7 @@ module.exports = grammar({
 
     // box_dimension_ref: $ => cmd($,
     //   $.box_dimension_cs,
-    //   choice($._number, $.cs)
+    //   choice($._number, $.cs, $.parameter_ref)
     // ),
 
     _dimension: $ => choice(
@@ -860,20 +867,20 @@ module.exports = grammar({
 
     catcode: $ => prec.right(-1, cmd($,
       $.catcode_cs,
-      optional(choice($._number, $.cs)),
+      optional(choice($._number, $.cs, $.parameter_ref)),
       optional('='),
-      optional(choice($._number, $.cs))
+      optional(choice($._number, $.cs, $.parameter_ref))
     )),
 
     catcode_cs: $ => cs($, $._catcode_word),
 
     _catcode_word: $ => /(cat|del|kcat|lc|math|sf|uc)code/,
 
-    chardef: $ => cmd($,
+    chardef: $ => cmd_opt($,
       $.chardef_cs,
       $.cs,
       optional('='),
-      $._number
+      choice($._number, $.cs, $.parameter_ref)
     ),
 
     chardef_cs: $ => cs($, $._chardef_word),
@@ -881,11 +888,11 @@ module.exports = grammar({
     _chardef_word: $ => /(math)?chardef/,
 
     catcode_ref: $ => cmd($,
-      $.catcode_cs, $._number
+      $.catcode_cs, choice($._number, $.cs, $.parameter_ref)
     ),
 
-    char: $ => cmd($,
-      $.char_cs, $._number
+    char: $ => cmd_opt($,
+      $.char_cs, choice($._number, $.cs, $.parameter_ref)
     ),
 
     char_cs: $ => cs($, $._char_word),
@@ -1710,10 +1717,10 @@ module.exports = grammar({
 
     _egroup_word: $ => 'egroup',
 
-    // fi introduced by LuaTeX
     dimension: $ => token(
         seq(
           FIXED_PATTERN,
+          // fi introduced by LuaTeX
           /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/
       )
     ),
@@ -1728,7 +1735,7 @@ module.exports = grammar({
       $.catcode_ref
     ),
 
-    decimal: $ => token(prec.right(2, repeat1(DECIMAL_DIGIT))),
+    decimal: $ => token(ONE_MORE_DECIMAL_DIGITS),
 
     octal: $ => /'[0-7]+/,
 
