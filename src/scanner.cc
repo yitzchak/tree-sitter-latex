@@ -19,6 +19,7 @@ enum SymbolType {
   _at_other,
   _BVerbatim_body,
   _BVerbatimstar_body,
+  _comment_body,
   _cs_begin,
   _cs_end,
   _escaped_begin,
@@ -245,6 +246,7 @@ struct Scanner {
   vector<VerbatimEnv> verbatims = {
     {_BVerbatim_body, "BVerbatim"},
     {_BVerbatimstar_body, "BVerbatim*"},
+    {_comment_body, "comment"},
     {_filecontents_body, "filecontents"},
     {_filecontentsstar_body, "filecontents*"},
     {_lstlisting_body, "lstlisting"},

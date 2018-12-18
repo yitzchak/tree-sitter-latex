@@ -86,6 +86,7 @@ module.exports = grammar({
     $._at_other,
     $._BVerbatim_body,
     $._BVerbatimstar_body,
+    $._comment_body,
     $._cs_begin,
     $._cs_end,
     $._escaped_begin,
@@ -199,6 +200,7 @@ module.exports = grammar({
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
+      $.comment_env,
       $.verbatim_env,
       $.verbatimstar_env,
       $.Verbatim_env,
@@ -431,6 +433,26 @@ module.exports = grammar({
     verbatimstar_env_group: $ => group($, alias($.verbatimstar_env_name, $.name)),
 
     verbatimstar_env_name: $ => 'verbatim*',
+
+    comment_env: $ => seq(
+      alias($.comment_begin, $.begin),
+      alias($._comment_body, $.text),
+      // We don't allow exit here since braces are meaningless in comment.
+      alias($.comment_end, $.end)
+    ),
+
+    comment_begin: $ => begin_cmd($,
+      alias($.comment_env_group, $.group),
+      $.eol
+    ),
+
+    comment_end: $ => end_cmd($,
+      alias($.comment_env_group, $.group)
+    ),
+
+    comment_env_group: $ => group($, alias($.comment_env_name, $.name)),
+
+    comment_env_name: $ => 'comment',
 
     Verbatim_env: $ => seq(
       alias($.Verbatim_begin, $.begin),
@@ -1582,6 +1604,7 @@ module.exports = grammar({
             $.alltt_env_name,
             $.BVerbatim_env_name,
             $.BVerbatimstar_env_name,
+            $.comment_env_name,
             $.display_math_env_name,
             $.inline_math_env_name,
             $.lstlisting_env_name,
@@ -1595,7 +1618,7 @@ module.exports = grammar({
             $.verbatim_env_name,
             $.Verbatim_env_name,
             $.verbatimstar_env_name,
-            $.Verbatimstar_env_name
+            $.Verbatimstar_env_name,
           )
         ),
         $.text

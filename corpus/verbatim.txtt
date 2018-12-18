@@ -1,4 +1,25 @@
 ======================
+comment environment
+======================
+foo
+\begin{comment}
+bar
+quux
+\end{comment}
+quux
+----------------------
+(document
+    (text)
+    (comment_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (eol))
+      (text)
+      (end (cs) (group (l) (name) (r))))
+    (text))
+
+======================
 verbatim environment
 ======================
 foo
