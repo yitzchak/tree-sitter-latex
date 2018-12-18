@@ -6,5 +6,5 @@ setlength
 (document
   (setlength
     (cs)
-    (group (l) (cs) (r))
-    (group (l) (glue (dimension (fixed) (unit))) (r)))) 
+    (group (l) (dimension_assign (cs)) (r))
+    (group (l) (glue (dimension)) (r))))

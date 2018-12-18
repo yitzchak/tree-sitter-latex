@@ -6,7 +6,7 @@ Dimension assign - hoffset
 (document
   (dimension_assign
     (cs)
-    (dimension (fixed) (unit))))
+    (dimension)))
 
 ================================
 Dimension assign - hoffset missing equals sign
@@ -16,7 +16,7 @@ Dimension assign - hoffset missing equals sign
 (document
   (dimension_assign
     (cs)
-    (dimension (fixed) (unit))))
+    (dimension)))
 
 ================================
 Dimension assign - hoffset using dimension parameter
@@ -26,7 +26,7 @@ Dimension assign - hoffset using dimension parameter
 (document
   (dimension_assign
     (cs)
-    (dimension (cs))))
+    (cs)))
 
 ================================
 Dimension assign - hoffset using scalar multiple dimension parameter
@@ -36,7 +36,8 @@ Dimension assign - hoffset using scalar multiple dimension parameter
 (document
   (dimension_assign
     (cs)
-    (dimension (fixed) (cs))))
+    (fixed)
+    (cs)))
 
 ================================
 Glue assign - leftskip
@@ -47,7 +48,7 @@ Glue assign - leftskip
   (glue_assign
     (cs)
     (glue
-      (dimension (fixed) (unit)))))
+      (dimension))))
 
 ================================
 Glue assign - leftskip missing equals
@@ -58,7 +59,7 @@ Glue assign - leftskip missing equals
   (glue_assign
     (cs)
     (glue
-      (dimension (fixed) (unit)))))
+      (dimension))))
 
 ================================
 Glue assign - leftskip same as rightskip
@@ -92,8 +93,8 @@ Glue assign - leftskip with plus
   (glue_assign
     (cs)
     (glue
-      (dimension (fixed) (unit))
-      (dimension (fixed) (unit)))))
+      (dimension)
+      (dimension))))
 
 ================================
 Glue assign - leftskip with minus
@@ -104,8 +105,8 @@ Glue assign - leftskip with minus
   (glue_assign
     (cs)
     (glue
-      (dimension (fixed) (unit))
-      (dimension (fixed) (unit)))))
+      (dimension)
+      (dimension))))
 
 ================================
 Glue assign - leftskip with plus and minus
@@ -116,9 +117,9 @@ Glue assign - leftskip with plus and minus
   (glue_assign
     (cs)
     (glue
-      (dimension (fixed) (unit))
-      (dimension (fixed) (unit))
-      (dimension (fixed) (unit)))))
+      (dimension)
+      (dimension)
+      (dimension))))
 
 =======================================
 Glue space - hskip
@@ -129,6 +130,6 @@ Glue space - hskip
    (glue_space
      (cs)
      (glue
-       (dimension (fixed) (unit))
-       (dimension (fixed) (unit))
-       (dimension (fixed) (unit)))))
+       (dimension)
+       (dimension)
+       (dimension))))

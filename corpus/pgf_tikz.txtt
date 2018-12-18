@@ -10,8 +10,7 @@ tikzpicture
 (document
   (tikzpicture_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
     (cs) (text) (text) (text) (text) (text)
     (cs) (text) (text) (text) (text) (text)
     (cs) (text) (text) (text) (text)
-  (end (cs) (group (l) (name) (r))))) 
+  (end (cs) (group (l) (name) (r)))))

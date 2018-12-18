@@ -16,7 +16,7 @@ makebox with width
 (document
   (makebox
     (cs)
-    (brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (brack_group (lbrack) (dimension) (rbrack))
     (group (l) (text) (r))))
 
 ====================
@@ -27,8 +27,19 @@ makebox with width and position
 (document
   (makebox
     (cs)
-    (brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (brack_group (lbrack) (dimension) (rbrack))
     (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))))
+
+=======================
+makebox with dimension reference
+====================
+\makebox[.5\bar]{foo}
+-------------------
+(document
+  (makebox
+    (cs)
+    (brack_group (lbrack) (fixed) (cs) (rbrack))
     (group (l) (text) (r))))
 
 ====================
@@ -61,7 +72,7 @@ savebox with width
   (savebox
     (cs)
     (group (l) (cs) (r))
-    (brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (brack_group (lbrack) (dimension) (rbrack))
     (group (l) (text) (r))))
 
 ====================
@@ -73,7 +84,7 @@ savebox with width and position
   (savebox
     (cs)
     (group (l) (cs) (r))
-    (brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (brack_group (lbrack) (dimension) (rbrack))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 
@@ -85,7 +96,7 @@ parbox
 (document
   (parbox
     (cs)
-    (group (l) (dimension (fixed) (unit)) (r))
+    (group (l) (dimension) (r))
     (group (l) (text) (r))))
 
 ====================
@@ -97,7 +108,7 @@ parbox with position
   (parbox
     (cs)
     (brack_group (lbrack) (text) (rbrack))
-    (group (l) (dimension (fixed) (unit)) (r))
+    (group (l) (dimension) (r))
     (group (l) (text) (r))))
 
 ====================
@@ -109,8 +120,8 @@ parbox with position and height
   (parbox
     (cs)
     (brack_group (lbrack) (text) (rbrack))
-    (brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
-    (group (l) (dimension (fixed) (unit)) (r))
+    (brack_group (lbrack) (dimension) (rbrack))
+    (group (l) (dimension) (r))
     (group (l) (text) (r))))
 
 ====================
@@ -122,9 +133,9 @@ parbox with position and height and inner position
   (parbox
     (cs)
     (brack_group (lbrack) (text) (rbrack))
-    (brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+    (brack_group (lbrack) (dimension) (rbrack))
     (brack_group (lbrack) (text) (rbrack))
-    (group (l) (dimension (fixed) (unit)) (r))
+    (group (l) (dimension) (r))
     (group (l) (text) (r))))
 
 ======================
@@ -139,7 +150,7 @@ foo
     (begin
       (cs)
       (group (l) (name) (r))
-      (group (l) (dimension (fixed) (unit)) (r)))
+      (group (l) (dimension) (r)))
     (text)
     (end
       (cs)
@@ -158,7 +169,7 @@ foo
       (cs)
       (group (l) (name) (r))
       (brack_group (lbrack) (text) (rbrack))
-      (group (l) (dimension (fixed) (unit)) (r)))
+      (group (l) (dimension) (r)))
     (text)
     (end
       (cs)
@@ -177,8 +188,8 @@ foo
       (cs)
       (group (l) (name) (r))
       (brack_group (lbrack) (text) (rbrack))
-      (brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
-      (group (l) (dimension (fixed) (unit)) (r)))
+      (brack_group (lbrack) (dimension) (rbrack))
+      (group (l) (dimension) (r)))
     (text)
     (end
       (cs)
@@ -197,9 +208,9 @@ foo
       (cs)
       (group (l) (name) (r))
       (brack_group (lbrack) (text) (rbrack))
-      (brack_group (lbrack) (dimension (fixed) (unit)) (rbrack))
+      (brack_group (lbrack) (dimension) (rbrack))
       (brack_group (lbrack) (text) (rbrack))
-      (group (l) (dimension (fixed) (unit)) (r)))
+      (group (l) (dimension) (r)))
     (text)
     (end
       (cs)

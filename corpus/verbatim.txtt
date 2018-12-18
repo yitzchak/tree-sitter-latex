@@ -15,7 +15,7 @@ quux
         (cs)
         (group (l) (name) (r))
         (eol))
-      (verbatim_text)
+      (text)
       (end (cs) (group (l) (name) (r))))
     (text))
 
@@ -30,12 +30,12 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -50,12 +50,12 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatimstar_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -70,12 +70,12 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (BVerbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -90,12 +90,12 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (BVerbatimstar_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -110,12 +110,12 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (LVerbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -130,12 +130,12 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (LVerbatimstar_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -150,12 +150,12 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (lstlisting_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -170,13 +170,13 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (lstlisting_env
     (begin
       (cs)
       (group (l) (name) (r))
       (brack_group (lbrack) (text) (rbrack))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -191,13 +191,13 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (minted_env
     (begin
       (cs)
       (group (l) (name) (r))
       (group (l) (text) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -216,6 +216,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -236,9 +237,31 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (text)
     (end (cs) (group (l) (name) (r))))
   (text))
+
+======================
+verbatim environment with embedded environment
+======================
+foo
+\begin{verbatim}
+\begin{foo}
+quux
+\end{foo}
+\end{verbatim}
+quux
+----------------------
+(document
+    (text)
+    (verbatim_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (eol))
+      (text)
+      (end (cs) (group (l) (name) (r))))
+    (text))
 
 ======================
 inline verbatim
@@ -252,10 +275,10 @@ text
 ----------------------
 (document
   (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text))
+  (verb (cs) (verb_delim) (text) (verb_delim)) (text)
+  (verb (cs) (verb_delim) (text) (verb_delim)) (text)
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim)) (text))
 
 ======================
 not (quite) inline verbatim
@@ -263,7 +286,7 @@ not (quite) inline verbatim
 \verb  +foo+ the space here is the actual delim, so +foo+ is plain text
 ----------------------
 (document
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)) (text))
+  (verb (cs) (verb_delim) (text) (verb_delim)) (text))
 
 ========================
 inline verbatim using various special character
@@ -280,22 +303,32 @@ inline verbatim using various special character
 \verb$conn$
 ------------------------
 (document
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim))
-  (text)
-  (inline_verbatim (cs) (verb_delim) (verb_body) (verb_delim)))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim))
+  (verb (cs) (verb_delim) (text) (verb_delim)))
+
+===========================
+alltt environment
+============================
+\begin{alltt}
+$foo$ \(bar\) \emph{quux} ~ % wibble
+\end{alltt}
+---------------------------
+(document
+  (alltt_env
+    (begin (cs) (group (l) (name) (r)))
+    (text)
+    (latex_inline_math (begin_inline_math) (text) (end_inline_math))
+    (text)
+    (emph
+      (cs)
+      (group (l) (text) (r)))
+    (text)
+    (end (cs) (group (l) (name) (r)))))
