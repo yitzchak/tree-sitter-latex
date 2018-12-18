@@ -22,6 +22,7 @@ enum SymbolType {
   _comment_body,
   _cs_begin,
   _cs_end,
+  _delete_verb_delim,
   _escaped_begin,
   _escaped_end,
   _expl_begin,
@@ -35,6 +36,7 @@ enum SymbolType {
   _luaexec_begin,
   _LVerbatim_body,
   _LVerbatimstar_body,
+  _make_verb_delim,
   _minted_body,
   _scope_begin,
   _scope_end,
@@ -55,6 +57,7 @@ enum SymbolType {
   math_shift,
   parameter_char,
   r,
+  short_verb_delim,
   subscript,
   superscript,
   tag_comment,
@@ -288,14 +291,14 @@ struct Scanner {
     buf >> mode >> start_delim >> catcode_table;
   }
 
-  bool scan_start_verb_delim(TSLexer *lexer) {
+  bool scan_start_verb_delim(TSLexer *lexer, SymbolType symbol) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
     if (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
       mode = VERB_MODE;
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
-      lexer->result_symbol = verb_delim;
+      lexer->result_symbol = symbol;
       lexer->mark_end(lexer);
       return true;
     }
@@ -580,6 +583,30 @@ struct Scanner {
     return true;
   }
 
+  bool scan_make_verb_delim(TSLexer *lexer) {
+    lexer->advance(lexer, false);
+
+    catcode_table.global_assign(lexer->lookahead, VERB_DELIM_EXT_CATEGORY);
+    lexer->advance(lexer, false);
+
+    lexer->result_symbol = _make_verb_delim;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_delete_verb_delim(TSLexer *lexer) {
+    lexer->advance(lexer, false);
+
+    catcode_table.global_erase(lexer->lookahead);
+    lexer->advance(lexer, false);
+
+    lexer->result_symbol = _delete_verb_delim;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan_normal_mode(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
 
@@ -588,7 +615,7 @@ struct Scanner {
 
     // Look for an inline verbatim delimiter and start VERB_MODE.
     if (valid_symbols[verb_delim]) {
-      return scan_start_verb_delim(lexer);
+      return scan_start_verb_delim(lexer, verb_delim);
     }
 
     res = scan_verbatim_body(lexer, valid_symbols);
@@ -614,6 +641,12 @@ struct Scanner {
 
     switch (code) {
       case ESCAPE_CATEGORY:
+        if (valid_symbols[_make_verb_delim]) {
+          return scan_make_verb_delim(lexer);
+        }
+        if (valid_symbols[_delete_verb_delim]) {
+          return scan_delete_verb_delim(lexer);
+        }
         if (valid_symbols[_cs_begin] || valid_symbols[_escaped_begin]) {
           return scan_escape(lexer);
         }
@@ -681,6 +714,11 @@ struct Scanner {
       case COMMENT_CATEGORY:
         if (valid_symbols[comment]) {
           return scan_comment(lexer);
+        }
+        break;
+      case VERB_DELIM_EXT_CATEGORY:
+        if (valid_symbols[short_verb_delim]) {
+          return scan_start_verb_delim(lexer, short_verb_delim);
         }
         break;
       default:

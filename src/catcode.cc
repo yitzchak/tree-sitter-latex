@@ -8,6 +8,18 @@ using std::pair;
 using std::map;
 using std::vector;
 
+// Category& CatCodeTable::operator[](const int32_t key) {
+//   return codes[key][level];
+// }
+
+void CatCodeTable::global_assign(const int32_t key, Category code) {
+  codes[key][UINT8_MAX] = code;
+}
+
+void CatCodeTable::global_erase(const int32_t key) {
+  codes[key].erase(UINT8_MAX);
+}
+
 Category CatCodeTable::operator[](const int32_t key) const {
   auto it = codes.find(key);
 

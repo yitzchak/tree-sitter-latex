@@ -25,7 +25,8 @@ enum Category: uint8_t {
   OTHER_CATEGORY,
   ACTIVE_CHAR_CATEGORY,
   COMMENT_CATEGORY,
-  INVALID_CATEGORY
+  INVALID_CATEGORY,
+  VERB_DELIM_EXT_CATEGORY
 };
 
 enum CategoryFlag: unsigned int {
@@ -54,7 +55,7 @@ struct CatCodeInterval {
 
 class CatCodeTable {
 protected:
-  uint8_t level;
+  uint8_t level; // 0 is the default catcode table, 1 is the file scope, 2-254 are the group scopes and 255 is the global scope.
   std::unordered_map<int32_t, std::map<uint8_t, Category>> codes;
 
 public:
@@ -67,6 +68,12 @@ public:
   void reset();
 
   void set(const std::vector<CatCodeInterval>& intervals);
+
+  void global_assign(const int32_t key, Category code);
+
+  void global_erase(const int32_t key);
+
+  // Category& operator[](const int32_t key);
 
   Category operator[](const int32_t key) const;
 

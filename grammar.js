@@ -89,6 +89,7 @@ module.exports = grammar({
     $._comment_body,
     $._cs_begin,
     $._cs_end,
+    $._delete_verb_delim,
     $._escaped_begin,
     $._escaped_end,
     $._expl_begin,
@@ -102,6 +103,7 @@ module.exports = grammar({
     $._luaexec_begin,
     $._LVerbatim_body,
     $._LVerbatimstar_body,
+    $._make_verb_delim,
     $._minted_body,
     $._scope_begin,
     $._scope_end,
@@ -122,6 +124,7 @@ module.exports = grammar({
     $.math_shift,
     $.parameter_char,
     $.r,
+    $.short_verb_delim,
     $.subscript,
     $.superscript,
     $.tag_comment,
@@ -181,11 +184,18 @@ module.exports = grammar({
       $.tikzpicture_env
     ),
 
-    verb: $ => cmd($,
-      $.verb_cs,
-      $.verb_delim,
-      alias($.verb_body, $.text),
-      $.verb_delim
+    verb: $ => choice(
+      cmd($,
+        $.verb_cs,
+        $.verb_delim,
+        alias($.verb_body, $.text),
+        $.verb_delim
+      ),
+      seq(
+        alias($.short_verb_delim, $.verb_delim),
+        alias($.verb_body, $.text),
+        $.verb_delim
+      )
     ),
 
     verb_cs: $ => cs($, $._verb_word),
@@ -212,6 +222,8 @@ module.exports = grammar({
       $.lstlisting_env,
       $.minted_env,
       $.verb,
+      $.MakeShortVerb,
+      $.DeleteShortVerb,
       $.alltt_env,
       $._display_math,
       $._inline_math,
@@ -1520,6 +1532,41 @@ module.exports = grammar({
 
     luacodestar_env_name: $ => 'luacode*',
 
+    // shortvrb
+
+    MakeShortVerb: $ => cmd_opt($,
+      $.MakeShortVerb_cs,
+      optional('*'),
+      alias($.make_verb_delim_group, $.group)
+    ),
+
+    make_verb_delim_group: $ => group($,
+      choice(
+        alias($._make_verb_delim, $.escaped),
+        repeat($._text_mode)
+      )
+    ),
+
+    MakeShortVerb_cs: $ => cs($, $._MakeShortVerb_word),
+
+    _MakeShortVerb_word: $ => 'MakeShortVerb',
+
+    DeleteShortVerb: $ => cmd_opt($,
+      $.DeleteShortVerb_cs,
+      alias($.delete_verb_delim_group, $.group)
+    ),
+
+    delete_verb_delim_group: $ => group($,
+      choice(
+        alias($._delete_verb_delim, $.escaped),
+        repeat($._text_mode)
+      )
+    ),
+
+    DeleteShortVerb_cs: $ => cs($, $._DeleteShortVerb_word),
+
+    _DeleteShortVerb_word: $ => 'DeleteShortVerb',
+
     // pgf/tikz
 
     tikzpicture_env: $ => seq(
@@ -1655,6 +1702,7 @@ module.exports = grammar({
           $._chardef_word,
           $._cite_word,
           $._DeclareOption_word,
+          $._DeleteShortVerb_word,
           $._dimension_word,
           $._documentclass_word,
           $._documentstyle_word,
@@ -1682,6 +1730,7 @@ module.exports = grammar({
           $._makeatletter_word,
           $._makeatother_word,
           $._makebox_word,
+          $._MakeShortVerb_word,
           $._mathbf_word,
           $._mathcal_word,
           $._mathit_word,
