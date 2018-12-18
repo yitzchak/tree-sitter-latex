@@ -138,7 +138,7 @@ module.exports = grammar({
       // $.catcode,
       // $.char,
       // $.chardef,
-      // $.cite,
+      $.cite,
       $.cs,
       // $.dimension_assign,
       $.ensuremath,
@@ -158,7 +158,7 @@ module.exports = grammar({
       // $.makebox,
       $.minipage_env,
       $.newcommand,
-      // $.newenvironment,
+      $.newenvironment,
       $.parameter_ref,
       // $.parbox,
       // $.ref,
@@ -168,8 +168,7 @@ module.exports = grammar({
       $.storage,
       $.string,
       $.text,
-      $.tikzpicture_env,
-      // $.eol
+      $.tikzpicture_env
     ),
 
     verb: $ => cmd($,
@@ -209,22 +208,22 @@ module.exports = grammar({
       $.group,
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
-      // $.emph,
-      // $.textrm,
-      // $.textsf,
-      // $.texttt,
-      // $.textmd,
-      // $.textbf,
-      // $.textup,
-      // $.textit,
-      // $.textsl,
-      // $.textsc,
+      $.emph,
+      $.textrm,
+      $.textsf,
+      $.texttt,
+      $.textmd,
+      $.textbf,
+      $.textup,
+      $.textit,
+      $.textsl,
+      $.textsc,
       $.ProvidesExpl,
-      // $.documentclass,
-      // $.documentstyle,
-      // $.section,
-      // $.use,
-      // $.footnote,
+      $.documentclass,
+      $.documentstyle,
+      $.section,
+      $.use,
+      $.footnote,
       $.end_inline_math,
       $.end_display_math,
       // LaTeX cls
@@ -232,19 +231,19 @@ module.exports = grammar({
       $.Provides,
       $.DeclareOption,
       $.semi_simple_group,
-      // $.PassOptionTo,
-      // $.At,
-      // $.ProcessOptions,
-      // $.ExecuteOptions,
-      // $.IfFileExists,
-      // $.Error,
-      // $.WarningInfo,
+      $.PassOptionTo,
+      $.At,
+      $.ProcessOptions,
+      $.ExecuteOptions,
+      $.IfFileExists,
+      $.Error,
+      $.WarningInfo,
       // hyperref package
-      // $.href,
-      // $.url,
-      // $.hyperbaseurl,
-      // $.hyperimage,
-      // $.hyperref
+      $.href,
+      $.url,
+      $.hyperbaseurl,
+      $.hyperimage,
+      $.hyperref
     ),
 
     // text_mode: $ => repeat1($._text_mode),
@@ -257,13 +256,13 @@ module.exports = grammar({
       alias($.math_group, $.group),
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
-      // $.mathrm,
-      // $.mathnormal,
-      // $.mathcal,
-      // $.mathbf,
-      // $.mathsf,
-      // $.mathtt,
-      // $.mathit,
+      $.mathrm,
+      $.mathnormal,
+      $.mathcal,
+      $.mathbf,
+      $.mathsf,
+      $.mathtt,
+      $.mathit,
       $.tag
     ),
 
@@ -894,18 +893,18 @@ module.exports = grammar({
 
     // LaTex preamble commands
 
-    documentclass: $ => prec.right(-2, cmd($,
+    documentclass: $ => cmd_opt($,
       $.documentclass_cs,
       optional($.brack_group),
       alias($.name_group, $.group),
       optional($.brack_group)
-    )),
+    ),
 
     documentclass_cs: $ => cs($, $._documentclass_word),
 
     _documentclass_word: $ => 'documentclass',
 
-    documentstyle: $ => cmd($,
+    documentstyle: $ => cmd_opt($,
       $.documentstyle_cs,
       optional($.brack_group),
       alias($.name_group, $.group)
@@ -915,12 +914,12 @@ module.exports = grammar({
 
     _documentstyle_word: $ => 'documentstyle',
 
-    use: $ => prec.right(-2, cmd($,
+    use: $ => cmd_opt($,
       $.use_cs,
       optional($.brack_group),
       alias($.name_group, $.group),
       optional($.brack_group)
-    )),
+    ),
 
     use_cs: $ => cs($, $._use_word),
 
@@ -941,7 +940,7 @@ module.exports = grammar({
 
     _newcommand_word: $ => /(DeclareRobust|Check)Command|(new|provide|renew)command/,
 
-    newenvironment: $ => cmd($,
+    newenvironment: $ => cmd_opt($,
       $.newenvironment_cs,
       optional('*'),
       alias($.name_group, $.group),

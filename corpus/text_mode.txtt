@@ -213,9 +213,7 @@ sections
 
 (document
   (section (cs) (group (l) (text) (r)))
-  (text)
   (section (cs) (group (l) (text) (r)))
-  (text)
   (section (cs) (group (l) (text) (r))))
 
 =================

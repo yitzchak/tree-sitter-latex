@@ -92,9 +92,8 @@
     (group (l) (text) (r))
     (group (l) (text) (r))
     (group (l) (text) (r)))
-  (text)
   (cs))
-  
+
 ==============================
 [ExplSyntaxOn] colon/underscore is letter in text group
 ==============================
