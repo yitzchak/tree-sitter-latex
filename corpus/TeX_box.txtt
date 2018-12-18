@@ -16,7 +16,7 @@ hbox with spread
 (document
   (mkbox
     (cs)
-    (dimension (fixed) (unit))
+    (dimension)
     (group (l) (text) (r))))
 
 =======================
@@ -27,7 +27,7 @@ hbox with to
 (document
   (mkbox
     (cs)
-    (dimension (fixed) (unit))
+    (dimension)
     (group (l) (text) (r))))
 
 =======================
@@ -41,7 +41,7 @@ setbox
     (decimal)
     (mkbox
       (cs)
-      (dimension (fixed) (unit))
+      (dimension)
       (group (l) (text) (r)))))
 
 =======================
@@ -62,7 +62,7 @@ raise
 (document
   (movebox
     (cs)
-    (dimension (fixed) (unit))
+    (dimension)
     (usebox
       (cs)
       (decimal))))

@@ -1,3 +1,5 @@
+const FIXED_PATTERN = /([+-]?\d+(\.\d*)?|[+-]?\.\d+|[+-])/
+
 function cs ($, name) {
   return seq($._cs_begin, name, $._cs_end)
 }
@@ -127,6 +129,10 @@ module.exports = grammar({
     $.tag_comment,
   ],
 
+  conflicts: $ => [
+    [$.text, $.dimension, $.fixed]
+  ],
+
   rules: {
     document: $ => repeat($._text_mode),
 
@@ -140,7 +146,7 @@ module.exports = grammar({
       // $.chardef,
       $.cite,
       $.cs,
-      // $.dimension_assign,
+      $.dimension_assign,
       $.ensuremath,
       $.escaped,
       $.ExplSyntaxOff,
@@ -155,14 +161,14 @@ module.exports = grammar({
       $.luaexec,
       $.makeatletter,
       $.makeatother,
-      // $.makebox,
+      $.makebox,
       $.minipage_env,
       $.newcommand,
       $.newenvironment,
       $.parameter_ref,
-      // $.parbox,
+      $.parbox,
       // $.ref,
-      // $.savebox,
+      $.savebox,
       // $.setbox,
       // $.setlength,
       $.storage,
@@ -718,10 +724,10 @@ module.exports = grammar({
 
     // TeX dimension commands
 
-    dimension_assign: $ => cmd($,
+    dimension_assign: $ => cmd_opt($,
       $.dimension_cs,
       optional('='),
-      $.dimension
+      $._dimension_with_cs
     ),
 
     glue_assign: $ => cmd($,
@@ -845,14 +851,16 @@ module.exports = grammar({
       $._number
     ),
 
-    dimension: $ => seq(
-      optional($.fixed),
-      choice(
-        $.unit,
-        $.box_dimension_ref,
-        alias($.dimension_cs, $.cs),
-        $.cs
-      )
+    _dimension: $ => choice(
+      $.dimension,
+      seq(optional($.fixed), $.box_dimension_ref),
+      seq($.fixed, $.cs)
+    ),
+
+    _dimension_with_cs: $ => choice(
+      $.dimension,
+      seq(optional($.fixed), $.box_dimension_ref),
+      seq(optional($.fixed), $.cs)
     ),
 
     // TeX character functions
@@ -1524,9 +1532,9 @@ module.exports = grammar({
 
     _parameter: $ => choice($.group, $.cs),
 
-    dimension_group: $ => group($, $.dimension),
+    dimension_group: $ => group($, choice($._dimension, repeat($._text_mode))),
 
-    dimension_brack_group: $ => brack_group($, $.dimension),
+    dimension_brack_group: $ => brack_group($, choice($._dimension, repeat($._text_mode))),
 
     glue_group: $ => group($, $.glue),
 
@@ -1710,9 +1718,14 @@ module.exports = grammar({
     _egroup_word: $ => 'egroup',
 
     // fi introduced by LuaTeX
-    unit: $ => /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/,
+    dimension: $ => token(
+        seq(
+          FIXED_PATTERN,
+          /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/
+      )
+    ),
 
-    fixed: $ => /[+-]?([0-9]+(\.[0-9]*)?|[0-9]?\.[0-9]+)/,
+    fixed: $ => FIXED_PATTERN,
 
     _number: $ => choice(
       $.decimal,
