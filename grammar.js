@@ -155,8 +155,8 @@ module.exports = grammar({
       $.escaped,
       $.ExplSyntaxOff,
       $.ExplSyntaxOn,
-      // $.glue_assign,
-      // $.glue_space,
+      $.glue_assign,
+      $.glue_space,
       $.include,
       $.lua,
       $.luacode_env,
@@ -173,7 +173,7 @@ module.exports = grammar({
       $.parbox,
       $.ref,
       $.savebox,
-      // $.setlength,
+      $.setlength,
       $.storage,
       $.string,
       $.text,
@@ -726,10 +726,10 @@ module.exports = grammar({
     dimension_assign: $ => cmd_opt($,
       $.dimension_cs,
       optional('='),
-      $._dimension_with_cs
+      $._dimension
     ),
 
-    glue_assign: $ => cmd($,
+    glue_assign: $ => cmd_opt($,
       $.glue_cs,
       optional('='),
       $.glue
@@ -743,7 +743,7 @@ module.exports = grammar({
 
     _dimension_word: $ => /(h|v)(offset|size|badness|fuzz)|boxmaxdepth|displayindent|displaywidth|emergencystretch|hangindent|lineskiplimit|maxdepth|normallineskiplimit|overfullrule|page(fil{1,3)stretch|page(depth|goal|shrink|total)|parindent|predisplaysize|prevdepth|splitmaxdepth/,
 
-    glue_space: $ => cmd($,
+    glue_space: $ => cmd_opt($,
       $.glue_space_cs,
       $.glue
     ),
@@ -757,7 +757,7 @@ module.exports = grammar({
     //   optional(
     //     seq(
     //       choice('to', 'spread'),
-    //       $._dimension_with_cs
+    //       $._dimension
     //     )
     //   ),
     //   $._parameter
@@ -795,7 +795,7 @@ module.exports = grammar({
     //
     // movebox: $ => cmd($,
     //   $.movebox_cs,
-    //   $._dimension_with_cs,
+    //   $._dimension,
     //   $._box,
     // ),
     //
@@ -827,23 +827,23 @@ module.exports = grammar({
     //   $.box_dimension_cs,
     //   choice($._number, $.cs, $.parameter_ref),
     //   optional('='),
-    //   $._dimension_with_cs
+    //   $._dimension
     // ),
     //
     // box_dimension_cs: $ => cs($, $._box_dimension_word),
     //
     // _box_dimension_word: $ => /ht|dp|wd/,
 
-    glue: $ => choice(
+    glue: $ => /*choice(
       seq(
         optional($.fixed),
         alias($.glue_cs, $.cs)
-      ),
+      ),*/
       seq(
-        $.dimension,
-        optional(seq('plus', $.dimension)),
-        optional(seq('minus', $.dimension))
-      )
+        $._dimension,
+        optional(seq('plus', $._dimension)),
+        optional(seq('minus', $._dimension))
+      // )
     ),
 
     // box_dimension_ref: $ => cmd($,
@@ -854,13 +854,7 @@ module.exports = grammar({
     _dimension: $ => choice(
       $.dimension,
       // seq(optional($.fixed), $.box_dimension_ref),
-      seq($.fixed, $.cs)
-    ),
-
-    _dimension_with_cs: $ => choice(
-      $.dimension,
-      // seq(optional($.fixed), $.box_dimension_ref),
-      seq(optional($.fixed), $.cs)
+      prec.right(-1, seq(optional($.fixed), $.cs))
     ),
 
     // TeX character functions
@@ -1034,8 +1028,8 @@ module.exports = grammar({
 
     setlength: $ => cmd_opt($,
       $.setlength_cs,
-      $._cs_parameter,
-      alias($.glue_group, $.group)
+      $._parameter,
+      optional(alias($.glue_group, $.group))
     ),
 
     setlength_cs: $ => cs($, $._setlength_word),
@@ -1532,13 +1526,33 @@ module.exports = grammar({
 
     _parameter: $ => choice($.group, $.cs),
 
-    dimension_group: $ => group($, choice($._dimension, repeat($._text_mode))),
+    dimension_group: $ => group($,
+      seq(
+        optional($._dimension),
+        repeat($._text_mode)
+      )
+    ),
 
-    dimension_brack_group: $ => brack_group($, choice($._dimension, repeat($._text_mode))),
+    dimension_brack_group: $ => brack_group($,
+      seq(
+        optional($._dimension),
+        repeat($._text_mode)
+      )
+    ),
 
-    glue_group: $ => group($, $.glue),
+    glue_group: $ => group($,
+      seq(
+        optional($.glue),
+        repeat($._text_mode)
+      )
+    ),
 
-    glue_brack_group: $ => brack_group($, $.glue),
+    glue_brack_group: $ => brack_group($,
+      seq(
+        optional($.glue),
+        repeat($._text_mode)
+      )
+    ),
 
     _cs_parameter: $ => choice(
       $.begin_display_math,
