@@ -1,6 +1,7 @@
 #ifndef CATCODE_HH_
 #define CATCODE_HH_
 
+#include <bitset>
 #include <map>
 #include <unordered_map>
 #include <vector>
@@ -26,7 +27,8 @@ enum Category: uint8_t {
   ACTIVE_CHAR_CATEGORY,
   COMMENT_CATEGORY,
   INVALID_CATEGORY,
-  VERB_DELIM_EXT_CATEGORY
+  VERB_DELIM_EXT_CATEGORY,
+  CATEGORY_COUNT
 };
 
 enum CategoryFlag: unsigned int {
@@ -47,6 +49,8 @@ enum CategoryFlag: unsigned int {
   COMMENT_FLAG = 1 << COMMENT_CATEGORY,
   INVALID_FLAG = 1 << INVALID_CATEGORY
 };
+
+typedef std::bitset<CATEGORY_COUNT> CategoryFlags;
 
 struct CatCodeInterval {
   int32_t begin, end;

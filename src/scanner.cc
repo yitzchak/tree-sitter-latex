@@ -1,4 +1,3 @@
-#include <bitset>
 #include <string>
 #include <vector>
 
@@ -9,7 +8,6 @@
 
 namespace LaTeX {
 
-using std::bitset;
 using std::string;
 using std::vector;
 
@@ -365,7 +363,7 @@ struct Scanner {
     return true;
   }
 
-  int match_length(TSLexer *lexer, string value, bitset<16> terminator = ~0) {
+  int match_length(TSLexer *lexer, string value, CategoryFlags terminator = ~0) {
     size_t length = 0;
 
     for (char ch: value) {
@@ -449,7 +447,6 @@ struct Scanner {
   }
 
   bool scan_comment(TSLexer *lexer) {
-    // bitset<16> comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
     string comment_type;
 
     // Skip the comment char
