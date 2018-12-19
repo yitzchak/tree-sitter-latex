@@ -1552,7 +1552,10 @@ module.exports = grammar({
     MakeShortVerb: $ => cmd_opt($,
       $.MakeShortVerb_cs,
       optional('*'),
-      alias($.make_verb_delim_group, $.group)
+      choice(
+        alias($.make_verb_delim, $.escaped),
+        alias($.make_verb_delim_group, $.group)
+      )
     ),
 
     make_verb_delim_group: $ => group($,
@@ -1568,7 +1571,10 @@ module.exports = grammar({
 
     DeleteShortVerb: $ => cmd_opt($,
       $.DeleteShortVerb_cs,
-      alias($.delete_verb_delim_group, $.group)
+      choice(
+        alias($.delete_verb_delim, $.escaped),
+        alias($.delete_verb_delim_group, $.group)
+      )
     ),
 
     delete_verb_delim_group: $ => group($,
