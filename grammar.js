@@ -183,6 +183,8 @@ module.exports = grammar({
       $.setlength,
       $.storage,
       $.string,
+      // tabu behaves like array in math mode and tabular in text mode
+      $.tabu_env,
       // tabular is allowed in math mode
       $.tabular_env,
       $.tabularstar_env,
@@ -1139,7 +1141,7 @@ module.exports = grammar({
 
     tabular_env_group: $ => group($, alias($.tabular_env_name, $.name)),
 
-    tabular_env_name: $ => 'tabular',
+    tabular_env_name: $ => /tabular|longtable|supertabular/,
 
     tabularstar_env: $ => seq(
       alias($.tabularstar_begin, $.begin),
@@ -1149,8 +1151,8 @@ module.exports = grammar({
 
     tabularstar_begin: $ => begin_cmd($,
       alias($.tabularstar_env_group, $.group),
-      optional($.brack_group),
       alias($.dimension_group, $.group),
+      optional($.brack_group),
       $.group
     ),
 
@@ -1160,7 +1162,28 @@ module.exports = grammar({
 
     tabularstar_env_group: $ => group($, alias($.tabularstar_env_name, $.name)),
 
-    tabularstar_env_name: $ => 'tabular*',
+    tabularstar_env_name: $ => /tabular[*xy]|supertabular\*/,
+
+    tabu_env: $ => seq(
+      alias($.tabu_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.tabu_end, $.end), $.exit)
+    ),
+
+    tabu_begin: $ => begin_cmd($,
+      alias($.tabu_env_group, $.group),
+      optional(seq(choice('to', 'spread'), $._dimension)),
+      optional($.brack_group),
+      $.group
+    ),
+
+    tabu_end: $ => end_cmd($,
+      alias($.tabu_env_group, $.group),
+    ),
+
+    tabu_env_group: $ => group($, alias($.tabu_env_name, $.name)),
+
+    tabu_env_name: $ => /(long)?tabu/,
 
     document_env: $ => seq(
       alias($.document_begin, $.begin),
