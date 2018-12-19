@@ -128,6 +128,7 @@ module.exports = grammar({
     $.tag_comment,
     $.verb_body,
     $.verb_delim,
+    $.verb_end_delim,
     $.verbatim_body,
     $.Verbatim_body,
     $.verbatimstar_body,
@@ -191,12 +192,12 @@ module.exports = grammar({
         $.verb_cs,
         $.verb_delim,
         alias($.verb_body, $.text),
-        $.verb_delim
+        alias($.verb_end_delim, $.verb_delim)
       ),
       seq(
         alias($.short_verb_delim, $.verb_delim),
         alias($.verb_body, $.text),
-        $.verb_delim
+        alias($.verb_end_delim, $.verb_delim)
       )
     ),
 
@@ -1563,7 +1564,7 @@ module.exports = grammar({
 
     MakeShortVerb_cs: $ => cs($, $._MakeShortVerb_word),
 
-    _MakeShortVerb_word: $ => 'MakeShortVerb',
+    _MakeShortVerb_word: $ => /(Make|Define)ShortVerb/,
 
     DeleteShortVerb: $ => cmd_opt($,
       $.DeleteShortVerb_cs,
@@ -1579,7 +1580,7 @@ module.exports = grammar({
 
     DeleteShortVerb_cs: $ => cs($, $._DeleteShortVerb_word),
 
-    _DeleteShortVerb_word: $ => 'DeleteShortVerb',
+    _DeleteShortVerb_word: $ => /(Delete|Undefine)ShortVerb/,
 
     // pgf/tikz
 

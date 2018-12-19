@@ -61,6 +61,7 @@ enum SymbolType {
   tag_comment,
   verb_body,
   verb_delim,
+  verb_end_delim,
   verbatim_body,
   Verbatim_body,
   verbatimstar_body,
@@ -86,8 +87,7 @@ struct VerbatimEnv {
 enum ScannerMode: uint8_t {
   CS_MODE,
   ESCAPED_MODE,
-  NORMAL_MODE,
-  VERB_MODE
+  NORMAL_MODE
 };
 
 struct Scanner {
@@ -321,11 +321,10 @@ struct Scanner {
     buf >> mode >> start_delim >> catcode_table;
   }
 
-  bool scan_start_verb_delim(TSLexer *lexer, SymbolType symbol) {
+  bool scan_verb_start_delim(TSLexer *lexer, SymbolType symbol) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
     if (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
-      mode = VERB_MODE;
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
       lexer->result_symbol = symbol;
@@ -336,18 +335,18 @@ struct Scanner {
     return false;
   }
 
-  bool scan_end_verb_delim(TSLexer *lexer) {
+  bool scan_verb_end_delim(TSLexer *lexer) {
     if (lexer->lookahead == start_delim) {
       mode = NORMAL_MODE;
       lexer->advance(lexer, false);
-      lexer->result_symbol = verb_delim;
+      lexer->result_symbol = verb_end_delim;
       lexer->mark_end(lexer);
       return true;
     }
 
     if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       mode = NORMAL_MODE;
-      lexer->result_symbol = verb_delim; // don't eat the newline (for consistency)
+      lexer->result_symbol = verb_end_delim; // don't eat the newline (for consistency)
       lexer->mark_end(lexer);
       return true;
     }
@@ -548,20 +547,6 @@ struct Scanner {
     return true;
   }
 
-  bool scan_verb_mode(TSLexer *lexer, const bool *valid_symbols) {
-    // Look for an inline verbatim delimiter and end the verbatim.
-    if (valid_symbols[verb_delim]) {
-      return scan_end_verb_delim(lexer);
-    }
-
-    // Scan an inline verbatim body.
-    if (valid_symbols[verb_body]) {
-      return scan_verb_body(lexer);
-    }
-
-    return false;
-  }
-
   inline bool scan_empty_symbol(TSLexer *lexer, SymbolType symbol) {
     lexer->result_symbol = symbol;
     lexer->mark_end(lexer);
@@ -643,9 +628,19 @@ struct Scanner {
     bool res = scan_catcode_commands(lexer, valid_symbols);
     if (res) return true;
 
-    // Look for an inline verbatim delimiter and start VERB_MODE.
+    // Look for an inline verbatim.
     if (valid_symbols[verb_delim]) {
-      return scan_start_verb_delim(lexer, verb_delim);
+      return scan_verb_start_delim(lexer, verb_delim);
+    }
+
+    // Look for an inline verbatim delimiter and end the verbatim.
+    if (valid_symbols[verb_end_delim]) {
+      return scan_verb_end_delim(lexer);
+    }
+
+    // Scan an inline verbatim body.
+    if (valid_symbols[verb_body]) {
+      return scan_verb_body(lexer);
     }
 
     res = scan_verbatim_body(lexer, valid_symbols);
@@ -748,7 +743,7 @@ struct Scanner {
         break;
       case VERB_DELIM_EXT_CATEGORY:
         if (valid_symbols[short_verb_delim]) {
-          return scan_start_verb_delim(lexer, short_verb_delim);
+          return scan_verb_start_delim(lexer, short_verb_delim);
         }
         break;
       default:
@@ -765,8 +760,6 @@ struct Scanner {
         return scan_cs_mode(lexer, valid_symbols);
       case ESCAPED_MODE:
         return scan_escaped_mode(lexer, valid_symbols);
-      case VERB_MODE:
-        return scan_verb_mode(lexer, valid_symbols);
       default:
         return scan_normal_mode(lexer, valid_symbols);
     }
