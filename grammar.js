@@ -86,9 +86,10 @@ module.exports = grammar({
     $.__ccc_at_other,
     $.__ccc_expl_begin,
     $.__ccc_expl_end,
+    $.__ccc_l3doc,
     $.__ccc_luacode,
     $.__ccc_luadirect,
-    $.__ccc_luaexec_begin,
+    $.__ccc_luaexec,
     $.__ccc_pipe_verb_delim,
     $._cs_begin,
     $._cs_end,
@@ -935,10 +936,15 @@ module.exports = grammar({
       optional($.brack_group),
       choice(
         alias($.name_group, $.group),
+        seq(alias($.l3doc_name_group, $.group), $.__ccc_l3doc),
         seq(alias($.pipe_name_group, $.group), $.__ccc_pipe_verb_delim),
       ),
       optional($.brack_group)
     ),
+
+    l3doc_name_group: $ => group($, alias($.l3doc_class_name, $.name)),
+
+    l3doc_class_name: $ => /l3doc(-TUB)?/,
 
     pipe_name_group: $ => group($, alias($.pipe_class_name, $.name)),
 
@@ -1495,7 +1501,7 @@ module.exports = grammar({
 
     _luaexec_parameter: $ => choice($.cs, alias($.luaexec_group, $.group)),
 
-    luaexec_group: $ => group($, $.__ccc_luaexec_begin, repeat($._text_mode)),
+    luaexec_group: $ => group($, $.__ccc_luaexec, repeat($._text_mode)),
 
     luacode_env: $ => seq(
       alias($.luacode_begin, $.begin),
@@ -1662,6 +1668,7 @@ module.exports = grammar({
             $.comment_env_name,
             $.display_math_env_name,
             $.inline_math_env_name,
+            $.l3doc_class_name,
             $.lstlisting_env_name,
             $.luacode_env_name,
             $.luacodestar_env_name,

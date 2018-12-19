@@ -400,3 +400,17 @@ ltxguide class triggers pipe verb delimiter
     (cs)
     (group (l) (name) (r)))
   (verb (verb_delim) (text) (verb_delim)))
+
+===============================
+l3doc class triggers pipe and double quote verb delimiter
+==============================
+\documentclass{l3doc}
+|foo|
+"bar"
+-------------------------------
+(document
+  (documentclass
+    (cs)
+    (group (l) (name) (r)))
+  (verb (verb_delim) (text) (verb_delim))
+  (verb (verb_delim) (text) (verb_delim)))

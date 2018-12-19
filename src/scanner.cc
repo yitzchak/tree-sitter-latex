@@ -19,9 +19,10 @@ enum SymbolType {
   __ccc_at_other,
   __ccc_expl_begin,
   __ccc_expl_end,
+  __ccc_l3doc,
   __ccc_luacode,
   __ccc_luadirect,
-  __ccc_luaexec_begin,
+  __ccc_luaexec,
   __ccc_pipe_verb_delim,
   _cs_begin,
   _cs_end,
@@ -91,6 +92,28 @@ enum ScannerMode: uint8_t {
 
 struct Scanner {
   vector<CatCodeCommand> catcode_commands = {
+    { // alltt catcode table
+      __ccc_alltt,
+      false,
+      {
+        {
+          {'\t',   '\t',   OTHER_CATEGORY},
+          {' ',    ' ',    OTHER_CATEGORY},
+          {'#',   '#',     OTHER_CATEGORY},
+          {'$',   '$',     OTHER_CATEGORY},
+          {'%',   '%',     OTHER_CATEGORY},
+          {'&',   '&',     OTHER_CATEGORY},
+          {'A',   'Z',     LETTER_CATEGORY},
+          {'\\',  '\\',    ESCAPE_CATEGORY},
+          {'^',   '^',     OTHER_CATEGORY},
+          {'_',   '_',     OTHER_CATEGORY},
+          {'a',   'z',     LETTER_CATEGORY},
+          {'{',   '{',     BEGIN_CATEGORY},
+          {'}',   '}',     END_CATEGORY},
+          {'~',   '~',     OTHER_CATEGORY}
+        }
+      }
+    },
     {
       __ccc_at_letter,
       false,
@@ -143,6 +166,35 @@ struct Scanner {
         }
       }
     },
+    { // Catcodes for the l3doc class
+      __ccc_l3doc,
+      true,
+      {
+        {
+          {'"',   '"',     VERB_DELIM_EXT_CATEGORY},
+          {'|',   '|',     VERB_DELIM_EXT_CATEGORY}
+        }
+      }
+    },
+    { // luacode catcode table
+      __ccc_luacode,
+      false,
+      {
+        {
+          {1,      '@',    OTHER_CATEGORY},
+          {'A',    'Z',    LETTER_CATEGORY},
+          {'[',    '[',    OTHER_CATEGORY},
+          {'\\',   '\\',   ESCAPE_CATEGORY},
+          {']',    '`',    OTHER_CATEGORY},
+          {'a',    'z',    LETTER_CATEGORY},
+          {'{',    '{',    BEGIN_CATEGORY},
+          {'|',    '|',    OTHER_CATEGORY},
+          {'}',    '}',    END_CATEGORY},
+          {'~',    '~',    OTHER_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}
+        }
+      }
+    },
     { // \luadirect catcode table
       __ccc_luadirect,
       false,
@@ -167,7 +219,7 @@ struct Scanner {
       }
     },
     { // luaexec catcode table
-      __ccc_luaexec_begin,
+      __ccc_luaexec,
       false,
       {
         {
@@ -189,47 +241,6 @@ struct Scanner {
         }
       }
     },
-    { // luacode catcode table
-      __ccc_luacode,
-      false,
-      {
-        {
-          {1,      '@',    OTHER_CATEGORY},
-          {'A',    'Z',    LETTER_CATEGORY},
-          {'[',    '[',    OTHER_CATEGORY},
-          {'\\',   '\\',   ESCAPE_CATEGORY},
-          {']',    '`',    OTHER_CATEGORY},
-          {'a',    'z',    LETTER_CATEGORY},
-          {'{',    '{',    BEGIN_CATEGORY},
-          {'|',    '|',    OTHER_CATEGORY},
-          {'}',    '}',    END_CATEGORY},
-          {'~',    '~',    OTHER_CATEGORY},
-          {'\x7f', '\x7f', INVALID_CATEGORY}
-        }
-      }
-    },
-    { // alltt catcode table
-      __ccc_alltt,
-      false,
-      {
-        {
-          {'\t',   '\t',   OTHER_CATEGORY},
-          {' ',    ' ',    OTHER_CATEGORY},
-          {'#',   '#',     OTHER_CATEGORY},
-          {'$',   '$',     OTHER_CATEGORY},
-          {'%',   '%',     OTHER_CATEGORY},
-          {'&',   '&',     OTHER_CATEGORY},
-          {'A',   'Z',     LETTER_CATEGORY},
-          {'\\',  '\\',    ESCAPE_CATEGORY},
-          {'^',   '^',     OTHER_CATEGORY},
-          {'_',   '_',     OTHER_CATEGORY},
-          {'a',   'z',     LETTER_CATEGORY},
-          {'{',   '{',     BEGIN_CATEGORY},
-          {'}',   '}',     END_CATEGORY},
-          {'~',   '~',     OTHER_CATEGORY}
-        }
-      }
-    },
     {
       __ccc_pipe_verb_delim,
       true,
@@ -238,7 +249,7 @@ struct Scanner {
           {'|',   '|',     VERB_DELIM_EXT_CATEGORY}
         }
       }
-    }
+    },
   };
 
   ScannerMode mode = NORMAL_MODE;
