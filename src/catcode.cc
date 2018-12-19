@@ -13,11 +13,11 @@ using std::vector;
 // }
 
 void CatCodeTable::assign(const int32_t key, Category code, bool global) {
-  codes[key][(global) ? UINT8_MAX : level] = code;
+  codes[key][(global) ? 1 : level] = code;
 }
 
 void CatCodeTable::erase(const int32_t key, bool global) {
-  codes[key].erase((global) ? UINT8_MAX : level);
+  codes[key].erase((global) ? 1 : level);
 }
 
 Category CatCodeTable::operator[](const int32_t key) const {
@@ -50,7 +50,7 @@ void CatCodeTable::reset() {
 }
 
 void CatCodeTable::assign(const vector<CatCodeInterval>& intervals, bool global) {
-  uint8_t _level = (global) ? UINT8_MAX : level;
+  uint8_t _level = (global) ? 1 : level;
 
   for (const CatCodeInterval& interval: intervals) {
     for (int32_t ch = interval.begin; ch <= interval.end; ch++) {

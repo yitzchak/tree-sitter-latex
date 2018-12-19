@@ -55,7 +55,7 @@ struct CatCodeInterval {
 
 class CatCodeTable {
 protected:
-  uint8_t level; // 0 is the default catcode table, 1 is the file scope, 2-254 are the group scopes and 255 is the global scope.
+  uint8_t level; // 0 is the default catcode table, 1 is the global scope, 2-255 are the group scopes.
   std::unordered_map<int32_t, std::map<uint8_t, Category>> codes;
 
 public:

@@ -14,47 +14,44 @@ using std::string;
 using std::vector;
 
 enum SymbolType {
-  _alltt_begin,
-  _at_letter,
-  _at_other,
-  _BVerbatim_body,
-  _BVerbatimstar_body,
-  _comment_body,
+  __ccc_alltt,
+  __ccc_at_letter,
+  __ccc_at_other,
+  __ccc_expl_begin,
+  __ccc_expl_end,
+  __ccc_luacode,
+  __ccc_luadirect,
+  __ccc_luaexec_begin,
+  __ccc_pipe_verb_delim,
   _cs_begin,
   _cs_end,
-  _delete_verb_delim,
   _escaped_begin,
   _escaped_end,
-  _expl_begin,
-  _expl_end,
-  _filecontents_body,
-  _filecontentsstar_body,
-  _lstlisting_body,
-  _luacode_begin,
-  _luacodestar_body,
-  _luadirect_begin,
-  _luaexec_begin,
-  _LVerbatim_body,
-  _LVerbatimstar_body,
-  _make_verb_delim,
-  _minted_body,
   _scope_begin,
   _scope_end,
   _space,
-  _verbatim_body,
-  _Verbatim_body,
-  _verbatimstar_body,
-  _Verbatimstar_body,
   active_char,
   alignment_tab,
   arara_comment,
   bib_comment,
+  BVerbatim_body,
+  BVerbatimstar_body,
+  comment_body,
   comment,
+  delete_verb_delim,
   eol,
   exit,
+  filecontents_body,
+  filecontentsstar_body,
   l,
+  lstlisting_body,
+  luacodestar_body,
+  LVerbatim_body,
+  LVerbatimstar_body,
   magic_comment,
+  make_verb_delim,
   math_shift,
+  minted_body,
   parameter_char,
   r,
   short_verb_delim,
@@ -62,7 +59,11 @@ enum SymbolType {
   superscript,
   tag_comment,
   verb_body,
-  verb_delim
+  verb_delim,
+  verbatim_body,
+  Verbatim_body,
+  verbatimstar_body,
+  Verbatimstar_body,
 };
 
 struct CatCodeCommand {
@@ -91,7 +92,7 @@ enum ScannerMode: uint8_t {
 struct Scanner {
   vector<CatCodeCommand> catcode_commands = {
     {
-      _at_letter,
+      __ccc_at_letter,
       false,
       {
         {
@@ -100,7 +101,7 @@ struct Scanner {
       }
     },
     {
-      _at_other,
+      __ccc_at_other,
       false,
       {
         {
@@ -109,7 +110,7 @@ struct Scanner {
       }
     },
     {
-      _expl_begin,
+      __ccc_expl_begin,
       false,
       {
         {
@@ -126,7 +127,7 @@ struct Scanner {
       }
     },
     { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
-      _expl_end,
+      __ccc_expl_end,
       false,
       {
         {
@@ -143,7 +144,7 @@ struct Scanner {
       }
     },
     { // \luadirect catcode table
-      _luadirect_begin,
+      __ccc_luadirect,
       false,
       {
         {
@@ -166,7 +167,7 @@ struct Scanner {
       }
     },
     { // luaexec catcode table
-      _luaexec_begin,
+      __ccc_luaexec_begin,
       false,
       {
         {
@@ -189,7 +190,7 @@ struct Scanner {
       }
     },
     { // luacode catcode table
-      _luacode_begin,
+      __ccc_luacode,
       false,
       {
         {
@@ -208,7 +209,7 @@ struct Scanner {
       }
     },
     { // alltt catcode table
-      _alltt_begin,
+      __ccc_alltt,
       false,
       {
         {
@@ -226,6 +227,15 @@ struct Scanner {
           {'{',   '{',     BEGIN_CATEGORY},
           {'}',   '}',     END_CATEGORY},
           {'~',   '~',     OTHER_CATEGORY}
+        }
+      }
+    },
+    {
+      __ccc_pipe_verb_delim,
+      true,
+      {
+        {
+          {'|',   '|',     VERB_DELIM_EXT_CATEGORY}
         }
       }
     }
@@ -256,20 +266,20 @@ struct Scanner {
   };
 
   vector<VerbatimEnv> verbatims = {
-    {_BVerbatim_body, "BVerbatim"},
-    {_BVerbatimstar_body, "BVerbatim*"},
-    {_comment_body, "comment"},
-    {_filecontents_body, "filecontents"},
-    {_filecontentsstar_body, "filecontents*"},
-    {_lstlisting_body, "lstlisting"},
-    {_luacodestar_body, "luacode*"},
-    {_LVerbatim_body, "LVerbatim"},
-    {_LVerbatimstar_body, "LVerbatim*"},
-    {_minted_body, "minted"},
-    {_verbatim_body, "verbatim"},
-    {_Verbatim_body, "Verbatim"},
-    {_verbatimstar_body, "verbatim*"},
-    {_Verbatimstar_body, "Verbatim*"}
+    {BVerbatim_body, "BVerbatim"},
+    {BVerbatimstar_body, "BVerbatim*"},
+    {comment_body, "comment"},
+    {filecontents_body, "filecontents"},
+    {filecontentsstar_body, "filecontents*"},
+    {lstlisting_body, "lstlisting"},
+    {luacodestar_body, "luacode*"},
+    {LVerbatim_body, "LVerbatim"},
+    {LVerbatimstar_body, "LVerbatim*"},
+    {minted_body, "minted"},
+    {verbatim_body, "verbatim"},
+    {Verbatim_body, "Verbatim"},
+    {verbatimstar_body, "verbatim*"},
+    {Verbatimstar_body, "Verbatim*"}
   };
 
   Scanner() {}
@@ -598,7 +608,7 @@ struct Scanner {
     catcode_table.assign(lexer->lookahead, VERB_DELIM_EXT_CATEGORY, true);
     lexer->advance(lexer, false);
 
-    lexer->result_symbol = _make_verb_delim;
+    lexer->result_symbol = make_verb_delim;
     lexer->mark_end(lexer);
 
     return true;
@@ -610,7 +620,7 @@ struct Scanner {
     catcode_table.erase(lexer->lookahead, true);
     lexer->advance(lexer, false);
 
-    lexer->result_symbol = _delete_verb_delim;
+    lexer->result_symbol = delete_verb_delim;
     lexer->mark_end(lexer);
 
     return true;
@@ -650,10 +660,10 @@ struct Scanner {
 
     switch (code) {
       case ESCAPE_CATEGORY:
-        if (valid_symbols[_make_verb_delim]) {
+        if (valid_symbols[make_verb_delim]) {
           return scan_make_verb_delim(lexer);
         }
-        if (valid_symbols[_delete_verb_delim]) {
+        if (valid_symbols[delete_verb_delim]) {
           return scan_delete_verb_delim(lexer);
         }
         if (valid_symbols[_cs_begin] || valid_symbols[_escaped_begin]) {

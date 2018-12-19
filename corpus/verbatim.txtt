@@ -376,3 +376,27 @@ MakeShortVerb and DeleteShortVerb
   (DeleteShortVerb (cs) (group (l) (escaped) (r)))
   (text)
   (verb (verb_delim) (text) (verb_delim)))
+
+===============================
+ltxdoc class triggers pipe verb delimiter
+==============================
+\documentclass{ltxdoc}
+|foo|
+-------------------------------
+(document
+  (documentclass
+    (cs)
+    (group (l) (name) (r)))
+  (verb (verb_delim) (text) (verb_delim)))
+
+===============================
+ltxguide class triggers pipe verb delimiter
+==============================
+\documentclass{ltxguide}
+|foo|
+-------------------------------
+(document
+  (documentclass
+    (cs)
+    (group (l) (name) (r)))
+  (verb (verb_delim) (text) (verb_delim)))
