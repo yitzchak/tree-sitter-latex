@@ -67,6 +67,7 @@ enum SymbolType {
 
 struct CatCodeCommand {
   SymbolType symbol;
+  bool global;
   vector<CatCodeInterval> intervals;
 };
 
@@ -91,6 +92,7 @@ struct Scanner {
   vector<CatCodeCommand> catcode_commands = {
     {
       _at_letter,
+      false,
       {
         {
           {'@',   '@',   LETTER_CATEGORY}
@@ -99,6 +101,7 @@ struct Scanner {
     },
     {
       _at_other,
+      false,
       {
         {
           {'@',   '@',   OTHER_CATEGORY}
@@ -107,6 +110,7 @@ struct Scanner {
     },
     {
       _expl_begin,
+      false,
       {
         {
           {'\t',   '\t',   IGNORED_CATEGORY},
@@ -123,6 +127,7 @@ struct Scanner {
     },
     { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
       _expl_end,
+      false,
       {
         {
           {'\t',   '\t',   SPACE_CATEGORY},
@@ -139,6 +144,7 @@ struct Scanner {
     },
     { // \luadirect catcode table
       _luadirect_begin,
+      false,
       {
         {
           {1,      9,      EOL_CATEGORY},
@@ -161,6 +167,7 @@ struct Scanner {
     },
     { // luaexec catcode table
       _luaexec_begin,
+      false,
       {
         {
           {1,      9,      EOL_CATEGORY},
@@ -183,6 +190,7 @@ struct Scanner {
     },
     { // luacode catcode table
       _luacode_begin,
+      false,
       {
         {
           {1,      '@',    OTHER_CATEGORY},
@@ -201,6 +209,7 @@ struct Scanner {
     },
     { // alltt catcode table
       _alltt_begin,
+      false,
       {
         {
           {'\t',   '\t',   OTHER_CATEGORY},
@@ -472,7 +481,7 @@ struct Scanner {
         lexer->result_symbol = cmd.symbol;
         lexer->mark_end(lexer);
 
-        catcode_table.set(cmd.intervals);
+        catcode_table.assign(cmd.intervals, cmd.global);
 
         return true;
       }
@@ -586,7 +595,7 @@ struct Scanner {
   bool scan_make_verb_delim(TSLexer *lexer) {
     lexer->advance(lexer, false);
 
-    catcode_table.global_assign(lexer->lookahead, VERB_DELIM_EXT_CATEGORY);
+    catcode_table.assign(lexer->lookahead, VERB_DELIM_EXT_CATEGORY, true);
     lexer->advance(lexer, false);
 
     lexer->result_symbol = _make_verb_delim;
@@ -598,7 +607,7 @@ struct Scanner {
   bool scan_delete_verb_delim(TSLexer *lexer) {
     lexer->advance(lexer, false);
 
-    catcode_table.global_erase(lexer->lookahead);
+    catcode_table.erase(lexer->lookahead, true);
     lexer->advance(lexer, false);
 
     lexer->result_symbol = _delete_verb_delim;

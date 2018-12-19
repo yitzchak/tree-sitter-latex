@@ -61,17 +61,17 @@ protected:
 public:
   CatCodeTable (std::initializer_list<CatCodeInterval> init) {
     level = 0;
-    set(init);
+    assign(init);
     level = 1;
   }
 
   void reset();
 
-  void set(const std::vector<CatCodeInterval>& intervals);
+  void assign(const int32_t key, Category code, bool global = false);
 
-  void global_assign(const int32_t key, Category code);
+  void assign(const std::vector<CatCodeInterval>& intervals, bool global = false);
 
-  void global_erase(const int32_t key);
+  void erase(const int32_t key, bool global = false);
 
   // Category& operator[](const int32_t key);
 
