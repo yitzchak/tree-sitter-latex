@@ -216,6 +216,8 @@ module.exports = grammar({
       $.comment_env,
       $.verbatim_env,
       $.verbatimstar_env,
+      $.filecontents_env,
+      $.filecontentsstar_env,
       $.Verbatim_env,
       $.Verbatimstar_env,
       $.BVerbatim_env,
@@ -468,6 +470,48 @@ module.exports = grammar({
     comment_env_group: $ => group($, alias($.comment_env_name, $.name)),
 
     comment_env_name: $ => 'comment',
+
+    filecontents_env: $ => seq(
+      alias($.filecontents_begin, $.begin),
+      alias($.filecontents_body, $.text),
+      // We don't allow exit here since braces are meaningless in filecontents.
+      alias($.filecontents_end, $.end)
+    ),
+
+    filecontents_begin: $ => begin_cmd($,
+      alias($.filecontents_env_group, $.group),
+      $.group,
+      $.eol
+    ),
+
+    filecontents_end: $ => end_cmd($,
+      alias($.filecontents_env_group, $.group)
+    ),
+
+    filecontents_env_group: $ => group($, alias($.filecontents_env_name, $.name)),
+
+    filecontents_env_name: $ => 'filecontents',
+
+    filecontentsstar_env: $ => seq(
+      alias($.filecontentsstar_begin, $.begin),
+      alias($.filecontentsstar_body, $.text),
+      // We don't allow exit here since braces are meaningless in filecontents.
+      alias($.filecontentsstar_end, $.end)
+    ),
+
+    filecontentsstar_begin: $ => begin_cmd($,
+      alias($.filecontentsstar_env_group, $.group),
+      $.group,
+      $.eol
+    ),
+
+    filecontentsstar_end: $ => end_cmd($,
+      alias($.filecontentsstar_env_group, $.group)
+    ),
+
+    filecontentsstar_env_group: $ => group($, alias($.filecontentsstar_env_name, $.name)),
+
+    filecontentsstar_env_name: $ => 'filecontents*',
 
     Verbatim_env: $ => seq(
       alias($.Verbatim_begin, $.begin),
@@ -1674,6 +1718,8 @@ module.exports = grammar({
             $.BVerbatimstar_env_name,
             $.comment_env_name,
             $.display_math_env_name,
+            $.filecontents_env_name,
+            $.filecontentsstar_env_name,
             $.inline_math_env_name,
             $.l3doc_class_name,
             $.lstlisting_env_name,
