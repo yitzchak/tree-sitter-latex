@@ -149,9 +149,9 @@ module.exports = grammar({
 
     _common: $ => choice(
       // $._box,
+      // $.box_dimension_assign,
       $.active_char,
       $.alignment_tab,
-      // $.box_dimension_assign,
       $.catcode,
       $.char,
       $.chardef,
@@ -183,8 +183,11 @@ module.exports = grammar({
       $.setlength,
       $.storage,
       $.string,
+      // tabular is allowed in math mode
+      $.tabular_env,
+      $.tabularstar_env,
       $.text,
-      $.tikzpicture_env
+      $.tikzpicture_env,
     ),
 
     verb: $ => choice(
@@ -213,6 +216,7 @@ module.exports = grammar({
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
+      $.document_env,
       $.comment_env,
       $.verbatim_env,
       $.verbatimstar_env,
@@ -1117,6 +1121,66 @@ module.exports = grammar({
 
     minipage_env_name: $ => 'minipage',
 
+    tabular_env: $ => seq(
+      alias($.tabular_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.tabular_end, $.end), $.exit)
+    ),
+
+    tabular_begin: $ => begin_cmd($,
+      alias($.tabular_env_group, $.group),
+      optional($.brack_group),
+      $.group
+    ),
+
+    tabular_end: $ => end_cmd($,
+      alias($.tabular_env_group, $.group),
+    ),
+
+    tabular_env_group: $ => group($, alias($.tabular_env_name, $.name)),
+
+    tabular_env_name: $ => 'tabular',
+
+    tabularstar_env: $ => seq(
+      alias($.tabularstar_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.tabularstar_end, $.end), $.exit)
+    ),
+
+    tabularstar_begin: $ => begin_cmd($,
+      alias($.tabularstar_env_group, $.group),
+      optional($.brack_group),
+      alias($.dimension_group, $.group),
+      $.group
+    ),
+
+    tabularstar_end: $ => end_cmd($,
+      alias($.tabularstar_env_group, $.group),
+    ),
+
+    tabularstar_env_group: $ => group($, alias($.tabularstar_env_name, $.name)),
+
+    tabularstar_env_name: $ => 'tabular*',
+
+    document_env: $ => seq(
+      alias($.document_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.document_end, $.end), $.exit)
+    ),
+
+    document_begin: $ => begin_cmd($,
+      alias($.document_env_group, $.group)
+    ),
+
+    document_end: $ => end_cmd($,
+      alias($.document_env_group, $.group),
+    ),
+
+    document_env_group: $ => group($, alias($.document_env_name, $.name)),
+
+    document_env_name: $ => 'document',
+
+
     // LaTeX lengths
 
     setlength: $ => cmd_opt($,
@@ -1718,6 +1782,7 @@ module.exports = grammar({
             $.BVerbatimstar_env_name,
             $.comment_env_name,
             $.display_math_env_name,
+            $.document_env_name,
             $.filecontents_env_name,
             $.filecontentsstar_env_name,
             $.inline_math_env_name,
@@ -1730,6 +1795,8 @@ module.exports = grammar({
             $.minipage_env_name,
             $.minted_env_name,
             $.pipe_class_name,
+            $.tabular_env_name,
+            $.tabularstar_env_name,
             $.tikzpicture_env_name,
             $.verbatim_env_name,
             $.Verbatim_env_name,
