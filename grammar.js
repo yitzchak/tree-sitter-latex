@@ -295,7 +295,8 @@ module.exports = grammar({
       $.mathsf,
       $.mathtt,
       $.mathit,
-      $.tag
+      $.tag,
+      $.array_env
     ),
 
     parameter_ref: $ => seq(
@@ -1123,6 +1124,26 @@ module.exports = grammar({
 
     minipage_env_name: $ => 'minipage',
 
+    array_env: $ => seq(
+      alias($.array_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.array_end, $.end), $.exit)
+    ),
+
+    array_begin: $ => begin_cmd($,
+      alias($.array_env_group, $.group),
+      optional($.brack_group),
+      $.group
+    ),
+
+    array_end: $ => end_cmd($,
+      alias($.array_env_group, $.group),
+    ),
+
+    array_env_group: $ => group($, alias($.array_env_name, $.name)),
+
+    array_env_name: $ => 'array',
+
     tabular_env: $ => seq(
       alias($.tabular_begin, $.begin),
       repeat($._text_mode),
@@ -1801,6 +1822,7 @@ module.exports = grammar({
         optional(
           choice(
             $.alltt_env_name,
+            $.array_env_name,
             $.BVerbatim_env_name,
             $.BVerbatimstar_env_name,
             $.comment_env_name,
