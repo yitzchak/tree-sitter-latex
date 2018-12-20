@@ -284,8 +284,7 @@ let g = {
 
     _display_math: $ => choice(
       $.tex_display_math,
-      $.latex_display_math,
-      $.display_math_env
+      $.latex_display_math
     ),
 
     tex_display_math: $ => seq(
@@ -307,27 +306,6 @@ let g = {
     begin_display_math: $ => escaped($, '['),
 
     end_display_math: $ => prec(-3, escaped($, ']')),
-
-    display_math_env: $ => seq(
-      alias($.display_math_begin, $.begin),
-      repeat1($._math_mode),
-      choice(alias($.display_math_end, $.end), $.exit)
-    ),
-
-    display_math_begin: $ => begin_cmd($,
-      alias($.display_math_env_group, $.group),
-      optional($.brack_group),
-      optional($._parameter),
-      $.eol
-    ),
-
-    display_math_end: $ => prec(-3, end_cmd($,
-      alias($.display_math_env_group, $.group)
-    )),
-
-    display_math_env_group: $ => group($, alias($.display_math_env_name, $.name)),
-
-    display_math_env_name: $ => /(displaymath|eqnarray\*?|align\*?|alignat\*?|equation\*?|flalign\*?|gather\*?|multiline\*?|split\*?|dmath\*?|dseries\*?|dgroup\*?|darray\*?)/,
 
     _inline_math: $ => choice(
       $.tex_inline_math,
@@ -1286,7 +1264,6 @@ let g = {
       seq(
         optional(
           choice(...name_rules.map(name => $[name]),
-            $.display_math_env_name,
             $.l3doc_class_name,
             $.pipe_class_name
           )

@@ -1,32 +1,16 @@
 module.exports.env = [
   {
+    label: 'display_math',
+    text: true,
+    name: $ => /displaymath|eqnarray\*?|equation/,
+    contents: $ => [
+      repeat($._math_mode)
+    ]
+  },
+  {
     label: 'document',
     text: true,
     name: $ => 'document'
-  },
-  {
-    label: 'filecontents',
-    text: true,
-    name: $ => 'filecontents',
-    parameters: $ => [
-      $.group,
-      $.eol
-    ],
-    contents: $ => [
-      alias($.filecontents_body, $.text)
-    ]
-  },
-  {
-    label: 'filecontentsstar',
-    text: true,
-    name: $ => 'filecontents*',
-    parameters: $ => [
-      $.group,
-      $.eol
-    ],
-    contents: $ => [
-      alias($.filecontentsstar_body, $.text)
-    ]
   },
   {
     label: 'inline_math',
