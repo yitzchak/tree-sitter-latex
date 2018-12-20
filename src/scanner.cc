@@ -1,4 +1,3 @@
-#include <bitset>
 #include <string>
 #include <vector>
 
@@ -9,60 +8,67 @@
 
 namespace LaTeX {
 
-using std::bitset;
 using std::string;
 using std::vector;
 
 enum SymbolType {
-  _alltt_begin,
-  _at_letter,
-  _at_other,
-  _BVerbatim_body,
-  _BVerbatimstar_body,
+  __ccc_alltt,
+  __ccc_at_letter,
+  __ccc_at_other,
+  __ccc_expl_begin,
+  __ccc_expl_end,
+  __ccc_l3doc,
+  __ccc_luacode,
+  __ccc_luadirect,
+  __ccc_luaexec,
+  __ccc_pipe_verb_delim,
   _cs_begin,
   _cs_end,
   _escaped_begin,
   _escaped_end,
-  _expl_begin,
-  _expl_end,
-  _filecontents_body,
-  _filecontentsstar_body,
-  _lstlisting_body,
-  _luacode_begin,
-  _luacodestar_body,
-  _luadirect_begin,
-  _luaexec_begin,
-  _LVerbatim_body,
-  _LVerbatimstar_body,
-  _minted_body,
   _scope_begin,
   _scope_end,
   _space,
-  _verbatim_body,
-  _Verbatim_body,
-  _verbatimstar_body,
-  _Verbatimstar_body,
   active_char,
   alignment_tab,
   arara_comment,
   bib_comment,
+  BVerbatim_body,
+  BVerbatimstar_body,
+  comment_body,
   comment,
+  delete_verb_delim,
   eol,
   exit,
+  filecontents_body,
+  filecontentsstar_body,
   l,
+  lstlisting_body,
+  luacodestar_body,
+  LVerbatim_body,
+  LVerbatimstar_body,
   magic_comment,
+  make_verb_delim,
   math_shift,
+  minted_body,
   parameter_char,
   r,
+  short_verb_delim,
   subscript,
   superscript,
   tag_comment,
   verb_body,
-  verb_delim
+  verb_delim,
+  verb_end_delim,
+  verbatim_body,
+  Verbatim_body,
+  verbatimstar_body,
+  Verbatimstar_body,
 };
 
 struct CatCodeCommand {
   SymbolType symbol;
+  bool global;
   vector<CatCodeInterval> intervals;
 };
 
@@ -79,14 +85,36 @@ struct VerbatimEnv {
 enum ScannerMode: uint8_t {
   CS_MODE,
   ESCAPED_MODE,
-  NORMAL_MODE,
-  VERB_MODE
+  NORMAL_MODE
 };
 
 struct Scanner {
   vector<CatCodeCommand> catcode_commands = {
+    { // alltt catcode table
+      __ccc_alltt,
+      false,
+      {
+        {
+          {'\t',   '\t',   OTHER_CATEGORY},
+          {' ',    ' ',    OTHER_CATEGORY},
+          {'#',   '#',     OTHER_CATEGORY},
+          {'$',   '$',     OTHER_CATEGORY},
+          {'%',   '%',     OTHER_CATEGORY},
+          {'&',   '&',     OTHER_CATEGORY},
+          {'A',   'Z',     LETTER_CATEGORY},
+          {'\\',  '\\',    ESCAPE_CATEGORY},
+          {'^',   '^',     OTHER_CATEGORY},
+          {'_',   '_',     OTHER_CATEGORY},
+          {'a',   'z',     LETTER_CATEGORY},
+          {'{',   '{',     BEGIN_CATEGORY},
+          {'}',   '}',     END_CATEGORY},
+          {'~',   '~',     OTHER_CATEGORY}
+        }
+      }
+    },
     {
-      _at_letter,
+      __ccc_at_letter,
+      false,
       {
         {
           {'@',   '@',   LETTER_CATEGORY}
@@ -94,7 +122,8 @@ struct Scanner {
       }
     },
     {
-      _at_other,
+      __ccc_at_other,
+      false,
       {
         {
           {'@',   '@',   OTHER_CATEGORY}
@@ -102,7 +131,8 @@ struct Scanner {
       }
     },
     {
-      _expl_begin,
+      __ccc_expl_begin,
+      false,
       {
         {
           {'\t',   '\t',   IGNORED_CATEGORY},
@@ -118,7 +148,8 @@ struct Scanner {
       }
     },
     { // This the default action for \ExplSyntaxOff. It will be overridden by the call to \ExplSyntaxOn.
-      _expl_end,
+      __ccc_expl_end,
+      false,
       {
         {
           {'\t',   '\t',   SPACE_CATEGORY},
@@ -133,8 +164,38 @@ struct Scanner {
         }
       }
     },
+    { // Catcodes for the l3doc class
+      __ccc_l3doc,
+      true,
+      {
+        {
+          {'"',   '"',     VERB_DELIM_EXT_CATEGORY},
+          {'|',   '|',     VERB_DELIM_EXT_CATEGORY}
+        }
+      }
+    },
+    { // luacode catcode table
+      __ccc_luacode,
+      false,
+      {
+        {
+          {1,      '@',    OTHER_CATEGORY},
+          {'A',    'Z',    LETTER_CATEGORY},
+          {'[',    '[',    OTHER_CATEGORY},
+          {'\\',   '\\',   ESCAPE_CATEGORY},
+          {']',    '`',    OTHER_CATEGORY},
+          {'a',    'z',    LETTER_CATEGORY},
+          {'{',    '{',    BEGIN_CATEGORY},
+          {'|',    '|',    OTHER_CATEGORY},
+          {'}',    '}',    END_CATEGORY},
+          {'~',    '~',    OTHER_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}
+        }
+      }
+    },
     { // \luadirect catcode table
-      _luadirect_begin,
+      __ccc_luadirect,
+      false,
       {
         {
           {1,      9,      EOL_CATEGORY},
@@ -156,7 +217,8 @@ struct Scanner {
       }
     },
     { // luaexec catcode table
-      _luaexec_begin,
+      __ccc_luaexec,
+      false,
       {
         {
           {1,      9,      EOL_CATEGORY},
@@ -177,45 +239,15 @@ struct Scanner {
         }
       }
     },
-    { // luacode catcode table
-      _luacode_begin,
+    {
+      __ccc_pipe_verb_delim,
+      true,
       {
         {
-          {1,      '@',    OTHER_CATEGORY},
-          {'A',    'Z',    LETTER_CATEGORY},
-          {'[',    '[',    OTHER_CATEGORY},
-          {'\\',   '\\',   ESCAPE_CATEGORY},
-          {']',    '`',    OTHER_CATEGORY},
-          {'a',    'z',    LETTER_CATEGORY},
-          {'{',    '{',    BEGIN_CATEGORY},
-          {'|',    '|',    OTHER_CATEGORY},
-          {'}',    '}',    END_CATEGORY},
-          {'~',    '~',    OTHER_CATEGORY},
-          {'\x7f', '\x7f', INVALID_CATEGORY}
+          {'|',   '|',     VERB_DELIM_EXT_CATEGORY}
         }
       }
     },
-    { // alltt catcode table
-      _alltt_begin,
-      {
-        {
-          {'\t',   '\t',   OTHER_CATEGORY},
-          {' ',    ' ',    OTHER_CATEGORY},
-          {'#',   '#',     OTHER_CATEGORY},
-          {'$',   '$',     OTHER_CATEGORY},
-          {'%',   '%',     OTHER_CATEGORY},
-          {'&',   '&',     OTHER_CATEGORY},
-          {'A',   'Z',     LETTER_CATEGORY},
-          {'\\',  '\\',    ESCAPE_CATEGORY},
-          {'^',   '^',     OTHER_CATEGORY},
-          {'_',   '_',     OTHER_CATEGORY},
-          {'a',   'z',     LETTER_CATEGORY},
-          {'{',   '{',     BEGIN_CATEGORY},
-          {'}',   '}',     END_CATEGORY},
-          {'~',   '~',     OTHER_CATEGORY}
-        }
-      }
-    }
   };
 
   ScannerMode mode = NORMAL_MODE;
@@ -243,19 +275,20 @@ struct Scanner {
   };
 
   vector<VerbatimEnv> verbatims = {
-    {_BVerbatim_body, "BVerbatim"},
-    {_BVerbatimstar_body, "BVerbatim*"},
-    {_filecontents_body, "filecontents"},
-    {_filecontentsstar_body, "filecontents*"},
-    {_lstlisting_body, "lstlisting"},
-    {_luacodestar_body, "luacode*"},
-    {_LVerbatim_body, "LVerbatim"},
-    {_LVerbatimstar_body, "LVerbatim*"},
-    {_minted_body, "minted"},
-    {_verbatim_body, "verbatim"},
-    {_Verbatim_body, "Verbatim"},
-    {_verbatimstar_body, "verbatim*"},
-    {_Verbatimstar_body, "Verbatim*"}
+    {BVerbatim_body, "BVerbatim"},
+    {BVerbatimstar_body, "BVerbatim*"},
+    {comment_body, "comment"},
+    {filecontents_body, "filecontents"},
+    {filecontentsstar_body, "filecontents*"},
+    {lstlisting_body, "lstlisting"},
+    {luacodestar_body, "luacode*"},
+    {LVerbatim_body, "LVerbatim"},
+    {LVerbatimstar_body, "LVerbatim*"},
+    {minted_body, "minted"},
+    {verbatim_body, "verbatim"},
+    {Verbatim_body, "Verbatim"},
+    {verbatimstar_body, "verbatim*"},
+    {Verbatimstar_body, "Verbatim*"}
   };
 
   Scanner() {}
@@ -286,14 +319,13 @@ struct Scanner {
     buf >> mode >> start_delim >> catcode_table;
   }
 
-  bool scan_start_verb_delim(TSLexer *lexer) {
+  bool scan_verb_start_delim(TSLexer *lexer, SymbolType symbol) {
     // NOTE: ' ' (space) is a perfectly valid delim, as is %
     // Also: The first * (if present) is gobbled by the main grammar, but the second is a valid delim
     if (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
-      mode = VERB_MODE;
       start_delim = lexer->lookahead;
       lexer->advance(lexer, false);
-      lexer->result_symbol = verb_delim;
+      lexer->result_symbol = symbol;
       lexer->mark_end(lexer);
       return true;
     }
@@ -301,18 +333,18 @@ struct Scanner {
     return false;
   }
 
-  bool scan_end_verb_delim(TSLexer *lexer) {
+  bool scan_verb_end_delim(TSLexer *lexer) {
     if (lexer->lookahead == start_delim) {
       mode = NORMAL_MODE;
       lexer->advance(lexer, false);
-      lexer->result_symbol = verb_delim;
+      lexer->result_symbol = verb_end_delim;
       lexer->mark_end(lexer);
       return true;
     }
 
     if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
       mode = NORMAL_MODE;
-      lexer->result_symbol = verb_delim; // don't eat the newline (for consistency)
+      lexer->result_symbol = verb_end_delim; // don't eat the newline (for consistency)
       lexer->mark_end(lexer);
       return true;
     }
@@ -331,7 +363,7 @@ struct Scanner {
     return true;
   }
 
-  int match_length(TSLexer *lexer, string value, bitset<16> terminator = ~0) {
+  int match_length(TSLexer *lexer, string value, CategoryFlags terminator = ~0) {
     size_t length = 0;
 
     for (char ch: value) {
@@ -415,7 +447,6 @@ struct Scanner {
   }
 
   bool scan_comment(TSLexer *lexer) {
-    // bitset<16> comment_categories = ~(EOL_FLAG | IGNORED_FLAG);
     string comment_type;
 
     // Skip the comment char
@@ -467,7 +498,7 @@ struct Scanner {
         lexer->result_symbol = cmd.symbol;
         lexer->mark_end(lexer);
 
-        catcode_table.set(cmd.intervals);
+        catcode_table.assign(cmd.intervals, cmd.global);
 
         return true;
       }
@@ -511,20 +542,6 @@ struct Scanner {
     lexer->mark_end(lexer);
 
     return true;
-  }
-
-  bool scan_verb_mode(TSLexer *lexer, const bool *valid_symbols) {
-    // Look for an inline verbatim delimiter and end the verbatim.
-    if (valid_symbols[verb_delim]) {
-      return scan_end_verb_delim(lexer);
-    }
-
-    // Scan an inline verbatim body.
-    if (valid_symbols[verb_body]) {
-      return scan_verb_body(lexer);
-    }
-
-    return false;
   }
 
   inline bool scan_empty_symbol(TSLexer *lexer, SymbolType symbol) {
@@ -578,15 +595,49 @@ struct Scanner {
     return true;
   }
 
+  bool scan_make_verb_delim(TSLexer *lexer) {
+    lexer->advance(lexer, false);
+
+    catcode_table.assign(lexer->lookahead, VERB_DELIM_EXT_CATEGORY, true);
+    lexer->advance(lexer, false);
+
+    lexer->result_symbol = make_verb_delim;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_delete_verb_delim(TSLexer *lexer) {
+    lexer->advance(lexer, false);
+
+    catcode_table.erase(lexer->lookahead, true);
+    lexer->advance(lexer, false);
+
+    lexer->result_symbol = delete_verb_delim;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan_normal_mode(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
 
     bool res = scan_catcode_commands(lexer, valid_symbols);
     if (res) return true;
 
-    // Look for an inline verbatim delimiter and start VERB_MODE.
+    // Look for an inline verbatim.
     if (valid_symbols[verb_delim]) {
-      return scan_start_verb_delim(lexer);
+      return scan_verb_start_delim(lexer, verb_delim);
+    }
+
+    // Look for an inline verbatim delimiter and end the verbatim.
+    if (valid_symbols[verb_end_delim]) {
+      return scan_verb_end_delim(lexer);
+    }
+
+    // Scan an inline verbatim body.
+    if (valid_symbols[verb_body]) {
+      return scan_verb_body(lexer);
     }
 
     res = scan_verbatim_body(lexer, valid_symbols);
@@ -612,6 +663,12 @@ struct Scanner {
 
     switch (code) {
       case ESCAPE_CATEGORY:
+        if (valid_symbols[make_verb_delim]) {
+          return scan_make_verb_delim(lexer);
+        }
+        if (valid_symbols[delete_verb_delim]) {
+          return scan_delete_verb_delim(lexer);
+        }
         if (valid_symbols[_cs_begin] || valid_symbols[_escaped_begin]) {
           return scan_escape(lexer);
         }
@@ -681,6 +738,11 @@ struct Scanner {
           return scan_comment(lexer);
         }
         break;
+      case VERB_DELIM_EXT_CATEGORY:
+        if (valid_symbols[short_verb_delim]) {
+          return scan_verb_start_delim(lexer, short_verb_delim);
+        }
+        break;
       default:
         break;
     }
@@ -695,8 +757,6 @@ struct Scanner {
         return scan_cs_mode(lexer, valid_symbols);
       case ESCAPED_MODE:
         return scan_escaped_mode(lexer, valid_symbols);
-      case VERB_MODE:
-        return scan_verb_mode(lexer, valid_symbols);
       default:
         return scan_normal_mode(lexer, valid_symbols);
     }

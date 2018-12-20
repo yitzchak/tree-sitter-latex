@@ -1,0 +1,20 @@
+=============================
+document environment
+==============================
+foo
+\begin{document}
+bar
+\end{document}
+wibble
+-----------------------------
+(document
+  (text)
+  (document_env
+    (begin
+      (cs)
+      (group (l) (name) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))

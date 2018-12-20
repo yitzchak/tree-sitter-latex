@@ -8,6 +8,18 @@ using std::pair;
 using std::map;
 using std::vector;
 
+// Category& CatCodeTable::operator[](const int32_t key) {
+//   return codes[key][level];
+// }
+
+void CatCodeTable::assign(const int32_t key, Category code, bool global) {
+  codes[key][(global) ? 1 : level] = code;
+}
+
+void CatCodeTable::erase(const int32_t key, bool global) {
+  codes[key].erase((global) ? 1 : level);
+}
+
 Category CatCodeTable::operator[](const int32_t key) const {
   auto it = codes.find(key);
 
@@ -37,10 +49,12 @@ void CatCodeTable::reset() {
   }
 }
 
-void CatCodeTable::set(const vector<CatCodeInterval>& intervals) {
+void CatCodeTable::assign(const vector<CatCodeInterval>& intervals, bool global) {
+  uint8_t _level = (global) ? 1 : level;
+
   for (const CatCodeInterval& interval: intervals) {
     for (int32_t ch = interval.begin; ch <= interval.end; ch++) {
-      codes[ch][level] = interval.category;
+      codes[ch][_level] = interval.category;
     }
   }
 }

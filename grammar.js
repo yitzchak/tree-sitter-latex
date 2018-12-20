@@ -81,51 +81,58 @@ module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
-    $._alltt_begin,
-    $._at_letter,
-    $._at_other,
-    $._BVerbatim_body,
-    $._BVerbatimstar_body,
+    $.__ccc_alltt,
+    $.__ccc_at_letter,
+    $.__ccc_at_other,
+    $.__ccc_expl_begin,
+    $.__ccc_expl_end,
+    $.__ccc_l3doc,
+    $.__ccc_luacode,
+    $.__ccc_luadirect,
+    $.__ccc_luaexec,
+    $.__ccc_pipe_verb_delim,
     $._cs_begin,
     $._cs_end,
     $._escaped_begin,
     $._escaped_end,
-    $._expl_begin,
-    $._expl_end,
-    $._filecontents_body,
-    $._filecontentsstar_body,
-    $._lstlisting_body,
-    $._luacode_begin,
-    $._luacodestar_body,
-    $._luadirect_begin,
-    $._luaexec_begin,
-    $._LVerbatim_body,
-    $._LVerbatimstar_body,
-    $._minted_body,
     $._scope_begin,
     $._scope_end,
     $._space,
-    $._verbatim_body,
-    $._Verbatim_body,
-    $._verbatimstar_body,
-    $._Verbatimstar_body,
     $.active_char,
     $.alignment_tab,
     $.arara_comment,
     $.bib_comment,
+    $.BVerbatim_body,
+    $.BVerbatimstar_body,
+    $.comment_body,
     $.comment,
+    $.delete_verb_delim,
     $.eol,
     $.exit,
+    $.filecontents_body,
+    $.filecontentsstar_body,
     $.l,
+    $.lstlisting_body,
+    $.luacodestar_body,
+    $.LVerbatim_body,
+    $.LVerbatimstar_body,
     $.magic_comment,
+    $.make_verb_delim,
     $.math_shift,
+    $.minted_body,
     $.parameter_char,
     $.r,
+    $.short_verb_delim,
     $.subscript,
     $.superscript,
     $.tag_comment,
     $.verb_body,
-    $.verb_delim
+    $.verb_delim,
+    $.verb_end_delim,
+    $.verbatim_body,
+    $.Verbatim_body,
+    $.verbatimstar_body,
+    $.Verbatimstar_body,
   ],
 
   extras: $ => [
@@ -142,9 +149,9 @@ module.exports = grammar({
 
     _common: $ => choice(
       // $._box,
+      // $.box_dimension_assign,
       $.active_char,
       $.alignment_tab,
-      // $.box_dimension_assign,
       $.catcode,
       $.char,
       $.chardef,
@@ -176,15 +183,27 @@ module.exports = grammar({
       $.setlength,
       $.storage,
       $.string,
+      // tabu behaves like array in math mode and tabular in text mode
+      $.tabu_env,
+      // tabular is allowed in math mode
+      $.tabular_env,
+      $.tabularstar_env,
       $.text,
-      $.tikzpicture_env
+      $.tikzpicture_env,
     ),
 
-    verb: $ => cmd($,
-      $.verb_cs,
-      $.verb_delim,
-      alias($.verb_body, $.text),
-      $.verb_delim
+    verb: $ => choice(
+      cmd($,
+        $.verb_cs,
+        $.verb_delim,
+        alias($.verb_body, $.text),
+        alias($.verb_end_delim, $.verb_delim)
+      ),
+      seq(
+        alias($.short_verb_delim, $.verb_delim),
+        alias($.verb_body, $.text),
+        alias($.verb_end_delim, $.verb_delim)
+      )
     ),
 
     verb_cs: $ => cs($, $._verb_word),
@@ -199,8 +218,12 @@ module.exports = grammar({
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
+      $.document_env,
+      $.comment_env,
       $.verbatim_env,
       $.verbatimstar_env,
+      $.filecontents_env,
+      $.filecontentsstar_env,
       $.Verbatim_env,
       $.Verbatimstar_env,
       $.BVerbatim_env,
@@ -210,6 +233,8 @@ module.exports = grammar({
       $.lstlisting_env,
       $.minted_env,
       $.verb,
+      $.MakeShortVerb,
+      $.DeleteShortVerb,
       $.alltt_env,
       $._display_math,
       $._inline_math,
@@ -270,7 +295,8 @@ module.exports = grammar({
       $.mathsf,
       $.mathtt,
       $.mathit,
-      $.tag
+      $.tag,
+      $.array_env
     ),
 
     parameter_ref: $ => seq(
@@ -394,7 +420,7 @@ module.exports = grammar({
 
     verbatim_env: $ => seq(
       alias($.verbatim_begin, $.begin),
-      alias($._verbatim_body, $.text),
+      alias($.verbatim_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.verbatim_end, $.end)
     ),
@@ -414,7 +440,7 @@ module.exports = grammar({
 
     verbatimstar_env: $ => seq(
       alias($.verbatimstar_begin, $.begin),
-      alias($._verbatimstar_body, $.text),
+      alias($.verbatimstar_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.verbatimstar_end, $.end)
     ),
@@ -432,9 +458,71 @@ module.exports = grammar({
 
     verbatimstar_env_name: $ => 'verbatim*',
 
+    comment_env: $ => seq(
+      alias($.comment_begin, $.begin),
+      alias($.comment_body, $.text),
+      // We don't allow exit here since braces are meaningless in comment.
+      alias($.comment_end, $.end)
+    ),
+
+    comment_begin: $ => begin_cmd($,
+      alias($.comment_env_group, $.group),
+      $.eol
+    ),
+
+    comment_end: $ => end_cmd($,
+      alias($.comment_env_group, $.group)
+    ),
+
+    comment_env_group: $ => group($, alias($.comment_env_name, $.name)),
+
+    comment_env_name: $ => 'comment',
+
+    filecontents_env: $ => seq(
+      alias($.filecontents_begin, $.begin),
+      alias($.filecontents_body, $.text),
+      // We don't allow exit here since braces are meaningless in filecontents.
+      alias($.filecontents_end, $.end)
+    ),
+
+    filecontents_begin: $ => begin_cmd($,
+      alias($.filecontents_env_group, $.group),
+      $.group,
+      $.eol
+    ),
+
+    filecontents_end: $ => end_cmd($,
+      alias($.filecontents_env_group, $.group)
+    ),
+
+    filecontents_env_group: $ => group($, alias($.filecontents_env_name, $.name)),
+
+    filecontents_env_name: $ => 'filecontents',
+
+    filecontentsstar_env: $ => seq(
+      alias($.filecontentsstar_begin, $.begin),
+      alias($.filecontentsstar_body, $.text),
+      // We don't allow exit here since braces are meaningless in filecontents.
+      alias($.filecontentsstar_end, $.end)
+    ),
+
+    filecontentsstar_begin: $ => begin_cmd($,
+      alias($.filecontentsstar_env_group, $.group),
+      $.group,
+      $.eol
+    ),
+
+    filecontentsstar_end: $ => end_cmd($,
+      alias($.filecontentsstar_env_group, $.group)
+    ),
+
+    filecontentsstar_env_group: $ => group($, alias($.filecontentsstar_env_name, $.name)),
+
+    filecontentsstar_env_name: $ => 'filecontents*',
+
     Verbatim_env: $ => seq(
       alias($.Verbatim_begin, $.begin),
-      alias($._Verbatim_body, $.text),
+      alias($.Verbatim_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.Verbatim_end, $.end)
     ),
@@ -455,7 +543,7 @@ module.exports = grammar({
 
     Verbatimstar_env: $ => seq(
       alias($.Verbatimstar_begin, $.begin),
-      alias($._Verbatimstar_body, $.text),
+      alias($.Verbatimstar_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.Verbatimstar_end, $.end)
     ),
@@ -476,7 +564,7 @@ module.exports = grammar({
 
     BVerbatim_env: $ => seq(
       alias($.BVerbatim_begin, $.begin),
-      alias($._BVerbatim_body, $.text),
+      alias($.BVerbatim_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.BVerbatim_end, $.end)
     ),
@@ -497,7 +585,7 @@ module.exports = grammar({
 
     BVerbatimstar_env: $ => seq(
       alias($.BVerbatimstar_begin, $.begin),
-      alias($._BVerbatimstar_body, $.text),
+      alias($.BVerbatimstar_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.BVerbatimstar_end, $.end)
     ),
@@ -518,7 +606,7 @@ module.exports = grammar({
 
     LVerbatim_env: $ => seq(
       alias($.LVerbatim_begin, $.begin),
-      alias($._LVerbatim_body, $.text),
+      alias($.LVerbatim_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.LVerbatim_end, $.end)
     ),
@@ -539,7 +627,7 @@ module.exports = grammar({
 
     LVerbatimstar_env: $ => seq(
       alias($.LVerbatimstar_begin, $.begin),
-      alias($._LVerbatimstar_body, $.text),
+      alias($.LVerbatimstar_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.LVerbatimstar_end, $.end)
     ),
@@ -560,7 +648,7 @@ module.exports = grammar({
 
     lstlisting_env: $ => seq(
       alias($.lstlisting_begin, $.begin),
-      alias($._lstlisting_body, $.text),
+      alias($.lstlisting_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.lstlisting_end, $.end)
     ),
@@ -581,7 +669,7 @@ module.exports = grammar({
 
     minted_env: $ => seq(
       alias($.minted_begin, $.begin),
-      alias($._minted_body, $.text),
+      alias($.minted_body, $.text),
       // We don't allow exit here since braces are meaningless in verbatim.
       alias($.minted_end, $.end)
     ),
@@ -628,7 +716,7 @@ module.exports = grammar({
       $._parameter,
       $._parameter,
       $._parameter,
-      $._expl_begin
+      $.__ccc_expl_begin
     ),
 
     ProvidesExpl_cs: $ => cs($, $._ProvidesExpl_word),
@@ -678,7 +766,7 @@ module.exports = grammar({
 
     makeatletter: $ => cmd($,
       $.makeatletter_cs,
-      $._at_letter,
+      $.__ccc_at_letter,
     ),
 
     makeatletter_cs: $ => cs($, $._makeatletter_word),
@@ -687,7 +775,7 @@ module.exports = grammar({
 
     makeatother: $ => cmd($,
       $.makeatother_cs,
-      $._at_other
+      $.__ccc_at_other
     ),
 
     makeatother_cs: $ => cs($, $._makeatother_word),
@@ -696,7 +784,7 @@ module.exports = grammar({
 
     ExplSyntaxOn: $ => cmd($,
       $.ExplSyntaxOn_cs,
-      $._expl_begin
+      $.__ccc_expl_begin
     ),
 
     ExplSyntaxOn_cs: $ => cs($, $._ExplSyntaxOn_word),
@@ -705,7 +793,7 @@ module.exports = grammar({
 
     ExplSyntaxOff: $ => cmd($,
       $.ExplSyntaxOff_cs,
-      $._expl_end
+      $.__ccc_expl_end
     ),
 
     ExplSyntaxOff_cs: $ => cs($, $._ExplSyntaxOff_word),
@@ -898,9 +986,21 @@ module.exports = grammar({
     documentclass: $ => cmd_opt($,
       $.documentclass_cs,
       optional($.brack_group),
-      alias($.name_group, $.group),
+      choice(
+        alias($.name_group, $.group),
+        seq(alias($.l3doc_name_group, $.group), $.__ccc_l3doc),
+        seq(alias($.pipe_name_group, $.group), $.__ccc_pipe_verb_delim),
+      ),
       optional($.brack_group)
     ),
+
+    l3doc_name_group: $ => group($, alias($.l3doc_class_name, $.name)),
+
+    l3doc_class_name: $ => /l3doc(-TUB)?/,
+
+    pipe_name_group: $ => group($, alias($.pipe_class_name, $.name)),
+
+    pipe_class_name: $ => /ltxdoc|ltxguide|nlctdoc|plnews/,
 
     documentclass_cs: $ => cs($, $._documentclass_word),
 
@@ -1023,6 +1123,107 @@ module.exports = grammar({
     minipage_env_group: $ => group($, alias($.minipage_env_name, $.name)),
 
     minipage_env_name: $ => 'minipage',
+
+    array_env: $ => seq(
+      alias($.array_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.array_end, $.end), $.exit)
+    ),
+
+    array_begin: $ => begin_cmd($,
+      alias($.array_env_group, $.group),
+      optional($.brack_group),
+      $.group
+    ),
+
+    array_end: $ => end_cmd($,
+      alias($.array_env_group, $.group),
+    ),
+
+    array_env_group: $ => group($, alias($.array_env_name, $.name)),
+
+    array_env_name: $ => 'array',
+
+    tabular_env: $ => seq(
+      alias($.tabular_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.tabular_end, $.end), $.exit)
+    ),
+
+    tabular_begin: $ => begin_cmd($,
+      alias($.tabular_env_group, $.group),
+      optional($.brack_group),
+      $.group
+    ),
+
+    tabular_end: $ => end_cmd($,
+      alias($.tabular_env_group, $.group),
+    ),
+
+    tabular_env_group: $ => group($, alias($.tabular_env_name, $.name)),
+
+    tabular_env_name: $ => /tabular|longtable|supertabular/,
+
+    tabularstar_env: $ => seq(
+      alias($.tabularstar_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.tabularstar_end, $.end), $.exit)
+    ),
+
+    tabularstar_begin: $ => begin_cmd($,
+      alias($.tabularstar_env_group, $.group),
+      alias($.dimension_group, $.group),
+      optional($.brack_group),
+      $.group
+    ),
+
+    tabularstar_end: $ => end_cmd($,
+      alias($.tabularstar_env_group, $.group),
+    ),
+
+    tabularstar_env_group: $ => group($, alias($.tabularstar_env_name, $.name)),
+
+    tabularstar_env_name: $ => /tabular[*xy]|supertabular\*/,
+
+    tabu_env: $ => seq(
+      alias($.tabu_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.tabu_end, $.end), $.exit)
+    ),
+
+    tabu_begin: $ => begin_cmd($,
+      alias($.tabu_env_group, $.group),
+      optional(seq(choice('to', 'spread'), $._dimension)),
+      optional($.brack_group),
+      $.group
+    ),
+
+    tabu_end: $ => end_cmd($,
+      alias($.tabu_env_group, $.group),
+    ),
+
+    tabu_env_group: $ => group($, alias($.tabu_env_name, $.name)),
+
+    tabu_env_name: $ => /(long)?tabu/,
+
+    document_env: $ => seq(
+      alias($.document_begin, $.begin),
+      repeat($._text_mode),
+      choice(alias($.document_end, $.end), $.exit)
+    ),
+
+    document_begin: $ => begin_cmd($,
+      alias($.document_env_group, $.group)
+    ),
+
+    document_end: $ => end_cmd($,
+      alias($.document_env_group, $.group),
+    ),
+
+    document_env_group: $ => group($, alias($.document_env_name, $.name)),
+
+    document_env_name: $ => 'document',
+
 
     // LaTeX lengths
 
@@ -1239,7 +1440,7 @@ module.exports = grammar({
     Provides: $ => cmd_opt($,
       $.Provides_cs,
       $._parameter,
-      $._at_letter,
+      $.__ccc_at_letter,
       optional($.brack_group)
     ),
 
@@ -1399,7 +1600,7 @@ module.exports = grammar({
     alltt_env: $ => seq(
       alias($.alltt_begin, $.begin),
       $._scope_begin,
-      $._alltt_begin,
+      $.__ccc_alltt,
       repeat($._text_mode),
       choice(alias($.alltt_end, $.end), $.exit),
       $._scope_end
@@ -1431,7 +1632,7 @@ module.exports = grammar({
 
     _luadirect_parameter: $ => choice($.cs, alias($.luadirect_group, $.group)),
 
-    luadirect_group: $ => group($, $._luadirect_begin, repeat($._text_mode)),
+    luadirect_group: $ => group($, $.__ccc_luadirect, repeat($._text_mode)),
 
     luadirect: $ => cmd_opt($,
       $.luadirect_cs,
@@ -1453,12 +1654,12 @@ module.exports = grammar({
 
     _luaexec_parameter: $ => choice($.cs, alias($.luaexec_group, $.group)),
 
-    luaexec_group: $ => group($, $._luaexec_begin, repeat($._text_mode)),
+    luaexec_group: $ => group($, $.__ccc_luaexec, repeat($._text_mode)),
 
     luacode_env: $ => seq(
       alias($.luacode_begin, $.begin),
       $._scope_begin,
-      $._luacode_begin,
+      $.__ccc_luacode,
       repeat($._text_mode),
       choice(alias($.luacode_end, $.end), $.exit),
       $._scope_end
@@ -1478,7 +1679,7 @@ module.exports = grammar({
 
     luacodestar_env: $ => seq(
       alias($.luacodestar_begin, $.begin),
-      alias($._luacodestar_body, $.text),
+      alias($.luacodestar_body, $.text),
       // We don't allow exit since luacode* is a verbatim environment.
       alias($.luacodestar_end, $.end)
     ),
@@ -1497,6 +1698,47 @@ module.exports = grammar({
     luacodestar_env_group: $ => group($, alias($.luacodestar_env_name, $.name)),
 
     luacodestar_env_name: $ => 'luacode*',
+
+    // shortvrb
+
+    MakeShortVerb: $ => cmd_opt($,
+      $.MakeShortVerb_cs,
+      optional('*'),
+      choice(
+        alias($.make_verb_delim, $.escaped),
+        alias($.make_verb_delim_group, $.group)
+      )
+    ),
+
+    make_verb_delim_group: $ => group($,
+      choice(
+        alias($.make_verb_delim, $.escaped),
+        repeat($._text_mode)
+      )
+    ),
+
+    MakeShortVerb_cs: $ => cs($, $._MakeShortVerb_word),
+
+    _MakeShortVerb_word: $ => /(Make|Define)ShortVerb/,
+
+    DeleteShortVerb: $ => cmd_opt($,
+      $.DeleteShortVerb_cs,
+      choice(
+        alias($.delete_verb_delim, $.escaped),
+        alias($.delete_verb_delim_group, $.group)
+      )
+    ),
+
+    delete_verb_delim_group: $ => group($,
+      choice(
+        alias($.delete_verb_delim, $.escaped),
+        repeat($._text_mode)
+      )
+    ),
+
+    DeleteShortVerb_cs: $ => cs($, $._DeleteShortVerb_word),
+
+    _DeleteShortVerb_word: $ => /(Delete|Undefine)ShortVerb/,
 
     // pgf/tikz
 
@@ -1580,10 +1822,16 @@ module.exports = grammar({
         optional(
           choice(
             $.alltt_env_name,
+            $.array_env_name,
             $.BVerbatim_env_name,
             $.BVerbatimstar_env_name,
+            $.comment_env_name,
             $.display_math_env_name,
+            $.document_env_name,
+            $.filecontents_env_name,
+            $.filecontentsstar_env_name,
             $.inline_math_env_name,
+            $.l3doc_class_name,
             $.lstlisting_env_name,
             $.luacode_env_name,
             $.luacodestar_env_name,
@@ -1591,11 +1839,14 @@ module.exports = grammar({
             $.LVerbatimstar_env_name,
             $.minipage_env_name,
             $.minted_env_name,
+            $.pipe_class_name,
+            $.tabular_env_name,
+            $.tabularstar_env_name,
             $.tikzpicture_env_name,
             $.verbatim_env_name,
             $.Verbatim_env_name,
             $.verbatimstar_env_name,
-            $.Verbatimstar_env_name
+            $.Verbatimstar_env_name,
           )
         ),
         $.text
@@ -1632,6 +1883,7 @@ module.exports = grammar({
           $._chardef_word,
           $._cite_word,
           $._DeclareOption_word,
+          $._DeleteShortVerb_word,
           $._dimension_word,
           $._documentclass_word,
           $._documentstyle_word,
@@ -1659,6 +1911,7 @@ module.exports = grammar({
           $._makeatletter_word,
           $._makeatother_word,
           $._makebox_word,
+          $._MakeShortVerb_word,
           $._mathbf_word,
           $._mathcal_word,
           $._mathit_word,
