@@ -80,7 +80,7 @@ function optional_seq (...args) {
   return result
 }
 
-let common_rules = [], math_rules = [], text_rules = [], name_rules = []
+let common_rules = [], math_rules = [], text_rules = [], name_rules = [], word_rules = []
 
 let g = {
   name: 'latex',
@@ -172,7 +172,7 @@ let g = {
       $.include,
       $.lua,
       $.luadirect,
-      $.luaexec,
+      // $.luaexec,
       $.makeatletter,
       $.makeatother,
       $.makebox,
@@ -215,8 +215,8 @@ let g = {
       alias($.subscript, $.text),
       alias($.superscript, $.text),
       $.verb,
-      $.MakeShortVerb,
-      $.DeleteShortVerb,
+      // $.MakeShortVerb,
+      // $.DeleteShortVerb,
       $._display_math,
       $._inline_math,
       $.group,
@@ -1125,70 +1125,18 @@ let g = {
 
     // luacode
 
-    lua: $ => cmd_opt($,
-      $.lua_cs,
-      optional($._number),
-      $._luadirect_parameter,
-    ),
+    _luadirect_parameter: $ => choice($.cs, alias($._luadirect_group, $.group)),
 
-    lua_cs: $ => cs($, $._lua_word),
+    _luadirect_group: $ => group($, $.__ccc_luadirect, repeat($._text_mode)),
 
-    _lua_word: $ => /(direct|late)lua/,
+    _luaexec_parameter: $ => choice($.cs, alias($._luaexec_group, $.group)),
 
-    _luadirect_parameter: $ => choice($.cs, alias($.luadirect_group, $.group)),
-
-    luadirect_group: $ => group($, $.__ccc_luadirect, repeat($._text_mode)),
-
-    luadirect: $ => cmd_opt($,
-      $.luadirect_cs,
-      $._luadirect_parameter,
-    ),
-
-    luadirect_cs: $ => cs($, $._luadirect_word),
-
-    _luadirect_word: $ => 'luadirect',
-
-    luaexec: $ => cmd_opt($,
-      $.luaexec_cs,
-      $._luaexec_parameter,
-    ),
-
-    luaexec_cs: $ => cs($, $._luaexec_word),
-
-    _luaexec_word: $ => 'luaexec',
-
-    _luaexec_parameter: $ => choice($.cs, alias($.luaexec_group, $.group)),
-
-    luaexec_group: $ => group($, $.__ccc_luaexec, repeat($._text_mode)),
-
-
-    // shortvrb
-
-    MakeShortVerb: $ => cmd_opt($,
-      $.MakeShortVerb_cs,
-      optional('*'),
-      choice(
-        alias($.make_verb_delim, $.escaped),
-        alias($.make_verb_delim_group, $.group)
-      )
-    ),
+    _luaexec_group: $ => group($, $.__ccc_luaexec, repeat($._text_mode)),
 
     make_verb_delim_group: $ => group($,
       choice(
         alias($.make_verb_delim, $.escaped),
         repeat($._text_mode)
-      )
-    ),
-
-    MakeShortVerb_cs: $ => cs($, $._MakeShortVerb_word),
-
-    _MakeShortVerb_word: $ => /(Make|Define)ShortVerb/,
-
-    DeleteShortVerb: $ => cmd_opt($,
-      $.DeleteShortVerb_cs,
-      choice(
-        alias($.delete_verb_delim, $.escaped),
-        alias($.delete_verb_delim_group, $.group)
       )
     ),
 
@@ -1198,10 +1146,6 @@ let g = {
         repeat($._text_mode)
       )
     ),
-
-    DeleteShortVerb_cs: $ => cs($, $._DeleteShortVerb_word),
-
-    _DeleteShortVerb_word: $ => /(Delete|Undefine)ShortVerb/,
 
     // Common rules
 
@@ -1291,7 +1235,7 @@ let g = {
 
     _word: $ => prec.left(-1, choice(
       seq(
-        choice(
+        choice(...word_rules.map(name => $[name]),
           $._At_word,
           $._begin_word,
           $._begingroup_word,
@@ -1302,7 +1246,6 @@ let g = {
           $._chardef_word,
           $._cite_word,
           $._DeclareOption_word,
-          $._DeleteShortVerb_word,
           $._dimension_word,
           $._documentclass_word,
           $._documentstyle_word,
@@ -1326,11 +1269,9 @@ let g = {
           $._include_word,
           $._lua_word,
           $._luadirect_word,
-          $._luaexec_word,
           $._makeatletter_word,
           $._makeatother_word,
           $._makebox_word,
-          $._MakeShortVerb_word,
           $._mathbf_word,
           $._mathcal_word,
           $._mathit_word,
@@ -1431,6 +1372,30 @@ let g = {
   }
 }
 
+function def_cmd({ label, text, math, word, parameters }) {
+  const cmd_sym = label
+  const cs_rule_sym = `_${label}_cs`
+  const word_rule_sym = `_${label}_word`
+
+  g.rules[word_rule_sym] = word
+
+  word_rules.push(word_rule_sym)
+
+  g.rules[cs_rule_sym] = $ => cs($, $[word_rule_sym])
+
+  g.rules[cmd_sym] = $ => cmd_opt($,
+    $[cs_rule_sym],
+    ...(parameters ? parameters($) : []))
+
+  if (text && math) {
+    common_rules.push(cmd_sym)
+  } else if (text) {
+    text_rules.push(cmd_sym)
+  } else if (math) {
+    math_rules.push(cmd_sym)
+  }
+}
+
 function def_env({ label, text, math, name, parameters, contents }) {
   const env_sym = `${label}_env`
   const name_rule_sym = `_${label}_name`
@@ -1485,6 +1450,7 @@ for (const filePath of readdir.sync(root, { deep: true, filter: '**/*.js' })) {
   console.log(`  ${path.join(root, filePath)}`)
   const m = require(path.join(__dirname, root, filePath))
 
+  if (m.cmd) m.cmd.forEach(def_cmd)
   if (m.env) m.env.forEach(def_env)
 }
 
