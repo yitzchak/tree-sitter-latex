@@ -1,0 +1,91 @@
+=============================
+supertabular environment
+==============================
+foo
+\begin{supertabular}{l|c|r}
+bar
+\end{supertabular}
+wibble
+-----------------------------
+(document
+  (text)
+  (supertabular_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+=============================
+supertabular environment with position
+==============================
+foo
+\begin{supertabular}[t]{l|c|r}
+bar
+\end{supertabular}
+wibble
+-----------------------------
+(document
+  (text)
+  (supertabular_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+=============================
+supertabular* environment
+==============================
+foo
+\begin{supertabular*}{10pc}{l|c|r}
+bar
+\end{supertabular*}
+wibble
+-----------------------------
+(document
+  (text)
+  (supertabularstar_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (dimension) (r))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+=============================
+supertabular* environment with position
+==============================
+foo
+\begin{supertabular*}{10pc}[t]{l|c|r}
+bar
+\end{supertabular*}
+wibble
+-----------------------------
+(document
+  (text)
+  (supertabularstar_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (dimension) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))

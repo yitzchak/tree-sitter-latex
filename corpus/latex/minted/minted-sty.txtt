@@ -1,0 +1,20 @@
+===========================
+minted environment
+===========================
+foo
+\begin{minted}{wibble}
+bar
+\end{minted}
+quux
+---------------------------
+(document
+  (text)
+  (minted_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r))
+      (eol))
+    (text)
+    (end (cs) (group (l) (name) (r))))
+  (text))

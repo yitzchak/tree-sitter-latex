@@ -1,0 +1,40 @@
+===========================
+lstlisting environment
+===========================
+foo
+\begin{lstlisting}
+bar
+\end{lstlisting}
+quux
+---------------------------
+(document
+  (text)
+  (lstlisting_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (text)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+===========================
+lstlisting environment with optional argument
+===========================
+foo
+\begin{lstlisting}[wibble]
+bar
+\end{lstlisting}
+quux
+---------------------------
+(document
+  (text)
+  (lstlisting_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (eol))
+    (text)
+    (end (cs) (group (l) (name) (r))))
+  (text))

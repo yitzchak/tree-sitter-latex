@@ -1,0 +1,46 @@
+=============================
+tabulary environment
+==============================
+foo
+\begin{tabulary}{10pc}{l|c|r}
+bar
+\end{tabulary}
+wibble
+-----------------------------
+(document
+  (text)
+  (tabulary_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (dimension) (r))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+=============================
+tabulary environment with position
+==============================
+foo
+\begin{tabulary}{10pc}[t]{l|c|r}
+bar
+\end{tabulary}
+wibble
+-----------------------------
+(document
+  (text)
+  (tabulary_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (dimension) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))

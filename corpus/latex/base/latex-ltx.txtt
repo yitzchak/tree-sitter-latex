@@ -1,0 +1,140 @@
+=============================
+document environment
+==============================
+foo
+\begin{document}
+bar
+\end{document}
+wibble
+-----------------------------
+(document
+  (text)
+  (document_env
+    (begin
+      (cs)
+      (group (l) (name) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+===========================
+filecontents environment
+===========================
+foo
+\begin{filecontents}{wibble}
+bar
+\end{filecontents}
+quux
+---------------------------
+(document
+  (text)
+  (filecontents_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r))
+      (eol))
+    (text)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+===========================
+filecontents* environment
+===========================
+foo
+\begin{filecontents*}{wibble}
+bar
+\end{filecontents*}
+quux
+---------------------------
+(document
+  (text)
+  (filecontentsstar_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r))
+      (eol))
+    (text)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+======================
+minipage
+======================
+\begin{minipage}{2in}
+foo
+\end{minipage}
+----------------------
+(document
+  (minipage_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (dimension) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+======================
+minipage with position
+======================
+\begin{minipage}[b]{2in}
+foo
+\end{minipage}
+----------------------
+(document
+  (minipage_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (dimension) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+======================
+minipage with position and height
+======================
+\begin{minipage}[b][2in]{2in}
+foo
+\end{minipage}
+----------------------
+(document
+  (minipage_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (brack_group (lbrack) (dimension) (rbrack))
+      (group (l) (dimension) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+======================
+minipage with position and height and inner position
+======================
+\begin{minipage}[b][2in][t]{2in}
+foo
+\end{minipage}
+----------------------
+(document
+  (minipage_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (brack_group (lbrack) (dimension) (rbrack))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (dimension) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))

@@ -1,0 +1,103 @@
+======================
+comment environment
+======================
+foo
+\begin{comment}
+bar
+quux
+\end{comment}
+quux
+----------------------
+(document
+    (text)
+    (comment_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (eol))
+      (text)
+      (end (cs) (group (l) (name) (r))))
+    (text))
+
+======================
+verbatim environment
+======================
+foo
+\begin{verbatim}
+bar
+quux
+\end{verbatim}
+quux
+----------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (text)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+======================
+empty verbatim environment
+======================
+foo
+\begin{verbatim}
+\end{verbatim}
+quux
+----------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (text)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+======================
+multiline verbatim environment
+======================
+foo
+\begin{verbatim}
+bar
+wibble
+\end{verbatim}
+quux
+----------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (text)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+======================
+verbatim environment with embedded environment
+======================
+foo
+\begin{verbatim}
+\begin{foo}
+quux
+\end{foo}
+\end{verbatim}
+quux
+----------------------
+(document
+    (text)
+    (verbatim_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (eol))
+      (text)
+      (end (cs) (group (l) (name) (r))))
+    (text))
