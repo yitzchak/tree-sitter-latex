@@ -215,23 +215,13 @@ let g = {
       alias($.subscript, $.text),
       alias($.superscript, $.text),
       $.verb,
-      // $.MakeShortVerb,
-      // $.DeleteShortVerb,
-      $._display_math,
-      $._inline_math,
+      $.tex_display_math,
+      $.latex_display_math,
+      $.tex_inline_math,
+      $.latex_inline_math,
       $.group,
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
-      $.emph,
-      $.textrm,
-      $.textsf,
-      $.texttt,
-      $.textmd,
-      $.textbf,
-      $.textup,
-      $.textit,
-      $.textsl,
-      $.textsc,
       $.ProvidesExpl,
       $.documentclass,
       $.documentstyle,
@@ -267,24 +257,12 @@ let g = {
       alias($.math_group, $.group),
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
-      $.mathrm,
-      $.mathnormal,
-      $.mathcal,
-      $.mathbf,
-      $.mathsf,
-      $.mathtt,
-      $.mathit,
       $.tag
     ),
 
     parameter_ref: $ => seq(
       $.parameter_char,
       optional(/[1-9]/)
-    ),
-
-    _display_math: $ => choice(
-      $.tex_display_math,
-      $.latex_display_math
     ),
 
     tex_display_math: $ => seq(
@@ -306,11 +284,6 @@ let g = {
     begin_display_math: $ => escaped($, '['),
 
     end_display_math: $ => prec(-3, escaped($, ']')),
-
-    _inline_math: $ => choice(
-      $.tex_inline_math,
-      $.latex_inline_math
-    ),
 
     tex_inline_math: $ => seq(
       $.math_shift,
@@ -768,174 +741,6 @@ let g = {
 
     // LaTeX Measuring things
 
-
-
-    // LaTeX font changing: text
-
-    // \*family, \*series and \*shape skipped because they are zero argument
-    // commands and are not used as operands.
-
-    // It would be nice to collapse the following into single cmd rule, but
-    // Atom seems pretty limited in the scope selectors.
-
-    textrm: $ => cmd_opt($,
-      $.textrm_cs,
-      $._parameter
-    ),
-
-    textrm_cs: $ => cs($, $._textrm_word),
-
-    _textrm_word: $ => 'textrm',
-
-    textsf: $ => cmd_opt($,
-      $.textsf_cs,
-      $._parameter
-    ),
-
-    textsf_cs: $ => cs($, $._textsf_word),
-
-    _textsf_word: $ => 'textsf',
-
-    texttt: $ => cmd_opt($,
-      $.texttt_cs,
-      $._parameter
-    ),
-
-    texttt_cs: $ => cs($, $._texttt_word),
-
-    _texttt_word: $ => 'texttt',
-
-    textmd: $ => cmd_opt($,
-      $.textmd_cs,
-      $._parameter
-    ),
-
-    textmd_cs: $ => cs($, $._textmd_word),
-
-    _textmd_word: $ => 'textmd',
-
-    textbf: $ => cmd_opt($,
-      $.textbf_cs,
-      $._parameter
-    ),
-
-    textbf_cs: $ => cs($, $._textbf_word),
-
-    _textbf_word: $ => 'textbf',
-
-    textup: $ => cmd_opt($,
-      $.textup_cs,
-      $._parameter
-    ),
-
-    textup_cs: $ => cs($, $._textup_word),
-
-    _textup_word: $ => 'textup',
-
-    textit: $ => cmd_opt($,
-      $.textit_cs,
-      $._parameter
-    ),
-
-    textit_cs: $ => cs($, $._textit_word),
-
-    _textit_word: $ => 'textit',
-
-    textsl: $ => cmd_opt($,
-      $.textsl_cs,
-      $._parameter
-    ),
-
-    textsl_cs: $ => cs($, $._textsl_word),
-
-    _textsl_word: $ => 'textsl',
-
-    textsc: $ => cmd_opt($,
-      $.textsc_cs,
-      $._parameter
-    ),
-
-    textsc_cs: $ => cs($, $._textsc_word),
-
-    _textsc_word: $ => 'textsc',
-
-    emph: $ => cmd_opt($,
-      $.emph_cs,
-      $._parameter
-    ),
-
-    emph_cs: $ => cs($, $._emph_word),
-
-    _emph_word: $ => 'emph',
-
-    // LaTeX font changing: math
-
-    // It would be nice to collapse the following into single cmd rule, but
-    // Atom seems pretty limited in the scope selectors.
-
-    mathrm: $ => cmd_opt($,
-      $.mathrm_cs,
-      alias($.math_group, $.group)
-    ),
-
-    mathrm_cs: $ => cs($, $._mathrm_word),
-
-    _mathrm_word: $ => 'mathrm',
-
-    mathnormal: $ => cmd_opt($,
-      $.mathnormal_cs,
-      alias($.math_group, $.group)
-    ),
-
-    mathnormal_cs: $ => cs($, $._mathnormal_word),
-
-    _mathnormal_word: $ => 'mathnormal',
-
-    mathcal: $ => cmd_opt($,
-      $.mathcal_cs,
-      alias($.math_group, $.group)
-    ),
-
-    mathcal_cs: $ => cs($, $._mathcal_word),
-
-    _mathcal_word: $ => 'mathcal',
-
-    mathbf: $ => cmd_opt($,
-      $.mathbf_cs,
-      alias($.math_group, $.group)
-    ),
-
-    mathbf_cs: $ => cs($, $._mathbf_word),
-
-    _mathbf_word: $ => 'mathbf',
-
-    mathsf: $ => cmd_opt($,
-      $.mathsf_cs,
-      alias($.math_group, $.group)
-    ),
-
-    mathsf_cs: $ => cs($, $._mathsf_word),
-
-    _mathsf_word: $ => 'mathsf',
-
-    mathtt: $ => cmd_opt($,
-      $.mathtt_cs,
-      alias($.math_group, $.group)
-
-    ),
-    mathtt_cs: $ => cs($, $._mathtt_word),
-
-    _mathtt_word: $ => 'mathtt',
-
-    mathit: $ => cmd_opt($,
-      $.mathit_cs,
-      alias($.math_group, $.group)
-    ),
-
-    mathit_cs: $ => cs($, $._mathit_word),
-
-    _mathit_word: $ => 'mathit',
-
     // LaTeX cite, etc.
 
     cite: $ => cmd_opt($,
@@ -1250,7 +1055,6 @@ let g = {
           $._documentclass_word,
           $._documentstyle_word,
           $._egroup_word,
-          $._emph_word,
           $._end_word,
           $._endgroup_word,
           $._ensuremath_word,
@@ -1272,13 +1076,6 @@ let g = {
           $._makeatletter_word,
           $._makeatother_word,
           $._makebox_word,
-          $._mathbf_word,
-          $._mathcal_word,
-          $._mathit_word,
-          $._mathnormal_word,
-          $._mathrm_word,
-          $._mathsf_word,
-          $._mathtt_word,
           // $._mkbox_word,
           // $._movebox_word,
           $._NeedsTeXFormat_word,
@@ -1298,15 +1095,6 @@ let g = {
           $._storage_word,
           // $._strut_word,
           $._tag_word,
-          $._textbf_word,
-          $._textit_word,
-          $._textmd_word,
-          $._textrm_word,
-          $._textsc_word,
-          $._textsf_word,
-          $._textsl_word,
-          $._texttt_word,
-          $._textup_word,
           $._url_word,
           $._use_word,
           // $._usebox_word,

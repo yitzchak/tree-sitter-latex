@@ -221,3 +221,93 @@ quux
     (text)
     (end (cs) (group (l) (name) (r))))
   (text))
+
+=====================
+mathbf
+=====================
+$foo \mathbf{bar} wibble$
+---------------------
+(document
+  (tex_inline_math
+    (math_shift)
+    (text)
+    (mathbf
+      (cs)
+      (group
+        (l)
+        (text)
+        (r)))
+    (text)
+    (math_shift)))
+
+=====================
+mathbf inline LaTeX inline math
+=====================
+\(foo \mathbf{bar} wibble\)
+---------------------
+(document
+  (latex_inline_math
+    (begin_inline_math)
+    (text)
+    (mathbf
+      (cs)
+      (group
+        (l)
+        (text)
+        (r)))
+    (text)
+    (end_inline_math)))
+
+=====================
+emph
+=====================
+foo\emph{bar}wibble
+---------------------
+(document
+  (text)
+  (emph (cs) (group (l) (text) (r)))
+  (text))
+
+=====================
+emph with a comment before argument
+=====================
+foo\emph%baz
+{bar}wibble
+---------------------
+(document
+  (text)
+  (emph
+    (cs)
+    (comment)
+    (group (l) (text) (r)))
+  (text))
+
+=====================
+textbf
+=====================
+foo\textbf{bar}wibble
+---------------------
+(document
+  (text)
+  (textbf (cs) (group (l) (text) (r)))
+  (text))
+
+=====================
+textit
+=====================
+foo\textit{bar}wibble
+---------------------
+(document
+  (text)
+  (textit (cs) (group (l) (text) (r)))
+  (text))
+
+=====================
+texttt
+=====================
+foo\texttt{bar}wibble
+---------------------
+(document
+  (text)
+  (texttt (cs) (group (l) (text) (r)))
+  (text))
