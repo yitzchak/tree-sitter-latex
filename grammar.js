@@ -81,13 +81,11 @@ module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
-    $.__ccc_alltt,
     $.__ccc_at_letter,
     $.__ccc_at_other,
     $.__ccc_expl_begin,
     $.__ccc_expl_end,
     $.__ccc_l3doc,
-    $.__ccc_luacode,
     $.__ccc_luadirect,
     $.__ccc_luaexec,
     $.__ccc_pipe_verb_delim,
@@ -305,8 +303,10 @@ module.exports = grammar({
 
     text_env: $ => seq(
       alias($.text_begin, $.begin),
+      $._env_begin,
       repeat($._text_mode),
-      choice($.exit, alias($.text_end, $.end))
+      choice($.exit, alias($.text_end, $.end)),
+      $._env_end,
     ),
 
     text_begin: $ => begin_cmd($,
@@ -321,8 +321,10 @@ module.exports = grammar({
 
     env: $ => seq(
       $.begin,
+      $._env_begin,
       repeat($._text_mode),
-      choice($.exit, $.end)
+      choice($.exit, $.end),
+      $._env_end
     ),
 
     begin: $ => begin_cmd($,
@@ -337,8 +339,10 @@ module.exports = grammar({
 
     math_env: $ => seq(
       alias($.math_begin, $.begin),
+      $._env_begin,
       repeat($._math_mode),
-      choice($.exit, alias($.math_end, $.end))
+      choice($.exit, alias($.math_end, $.end)),
+      $._env_end
     ),
 
     math_begin: $ => begin_cmd($,
@@ -353,8 +357,10 @@ module.exports = grammar({
 
     display_math_env: $ => seq(
       alias($.display_math_begin, $.begin),
+      $._env_begin,
       repeat($._math_mode),
-      choice($.exit, alias($.display_math_end, $.end))
+      choice($.exit, alias($.display_math_end, $.end)),
+      $._env_end
     ),
 
     display_math_begin: $ => begin_cmd($,
@@ -369,9 +375,11 @@ module.exports = grammar({
 
     inline_math_env: $ => seq(
       alias($.inline_math_begin, $.begin),
+      $._env_begin,
       repeat($._math_mode),
       // We don't allow exit here since braces are meaningless in verbatim.
-      choice($.exit, alias($.inline_math_end, $.end))
+      choice($.exit, alias($.inline_math_end, $.end)),
+      $._env_end
     ),
 
     inline_math_begin: $ => begin_cmd($,
