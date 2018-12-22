@@ -18,10 +18,8 @@ enum SymbolType {
   __ccc_at_other,
   __ccc_expl_begin,
   __ccc_expl_end,
-  __ccc_l3doc,
   __ccc_luadirect,
   __ccc_luaexec,
-  __ccc_pipe_verb_delim,
   _cs_begin,
   _cs_end,
   _env_begin,
@@ -49,6 +47,7 @@ enum SymbolType {
   magic_comment,
   make_verb_delim,
   math_shift,
+  name,
   parameter_char,
   r,
   short_verb_delim,
@@ -112,11 +111,6 @@ struct Scanner {
          {'_', '_', SUBSCRIPT_CATEGORY},
          {'|', '|', OTHER_CATEGORY},
          {'~', '~', ACTIVE_CHAR_CATEGORY}}}},
-      {// Catcodes for the l3doc class
-       __ccc_l3doc,
-       true,
-       {{{'"', '"', VERB_DELIM_EXT_CATEGORY},
-         {'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
       {// \luadirect catcode table
        __ccc_luadirect,
        false,
@@ -153,11 +147,10 @@ struct Scanner {
          {'}', '}', END_CATEGORY},
          {'~', '~', OTHER_CATEGORY},
          {'\x7f', '\x7f', INVALID_CATEGORY}}}},
-      {__ccc_pipe_verb_delim, true, {{{'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
   };
 
   ScannerMode mode = NORMAL_MODE;
-  string name;
+  string last_name;
   int32_t start_delim = 0;
   CatCodeTable catcode_table = {
       {' ', ' ', SPACE_CATEGORY},
@@ -179,6 +172,27 @@ struct Scanner {
       {'$', '$', MATH_SHIFT_CATEGORY},
       {'a', 'z', LETTER_CATEGORY},
       {'A', 'Z', LETTER_CATEGORY},
+  };
+
+  unordered_map<string, CatCodeCommand> names = {
+      {
+          "l3doc",
+          {name,
+           true,
+           {{{'"', '"', VERB_DELIM_EXT_CATEGORY},
+             {'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
+      },
+      {
+          "l3doc-TUB",
+          {name,
+           true,
+           {{{'"', '"', VERB_DELIM_EXT_CATEGORY},
+             {'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
+      },
+      {"ltxdoc", {name, true, {{{'|', '|', VERB_DELIM_EXT_CATEGORY}}}}},
+      {"ltxguide", {name, true, {{{'|', '|', VERB_DELIM_EXT_CATEGORY}}}}},
+      {"nlctdoc", {name, true, {{{'|', '|', VERB_DELIM_EXT_CATEGORY}}}}},
+      {"plnews", {name, true, {{{'|', '|', VERB_DELIM_EXT_CATEGORY}}}}},
   };
 
   unordered_map<string, Environment> environments = {
@@ -256,14 +270,14 @@ struct Scanner {
   void reset() {
     mode = NORMAL_MODE;
     start_delim = 0;
-    name.clear();
+    last_name.clear();
     catcode_table.reset();
   }
 
   unsigned serialize(char *buffer) const {
     SerializationBuffer buf(buffer);
 
-    buf << mode << start_delim << name << catcode_table;
+    buf << mode << start_delim << last_name << catcode_table;
 
     return buf.length;
   }
@@ -277,7 +291,7 @@ struct Scanner {
 
     DeserializationBuffer buf(buffer, length);
 
-    buf >> mode >> start_delim >> name >> catcode_table;
+    buf >> mode >> start_delim >> last_name >> catcode_table;
   }
 
   bool scan_verb_start_delim(TSLexer *lexer, SymbolType symbol) {
@@ -383,7 +397,7 @@ struct Scanner {
   }
 
   bool scan_verbatim_body(TSLexer *lexer) {
-    string terminator = " \\end {" + name + "}";
+    string terminator = " \\end {" + last_name + "}";
     lexer->mark_end(lexer);
     lexer->result_symbol = verbatim_body;
 
@@ -588,20 +602,43 @@ struct Scanner {
   }
 
   bool scan_env_name(TSLexer *lexer) {
-    name.clear();
+    last_name.clear();
 
     while (lexer->lookahead &&
            catcode_table[lexer->lookahead] != END_CATEGORY) {
-      name += lexer->lookahead;
+      last_name += lexer->lookahead;
       lexer->advance(lexer, false);
     }
 
-    auto it = environments.find(name);
+    auto it = environments.find(last_name);
 
     if (it == environments.end()) {
       lexer->result_symbol = env_name;
     } else {
       lexer->result_symbol = it->second.symbol;
+    }
+
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_name(TSLexer *lexer) {
+    last_name.clear();
+
+    while (lexer->lookahead &&
+           catcode_table[lexer->lookahead] != END_CATEGORY) {
+      last_name += lexer->lookahead;
+      lexer->advance(lexer, false);
+    }
+
+    auto it = names.find(last_name);
+
+    if (it == names.end()) {
+      lexer->result_symbol = name;
+    } else {
+      lexer->result_symbol = it->second.symbol;
+      catcode_table.assign(it->second.intervals, it->second.global);
     }
 
     lexer->mark_end(lexer);
@@ -617,6 +654,10 @@ struct Scanner {
         valid_symbols[env_name_inline_math] ||
         valid_symbols[env_name_display_math]) {
       return scan_env_name(lexer);
+    }
+
+    if (valid_symbols[name]) {
+      return scan_name(lexer);
     }
 
     bool res = scan_catcode_commands(lexer, valid_symbols);
@@ -644,7 +685,7 @@ struct Scanner {
 
     if (valid_symbols[_env_begin]) {
       catcode_table.push();
-      auto it = environments.find(name);
+      auto it = environments.find(last_name);
       if (it != environments.end()) {
         catcode_table.assign(it->second.intervals);
       }

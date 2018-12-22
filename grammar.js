@@ -85,10 +85,8 @@ module.exports = grammar({
     $.__ccc_at_other,
     $.__ccc_expl_begin,
     $.__ccc_expl_end,
-    $.__ccc_l3doc,
     $.__ccc_luadirect,
     $.__ccc_luaexec,
-    $.__ccc_pipe_verb_delim,
     $._cs_begin,
     $._cs_end,
     $._env_begin,
@@ -116,6 +114,7 @@ module.exports = grammar({
     $.magic_comment,
     $.make_verb_delim,
     $.math_shift,
+    $.name,
     $.parameter_char,
     $.r,
     $.short_verb_delim,
@@ -488,21 +487,9 @@ module.exports = grammar({
     documentclass: $ => cmd_opt($,
       $.documentclass_cs,
       optional($.brack_group),
-      choice(
-        alias($.name_group, $.group),
-        seq(alias($.l3doc_name_group, $.group), $.__ccc_l3doc),
-        seq(alias($.pipe_name_group, $.group), $.__ccc_pipe_verb_delim),
-      ),
+      alias($.name_group, $.group),
       optional($.brack_group)
     ),
-
-    l3doc_name_group: $ => group($, alias($.l3doc_class_name, $.name)),
-
-    l3doc_class_name: $ => /l3doc(-TUB)?/,
-
-    pipe_name_group: $ => group($, alias($.pipe_class_name, $.name)),
-
-    pipe_class_name: $ => /ltxdoc|ltxguide|nlctdoc|plnews/,
 
     documentclass_cs: $ => cs($, $._documentclass_word),
 
@@ -629,18 +616,7 @@ module.exports = grammar({
 
     _parameter: $ => choice($.group, $.cs),
 
-    name_group: $ => group($, alias(
-      seq(
-        optional(
-          choice(
-            $.l3doc_class_name,
-            $.pipe_class_name,
-          )
-        ),
-        $.text
-      ),
-      $.name)
-    ),
+    name_group: $ => group($, $.name),
 
     _name_parameter: $ => choice(alias($.name_group, $.group), $.cs),
 
