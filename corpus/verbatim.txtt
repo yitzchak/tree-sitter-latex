@@ -10,7 +10,7 @@ quux
 ----------------------
 (document
     (text)
-    (comment_env
+    (verbatim_env
       (begin
         (cs)
         (group (l) (name) (r))
@@ -51,7 +51,7 @@ quux
 ---------------------------
 (document
   (text)
-  (Verbatim_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -71,7 +71,7 @@ quux
 ---------------------------
 (document
   (text)
-  (Verbatimstar_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -91,7 +91,7 @@ quux
 ---------------------------
 (document
   (text)
-  (BVerbatim_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -111,7 +111,7 @@ quux
 ---------------------------
 (document
   (text)
-  (BVerbatimstar_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -131,7 +131,7 @@ quux
 ---------------------------
 (document
   (text)
-  (LVerbatim_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -151,7 +151,7 @@ quux
 ---------------------------
 (document
   (text)
-  (LVerbatimstar_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -171,7 +171,7 @@ quux
 ---------------------------
 (document
   (text)
-  (lstlisting_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -191,7 +191,7 @@ quux
 ---------------------------
 (document
   (text)
-  (lstlisting_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -212,7 +212,7 @@ quux
 ---------------------------
 (document
   (text)
-  (minted_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -426,7 +426,7 @@ quux
 ---------------------------
 (document
   (text)
-  (filecontents_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -447,7 +447,7 @@ quux
 ---------------------------
 (document
   (text)
-  (filecontentsstar_env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))

@@ -126,7 +126,7 @@ quux
 -------------
 (document
   (text)
-  (text_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (text)
     (end (cs) (group (l) (name) (r))))

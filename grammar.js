@@ -93,6 +93,8 @@ module.exports = grammar({
     $.__ccc_pipe_verb_delim,
     $._cs_begin,
     $._cs_end,
+    $._env_begin,
+    $._env_end,
     $._escaped_begin,
     $._escaped_end,
     $._scope_begin,
@@ -102,24 +104,20 @@ module.exports = grammar({
     $.alignment_tab,
     $.arara_comment,
     $.bib_comment,
-    $.BVerbatim_body,
-    $.BVerbatimstar_body,
-    $.comment_body,
     $.comment,
     $.delete_verb_delim,
+    $.env_name_display_math,
+    $.env_name_inline_math,
+    $.env_name_math,
+    $.env_name_text,
+    $.env_name_verbatim,
+    $.env_name,
     $.eol,
     $.exit,
-    $.filecontents_body,
-    $.filecontentsstar_body,
     $.l,
-    $.lstlisting_body,
-    $.luacodestar_body,
-    $.LVerbatim_body,
-    $.LVerbatimstar_body,
     $.magic_comment,
     $.make_verb_delim,
     $.math_shift,
-    $.minted_body,
     $.parameter_char,
     $.r,
     $.short_verb_delim,
@@ -130,9 +128,6 @@ module.exports = grammar({
     $.verb_delim,
     $.verb_end_delim,
     $.verbatim_body,
-    $.Verbatim_body,
-    $.verbatimstar_body,
-    $.Verbatimstar_body,
   ],
 
   extras: $ => [
@@ -158,8 +153,6 @@ module.exports = grammar({
       $.ExplSyntaxOff,
       $.ExplSyntaxOn,
       $.lua,
-      $.luacode_env,
-      $.luacodestar_env,
       $.luadirect,
       $.luaexec,
       $.makeatletter,
@@ -194,26 +187,17 @@ module.exports = grammar({
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
-      $.comment_env,
       $.verbatim_env,
-      $.verbatimstar_env,
-      $.filecontents_env,
-      $.filecontentsstar_env,
-      $.Verbatim_env,
-      $.Verbatimstar_env,
-      $.BVerbatim_env,
-      $.BVerbatimstar_env,
-      $.LVerbatim_env,
-      $.LVerbatimstar_env,
-      $.lstlisting_env,
-      $.minted_env,
       $.verb,
       $.MakeShortVerb,
       $.DeleteShortVerb,
-      $.alltt_env,
-      $._display_math,
-      $._inline_math,
-      $.text_env,
+      $.tex_display_math,
+      $.latex_display_math,
+      $.display_math_env,
+      $.tex_inline_math,
+      $.latex_inline_math,
+      $.inline_math_env,
+      $.env,
       $.group,
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
@@ -232,6 +216,7 @@ module.exports = grammar({
       $.subscript,
       $.superscript,
       $.math_env,
+      $.text_env,
       alias($.math_group, $.group),
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
@@ -241,24 +226,6 @@ module.exports = grammar({
     parameter_ref: $ => seq(
       $.parameter_char,
       optional(/[1-9]/)
-    ),
-
-    text_env: $ => seq(
-      $.begin,
-      repeat($._text_mode),
-      choice($.end, $.exit)
-    ),
-
-    math_env: $ => seq(
-      $.begin,
-      repeat($._math_mode),
-      choice($.end, $.exit)
-    ),
-
-    _display_math: $ => choice(
-      $.tex_display_math,
-      $.latex_display_math,
-      $.display_math_env
     ),
 
     tex_display_math: $ => seq(
@@ -281,33 +248,6 @@ module.exports = grammar({
 
     end_display_math: $ => prec(-3, escaped($, ']')),
 
-    display_math_env: $ => seq(
-      alias($.display_math_begin, $.begin),
-      repeat1($._math_mode),
-      choice(alias($.display_math_end, $.end), $.exit)
-    ),
-
-    display_math_begin: $ => begin_cmd($,
-      alias($.display_math_env_group, $.group),
-      optional($.brack_group),
-      optional($._parameter),
-      $.eol
-    ),
-
-    display_math_end: $ => prec(-3, end_cmd($,
-      alias($.display_math_env_group, $.group)
-    )),
-
-    display_math_env_group: $ => group($, alias($.display_math_env_name, $.name)),
-
-    display_math_env_name: $ => /(displaymath|eqnarray\*?|align\*?|alignat\*?|equation\*?|flalign\*?|gather\*?|multiline\*?|split\*?|dmath\*?|dseries\*?|dgroup\*?|darray\*?)/,
-
-    _inline_math: $ => choice(
-      $.tex_inline_math,
-      $.latex_inline_math,
-      $.inline_math_env
-    ),
-
     tex_inline_math: $ => seq(
       $.math_shift,
       repeat1($._math_mode),
@@ -323,24 +263,6 @@ module.exports = grammar({
     begin_inline_math: $ => escaped($, '('),
 
     end_inline_math: $ => escaped($, ')'),
-
-    inline_math_env: $ => seq(
-      alias($.inline_math_begin, $.begin),
-      repeat($._math_mode),
-      choice(alias($.inline_math_end, $.end), $.exit)
-    ),
-
-    inline_math_begin: $ => begin_cmd($,
-      alias($.inline_math_env_group, $.group)
-    ),
-
-    inline_math_end: $ => prec(-3, end_cmd($,
-      alias($.inline_math_env_group, $.group)
-    )),
-
-    inline_math_env_group: $ => group($, alias($.inline_math_env_name, $.name)),
-
-    inline_math_env_name: $ => 'math',
 
     ensuremath: $ => cmd_opt($,
       $.ensuremath_cs,
@@ -360,12 +282,18 @@ module.exports = grammar({
     verbatim_env: $ => seq(
       alias($.verbatim_begin, $.begin),
       alias($.verbatim_body, $.text),
-      // We don't allow exit here since braces are meaningless in verbatim.
       alias($.verbatim_end, $.end)
     ),
 
     verbatim_begin: $ => begin_cmd($,
       alias($.verbatim_env_group, $.group),
+      repeat(
+        choice(
+          $.text,
+          $.brack_group,
+          $.group
+        )
+      ),
       $.eol
     ),
 
@@ -373,268 +301,92 @@ module.exports = grammar({
       alias($.verbatim_env_group, $.group)
     ),
 
-    verbatim_env_group: $ => group($, alias($.verbatim_env_name, $.name)),
+    verbatim_env_group: $ => group($, alias($.env_name_verbatim, $.name)),
 
-    verbatim_env_name: $ => 'verbatim',
+    text_env: $ => seq(
+      alias($.text_begin, $.begin),
+      repeat($._text_mode),
+      choice($.exit, alias($.text_end, $.end))
+    ),
 
-    verbatimstar_env: $ => seq(
-      alias($.verbatimstar_begin, $.begin),
-      alias($.verbatimstar_body, $.text),
+    text_begin: $ => begin_cmd($,
+      alias($.text_env_group, $.group)
+    ),
+
+    text_end: $ => end_cmd($,
+      alias($.text_env_group, $.group)
+    ),
+
+    text_env_group: $ => group($, alias($.env_name_text, $.name)),
+
+    env: $ => seq(
+      $.begin,
+      repeat($._text_mode),
+      choice($.exit, $.end)
+    ),
+
+    begin: $ => begin_cmd($,
+      alias($.env_group, $.group)
+    ),
+
+    end: $ => end_cmd($,
+      alias($.env_group, $.group)
+    ),
+
+    env_group: $ => group($, alias($.env_name, $.name)),
+
+    math_env: $ => seq(
+      alias($.math_begin, $.begin),
+      repeat($._math_mode),
+      choice($.exit, alias($.math_end, $.end))
+    ),
+
+    math_begin: $ => begin_cmd($,
+      alias($.math_env_group, $.group)
+    ),
+
+    math_end: $ => end_cmd($,
+      alias($.math_env_group, $.group)
+    ),
+
+    math_env_group: $ => group($, alias($.env_name_math, $.name)),
+
+    display_math_env: $ => seq(
+      alias($.display_math_begin, $.begin),
+      repeat($._math_mode),
+      choice($.exit, alias($.display_math_end, $.end))
+    ),
+
+    display_math_begin: $ => begin_cmd($,
+      alias($.display_math_env_group, $.group)
+    ),
+
+    display_math_end: $ => end_cmd($,
+      alias($.display_math_env_group, $.group)
+    ),
+
+    display_math_env_group: $ => group($, alias($.env_name_display_math, $.name)),
+
+    inline_math_env: $ => seq(
+      alias($.inline_math_begin, $.begin),
+      repeat($._math_mode),
       // We don't allow exit here since braces are meaningless in verbatim.
-      alias($.verbatimstar_end, $.end)
+      choice($.exit, alias($.inline_math_end, $.end))
     ),
 
-    verbatimstar_begin: $ => begin_cmd($,
-      alias($.verbatimstar_env_group, $.group),
-      $.eol
+    inline_math_begin: $ => begin_cmd($,
+      alias($.inline_math_env_group, $.group)
     ),
 
-    verbatimstar_end: $ => end_cmd($,
-      alias($.verbatimstar_env_group, $.group)
+    inline_math_end: $ => end_cmd($,
+      alias($.inline_math_env_group, $.group)
     ),
 
-    verbatimstar_env_group: $ => group($, alias($.verbatimstar_env_name, $.name)),
-
-    verbatimstar_env_name: $ => 'verbatim*',
-
-    comment_env: $ => seq(
-      alias($.comment_begin, $.begin),
-      alias($.comment_body, $.text),
-      // We don't allow exit here since braces are meaningless in comment.
-      alias($.comment_end, $.end)
-    ),
-
-    comment_begin: $ => begin_cmd($,
-      alias($.comment_env_group, $.group),
-      $.eol
-    ),
-
-    comment_end: $ => end_cmd($,
-      alias($.comment_env_group, $.group)
-    ),
-
-    comment_env_group: $ => group($, alias($.comment_env_name, $.name)),
-
-    comment_env_name: $ => 'comment',
-
-    filecontents_env: $ => seq(
-      alias($.filecontents_begin, $.begin),
-      alias($.filecontents_body, $.text),
-      // We don't allow exit here since braces are meaningless in filecontents.
-      alias($.filecontents_end, $.end)
-    ),
-
-    filecontents_begin: $ => begin_cmd($,
-      alias($.filecontents_env_group, $.group),
-      $.group,
-      $.eol
-    ),
-
-    filecontents_end: $ => end_cmd($,
-      alias($.filecontents_env_group, $.group)
-    ),
-
-    filecontents_env_group: $ => group($, alias($.filecontents_env_name, $.name)),
-
-    filecontents_env_name: $ => 'filecontents',
-
-    filecontentsstar_env: $ => seq(
-      alias($.filecontentsstar_begin, $.begin),
-      alias($.filecontentsstar_body, $.text),
-      // We don't allow exit here since braces are meaningless in filecontents.
-      alias($.filecontentsstar_end, $.end)
-    ),
-
-    filecontentsstar_begin: $ => begin_cmd($,
-      alias($.filecontentsstar_env_group, $.group),
-      $.group,
-      $.eol
-    ),
-
-    filecontentsstar_end: $ => end_cmd($,
-      alias($.filecontentsstar_env_group, $.group)
-    ),
-
-    filecontentsstar_env_group: $ => group($, alias($.filecontentsstar_env_name, $.name)),
-
-    filecontentsstar_env_name: $ => 'filecontents*',
-
-    Verbatim_env: $ => seq(
-      alias($.Verbatim_begin, $.begin),
-      alias($.Verbatim_body, $.text),
-      // We don't allow exit here since braces are meaningless in verbatim.
-      alias($.Verbatim_end, $.end)
-    ),
-
-    Verbatim_begin: $ => begin_cmd($,
-      alias($.Verbatim_env_group, $.group),
-      optional($.brack_group),
-      $.eol
-    ),
-
-    Verbatim_end: $ => end_cmd($,
-      alias($.Verbatim_env_group, $.group)
-    ),
-
-    Verbatim_env_group: $ => group($, alias($.Verbatim_env_name, $.name)),
-
-    Verbatim_env_name: $ => 'Verbatim',
-
-    Verbatimstar_env: $ => seq(
-      alias($.Verbatimstar_begin, $.begin),
-      alias($.Verbatimstar_body, $.text),
-      // We don't allow exit here since braces are meaningless in verbatim.
-      alias($.Verbatimstar_end, $.end)
-    ),
-
-    Verbatimstar_begin: $ => begin_cmd($,
-      alias($.Verbatimstar_env_group, $.group),
-      optional($.brack_group),
-      $.eol
-    ),
-
-    Verbatimstar_end: $ => end_cmd($,
-      alias($.Verbatimstar_env_group, $.group)
-    ),
-
-    Verbatimstar_env_group: $ => group($, alias($.Verbatimstar_env_name, $.name)),
-
-    Verbatimstar_env_name: $ => 'Verbatim*',
-
-    BVerbatim_env: $ => seq(
-      alias($.BVerbatim_begin, $.begin),
-      alias($.BVerbatim_body, $.text),
-      // We don't allow exit here since braces are meaningless in verbatim.
-      alias($.BVerbatim_end, $.end)
-    ),
-
-    BVerbatim_begin: $ => begin_cmd($,
-      alias($.BVerbatim_env_group, $.group),
-      optional($.brack_group),
-      $.eol
-    ),
-
-    BVerbatim_end: $ => end_cmd($,
-      alias($.BVerbatim_env_group, $.group)
-    ),
-
-    BVerbatim_env_group: $ => group($, alias($.BVerbatim_env_name, $.name)),
-
-    BVerbatim_env_name: $ => 'BVerbatim',
-
-    BVerbatimstar_env: $ => seq(
-      alias($.BVerbatimstar_begin, $.begin),
-      alias($.BVerbatimstar_body, $.text),
-      // We don't allow exit here since braces are meaningless in verbatim.
-      alias($.BVerbatimstar_end, $.end)
-    ),
-
-    BVerbatimstar_begin: $ => begin_cmd($,
-      alias($.BVerbatimstar_env_group, $.group),
-      optional($.brack_group),
-      $.eol
-    ),
-
-    BVerbatimstar_end: $ => end_cmd($,
-      alias($.BVerbatimstar_env_group, $.group)
-    ),
-
-    BVerbatimstar_env_group: $ => group($, alias($.BVerbatimstar_env_name, $.name)),
-
-    BVerbatimstar_env_name: $ => 'BVerbatim*',
-
-    LVerbatim_env: $ => seq(
-      alias($.LVerbatim_begin, $.begin),
-      alias($.LVerbatim_body, $.text),
-      // We don't allow exit here since braces are meaningless in verbatim.
-      alias($.LVerbatim_end, $.end)
-    ),
-
-    LVerbatim_begin: $ => begin_cmd($,
-      alias($.LVerbatim_env_group, $.group),
-      optional($.brack_group),
-      $.eol
-    ),
-
-    LVerbatim_end: $ => end_cmd($,
-      alias($.LVerbatim_env_group, $.group)
-    ),
-
-    LVerbatim_env_group: $ => group($, alias($.LVerbatim_env_name, $.name)),
-
-    LVerbatim_env_name: $ => 'LVerbatim',
-
-    LVerbatimstar_env: $ => seq(
-      alias($.LVerbatimstar_begin, $.begin),
-      alias($.LVerbatimstar_body, $.text),
-      // We don't allow exit here since braces are meaningless in verbatim.
-      alias($.LVerbatimstar_end, $.end)
-    ),
-
-    LVerbatimstar_begin: $ => begin_cmd($,
-      alias($.LVerbatimstar_env_group, $.group),
-      optional($.brack_group),
-      $.eol
-    ),
-
-    LVerbatimstar_end: $ => end_cmd($,
-      alias($.LVerbatimstar_env_group, $.group)
-    ),
-
-    LVerbatimstar_env_group: $ => group($, alias($.LVerbatimstar_env_name, $.name)),
-
-    LVerbatimstar_env_name: $ => 'LVerbatim*',
-
-    lstlisting_env: $ => seq(
-      alias($.lstlisting_begin, $.begin),
-      alias($.lstlisting_body, $.text),
-      // We don't allow exit here since braces are meaningless in verbatim.
-      alias($.lstlisting_end, $.end)
-    ),
-
-    lstlisting_begin: $ => begin_cmd($,
-      alias($.lstlisting_env_group, $.group),
-      optional($.brack_group),
-      $.eol
-    ),
-
-    lstlisting_end: $ => end_cmd($,
-      alias($.lstlisting_env_group, $.group)
-    ),
-
-    lstlisting_env_group: $ => group($, alias($.lstlisting_env_name, $.name)),
-
-    lstlisting_env_name: $ => 'lstlisting',
-
-    minted_env: $ => seq(
-      alias($.minted_begin, $.begin),
-      alias($.minted_body, $.text),
-      // We don't allow exit here since braces are meaningless in verbatim.
-      alias($.minted_end, $.end)
-    ),
-
-    minted_begin: $ => begin_cmd($,
-      alias($.minted_env_group, $.group),
-      optional($.brack_group),
-      optional($._parameter),
-      $.eol
-    ),
-
-    minted_end: $ => end_cmd($,
-      alias($.minted_env_group, $.group)
-    ),
-
-    minted_env_group: $ => group($, alias($.minted_env_name, $.name)),
-
-    minted_env_name: $ => 'minted',
-
-    begin: $ => begin_cmd($),
+    inline_math_env_group: $ => group($, alias($.env_name_inline_math, $.name)),
 
     begin_cs: $ => cs($, $._begin_word),
 
     _begin_word: $ => 'begin',
-
-    end: $ => end_cmd($),
 
     end_cs: $ => cs($, $._end_word),
 
@@ -782,30 +534,6 @@ module.exports = grammar({
 
     _Provides_word: $ => /Provides(Class|Package|File)/,
 
-    // alltt - alltt is not a true verbatim environment since it understands
-    // control sequences and groups.
-
-    alltt_env: $ => seq(
-      alias($.alltt_begin, $.begin),
-      $._scope_begin,
-      $.__ccc_alltt,
-      repeat($._text_mode),
-      choice(alias($.alltt_end, $.end), $.exit),
-      $._scope_end
-    ),
-
-    alltt_begin: $ => begin_cmd($,
-      alias($.alltt_env_group, $.group)
-    ),
-
-    alltt_end: $ => end_cmd($,
-      alias($.alltt_env_group, $.group),
-    ),
-
-    alltt_env_group: $ => group($, alias($.alltt_env_name, $.name)),
-
-    alltt_env_name: $ => 'alltt',
-
     // luacode
 
     lua: $ => cmd_opt($,
@@ -843,49 +571,6 @@ module.exports = grammar({
     _luaexec_parameter: $ => choice($.cs, alias($.luaexec_group, $.group)),
 
     luaexec_group: $ => group($, $.__ccc_luaexec, repeat($._text_mode)),
-
-    luacode_env: $ => seq(
-      alias($.luacode_begin, $.begin),
-      $._scope_begin,
-      $.__ccc_luacode,
-      repeat($._text_mode),
-      choice(alias($.luacode_end, $.end), $.exit),
-      $._scope_end
-    ),
-
-    luacode_begin: $ => begin_cmd($,
-      alias($.luacode_env_group, $.group)
-    ),
-
-    luacode_end: $ => end_cmd($,
-      alias($.luacode_env_group, $.group)
-    ),
-
-    luacode_env_group: $ => group($, alias($.luacode_env_name, $.name)),
-
-    luacode_env_name: $ => 'luacode',
-
-    luacodestar_env: $ => seq(
-      alias($.luacodestar_begin, $.begin),
-      alias($.luacodestar_body, $.text),
-      // We don't allow exit since luacode* is a verbatim environment.
-      alias($.luacodestar_end, $.end)
-    ),
-
-    luacodestar_begin: $ => begin_cmd($,
-      alias($.luacodestar_env_group, $.group),
-      $.eol
-    ),
-
-    luacodestar_end: $ => end_cmd($,
-      alias($.luacodestar_env_group, $.group)
-    ),
-
-    // lua_text: $ => repeat1($._verb_line),
-
-    luacodestar_env_group: $ => group($, alias($.luacodestar_env_name, $.name)),
-
-    luacodestar_env_name: $ => 'luacode*',
 
     // shortvrb
 
@@ -940,26 +625,8 @@ module.exports = grammar({
       seq(
         optional(
           choice(
-            $.alltt_env_name,
-            $.BVerbatim_env_name,
-            $.BVerbatimstar_env_name,
-            $.comment_env_name,
-            $.display_math_env_name,
-            $.filecontents_env_name,
-            $.filecontentsstar_env_name,
-            $.inline_math_env_name,
             $.l3doc_class_name,
-            $.lstlisting_env_name,
-            $.luacode_env_name,
-            $.luacodestar_env_name,
-            $.LVerbatim_env_name,
-            $.LVerbatimstar_env_name,
-            $.minted_env_name,
             $.pipe_class_name,
-            $.verbatim_env_name,
-            $.Verbatim_env_name,
-            $.verbatimstar_env_name,
-            $.Verbatimstar_env_name,
           )
         ),
         $.text

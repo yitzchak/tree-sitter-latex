@@ -1,4 +1,5 @@
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "tree_sitter/parser.h"
@@ -9,6 +10,7 @@
 namespace LaTeX {
 
 using std::string;
+using std::unordered_map;
 using std::vector;
 
 enum SymbolType {
@@ -24,6 +26,8 @@ enum SymbolType {
   __ccc_pipe_verb_delim,
   _cs_begin,
   _cs_end,
+  _env_begin,
+  _env_end,
   _escaped_begin,
   _escaped_end,
   _scope_begin,
@@ -33,24 +37,20 @@ enum SymbolType {
   alignment_tab,
   arara_comment,
   bib_comment,
-  BVerbatim_body,
-  BVerbatimstar_body,
-  comment_body,
   comment,
   delete_verb_delim,
+  env_name_display_math,
+  env_name_inline_math,
+  env_name_math,
+  env_name_text,
+  env_name_verbatim,
+  env_name,
   eol,
   exit,
-  filecontents_body,
-  filecontentsstar_body,
   l,
-  lstlisting_body,
-  luacodestar_body,
-  LVerbatim_body,
-  LVerbatimstar_body,
   magic_comment,
   make_verb_delim,
   math_shift,
-  minted_body,
   parameter_char,
   r,
   short_verb_delim,
@@ -61,9 +61,6 @@ enum SymbolType {
   verb_delim,
   verb_end_delim,
   verbatim_body,
-  Verbatim_body,
-  verbatimstar_body,
-  Verbatimstar_body,
 };
 
 struct CatCodeCommand {
@@ -80,6 +77,11 @@ struct VerbatimEnv {
     symbol = sym;
     terminator = " \\end {" + name + "}";
   }
+};
+
+struct Environment {
+  SymbolType symbol;
+  vector<CatCodeInterval> intervals;
 };
 
 enum ScannerMode: uint8_t {
@@ -251,6 +253,7 @@ struct Scanner {
   };
 
   ScannerMode mode = NORMAL_MODE;
+  string name;
   int32_t start_delim = 0;
   CatCodeTable catcode_table = {
     {' ',    ' ',    SPACE_CATEGORY},
@@ -274,21 +277,45 @@ struct Scanner {
     {'A',    'Z',    LETTER_CATEGORY},
   };
 
-  vector<VerbatimEnv> verbatims = {
-    {BVerbatim_body, "BVerbatim"},
-    {BVerbatimstar_body, "BVerbatim*"},
-    {comment_body, "comment"},
-    {filecontents_body, "filecontents"},
-    {filecontentsstar_body, "filecontents*"},
-    {lstlisting_body, "lstlisting"},
-    {luacodestar_body, "luacode*"},
-    {LVerbatim_body, "LVerbatim"},
-    {LVerbatimstar_body, "LVerbatim*"},
-    {minted_body, "minted"},
-    {verbatim_body, "verbatim"},
-    {Verbatim_body, "Verbatim"},
-    {verbatimstar_body, "verbatim*"},
-    {Verbatimstar_body, "Verbatim*"}
+  unordered_map<string, Environment> environments = {
+    {"align", {env_name_display_math, {}}},
+    {"align*", {env_name_display_math, {}}},
+    {"alignat", {env_name_display_math, {}}},
+    {"alignat*", {env_name_display_math, {}}},
+    {"BVerbatim", {env_name_verbatim, {}}},
+    {"BVerbatim*", {env_name_verbatim, {}}},
+    {"comment", {env_name_verbatim, {}}},
+    {"darray", {env_name_display_math, {}}},
+    {"darray*", {env_name_display_math, {}}},
+    {"dgroup", {env_name_display_math, {}}},
+    {"dgroup*", {env_name_display_math, {}}},
+    {"displaymath", {env_name_display_math, {}}},
+    {"dmath", {env_name_display_math, {}}},
+    {"dmath*", {env_name_display_math, {}}},
+    {"eqnarray", {env_name_display_math, {}}},
+    {"eqnarray*", {env_name_display_math, {}}},
+    {"equation", {env_name_display_math, {}}},
+    {"equation*", {env_name_display_math, {}}},
+    {"filecontents", {env_name_verbatim, {}}},
+    {"filecontents*", {env_name_verbatim, {}}},
+    {"flalign", {env_name_display_math, {}}},
+    {"flalign*", {env_name_display_math, {}}},
+    {"gather", {env_name_display_math, {}}},
+    {"gather*", {env_name_display_math, {}}},
+    {"lstlisting", {env_name_verbatim, {}}},
+    {"luacode*", {env_name_verbatim, {}}},
+    {"LVerbatim", {env_name_verbatim, {}}},
+    {"LVerbatim*", {env_name_verbatim, {}}},
+    {"math", {env_name_inline_math, {}}},
+    {"minted", {env_name_verbatim, {}}},
+    {"multiline", {env_name_display_math, {}}},
+    {"multiline*", {env_name_display_math, {}}},
+    {"split", {env_name_display_math, {}}},
+    {"split*", {env_name_display_math, {}}},
+    {"verbatim", {env_name_verbatim, {}}},
+    {"Verbatim", {env_name_verbatim, {}}},
+    {"verbatim*", {env_name_verbatim, {}}},
+    {"Verbatim*", {env_name_verbatim, {}}},
   };
 
   Scanner() {}
@@ -296,13 +323,14 @@ struct Scanner {
   void reset () {
     mode = NORMAL_MODE;
     start_delim = 0;
+    name.clear();
     catcode_table.reset();
   }
 
   unsigned serialize(char *buffer) const {
     SerializationBuffer buf(buffer);
 
-    buf << mode << start_delim << catcode_table;
+    buf << mode << start_delim << name << catcode_table;
 
     return buf.length;
   }
@@ -316,7 +344,7 @@ struct Scanner {
 
     DeserializationBuffer buf(buffer, length);
 
-    buf >> mode >> start_delim >> catcode_table;
+    buf >> mode >> start_delim >> name >> catcode_table;
   }
 
   bool scan_verb_start_delim(TSLexer *lexer, SymbolType symbol) {
@@ -416,34 +444,28 @@ struct Scanner {
     return true;
   }
 
-  bool scan_verbatim_body(TSLexer *lexer, const bool *valid_symbols) {
-    for (const VerbatimEnv& env: verbatims) {
-      if (valid_symbols[env.symbol]) {
+  bool scan_verbatim_body(TSLexer *lexer) {
+    string terminator = " \\end {" + name + "}";
+    lexer->mark_end(lexer);
+    lexer->result_symbol = verbatim_body;
 
-        lexer->mark_end(lexer);
-        lexer->result_symbol = env.symbol;
-
-        do {
-          if (matches_string(lexer, env.terminator)) {
-            return true;
-          }
-
-          while (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
-            lexer->advance(lexer, false);
-          }
-
-          if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
-            lexer->advance(lexer, false);
-          }
-
-          lexer->mark_end(lexer);
-        } while (lexer->lookahead);
-
+    do {
+      if (matches_string(lexer, terminator)) {
         return true;
       }
-    }
 
-    return false;
+      while (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
+        lexer->advance(lexer, false);
+      }
+
+      if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
+        lexer->advance(lexer, false);
+      }
+
+      lexer->mark_end(lexer);
+    } while (lexer->lookahead);
+
+    return true;
   }
 
   bool scan_comment(TSLexer *lexer) {
@@ -619,8 +641,35 @@ struct Scanner {
     return true;
   }
 
+  bool scan_env_name(TSLexer *lexer) {
+    name.clear();
+
+    while (lexer->lookahead && catcode_table[lexer->lookahead] != END_CATEGORY) {
+      name += lexer->lookahead;
+      lexer->advance(lexer, false);
+    }
+
+    auto it = environments.find(name);
+
+    if (it == environments.end()) {
+      lexer->result_symbol = env_name;
+    } else {
+      lexer->result_symbol = it->second.symbol;
+    }
+
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan_normal_mode(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
+
+    if (valid_symbols[env_name] || valid_symbols[env_name_text] ||
+        valid_symbols[env_name_verbatim] || valid_symbols[env_name_inline_math] ||
+        valid_symbols[env_name_display_math]) {
+      return scan_env_name(lexer);
+    }
 
     bool res = scan_catcode_commands(lexer, valid_symbols);
     if (res) return true;
@@ -640,8 +689,9 @@ struct Scanner {
       return scan_verb_body(lexer);
     }
 
-    res = scan_verbatim_body(lexer, valid_symbols);
-    if (res) return true;
+    if (valid_symbols[verbatim_body]) {
+      return scan_verbatim_body(lexer);
+    }
 
     if (valid_symbols[_scope_begin]) {
       catcode_table.push();

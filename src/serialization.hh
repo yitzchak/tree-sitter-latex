@@ -2,6 +2,7 @@
 #define SERIALIZATION_HH_
 
 #include <cstring>
+#include <string>
 
 namespace LaTeX {
 
@@ -21,6 +22,16 @@ namespace LaTeX {
 
       return *this;
     }
+
+    SerializationBuffer& operator <<(const std::string& value) {
+      *this << value.length();
+
+      for (auto ch: value) {
+        *this << ch;
+      }
+
+      return *this;
+    }
   };
 
   struct DeserializationBuffer {
@@ -37,6 +48,19 @@ namespace LaTeX {
 
       buffer += sizeof(T);
       length -= sizeof(T);
+
+      return *this;
+    }
+
+    DeserializationBuffer& operator >>(std::string& value) {
+      size_t length;
+
+      *this >> length;
+      value.resize(length);
+
+      for (size_t i = 0; i < length; i++) {
+        *this >> value[i];
+      }
 
       return *this;
     }
