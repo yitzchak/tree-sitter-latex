@@ -10,7 +10,7 @@
 
 namespace LaTeX {
 
-enum Category: uint8_t {
+enum Category : uint8_t {
   ESCAPE_CATEGORY,
   BEGIN_CATEGORY,
   END_CATEGORY,
@@ -31,7 +31,7 @@ enum Category: uint8_t {
   CATEGORY_COUNT
 };
 
-enum CategoryFlag: unsigned int {
+enum CategoryFlag : unsigned int {
   ESCAPE_FLAG = 1 << ESCAPE_CATEGORY,
   BEGIN_FLAG = 1 << BEGIN_CATEGORY,
   END_FLAG = 1 << END_CATEGORY,
@@ -59,11 +59,12 @@ struct CatCodeInterval {
 
 class CatCodeTable {
 protected:
-  uint8_t level; // 0 is the default catcode table, 1 is the global scope, 2-255 are the group scopes.
+  uint8_t level; // 0 is the default catcode table, 1 is the global scope, 2-255
+                 // are the group scopes.
   std::unordered_map<int32_t, std::map<uint8_t, Category>> codes;
 
 public:
-  CatCodeTable (std::initializer_list<CatCodeInterval> init) {
+  CatCodeTable(std::initializer_list<CatCodeInterval> init) {
     level = 0;
     assign(init);
     level = 1;
@@ -73,7 +74,8 @@ public:
 
   void assign(const int32_t key, Category code, bool global = false);
 
-  void assign(const std::vector<CatCodeInterval>& intervals, bool global = false);
+  void assign(const std::vector<CatCodeInterval> &intervals,
+              bool global = false);
 
   void erase(const int32_t key, bool global = false);
 
@@ -85,11 +87,13 @@ public:
 
   void pop();
 
-  friend SerializationBuffer& operator <<(SerializationBuffer& buffer, const CatCodeTable& table);
+  friend SerializationBuffer &operator<<(SerializationBuffer &buffer,
+                                         const CatCodeTable &table);
 
-  friend DeserializationBuffer& operator >>(DeserializationBuffer& buffer, CatCodeTable& table);
+  friend DeserializationBuffer &operator>>(DeserializationBuffer &buffer,
+                                           CatCodeTable &table);
 };
 
-}
+} // namespace LaTeX
 
 #endif // CATCODE_HH_
