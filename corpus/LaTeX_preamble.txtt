@@ -4,7 +4,7 @@ documentclass
 \documentclass[foo]{bar}
 ----------------
 (document
-  (documentclass
+  (cmd
     (cs)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (name) (r))))
@@ -15,7 +15,7 @@ documentclass with date
 \documentclass[foo]{bar}[2000/01/01]
 ----------------
 (document
-  (documentclass
+  (cmd
     (cs)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (name) (r))
@@ -27,7 +27,7 @@ documentstyle
 \documentstyle[foo]{bar}
 ----------------
 (document
-  (documentstyle
+  (cmd
     (cs)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (name) (r))))
@@ -38,7 +38,7 @@ usepackage
 \usepackage[foo]{bar}
 -------------------
 (document
-  (use
+  (cmd
     (cs)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (name) (r))))
@@ -49,7 +49,7 @@ usepackage with date
 \usepackage[foo]{bar}[2000/01/01]
 ----------------
 (document
-  (use
+  (cmd
     (cs)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (name) (r))

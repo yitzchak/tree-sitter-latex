@@ -99,7 +99,7 @@ foo\^bar
 -------------
 (document
   (text)
-  (escaped)
+  (cs)
   (text))
 
 =============
@@ -148,10 +148,9 @@ comment eats EOL
 {bar}
 -----------
 (document
-  (emph
-    (cs)
-    (comment)
-    (group (l) (text) (r))))
+  (cs)
+  (comment)
+  (group (l) (text) (r)))
 
 ===========
 arara comment
@@ -189,33 +188,6 @@ foo %:wibble
   (text)
   (tag_comment))
 
-=====================
-footnote
-=====================
-foo\footnote{bar}wibble
-foo\footnote[10]{bar}wibble
----------------------
-(document
-  (text)
-  (footnote (cs) (group (l) (text) (r))) (text)
-  (footnote (cs)
-    (brack_group (lbrack) (text) (rbrack))
-    (group (l) (text) (r)))
-  (text))
-
-=====================
-sections
-=====================
-\section{foo}
-\section*{bar}
-\subsection  *  {wibble}
----------------------
-
-(document
-  (section (cs) (group (l) (text) (r)))
-  (section (cs) (group (l) (text) (r)))
-  (section (cs) (group (l) (text) (r))))
-
 =================
 Square brackets do not trigger brack_group
 ================
@@ -243,108 +215,11 @@ Escaped space
 ==============================
 \ f
 -------------------------------
-(document (escaped) (text))
+(document (cs) (text))
 
 ===============================
 Escaped comment
 ==============================
 \%f
 -------------------------------
-(document (escaped) (text))
-
-==========================
-storage usage
-=========================
-\def\foo{bar}
------------------------
-(document
-  (storage
-    (cs)
-    (cs)
-    (group (l) (text) (r))))
-
-==========================
-storage with single parameter
-=========================
-\def\foo#1{bar}
------------------------
-(document
-  (storage
-    (cs)
-    (cs)
-    (parameter_ref (parameter_char))
-    (group (l) (text) (r))))
-
-==========================
-storage with multiple parameters
-=========================
-\def\foo#1#2{bar}
------------------------
-(document
-  (storage
-    (cs)
-    (cs)
-    (parameter_ref (parameter_char))
-    (parameter_ref (parameter_char))
-    (group (l) (text) (r))))
-
-==========================
-storage with multiple parameters and dangling parameter character
-=========================
-\def\foo#1#2#{bar}
------------------------
-(document
-  (storage
-    (cs)
-    (cs)
-    (parameter_ref (parameter_char))
-    (parameter_ref (parameter_char))
-    (parameter_ref (parameter_char))
-    (group (l) (text) (r))))
-
-==========================
-storage with multiple parameters with brackets
-=========================
-\def\foo[#1]#2{bar}
------------------------
-(document
-  (storage
-    (cs)
-    (cs)
-    (text)
-    (parameter_ref (parameter_char))
-    (text)
-    (parameter_ref (parameter_char))
-    (group (l) (text) (r))))
-
-==========================
-storage with exisiting command
-=========================
-\def\section{bar}
------------------------
-(document
-  (storage
-    (cs)
-    (cs)
-    (group (l) (text) (r))))
-
-
-==========================
-storage with comment
-=========================
-\def\foo%
-{bar}
------------------------
-(document
-  (storage
-    (cs)
-    (cs)
-    (comment)
-    (group (l) (text) (r))))
-
-========================
-ref
-========================
-\ref{eq:foo}
------------------------
-(document (cs) (group (l) (text) (r)))
+(document (cs) (text))

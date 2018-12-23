@@ -170,7 +170,7 @@ LaTeX inline math - unterminated inside group
     (l)
     (text)
     (latex_inline_math
-      (begin_inline_math)
+      (cs)
       (text)
       (exit))
     (r))
@@ -178,7 +178,7 @@ LaTeX inline math - unterminated inside group
     (l)
     (text)
     (latex_inline_math
-      (begin_inline_math)
+      (cs)
       (text)
       (group
         (l)
@@ -196,7 +196,7 @@ foo\(bar
 (document
   (text)
   (latex_inline_math
-    (begin_inline_math)
+    (cs)
     (text)
     (exit)))
 
@@ -211,7 +211,7 @@ LaTeX display math - unterminated inside group
     (l)
     (text)
     (latex_display_math
-      (begin_display_math)
+      (cs)
       (text)
       (exit))
     (r))
@@ -219,7 +219,7 @@ LaTeX display math - unterminated inside group
     (l)
     (text)
     (latex_display_math
-      (begin_display_math)
+      (cs)
       (text)
       (group
         (l)
@@ -237,7 +237,7 @@ foo\[bar
 (document
   (text)
   (latex_display_math
-    (begin_display_math)
+    (cs)
     (text)
     (exit)))
 
@@ -251,9 +251,9 @@ LaTeX display math inside newenvironment
     (cs)
     (group (l) (name) (name) (r))
     (group
-      (l) (latex_display_math (begin_display_math) (cs) (exit)) (r))
+      (l) (latex_display_math (cs) (cs) (exit)) (r))
     (group
-      (l) (cs) (end_display_math) (r))))
+      (l) (cs) (cs) (r))))
 
 ===========================================
 LaTeX display math inside newenvironment
@@ -261,13 +261,12 @@ LaTeX display math inside newenvironment
 \newenvironment{mathluacode}{\(\luacode}{\endluacode\)}
 --------------------------------------------
 (document
-  (newenvironment
-    (cs)
-    (group (l) (name) (name) (r))
-    (group
-      (l) (latex_inline_math (begin_inline_math) (cs) (exit)) (r))
-    (group
-      (l) (cs) (end_inline_math) (r))))
+  (cs)
+  (group (l) (text) (r))
+  (group
+    (l) (latex_inline_math (cs) (cs) (exit)) (r))
+  (group
+    (l) (cs) (cs) (r)))
 
 ==========================================
 newenvironment based on existing environment (the wrong way)
@@ -275,24 +274,23 @@ newenvironment based on existing environment (the wrong way)
 \newenvironment{foo}{\begin{bar}}{\end{bar}}
 --------------------------------------
 (document
-  (newenvironment
+  (cs)
+  (group (l) (text) (r))
+  (group
+    (l)
+    (env
+      (begin (cs) (group (l) (name) (r)))
+      (exit))
+    (r))
+  (group
+    (l)
     (cs)
-    (group (l) (name) (r))
-    (group
-      (l)
-      (text_env
-        (begin (cs) (group (l) (name) (r)))
-        (exit))
-      (r))
-    (group
-      (l)
-      (cs)
-      (group (l) (text) (r)) (r))))
+    (group (l) (text) (r)) (r)))
 
 =====================================
-defu
+usepacakgel
 =====================================
-\defu
+\usepacakgel
 --------------------------------------
 (document (cs))
 
@@ -303,11 +301,11 @@ verbatimfoo
 bar
 \end{verbatimfoo}
 --------------------------------------
-(document (text_env (begin (cs) (group (l) (name) (name) (r))) (text) (end (cs) (group (l) (name) (name) (r)))))
+(document (env (begin (cs) (group (l) (name) (r))) (text) (end (cs) (group (l) (name) (r)))))
 
 =====================================
-missing section arguments
+missing pacakge arguments
 =====================================
-\foo{\section}
+\foo{\usepackage}
 -------------------------------------
-(document (cs) (group (l) (section (cs)) (r)))
+(document (cs) (group (l) (cmd (cs)) (r)))

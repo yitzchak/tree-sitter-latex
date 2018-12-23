@@ -12,7 +12,7 @@ directlua
 }
 ---------------------------
 (document
-  (lua
+  (cmd
     (cs)
     (group
       (l)
@@ -27,9 +27,9 @@ directlua
       (text)
       (cs) (active_char)
       (text (comment))
-      (cs) (escaped)
+      (cs) (cs)
       (text)
-      (cs) (escaped)
+      (cs) (cs)
       (text (comment))
       (cs)
       (text)
@@ -49,7 +49,7 @@ directlua with number
 }
 ---------------------------
 (document
-  (lua
+  (cmd
     (cs)
     (hexadecimal)
     (group
@@ -65,9 +65,9 @@ directlua with number
       (text)
       (cs) (active_char)
       (text (comment))
-      (cs) (escaped)
+      (cs) (cs)
       (text)
-      (cs) (escaped)
+      (cs) (cs)
       (text (comment))
       (cs)
       (text)
@@ -87,7 +87,7 @@ latelua
 }
 ---------------------------
 (document
-  (lua
+  (cmd
     (cs)
     (group
       (l)
@@ -102,9 +102,9 @@ latelua
       (text)
       (cs) (active_char)
       (text (comment))
-      (cs) (escaped)
+      (cs) (cs)
       (text)
-      (cs) (escaped)
+      (cs) (cs)
       (text (comment))
       (cs)
       (text)
@@ -124,7 +124,7 @@ latelua with number
 }
 ---------------------------
 (document
-  (lua
+  (cmd
     (cs)
     (hexadecimal)
     (group
@@ -140,9 +140,9 @@ latelua with number
       (text)
       (cs) (active_char)
       (text (comment))
-      (cs) (escaped)
+      (cs) (cs)
       (text)
-      (cs) (escaped)
+      (cs) (cs)
       (text (comment))
       (cs)
       (text)
@@ -162,7 +162,7 @@ luadirect
 }
 ---------------------------
 (document
-  (luadirect
+  (cmd
     (cs)
     (group
       (l)
@@ -177,9 +177,9 @@ luadirect
       (text)
       (cs) (active_char)
       (text (comment))
-      (cs) (escaped)
+      (cs) (cs)
       (text)
-      (cs) (escaped)
+      (cs) (cs)
       (text (comment))
       (cs)
       (text)
@@ -199,7 +199,7 @@ luaexec
 }
 ----------------------------
 (document
-  (luaexec
+  (cmd
     (cs)
     (group
       (l)
@@ -210,13 +210,13 @@ luaexec
       (text)
       (cs) (cs)
       (text)
-      (escaped)
+      (cs)
       (text (comment))
-      (escaped)
+      (cs)
       (text)
-      (escaped)
+      (cs)
       (text)
-      (escaped)
+      (cs)
       (text (comment))
       (cs)
       (text)
@@ -244,11 +244,11 @@ luacode environment
     (text)
     (cs) (cs)
     (text)
-    (escaped)
+    (cs)
     (text)
-    (escaped)
+    (cs)
     (text)
-    (escaped)
+    (cs)
     (text)
     (cs)
     (text)
@@ -270,6 +270,6 @@ luacode* environment
     (begin
       (cs)
       (group (l) (name) (r)) (eol))
-    (text)
+    (verbatim_text)
     (end (cs)
       (group (l) (name) (r)))))

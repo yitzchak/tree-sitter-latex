@@ -15,7 +15,7 @@ quux
         (cs)
         (group (l) (name) (r))
         (eol))
-      (text)
+      (verbatim_text)
       (end (cs) (group (l) (name) (r))))
     (text))
 
@@ -36,7 +36,7 @@ quux
         (cs)
         (group (l) (name) (r))
         (eol))
-      (text)
+      (verbatim_text)
       (end (cs) (group (l) (name) (r))))
     (text))
 
@@ -56,7 +56,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -76,7 +76,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -96,7 +96,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -116,7 +116,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -136,7 +136,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -156,7 +156,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -176,7 +176,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -197,7 +197,7 @@ quux
       (group (l) (name) (r))
       (brack_group (lbrack) (text) (rbrack))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -218,7 +218,7 @@ quux
       (group (l) (name) (r))
       (group (l) (text) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -237,7 +237,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -258,7 +258,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -280,7 +280,7 @@ quux
         (cs)
         (group (l) (name) (r))
         (eol))
-      (text)
+      (verbatim_text)
       (end (cs) (group (l) (name) (r))))
     (text))
 
@@ -296,10 +296,10 @@ text
 ----------------------
 (document
   (text)
-  (verb (cs) (verb_delim) (text) (verb_delim)) (text)
-  (verb (cs) (verb_delim) (text) (verb_delim)) (text)
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim)) (text))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text)
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text)
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text))
 
 ======================
 not (quite) inline verbatim
@@ -307,7 +307,7 @@ not (quite) inline verbatim
 \verb  +foo+ the space here is the actual delim, so +foo+ is plain text
 ----------------------
 (document
-  (verb (cs) (verb_delim) (text) (verb_delim)) (text))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text))
 
 ========================
 inline verbatim using various special character
@@ -324,16 +324,16 @@ inline verbatim using various special character
 \verb$conn$
 ------------------------
 (document
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim))
-  (verb (cs) (verb_delim) (text) (verb_delim)))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)))
 
 ===========================
 alltt environment
@@ -346,7 +346,7 @@ $foo$ \(bar\) \emph{quux} ~ % wibble
   (env
     (begin (cs) (group (l) (name) (r)))
     (text)
-    (latex_inline_math (begin_inline_math) (text) (end_inline_math))
+    (latex_inline_math (cs) (text) (cs))
     (text)
     (cs)
     (group (l) (text) (r))
@@ -368,13 +368,13 @@ MakeShortVerb and DeleteShortVerb
 ----------------------------
 (document
   (text)
-  (MakeShortVerb (cs) (group (l) (escaped) (r)))
-  (verb (verb_delim) (text) (verb_delim))
-  (MakeShortVerb (cs) (group (l) (escaped) (r)))
-  (verb (verb_delim) (text) (verb_delim))
-  (DeleteShortVerb (cs) (group (l) (escaped) (r)))
+  (cmd (cs) (group (l) (cs) (r)))
+  (verb (verb_delim) (verbatim) (verb_delim))
+  (cmd (cs) (group (l) (cs) (r)))
+  (verb (verb_delim) (verbatim) (verb_delim))
+  (cmd (cs) (group (l) (cs) (r)))
   (text)
-  (verb (verb_delim) (text) (verb_delim)))
+  (verb (verb_delim) (verbatim) (verb_delim)))
 
 ===============================
 ltxdoc class triggers pipe verb delimiter
@@ -383,10 +383,10 @@ ltxdoc class triggers pipe verb delimiter
 |foo|
 -------------------------------
 (document
-  (documentclass
+  (cmd
     (cs)
     (group (l) (name) (r)))
-  (verb (verb_delim) (text) (verb_delim)))
+  (verb (verb_delim) (verbatim) (verb_delim)))
 
 ===============================
 ltxguide class triggers pipe verb delimiter
@@ -395,10 +395,10 @@ ltxguide class triggers pipe verb delimiter
 |foo|
 -------------------------------
 (document
-  (documentclass
+  (cmd
     (cs)
     (group (l) (name) (r)))
-  (verb (verb_delim) (text) (verb_delim)))
+  (verb (verb_delim) (verbatim) (verb_delim)))
 
 ===============================
 l3doc class triggers pipe and double quote verb delimiter
@@ -408,11 +408,11 @@ l3doc class triggers pipe and double quote verb delimiter
 "bar"
 -------------------------------
 (document
-  (documentclass
+  (cmd
     (cs)
     (group (l) (name) (r)))
-  (verb (verb_delim) (text) (verb_delim))
-  (verb (verb_delim) (text) (verb_delim)))
+  (verb (verb_delim) (verbatim) (verb_delim))
+  (verb (verb_delim) (verbatim) (verb_delim)))
 
 ===========================
 filecontents environment
@@ -431,7 +431,7 @@ quux
       (group (l) (name) (r))
       (group (l) (text) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -452,6 +452,6 @@ quux
       (group (l) (name) (r))
       (group (l) (text) (r))
       (eol))
-    (text)
+    (verbatim_text)
     (end (cs) (group (l) (name) (r))))
   (text))

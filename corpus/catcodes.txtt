@@ -13,9 +13,9 @@
 \makeatletter\bar@wibble\makeatother
 ---------------------------------
 (document
-  (makeatletter (cs))
   (cs)
-  (makeatother (cs)))
+  (cs)
+  (cs))
 
 ==============================
 [makeatletter] @ sign is letter in text group
@@ -23,12 +23,12 @@
 \makeatletter{\bar@wibble}\makeatother
 ----------------
 (document
-  (makeatletter (cs))
+  (cs)
   (group
     (l)
     (cs)
     (r))
-  (makeatother (cs)))
+  (cs))
 
 ==============================
 [makeatletter] @ sign is letter in optional text group
@@ -36,15 +36,15 @@
 \makeatletter\usepackage[foo\bar@wibble]{foo}\makeatother
 ----------------
 (document
-  (makeatletter (cs))
-  (use (cs)
+  (cs)
+  (cmd (cs)
     (brack_group
       (lbrack)
       (text)
       (cs)
       (rbrack))
     (group (l) (name) (r)))
-  (makeatother (cs)))
+  (cs))
 
 ============================
 [makeatletter] @ sign is letter then other
@@ -52,9 +52,9 @@
 \makeatletter\bar@wibble\makeatother\quux@gronk
 ----------------
 (document
-  (makeatletter (cs))
   (cs)
-  (makeatother (cs))
+  (cs)
+  (cs)
   (cs)
   (text))
 
@@ -75,9 +75,9 @@
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff
 ----------------
 (document
-  (ExplSyntaxOn (cs))
   (cs)
-  (ExplSyntaxOff (cs)))
+  (cs)
+  (cs))
 
 =================
 [ProvidesExplPackage] colon/underscore is letter
@@ -86,12 +86,11 @@
 \bar:wibble_wobble
 ----------------
 (document
-  (ProvidesExpl
-    (cs)
-    (group (l) (text) (r))
-    (group (l) (text) (r))
-    (group (l) (text) (r))
-    (group (l) (text) (r)))
+  (cs)
+  (group (l) (text) (r))
+  (group (l) (text) (r))
+  (group (l) (text) (r))
+  (group (l) (text) (r))
   (cs))
 
 ==============================
@@ -100,12 +99,12 @@
 \ExplSyntaxOn{\bar:wibble_wobble}\ExplSyntaxOff
 ----------------
 (document
-  (ExplSyntaxOn (cs))
+  (cs)
   (group
     (l)
     (cs)
     (r))
-  (ExplSyntaxOff (cs)))
+  (cs))
 
 ==============================
 [ExplSyntaxOn] colon/underscore is letter in optional text group
@@ -113,15 +112,15 @@
 \ExplSyntaxOn\usepackage[foo\bar:wibble_wobble]{foo}\ExplSyntaxOff
 ----------------
 (document
-  (ExplSyntaxOn (cs))
-  (use (cs)
+  (cs)
+  (cmd (cs)
     (brack_group
       (lbrack)
       (text)
       (cs)
       (rbrack))
     (group (l) (name) (r)))
-  (ExplSyntaxOff (cs)))
+  (cs))
 
 ============================
 [ExplSyntaxOn] colon/underscore is letter then other
@@ -129,9 +128,9 @@
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
 ----------------
 (document
-  (ExplSyntaxOn (cs))
   (cs)
-  (ExplSyntaxOff (cs))
+  (cs)
+  (cs)
   (cs)
   (text)
   (text)
@@ -143,13 +142,13 @@
 \ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\makeatother\ExplSyntaxOff\zap@zip:nil_zil
 ----------------
 (document
-  (ExplSyntaxOn (cs))
+  (cs)
   (cs)
   (text)
-  (makeatletter (cs))
   (cs)
-  (makeatother (cs))
-  (ExplSyntaxOff (cs))
+  (cs)
+  (cs)
+  (cs)
   (cs)
   (text)
   (text)
@@ -161,66 +160,11 @@
 \ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\ExplSyntaxOff\zap@zip\makeatother
 -----------------------------------------------
 (document
-  (ExplSyntaxOn (cs))
+  (cs)
   (cs)
   (text)
-  (makeatletter (cs))
   (cs)
-  (ExplSyntaxOff (cs))
   (cs)
-  (makeatother (cs)))
-
-========================
-catcode with decimal number
-=======================
-\catcode70=3
-----------------------
-(document
-  (catcode
-    (cs)
-    (decimal)
-    (decimal)))
-
-========================
-catcode with octal number
-=======================
-\catcode'10=3
-----------------------
-(document
-  (catcode
-    (cs)
-    (octal)
-    (decimal)))
-
-========================
-catcode with octal number
-=======================
-\catcode"A0=3
-----------------------
-(document
-  (catcode
-    (cs)
-    (hexadecimal)
-    (decimal)))
-
-========================
-catcode with char code by letter
-=======================
-\catcode`A=3
-----------------------
-(document
-  (catcode
-    (cs)
-    (charcode)
-    (decimal)))
-
-========================
-catcode with char code by escaped character
-=======================
-\catcode`\\=3
-----------------------
-(document
-  (catcode
-    (cs)
-    (charcode (escaped))
-    (decimal)))
+  (cs)
+  (cs)
+  (cs))

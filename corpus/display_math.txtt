@@ -31,9 +31,9 @@ foo\[bar\]quux
 (document
   (text)
   (latex_display_math
-    (begin_display_math)
+    (cs)
     (text)
-    (end_display_math))
+    (cs))
   (text))
 
 =======================
@@ -378,7 +378,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (text)
     (end (cs) (group (l) (name) (r))))
@@ -395,7 +395,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (text)
     (end (cs) (group (l) (name) (r))))

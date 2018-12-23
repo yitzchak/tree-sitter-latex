@@ -36,9 +36,9 @@ foo\(bar\)quux
 (document
   (text)
   (latex_inline_math
-    (begin_inline_math)
+    (cs)
     (text)
-    (end_inline_math))
+    (cs))
   (text))
 
 =============
@@ -49,10 +49,10 @@ foo\(bar\wibble\)quux
 (document
   (text)
   (latex_inline_math
-    (begin_inline_math)
+    (cs)
     (text)
     (cs)
-    (end_inline_math))
+    (cs))
   (text))
 
 =============

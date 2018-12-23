@@ -1,20 +1,12 @@
 const DECIMAL_DIGIT = choice('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 const ONE_MORE_DECIMAL_DIGITS = prec.right(2, repeat1(DECIMAL_DIGIT))
-const ZERO_MORE_DECIMAL_DIGITS = prec.right(2, repeat(DECIMAL_DIGIT))
-const SIGN = choice('+', '-')
-const FIXED_PATTERN = choice(
-  SIGN,
-  seq(optional(SIGN), ONE_MORE_DECIMAL_DIGITS, optional(seq('.', ZERO_MORE_DECIMAL_DIGITS))),
-  seq(optional(SIGN), '.', ONE_MORE_DECIMAL_DIGITS)
-)
-
-function cs ($, name) {
-  return seq($._cs_begin, name, $._cs_end)
-}
-
-function escaped ($, name) {
-  return seq($._escaped_begin, name, $._escaped_end)
-}
+// const ZERO_MORE_DECIMAL_DIGITS = prec.right(2, repeat(DECIMAL_DIGIT))
+// const SIGN = choice('+', '-')
+// const FIXED_PATTERN = choice(
+//   SIGN,
+//   seq(optional(SIGN), ONE_MORE_DECIMAL_DIGITS, optional(seq('.', ZERO_MORE_DECIMAL_DIGITS))),
+//   seq(optional(SIGN), '.', ONE_MORE_DECIMAL_DIGITS)
+// )
 
 function cmd ($, cs, ...args) {
   cs = alias(cs, $.cs)
@@ -33,7 +25,7 @@ function cmd_opt ($, cs, ...args) {
 }
 
 function begin_cmd ($, ...args) {
-  const cs = alias($.begin_cs, $.cs)
+  const cs = alias($.cs_begin, $.cs)
 
   return (args.length === 0)
     ? seq(cs, alias($.name_group, $.group))
@@ -41,7 +33,7 @@ function begin_cmd ($, ...args) {
 }
 
 function end_cmd ($, ...args) {
-  const cs = alias($.end_cs, $.cs)
+  const cs = alias($.cs_end, $.cs)
 
   return (args.length === 0)
     ? seq(cs, alias($.name_group, $.group))
@@ -52,9 +44,9 @@ function group ($, ...contents) {
   return seq($.l, $._scope_begin, ...contents, $.r, $._scope_end)
 }
 
-function simple_group ($, ...contents) {
-  return seq(choice($.l, $.bgroup), $._scope_begin, ...contents, choice($.r, $.egroup), $._scope_end)
-}
+// function simple_group ($, ...contents) {
+//   return seq(choice($.l, $.bgroup), $._scope_begin, ...contents, choice($.r, $.egroup), $._scope_end)
+// }
 
 function semi_simple_group ($, ...contents) {
   return seq($.begingroup, $._scope_begin, ...contents, choice($.endgroup, $.exit), $._scope_end)
@@ -64,35 +56,26 @@ function brack_group ($, contents) {
   return seq($.lbrack, contents, $.rbrack)
 }
 
-function optional_seq () {
-  var result
-
-  for (var i = arguments.length - 1; i > -1; i--) {
-    result = optional(
-      result
-        ? seq(arguments[i], result)
-        : arguments[i])
-  }
-
-  return result
-}
+// function optional_seq () {
+//   var result
+//
+//   for (var i = arguments.length - 1; i > -1; i--) {
+//     result = optional(
+//       result
+//         ? seq(arguments[i], result)
+//         : arguments[i])
+//   }
+//
+//   return result
+// }
 
 module.exports = grammar({
   name: 'latex',
 
   externals: $ => [
-    $.__ccc_at_letter,
-    $.__ccc_at_other,
-    $.__ccc_expl_begin,
-    $.__ccc_expl_end,
-    $.__ccc_luadirect,
-    $.__ccc_luaexec,
-    $._cs_begin,
-    $._cs_end,
+    $._cmd_apply,
     $._env_begin,
     $._env_end,
-    $._escaped_begin,
-    $._escaped_end,
     $._scope_begin,
     $._scope_end,
     $._space,
@@ -101,6 +84,26 @@ module.exports = grammar({
     $.arara_comment,
     $.bib_comment,
     $.comment,
+    $.cs_begin,
+    $.cs_begingroup,
+    $.cs_bgroup,
+    $.cs_c_g0_Ga,
+    $.cs_c_Ga,
+    $.cs_c_Gm,
+    $.cs_display_math_begin,
+    $.cs_display_math_end,
+    $.cs_egroup,
+    $.cs_end,
+    $.cs_endgroup,
+    $.cs_inline_math_begin,
+    $.cs_inline_math_end,
+    $.cs_m_Gt,
+    $.cs_t_bt_Gu_bt,
+    $.cs_t_bt_Gu,
+    $.cs_t_Gd,
+    $.cs_t_GD,
+    $.cs_verb,
+    $.cs,
     $.delete_verb_delim,
     $.env_name_display_math,
     $.env_name_inline_math,
@@ -124,7 +127,7 @@ module.exports = grammar({
     $.verb_body,
     $.verb_delim,
     $.verb_end_delim,
-    $.verbatim_body,
+    $.verbatim_text,
   ],
 
   extras: $ => [
@@ -142,39 +145,28 @@ module.exports = grammar({
     _common: $ => choice(
       $.active_char,
       $.alignment_tab,
-      $.catcode,
-      $.char,
-      $.cs,
-      $.ensuremath,
-      $.escaped,
-      $.ExplSyntaxOff,
-      $.ExplSyntaxOn,
-      $.lua,
-      $.luadirect,
-      $.luaexec,
-      $.makeatletter,
-      $.makeatother,
+      // $.catcode,
+      seq($.cs, $._cmd_apply),
+      alias($.cmd_c, $.cmd),
       $.parameter_ref,
       $.text,
+      prec(-1, alias($.lbrack, $.text)),
+      prec(-1, alias($.rbrack, $.text)),
     ),
 
     verb: $ => choice(
       cmd($,
-        $.verb_cs,
+        $.cs_verb,
         $.verb_delim,
-        alias($.verb_body, $.text),
+        alias($.verb_body, $.verbatim),
         alias($.verb_end_delim, $.verb_delim)
       ),
       seq(
         alias($.short_verb_delim, $.verb_delim),
-        alias($.verb_body, $.text),
+        alias($.verb_body, $.verbatim),
         alias($.verb_end_delim, $.verb_delim)
       )
     ),
-
-    verb_cs: $ => cs($, $._verb_word),
-
-    _verb_word: $ => 'verb',
 
     _text_mode: $ => choice(
       $._common,
@@ -186,8 +178,7 @@ module.exports = grammar({
       alias($.superscript, $.text),
       $.verbatim_env,
       $.verb,
-      $.MakeShortVerb,
-      $.DeleteShortVerb,
+      alias($.cmd_t, $.cmd),
       $.tex_display_math,
       $.latex_display_math,
       $.display_math_env,
@@ -196,15 +187,6 @@ module.exports = grammar({
       $.inline_math_env,
       $.env,
       $.group,
-      prec(-1, alias($.lbrack, $.text)),
-      prec(-1, alias($.rbrack, $.text)),
-      $.ProvidesExpl,
-      $.documentclass,
-      $.documentstyle,
-      $.use,
-      $.end_inline_math,
-      $.end_display_math,
-      $.Provides,
       $.semi_simple_group,
     ),
 
@@ -213,11 +195,9 @@ module.exports = grammar({
       $.subscript,
       $.superscript,
       $.math_env,
+      alias($.cmd_m, $.cmd),
       $.text_env,
       alias($.math_group, $.group),
-      prec(-1, alias($.lbrack, $.text)),
-      prec(-1, alias($.rbrack, $.text)),
-      $.tag
     ),
 
     parameter_ref: $ => seq(
@@ -236,14 +216,10 @@ module.exports = grammar({
     ),
 
     latex_display_math: $ => seq(
-      $.begin_display_math,
+      alias($.cs_display_math_begin, $.cs),
       repeat($._math_mode),
-      choice($.end_display_math, $.exit)
+      choice(alias($.cs_display_math_end, $.cs), $.exit)
     ),
-
-    begin_display_math: $ => escaped($, '['),
-
-    end_display_math: $ => prec(-3, escaped($, ']')),
 
     tex_inline_math: $ => seq(
       $.math_shift,
@@ -252,34 +228,15 @@ module.exports = grammar({
     ),
 
     latex_inline_math: $ => seq(
-      $.begin_inline_math,
+      alias($.cs_inline_math_begin, $.cs),
       repeat($._math_mode),
-      choice($.end_inline_math, $.exit)
+      choice(alias($.cs_inline_math_end, $.cs), $.exit)
     ),
-
-    begin_inline_math: $ => escaped($, '('),
-
-    end_inline_math: $ => escaped($, ')'),
-
-    ensuremath: $ => cmd_opt($,
-      $.ensuremath_cs,
-      alias($.math_group, $.group)
-    ),
-
-    ensuremath_cs: $ => cs($, $._ensuremath_word),
-
-    _ensuremath_word: $ => 'ensuremath',
-
-    tag: $ => cmd_opt($, $.tag_cs, $._parameter),
-
-    tag_cs: $ => cs($, $._tag_word),
-
-    _tag_word: $ => 'tag',
 
     verbatim_env: $ => seq(
       alias($.verbatim_begin, $.begin),
-      alias($.verbatim_body, $.text),
-      alias($.verbatim_end, $.end)
+      $.verbatim_text,
+      choice(alias($.verbatim_end, $.end), $.exit)
     ),
 
     verbatim_begin: $ => begin_cmd($,
@@ -391,224 +348,92 @@ module.exports = grammar({
 
     inline_math_env_group: $ => group($, alias($.env_name_inline_math, $.name)),
 
-    begin_cs: $ => cs($, $._begin_word),
+    // catcode: $ => prec.right(-1, cmd($,
+    //   $.catcode_cs,
+    //   optional(choice($._number, $.cs, $.parameter_ref)),
+    //   optional('='),
+    //   optional(choice($._number, $.cs, $.parameter_ref))
+    // )),
+    //
+    // catcode_cs: $ => cs($, $._catcode_word),
+    //
+    // _catcode_word: $ => /(cat|del|kcat|lc|math|sf|uc)code/,
 
-    _begin_word: $ => 'begin',
-
-    end_cs: $ => cs($, $._end_word),
-
-    _end_word: $ => 'end',
-
-    ProvidesExpl: $ => cmd_opt($,
-      $.ProvidesExpl_cs,
-      $._parameter,
-      $._parameter,
-      $._parameter,
-      $._parameter,
-      $.__ccc_expl_begin
-    ),
-
-    ProvidesExpl_cs: $ => cs($, $._ProvidesExpl_word),
-
-    _ProvidesExpl_word: $ => /ProvidesExpl(Class|File|Package)/,
-
-    makeatletter: $ => cmd($,
-      $.makeatletter_cs,
-      $.__ccc_at_letter,
-    ),
-
-    makeatletter_cs: $ => cs($, $._makeatletter_word),
-
-    _makeatletter_word: $ => 'makeatletter',
-
-    makeatother: $ => cmd($,
-      $.makeatother_cs,
-      $.__ccc_at_other
-    ),
-
-    makeatother_cs: $ => cs($, $._makeatother_word),
-
-    _makeatother_word: $ => 'makeatother',
-
-    ExplSyntaxOn: $ => cmd($,
-      $.ExplSyntaxOn_cs,
-      $.__ccc_expl_begin
-    ),
-
-    ExplSyntaxOn_cs: $ => cs($, $._ExplSyntaxOn_word),
-
-    _ExplSyntaxOn_word: $ => 'ExplSyntaxOn',
-
-    ExplSyntaxOff: $ => cmd($,
-      $.ExplSyntaxOff_cs,
-      $.__ccc_expl_end
-    ),
-
-    ExplSyntaxOff_cs: $ => cs($, $._ExplSyntaxOff_word),
-
-    _ExplSyntaxOff_word: $ => 'ExplSyntaxOff',
-
-    catcode: $ => prec.right(-1, cmd($,
-      $.catcode_cs,
-      optional(choice($._number, $.cs, $.parameter_ref)),
-      optional('='),
-      optional(choice($._number, $.cs, $.parameter_ref))
-    )),
-
-    catcode_cs: $ => cs($, $._catcode_word),
-
-    _catcode_word: $ => /(cat|del|kcat|lc|math|sf|uc)code/,
-
-    chardef: $ => cmd_opt($,
-      $.chardef_cs,
-      $.cs,
-      optional('='),
-      choice($._number, $.cs, $.parameter_ref)
-    ),
-
-    chardef_cs: $ => cs($, $._chardef_word),
-
-    _chardef_word: $ => /(math)?chardef/,
-
-    catcode_ref: $ => cmd($,
-      $.catcode_cs, choice($._number, $.cs, $.parameter_ref)
-    ),
-
-    char: $ => cmd_opt($,
-      $.char_cs, choice($._number, $.cs, $.parameter_ref)
-    ),
-
-    char_cs: $ => cs($, $._char_word),
-
-    _char_word: $ => /(math)?char|accent/,
-
-    // LaTex preamble commands
-
-    documentclass: $ => cmd_opt($,
-      $.documentclass_cs,
-      optional($.brack_group),
-      alias($.name_group, $.group),
-      optional($.brack_group)
-    ),
-
-    documentclass_cs: $ => cs($, $._documentclass_word),
-
-    _documentclass_word: $ => 'documentclass',
-
-    documentstyle: $ => cmd_opt($,
-      $.documentstyle_cs,
-      optional($.brack_group),
-      alias($.name_group, $.group)
-    ),
-
-    documentstyle_cs: $ => cs($, $._documentstyle_word),
-
-    _documentstyle_word: $ => 'documentstyle',
-
-    use: $ => cmd_opt($,
-      $.use_cs,
-      optional($.brack_group),
-      alias($.name_group, $.group),
-      optional($.brack_group)
-    ),
-
-    use_cs: $ => cs($, $._use_word),
-
-    _use_word: $ => /usepackage|(LoadClass|RequirePackage)(WithOptions)?/,
-
-    // LaTeX cls identification
-
-    Provides: $ => cmd_opt($,
-      $.Provides_cs,
-      $._parameter,
-      $.__ccc_at_letter,
-      optional($.brack_group)
-    ),
-
-    Provides_cs: $ => cs($, $._Provides_word),
-
-    _Provides_word: $ => /Provides(Class|Package|File)/,
-
-    // luacode
-
-    lua: $ => cmd_opt($,
-      $.lua_cs,
-      optional($._number),
-      $._luadirect_parameter,
-    ),
-
-    lua_cs: $ => cs($, $._lua_word),
-
-    _lua_word: $ => /(direct|late)lua/,
-
-    _luadirect_parameter: $ => choice($.cs, alias($.luadirect_group, $.group)),
-
-    luadirect_group: $ => group($, $.__ccc_luadirect, repeat($._text_mode)),
-
-    luadirect: $ => cmd_opt($,
-      $.luadirect_cs,
-      $._luadirect_parameter,
-    ),
-
-    luadirect_cs: $ => cs($, $._luadirect_word),
-
-    _luadirect_word: $ => 'luadirect',
-
-    luaexec: $ => cmd_opt($,
-      $.luaexec_cs,
-      $._luaexec_parameter,
-    ),
-
-    luaexec_cs: $ => cs($, $._luaexec_word),
-
-    _luaexec_word: $ => 'luaexec',
-
-    _luaexec_parameter: $ => choice($.cs, alias($.luaexec_group, $.group)),
-
-    luaexec_group: $ => group($, $.__ccc_luaexec, repeat($._text_mode)),
-
-    // shortvrb
-
-    MakeShortVerb: $ => cmd_opt($,
-      $.MakeShortVerb_cs,
-      optional('*'),
-      choice(
-        alias($.make_verb_delim, $.escaped),
-        alias($.make_verb_delim_group, $.group)
+    cmd_c: $ => choice(
+      cmd_opt($,
+        $.cs_c_Ga,
+        $._apply_parameter
+      ),
+      cmd_opt($,
+        $.cs_c_g0_Ga,
+        optional($._number),
+        $._apply_parameter
+      ),
+      cmd_opt($,
+        $.cs_c_Gm,
+        alias($.math_group, $.group),
+        $._cmd_apply
       )
     ),
+
+    cmd_m: $ => choice(
+      cmd_opt($,
+        $.cs_m_Gt,
+        $.group,
+        $._cmd_apply
+      )
+    ),
+
+    cmd_t: $ => choice(
+      cmd_opt($,
+        $.cs_t_bt_Gu,
+        optional($.brack_group),
+        alias($.name_group, $.group),
+        $._cmd_apply
+      ),
+      cmd_opt($,
+        $.cs_t_bt_Gu_bt,
+        optional($.brack_group),
+        alias($.name_group, $.group),
+        optional($.brack_group),
+        $._cmd_apply
+      ),
+      cmd_opt($,
+        $.cs_t_Gd,
+        optional('*'),
+        choice(
+          alias($.make_verb_delim, $.cs),
+          alias($.make_verb_delim_group, $.group)
+        ),
+        $._cmd_apply
+      ),
+      cmd_opt($,
+        $.cs_t_GD,
+        choice(
+          alias($.delete_verb_delim, $.cs),
+          alias($.delete_verb_delim_group, $.group)
+        ),
+        $._cmd_apply
+      )
+    ),
+
+    _apply_parameter: $ => choice($.cs, alias($.apply_group, $.group)),
+
+    apply_group: $ => group($, $._cmd_apply, repeat($._text_mode)),
 
     make_verb_delim_group: $ => group($,
       choice(
-        alias($.make_verb_delim, $.escaped),
+        alias($.make_verb_delim, $.cs),
         repeat($._text_mode)
-      )
-    ),
-
-    MakeShortVerb_cs: $ => cs($, $._MakeShortVerb_word),
-
-    _MakeShortVerb_word: $ => /(Make|Define)ShortVerb/,
-
-    DeleteShortVerb: $ => cmd_opt($,
-      $.DeleteShortVerb_cs,
-      choice(
-        alias($.delete_verb_delim, $.escaped),
-        alias($.delete_verb_delim_group, $.group)
       )
     ),
 
     delete_verb_delim_group: $ => group($,
       choice(
-        alias($.delete_verb_delim, $.escaped),
+        alias($.delete_verb_delim, $.cs),
         repeat($._text_mode)
       )
     ),
-
-    DeleteShortVerb_cs: $ => cs($, $._DeleteShortVerb_word),
-
-    _DeleteShortVerb_word: $ => /(Delete|Undefine)ShortVerb/,
-
-    // Common rules
 
     group: $ => group($, repeat($._text_mode)),
 
@@ -632,86 +457,30 @@ module.exports = grammar({
 
     text: $ => prec.left(-1,repeat1(/[^\]\[]/)),
 
-    cs: $ =>  cs($, $._word),
+    begingroup: $ => cmd($, $.cs_begingroup),
 
-    _word: $ => prec.left(-1, choice(
-      seq(
-        choice(
-          $._begin_word,
-          $._begingroup_word,
-          $._bgroup_word,
-          // $._box_dimension_word,
-          $._catcode_word,
-          $._char_word,
-          $._chardef_word,
-          $._DeleteShortVerb_word,
-          $._documentclass_word,
-          $._documentstyle_word,
-          $._egroup_word,
-          $._end_word,
-          $._endgroup_word,
-          $._ensuremath_word,
-          $._ExplSyntaxOff_word,
-          $._ExplSyntaxOn_word,
-          $._lua_word,
-          $._luadirect_word,
-          $._luaexec_word,
-          $._makeatletter_word,
-          $._makeatother_word,
-          $._MakeShortVerb_word,
-          $._Provides_word,
-          $._ProvidesExpl_word,
-          $._tag_word,
-          $._use_word,
-          $._verb_word,
-        ),
-        repeat(/./)
-      ),
-      repeat1(/./)
-    )),
+    endgroup: $ => cmd($, $.cs_endgroup),
 
-    escaped: $ => escaped($, /[^()\[\]]/),
+    bgroup: $ => cmd($, $.cs_bgroup),
 
-    begingroup: $ => cmd($, $.begingroup_cs),
+    egroup: $ => cmd($, $.cs_egroup),
 
-    begingroup_cs: $ => cs($, $._begingroup_word),
+    // dimension: $ => token(
+    //     seq(
+    //       FIXED_PATTERN,
+    //       // fi introduced by LuaTeX
+    //       /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/
+    //   )
+    // ),
 
-    _begingroup_word: $ => 'begingroup',
-
-    endgroup: $ => cmd($, $.endgroup_cs),
-
-    endgroup_cs: $ => cs($, $._endgroup_word),
-
-    _endgroup_word: $ => 'endgroup',
-
-    bgroup: $ => cmd($, $.bgroup_cs),
-
-    bgroup_cs: $ => cs($, $._bgroup_word),
-
-    _bgroup_word: $ => 'bgroup',
-
-    egroup: $ => cmd($, $.egroup_cs),
-
-    egroup_cs: $ => cs($, $._egroup_word),
-
-    _egroup_word: $ => 'egroup',
-
-    dimension: $ => token(
-        seq(
-          FIXED_PATTERN,
-          // fi introduced by LuaTeX
-          /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/
-      )
-    ),
-
-    fixed: $ => FIXED_PATTERN,
+    // fixed: $ => FIXED_PATTERN,
 
     _number: $ => choice(
       $.decimal,
       $.octal,
       $.hexadecimal,
-      $.charcode,
-      $.catcode_ref
+      // $.charcode,
+      // $.catcode_ref
     ),
 
     decimal: $ => token(ONE_MORE_DECIMAL_DIGITS),
@@ -720,6 +489,6 @@ module.exports = grammar({
 
     hexadecimal: $ => /"[0-9a-fA-F]+/,
 
-    charcode: $ => seq('`', choice($.escaped, /./, $.cs))
+    charcode: $ => seq('`', choice(/./, $.cs))
   }
 })

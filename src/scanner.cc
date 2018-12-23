@@ -1,6 +1,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
 #include "tree_sitter/parser.h"
 
@@ -14,18 +15,9 @@ using std::unordered_map;
 using std::vector;
 
 enum SymbolType {
-  __ccc_at_letter,
-  __ccc_at_other,
-  __ccc_expl_begin,
-  __ccc_expl_end,
-  __ccc_luadirect,
-  __ccc_luaexec,
-  _cs_begin,
-  _cs_end,
+  _cmd_apply,
   _env_begin,
   _env_end,
-  _escaped_begin,
-  _escaped_end,
   _scope_begin,
   _scope_end,
   _space,
@@ -34,6 +26,26 @@ enum SymbolType {
   arara_comment,
   bib_comment,
   comment,
+  cs_begin,
+  cs_begingroup,
+  cs_bgroup,
+  cs_c_g0_Ga,
+  cs_c_Ga,
+  cs_c_Gm,
+  cs_display_math_begin,
+  cs_display_math_end,
+  cs_egroup,
+  cs_end,
+  cs_endgroup,
+  cs_inline_math_begin,
+  cs_inline_math_end,
+  cs_m_Gt,
+  cs_t_bt_Gu_bt,
+  cs_t_bt_Gu,
+  cs_t_Gd,
+  cs_t_GD,
+  cs_verb,
+  cs,
   delete_verb_delim,
   env_name_display_math,
   env_name_inline_math,
@@ -57,7 +69,7 @@ enum SymbolType {
   verb_body,
   verb_delim,
   verb_end_delim,
-  verbatim_body,
+  verbatim_text,
 };
 
 struct CatCodeCommand {
@@ -81,76 +93,8 @@ struct Environment {
   vector<CatCodeInterval> intervals;
 };
 
-enum ScannerMode : uint8_t { CS_MODE, ESCAPED_MODE, NORMAL_MODE };
-
 struct Scanner {
-  vector<CatCodeCommand> catcode_commands = {
-      {__ccc_at_letter, false, {{{'@', '@', LETTER_CATEGORY}}}},
-      {__ccc_at_other, false, {{{'@', '@', OTHER_CATEGORY}}}},
-      {__ccc_expl_begin,
-       false,
-       {{{'\t', '\t', IGNORED_CATEGORY},
-         {' ', ' ', IGNORED_CATEGORY},
-         {'"', '"', OTHER_CATEGORY},
-         {'&', '&', ALIGNMENT_TAB_CATEGORY},
-         {':', ':', LETTER_CATEGORY},
-         {'^', '^', SUPERSCRIPT_CATEGORY},
-         {'_', '_', LETTER_CATEGORY},
-         {'|', '|', OTHER_CATEGORY},
-         {'~', '~', SPACE_CATEGORY}}}},
-      {// This the default action for \ExplSyntaxOff. It will be overridden by
-       // the call to \ExplSyntaxOn.
-       __ccc_expl_end,
-       false,
-       {{{'\t', '\t', SPACE_CATEGORY},
-         {' ', ' ', SPACE_CATEGORY},
-         {'"', '"', OTHER_CATEGORY},
-         {'&', '&', ALIGNMENT_TAB_CATEGORY},
-         {':', ':', OTHER_CATEGORY},
-         {'^', '^', SUPERSCRIPT_CATEGORY},
-         {'_', '_', SUBSCRIPT_CATEGORY},
-         {'|', '|', OTHER_CATEGORY},
-         {'~', '~', ACTIVE_CHAR_CATEGORY}}}},
-      {// \luadirect catcode table
-       __ccc_luadirect,
-       false,
-       {{{1, 9, EOL_CATEGORY},
-         {'\n', '\n', EOL_CATEGORY},
-         {11, '$', OTHER_CATEGORY},
-         {'%', '%', COMMENT_CATEGORY},
-         {'&', '@', OTHER_CATEGORY},
-         {'A', 'Z', LETTER_CATEGORY},
-         {'[', '[', OTHER_CATEGORY},
-         {'\\', '\\', ESCAPE_CATEGORY},
-         {']', '`', OTHER_CATEGORY},
-         {'a', 'z', LETTER_CATEGORY},
-         {'{', '{', BEGIN_CATEGORY},
-         {'|', '|', OTHER_CATEGORY},
-         {'}', '}', END_CATEGORY},
-         {'~', '~', ACTIVE_CHAR_CATEGORY},
-         {'\x7f', '\x7f', INVALID_CATEGORY}}}},
-      {// luaexec catcode table
-       __ccc_luaexec,
-       false,
-       {{{1, 9, EOL_CATEGORY},
-         {'\n', '\n', EOL_CATEGORY},
-         {11, '$', OTHER_CATEGORY},
-         {'%', '%', COMMENT_CATEGORY},
-         {'&', '@', OTHER_CATEGORY},
-         {'A', 'Z', LETTER_CATEGORY},
-         {'[', '[', OTHER_CATEGORY},
-         {'\\', '\\', ESCAPE_CATEGORY},
-         {']', '`', OTHER_CATEGORY},
-         {'a', 'z', LETTER_CATEGORY},
-         {'{', '{', BEGIN_CATEGORY},
-         {'|', '|', OTHER_CATEGORY},
-         {'}', '}', END_CATEGORY},
-         {'~', '~', OTHER_CATEGORY},
-         {'\x7f', '\x7f', INVALID_CATEGORY}}}},
-  };
-
-  ScannerMode mode = NORMAL_MODE;
-  string last_name;
+  string cs_name, e_name, u_name;
   int32_t start_delim = 0;
   CatCodeTable catcode_table = {
       {' ', ' ', SPACE_CATEGORY},
@@ -172,6 +116,158 @@ struct Scanner {
       {'$', '$', MATH_SHIFT_CATEGORY},
       {'a', 'z', LETTER_CATEGORY},
       {'A', 'Z', LETTER_CATEGORY},
+  };
+
+  unordered_map<string, CatCodeCommand> control_sequences = {
+      {"(", {cs_inline_math_begin, false, {}}},
+      {")", {cs_inline_math_end, false, {}}},
+      {"[", {cs_display_math_begin, false, {}}},
+      {"]", {cs_display_math_end, false, {}}},
+      {"begin", {cs_begin, false, {}}},
+      {"begingroup", {cs_begingroup, false, {}}},
+      {"bgroup", {cs_bgroup, false, {}}},
+      {"DefineShortVerb", {cs_t_Gd, false, {}}},
+      {"DeleteShortVerb", {cs_t_GD, false, {}}},
+      {"directlua", {cs_c_g0_Ga, false, {{{1, 9, EOL_CATEGORY},
+        {'\n', '\n', EOL_CATEGORY},
+        {11, '$', OTHER_CATEGORY},
+        {'%', '%', COMMENT_CATEGORY},
+        {'&', '@', OTHER_CATEGORY},
+        {'A', 'Z', LETTER_CATEGORY},
+        {'[', '[', OTHER_CATEGORY},
+        {'\\', '\\', ESCAPE_CATEGORY},
+        {']', '`', OTHER_CATEGORY},
+        {'a', 'z', LETTER_CATEGORY},
+        {'{', '{', BEGIN_CATEGORY},
+        {'|', '|', OTHER_CATEGORY},
+        {'}', '}', END_CATEGORY},
+        {'~', '~', ACTIVE_CHAR_CATEGORY},
+        {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
+      {"documentclass", {cs_t_bt_Gu_bt, false, {}}},
+      {"documentstyle", {cs_t_bt_Gu, false, {}}},
+      {"egroup", {cs_egroup, false, {}}},
+      {"end", {cs_end, false, {}}},
+      {"endgroup", {cs_endgroup, false, {}}},
+      {"ensuremath", {cs_c_Gm, false, {}}},
+      {"ExplSyntaxOff",
+       {cs,
+        false,
+        {{{'\t', '\t', SPACE_CATEGORY},
+          {' ', ' ', SPACE_CATEGORY},
+          {'"', '"', OTHER_CATEGORY},
+          {'&', '&', ALIGNMENT_TAB_CATEGORY},
+          {':', ':', OTHER_CATEGORY},
+          {'^', '^', SUPERSCRIPT_CATEGORY},
+          {'_', '_', SUBSCRIPT_CATEGORY},
+          {'|', '|', OTHER_CATEGORY},
+          {'~', '~', ACTIVE_CHAR_CATEGORY}}}}},
+      {"ExplSyntaxOn",
+       {cs,
+        false,
+        {{{'\t', '\t', IGNORED_CATEGORY},
+          {' ', ' ', IGNORED_CATEGORY},
+          {'"', '"', OTHER_CATEGORY},
+          {'&', '&', ALIGNMENT_TAB_CATEGORY},
+          {':', ':', LETTER_CATEGORY},
+          {'^', '^', SUPERSCRIPT_CATEGORY},
+          {'_', '_', LETTER_CATEGORY},
+          {'|', '|', OTHER_CATEGORY},
+          {'~', '~', SPACE_CATEGORY}}}}},
+      {"latelua", {cs_c_g0_Ga, false, {{{1, 9, EOL_CATEGORY},
+        {'\n', '\n', EOL_CATEGORY},
+        {11, '$', OTHER_CATEGORY},
+        {'%', '%', COMMENT_CATEGORY},
+        {'&', '@', OTHER_CATEGORY},
+        {'A', 'Z', LETTER_CATEGORY},
+        {'[', '[', OTHER_CATEGORY},
+        {'\\', '\\', ESCAPE_CATEGORY},
+        {']', '`', OTHER_CATEGORY},
+        {'a', 'z', LETTER_CATEGORY},
+        {'{', '{', BEGIN_CATEGORY},
+        {'|', '|', OTHER_CATEGORY},
+        {'}', '}', END_CATEGORY},
+        {'~', '~', ACTIVE_CHAR_CATEGORY},
+        {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
+      {"LoadClass", {cs_t_bt_Gu_bt, false, {}}},
+      {"LoadClassWithOptions", {cs_t_bt_Gu_bt, false, {}}},
+      {"luadirect", {cs_c_Ga, false, {{{1, 9, EOL_CATEGORY},
+        {'\n', '\n', EOL_CATEGORY},
+        {11, '$', OTHER_CATEGORY},
+        {'%', '%', COMMENT_CATEGORY},
+        {'&', '@', OTHER_CATEGORY},
+        {'A', 'Z', LETTER_CATEGORY},
+        {'[', '[', OTHER_CATEGORY},
+        {'\\', '\\', ESCAPE_CATEGORY},
+        {']', '`', OTHER_CATEGORY},
+        {'a', 'z', LETTER_CATEGORY},
+        {'{', '{', BEGIN_CATEGORY},
+        {'|', '|', OTHER_CATEGORY},
+        {'}', '}', END_CATEGORY},
+        {'~', '~', ACTIVE_CHAR_CATEGORY},
+        {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
+      {"luaexec", {cs_c_Ga, false, {{{1, 9, EOL_CATEGORY},
+        {'\n', '\n', EOL_CATEGORY},
+        {11, '$', OTHER_CATEGORY},
+        {'%', '%', COMMENT_CATEGORY},
+        {'&', '@', OTHER_CATEGORY},
+        {'A', 'Z', LETTER_CATEGORY},
+        {'[', '[', OTHER_CATEGORY},
+        {'\\', '\\', ESCAPE_CATEGORY},
+        {']', '`', OTHER_CATEGORY},
+        {'a', 'z', LETTER_CATEGORY},
+        {'{', '{', BEGIN_CATEGORY},
+        {'|', '|', OTHER_CATEGORY},
+        {'}', '}', END_CATEGORY},
+        {'~', '~', OTHER_CATEGORY},
+        {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
+      {"makeatletter", {cs, false, {{{'@', '@', LETTER_CATEGORY}}}}},
+      {"makeatother", {cs, false, {{{'@', '@', OTHER_CATEGORY}}}}},
+      {"MakeShortVerb", {cs_t_Gd, false, {}}},
+      {"ProvidesClass", {cs, false, {{{'@', '@', OTHER_CATEGORY}}}}},
+      {"ProvidesExplClass",
+       {cs,
+        false,
+        {{{'\t', '\t', IGNORED_CATEGORY},
+          {' ', ' ', IGNORED_CATEGORY},
+          {'"', '"', OTHER_CATEGORY},
+          {'&', '&', ALIGNMENT_TAB_CATEGORY},
+          {':', ':', LETTER_CATEGORY},
+          {'^', '^', SUPERSCRIPT_CATEGORY},
+          {'_', '_', LETTER_CATEGORY},
+          {'|', '|', OTHER_CATEGORY},
+          {'~', '~', SPACE_CATEGORY}}}}},
+      {"ProvidesExplFile",
+       {cs,
+        false,
+        {{{'\t', '\t', IGNORED_CATEGORY},
+          {' ', ' ', IGNORED_CATEGORY},
+          {'"', '"', OTHER_CATEGORY},
+          {'&', '&', ALIGNMENT_TAB_CATEGORY},
+          {':', ':', LETTER_CATEGORY},
+          {'^', '^', SUPERSCRIPT_CATEGORY},
+          {'_', '_', LETTER_CATEGORY},
+          {'|', '|', OTHER_CATEGORY},
+          {'~', '~', SPACE_CATEGORY}}}}},
+      {"ProvidesExplPackage",
+       {cs,
+        false,
+        {{{'\t', '\t', IGNORED_CATEGORY},
+          {' ', ' ', IGNORED_CATEGORY},
+          {'"', '"', OTHER_CATEGORY},
+          {'&', '&', ALIGNMENT_TAB_CATEGORY},
+          {':', ':', LETTER_CATEGORY},
+          {'^', '^', SUPERSCRIPT_CATEGORY},
+          {'_', '_', LETTER_CATEGORY},
+          {'|', '|', OTHER_CATEGORY},
+          {'~', '~', SPACE_CATEGORY}}}}},
+      {"ProvidesFile", {cs, false, {{{'@', '@', OTHER_CATEGORY}}}}},
+      {"ProvidesPackage", {cs, false, {{{'@', '@', OTHER_CATEGORY}}}}},
+      {"RequirePackage", {cs_t_bt_Gu_bt, false, {}}},
+      {"RequirePackageWithOptions", {cs_t_bt_Gu_bt, false, {}}},
+      {"tag", {cs_m_Gt, false, {}}},
+      {"UndefineShortVerb", {cs_t_GD, false, {}}},
+      {"usepackage", {cs_t_bt_Gu_bt, false, {}}},
+      {"verb", {cs_verb, false, {}}},
   };
 
   unordered_map<string, CatCodeCommand> names = {
@@ -268,16 +364,17 @@ struct Scanner {
   Scanner() {}
 
   void reset() {
-    mode = NORMAL_MODE;
     start_delim = 0;
-    last_name.clear();
+    cs_name.clear();
+    e_name.clear();
+    u_name.clear();
     catcode_table.reset();
   }
 
   unsigned serialize(char *buffer) const {
     SerializationBuffer buf(buffer);
 
-    buf << mode << start_delim << last_name << catcode_table;
+    buf << start_delim << cs_name << e_name << u_name << catcode_table;
 
     return buf.length;
   }
@@ -291,7 +388,7 @@ struct Scanner {
 
     DeserializationBuffer buf(buffer, length);
 
-    buf >> mode >> start_delim >> last_name >> catcode_table;
+    buf >> start_delim >> cs_name >> e_name >> u_name >> catcode_table;
   }
 
   bool scan_verb_start_delim(TSLexer *lexer, SymbolType symbol) {
@@ -311,7 +408,6 @@ struct Scanner {
 
   bool scan_verb_end_delim(TSLexer *lexer) {
     if (lexer->lookahead == start_delim) {
-      mode = NORMAL_MODE;
       lexer->advance(lexer, false);
       lexer->result_symbol = verb_end_delim;
       lexer->mark_end(lexer);
@@ -319,7 +415,6 @@ struct Scanner {
     }
 
     if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
-      mode = NORMAL_MODE;
       lexer->result_symbol =
           verb_end_delim; // don't eat the newline (for consistency)
       lexer->mark_end(lexer);
@@ -396,10 +491,10 @@ struct Scanner {
     return true;
   }
 
-  bool scan_verbatim_body(TSLexer *lexer) {
-    string terminator = " \\end {" + last_name + "}";
+  bool scan_verbatim_text(TSLexer *lexer) {
+    string terminator = " \\end {" + e_name + "}";
     lexer->mark_end(lexer);
-    lexer->result_symbol = verbatim_body;
+    lexer->result_symbol = verbatim_text;
 
     do {
       if (matches_string(lexer, terminator)) {
@@ -470,56 +565,22 @@ struct Scanner {
     return true;
   }
 
-  bool scan_catcode_commands(TSLexer *lexer, const bool *valid_symbols) {
-    // Loop through the command list.
-    for (const CatCodeCommand &cmd : catcode_commands) {
-      if (valid_symbols[cmd.symbol]) {
-        lexer->result_symbol = cmd.symbol;
-        lexer->mark_end(lexer);
-
-        catcode_table.assign(cmd.intervals, cmd.global);
-
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  bool scan_cs_mode(TSLexer *lexer, const bool *valid_symbols) {
-    if (valid_symbols[_cs_end] &&
-        catcode_table[lexer->lookahead] != LETTER_CATEGORY) {
-      mode = NORMAL_MODE;
-      lexer->result_symbol = _cs_end;
-      lexer->mark_end(lexer);
-      return true;
-    }
-
-    return false;
-  }
-
-  bool scan_escaped_mode(TSLexer *lexer, const bool *valid_symbols) {
-    if (valid_symbols[_escaped_end]) {
-      mode = NORMAL_MODE;
-      lexer->result_symbol = _escaped_end;
-      lexer->mark_end(lexer);
-      return true;
-    }
-
-    return false;
-  }
-
-  bool scan_escape(TSLexer *lexer) {
+  bool scan_cs(TSLexer *lexer, const bool *valid_symbols) {
+    cs_name.clear();
     lexer->advance(lexer, false);
 
     if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
-      mode = CS_MODE;
-      lexer->result_symbol = _cs_begin;
+      do {
+        cs_name += lexer->lookahead;
+        lexer->advance(lexer, false);
+      } while (lexer->lookahead && catcode_table[lexer->lookahead] == LETTER_CATEGORY);
     } else {
-      mode = ESCAPED_MODE;
-      lexer->result_symbol = _escaped_begin;
+      cs_name += lexer->lookahead;
+      lexer->advance(lexer, false);
     }
-    lexer->mark_end(lexer);
+
+    auto it = control_sequences.find(cs_name);
+    lexer->result_symbol = (it != control_sequences.end() && valid_symbols[it->second.symbol]) ? it->second.symbol : cs;
 
     return true;
   }
@@ -602,15 +663,15 @@ struct Scanner {
   }
 
   bool scan_env_name(TSLexer *lexer) {
-    last_name.clear();
+    e_name.clear();
 
     while (lexer->lookahead &&
            catcode_table[lexer->lookahead] != END_CATEGORY) {
-      last_name += lexer->lookahead;
+      e_name += lexer->lookahead;
       lexer->advance(lexer, false);
     }
 
-    auto it = environments.find(last_name);
+    auto it = environments.find(e_name);
 
     if (it == environments.end()) {
       lexer->result_symbol = env_name;
@@ -624,15 +685,15 @@ struct Scanner {
   }
 
   bool scan_name(TSLexer *lexer) {
-    last_name.clear();
+    u_name.clear();
 
     while (lexer->lookahead &&
            catcode_table[lexer->lookahead] != END_CATEGORY) {
-      last_name += lexer->lookahead;
+      u_name += lexer->lookahead;
       lexer->advance(lexer, false);
     }
 
-    auto it = names.find(last_name);
+    auto it = names.find(u_name);
 
     if (it == names.end()) {
       lexer->result_symbol = name;
@@ -646,7 +707,7 @@ struct Scanner {
     return true;
   }
 
-  bool scan_normal_mode(TSLexer *lexer, const bool *valid_symbols) {
+  bool scan(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
 
     if (valid_symbols[env_name] || valid_symbols[env_name_text] ||
@@ -659,10 +720,6 @@ struct Scanner {
     if (valid_symbols[name]) {
       return scan_name(lexer);
     }
-
-    bool res = scan_catcode_commands(lexer, valid_symbols);
-    if (res)
-      return true;
 
     // Look for an inline verbatim.
     if (valid_symbols[verb_delim]) {
@@ -679,13 +736,23 @@ struct Scanner {
       return scan_verb_body(lexer);
     }
 
-    if (valid_symbols[verbatim_body]) {
-      return scan_verbatim_body(lexer);
+    if (valid_symbols[verbatim_text]) {
+      return scan_verbatim_text(lexer);
+    }
+
+    if (valid_symbols[_cmd_apply]) {
+      auto it = control_sequences.find(cs_name);
+      if (it != control_sequences.end()) {
+        catcode_table.assign(it->second.intervals);
+      }
+      lexer->mark_end(lexer);
+      lexer->result_symbol = _cmd_apply;
+      return true;
     }
 
     if (valid_symbols[_env_begin]) {
       catcode_table.push();
-      auto it = environments.find(last_name);
+      auto it = environments.find(e_name);
       if (it != environments.end()) {
         catcode_table.assign(it->second.intervals);
       }
@@ -727,9 +794,9 @@ struct Scanner {
       if (valid_symbols[delete_verb_delim]) {
         return scan_delete_verb_delim(lexer);
       }
-      if (valid_symbols[_cs_begin] || valid_symbols[_escaped_begin]) {
-        return scan_escape(lexer);
-      }
+      // if (valid_symbols[cs] || valid_symbols[cs_end]) {
+        return scan_cs(lexer, valid_symbols);
+      // }
       break;
     case BEGIN_CATEGORY:
       if (valid_symbols[l]) {
@@ -806,19 +873,7 @@ struct Scanner {
       break;
     }
 
-    // Look for catcode commands.
     return false;
-  }
-
-  bool scan(TSLexer *lexer, const bool *valid_symbols) {
-    switch (mode) {
-    case CS_MODE:
-      return scan_cs_mode(lexer, valid_symbols);
-    case ESCAPED_MODE:
-      return scan_escaped_mode(lexer, valid_symbols);
-    default:
-      return scan_normal_mode(lexer, valid_symbols);
-    }
   }
 };
 
