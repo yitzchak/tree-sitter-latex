@@ -270,6 +270,6 @@ luacode* environment
     (begin
       (cs)
       (group (l) (name) (r)) (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs)
       (group (l) (name) (r)))))

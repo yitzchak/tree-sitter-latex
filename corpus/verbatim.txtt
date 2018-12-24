@@ -10,12 +10,12 @@ quux
 ----------------------
 (document
     (text)
-    (verbatim_env
+    (comment_env
       (begin
         (cs)
         (group (l) (name) (r))
         (eol))
-      (verbatim_text)
+      (comment)
       (end (cs) (group (l) (name) (r))))
     (text))
 
@@ -36,7 +36,7 @@ quux
         (cs)
         (group (l) (name) (r))
         (eol))
-      (verbatim_text)
+      (verbatim)
       (end (cs) (group (l) (name) (r))))
     (text))
 
@@ -56,7 +56,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -76,7 +76,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -96,7 +96,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -116,7 +116,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -136,7 +136,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -156,7 +156,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -176,7 +176,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -197,7 +197,7 @@ quux
       (group (l) (name) (r))
       (brack_group (lbrack) (text) (rbrack))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -218,7 +218,7 @@ quux
       (group (l) (name) (r))
       (group (l) (text) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -237,7 +237,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -258,7 +258,7 @@ quux
       (cs)
       (group (l) (name) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -280,7 +280,7 @@ quux
         (cs)
         (group (l) (name) (r))
         (eol))
-      (verbatim_text)
+      (verbatim)
       (end (cs) (group (l) (name) (r))))
     (text))
 
@@ -431,7 +431,7 @@ quux
       (group (l) (name) (r))
       (group (l) (text) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -452,6 +452,6 @@ quux
       (group (l) (name) (r))
       (group (l) (text) (r))
       (eol))
-    (verbatim_text)
+    (verbatim)
     (end (cs) (group (l) (name) (r))))
   (text))

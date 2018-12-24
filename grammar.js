@@ -105,6 +105,7 @@ module.exports = grammar({
     $.cs_verb,
     $.cs,
     $.delete_verb_delim,
+    $.env_name_comment,
     $.env_name_display_math,
     $.env_name_inline_math,
     $.env_name_math,
@@ -127,7 +128,7 @@ module.exports = grammar({
     $.verb_body,
     $.verb_delim,
     $.verb_end_delim,
-    $.verbatim_text,
+    $.verbatim,
   ],
 
   extras: $ => [
@@ -176,6 +177,7 @@ module.exports = grammar({
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
+      $.comment_env,
       $.verbatim_env,
       $.verb,
       alias($.cmd_t, $.cmd),
@@ -236,9 +238,33 @@ module.exports = grammar({
       choice(alias($.cs_inline_math_end, $.cs), $.exit)
     ),
 
+    comment_env: $ => seq(
+      alias($.comment_begin, $.begin),
+      alias($.verbatim, $.comment),
+      choice(alias($.comment_end, $.end), $.exit)
+    ),
+
+    comment_begin: $ => begin_cmd($,
+      alias($.comment_env_group, $.group),
+      repeat(
+        choice(
+          $.text,
+          $.brack_group,
+          $.group
+        )
+      ),
+      $.eol
+    ),
+
+    comment_end: $ => end_cmd($,
+      alias($.comment_env_group, $.group)
+    ),
+
+    comment_env_group: $ => group($, alias($.env_name_comment, $.name)),
+
     verbatim_env: $ => seq(
       alias($.verbatim_begin, $.begin),
-      $.verbatim_text,
+      $.verbatim,
       choice(alias($.verbatim_end, $.end), $.exit)
     ),
 
