@@ -7,7 +7,7 @@ foo$bar$quux
   (text)
   (tex_inline_math
     (math_shift)
-    (text)
+    (math)
     (math_shift))
   (text))
 
@@ -20,11 +20,11 @@ foo$bar$$wibble$quux
   (text)
   (tex_inline_math
     (math_shift)
-    (text)
+    (math)
     (math_shift))
   (tex_inline_math
     (math_shift)
-    (text)
+    (math)
     (math_shift))
   (text))
 
@@ -37,7 +37,7 @@ foo\(bar\)quux
   (text)
   (latex_inline_math
     (cs)
-    (text)
+    (math)
     (cs))
   (text))
 
@@ -50,7 +50,7 @@ foo\(bar\wibble\)quux
   (text)
   (latex_inline_math
     (cs)
-    (text)
+    (math)
     (cs)
     (cs))
   (text))
@@ -68,6 +68,6 @@ quux
   (text)
   (inline_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))

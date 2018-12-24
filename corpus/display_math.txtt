@@ -7,7 +7,7 @@ foo$$bar$$quux
   (text)
   (tex_display_math
     (math_shift) (math_shift)
-    (text)
+    (math)
     (math_shift) (math_shift))
   (text))
 
@@ -32,7 +32,7 @@ foo\[bar\]quux
   (text)
   (latex_display_math
     (cs)
-    (text)
+    (math)
     (cs))
   (text))
 
@@ -49,7 +49,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -66,7 +66,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -83,7 +83,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -100,7 +100,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -117,7 +117,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -136,8 +136,8 @@ quux
     (begin
       (cs)
       (group (l) (name) (r)))
-    (group (l) (text) (r))
-    (text)
+    (group (l) (math) (r))
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -156,8 +156,8 @@ quux
     (begin
       (cs)
       (group (l) (name) (r)))
-    (group (l) (text) (r))
-    (text)
+    (group (l) (math) (r))
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -174,7 +174,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -191,7 +191,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -208,7 +208,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -225,7 +225,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -242,7 +242,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -259,7 +259,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -276,7 +276,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -293,7 +293,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -310,7 +310,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -327,7 +327,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -344,7 +344,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -361,7 +361,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -412,7 +412,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -429,7 +429,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -446,7 +446,7 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))
 
@@ -463,6 +463,6 @@ quux
   (text)
   (display_math_env
     (begin (cs) (group (l) (name) (r)))
-    (text)
+    (math)
     (end (cs) (group (l) (name) (r))))
   (text))

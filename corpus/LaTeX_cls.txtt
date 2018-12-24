@@ -8,5 +8,5 @@ ensuremath inside inline math
     (cs)
     (cmd
       (cs)
-      (group (l) (text) (r)))
+      (group (l) (math) (r)))
     (cs)))

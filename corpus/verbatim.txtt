@@ -346,7 +346,7 @@ $foo$ \(bar\) \emph{quux} ~ % wibble
   (env
     (begin (cs) (group (l) (name) (r)))
     (text)
-    (latex_inline_math (cs) (text) (cs))
+    (latex_inline_math (cs) (math) (cs))
     (text)
     (cs)
     (group (l) (text) (r))

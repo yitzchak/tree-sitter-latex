@@ -10,7 +10,7 @@ TeX inline math - unterminated inside group #1
     (text)
     (tex_inline_math
       (math_shift)
-      (text)
+      (math)
       (exit))
     (r))
   (group
@@ -18,9 +18,9 @@ TeX inline math - unterminated inside group #1
     (text)
     (tex_inline_math
       (math_shift)
-      (text)
-      (group (l) (text) (r))
-      (text)
+      (math)
+      (group (l) (math) (r))
+      (math)
       (exit))
     (r)))
 
@@ -33,7 +33,7 @@ foo$bar
   (text)
   (tex_inline_math
     (math_shift)
-    (text)
+    (math)
     (exit)))
 
 ===========================================
@@ -51,7 +51,7 @@ TeX display math - unterminated inside group
     (tex_display_math
       (math_shift)
       (math_shift)
-      (text)
+      (math)
       (exit))
     (r))
   (group
@@ -60,12 +60,12 @@ TeX display math - unterminated inside group
     (tex_display_math
       (math_shift)
       (math_shift)
-      (text)
+      (math)
       (group
         (l)
-        (text)
+        (math)
         (r))
-      (text)
+      (math)
       (exit))
     (r))
     (group
@@ -74,7 +74,7 @@ TeX display math - unterminated inside group
       (tex_display_math
         (math_shift)
         (math_shift)
-        (text)
+        (math)
         (math_shift)
         (exit))
       (r))
@@ -84,12 +84,12 @@ TeX display math - unterminated inside group
       (tex_display_math
         (math_shift)
         (math_shift)
-        (text)
+        (math)
         (group
           (l)
-          (text)
+          (math)
           (r))
-        (text)
+        (math)
         (math_shift)
         (exit))
       (r)))
@@ -104,7 +104,7 @@ foo$$bar
   (tex_display_math
     (math_shift)
     (math_shift)
-    (text)
+    (math)
     (exit)))
 
 ===========================================
@@ -117,7 +117,7 @@ foo$$bar$
   (tex_display_math
     (math_shift)
     (math_shift)
-    (text)
+    (math)
     (math_shift)
     (exit)))
 
@@ -133,7 +133,7 @@ TeX inline math - unterminated inside group #2
     (text)
     (tex_inline_math
       (math_shift)
-      (text)
+      (math)
       (exit))
     (r))
   (group
@@ -141,23 +141,11 @@ TeX inline math - unterminated inside group #2
     (text)
     (tex_inline_math
       (math_shift)
-      (text)
-      (group (l) (text) (r))
-      (text)
+      (math)
+      (group (l) (math) (r))
+      (math)
       (exit))
     (r)))
-
-===========================================
-TeX inline math - unterminated by EOF
-===========================================
-foo$bar
--------------------------------------------
-(document
-  (text)
-  (tex_inline_math
-    (math_shift)
-    (text)
-    (exit)))
 
 ===========================================
 LaTeX inline math - unterminated inside group
@@ -171,7 +159,7 @@ LaTeX inline math - unterminated inside group
     (text)
     (latex_inline_math
       (cs)
-      (text)
+      (math)
       (exit))
     (r))
   (group
@@ -179,12 +167,12 @@ LaTeX inline math - unterminated inside group
     (text)
     (latex_inline_math
       (cs)
-      (text)
+      (math)
       (group
         (l)
-        (text)
+        (math)
         (r))
-      (text)
+      (math)
       (exit))
     (r)))
 
@@ -197,7 +185,7 @@ foo\(bar
   (text)
   (latex_inline_math
     (cs)
-    (text)
+    (math)
     (exit)))
 
 ===========================================
@@ -212,7 +200,7 @@ LaTeX display math - unterminated inside group
     (text)
     (latex_display_math
       (cs)
-      (text)
+      (math)
       (exit))
     (r))
   (group
@@ -220,12 +208,12 @@ LaTeX display math - unterminated inside group
     (text)
     (latex_display_math
       (cs)
-      (text)
+      (math)
       (group
         (l)
-        (text)
+        (math)
         (r))
-      (text)
+      (math)
       (exit))
     (r)))
 
@@ -238,7 +226,7 @@ foo\[bar
   (text)
   (latex_display_math
     (cs)
-    (text)
+    (math)
     (exit)))
 
 ===========================================

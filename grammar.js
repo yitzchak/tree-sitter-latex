@@ -149,9 +149,6 @@ module.exports = grammar({
       seq($.cs, $._cmd_apply),
       alias($.cmd_c, $.cmd),
       $.parameter_ref,
-      $.text,
-      prec(-1, alias($.lbrack, $.text)),
-      prec(-1, alias($.rbrack, $.text)),
     ),
 
     verb: $ => choice(
@@ -170,6 +167,9 @@ module.exports = grammar({
 
     _text_mode: $ => choice(
       $._common,
+      $.text,
+      prec(-1, alias($.lbrack, $.text)),
+      prec(-1, alias($.rbrack, $.text)),
       // Underscore produces an error by default in LaTeX text mode. Some
       // some package define underscore to produce \tex­tun­der­score. We assume
       // that this has been done since underscore is never actually subscript
@@ -192,6 +192,9 @@ module.exports = grammar({
 
     _math_mode: $ => choice(
       $._common,
+      alias($.text, $.math),
+      prec(-1, alias($.lbrack, $.math)),
+      prec(-1, alias($.rbrack, $.math)),
       $.subscript,
       $.superscript,
       $.math_env,
