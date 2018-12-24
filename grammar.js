@@ -395,8 +395,8 @@ module.exports = grammar({
         $.cs_t_bt_Gu_bt,
         optional($.brack_group),
         alias($.name_group, $.group),
-        optional($.brack_group),
-        $._cmd_apply
+        $._cmd_apply,
+        optional($.brack_group)
       ),
       cmd_opt($,
         $.cs_t_Gd,

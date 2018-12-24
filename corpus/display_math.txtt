@@ -135,9 +135,8 @@ quux
   (display_math_env
     (begin
       (cs)
-      (group (l) (name) (r))
-      (group (l) (text) (r))
-     )
+      (group (l) (name) (r)))
+    (group (l) (text) (r))
     (text)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -156,9 +155,8 @@ quux
   (display_math_env
     (begin
       (cs)
-      (group (l) (name) (r))
-      (group (l) (text) (r))
-     )
+      (group (l) (name) (r)))
+    (group (l) (text) (r))
     (text)
     (end (cs) (group (l) (name) (r))))
   (text))
