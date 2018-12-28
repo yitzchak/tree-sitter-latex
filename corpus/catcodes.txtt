@@ -168,3 +168,14 @@
   (cs)
   (cs)
   (cs))
+
+=================================
+[ProvidesClass] @ sign is letter
+=================================
+\ProvidesClass{bar}
+\bar@wibble
+---------------------------------
+(document
+  (cs)
+  (group (l) (text) (r))
+  (cs))

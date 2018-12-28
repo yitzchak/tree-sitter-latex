@@ -90,6 +90,7 @@ module.exports = grammar({
     $.cs_c_g0_Ga,
     $.cs_c_Ga,
     $.cs_c_Gm,
+    $.cs_def,
     $.cs_display_math_begin,
     $.cs_display_math_end,
     $.cs_egroup,
@@ -143,11 +144,26 @@ module.exports = grammar({
   rules: {
     document: $ => repeat($._text_mode),
 
+    _no_mode: $ => choice(
+      $.active_char,
+      $.alignment_tab,
+      $.math_shift,
+      $.parameter_ref,
+      $.subscript,
+      $.superscript,
+      $.text,
+      prec(-1, alias($.lbrack, $.text)),
+      prec(-1, alias($.rbrack, $.text)),
+      seq($.cs, $._cmd_apply),
+      alias($.no_group, $.group),
+    ),
+
     _common: $ => choice(
       $.active_char,
       $.alignment_tab,
       // $.catcode,
       seq($.cs, $._cmd_apply),
+      $.def,
       alias($.cmd_c, $.cmd),
       $.parameter_ref,
     ),
@@ -446,6 +462,21 @@ module.exports = grammar({
       )
     ),
 
+    def: $ => cmd($,
+      $.cs_def,
+      $.cs,
+      repeat(
+        choice(
+          $.parameter_ref,
+          $.text,
+          alias($.lbrack, $.text),
+          alias($.rbrack, $.text),
+          $.text
+        )
+      ),
+      $._no_parameter
+    ),
+
     _apply_parameter: $ => choice($.cs, alias($.apply_group, $.group)),
 
     apply_group: $ => group($, $._cmd_apply, repeat($._text_mode)),
@@ -466,7 +497,11 @@ module.exports = grammar({
 
     group: $ => group($, repeat($._text_mode)),
 
+    no_group: $ => group($, repeat($._no_mode)),
+
     semi_simple_group: $ => semi_simple_group($, repeat($._text_mode)),
+
+    _no_parameter: $ => choice(alias($.no_group, $.group), $.cs),
 
     _parameter: $ => choice($.group, $.cs),
 
