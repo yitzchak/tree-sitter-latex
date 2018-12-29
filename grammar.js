@@ -81,8 +81,10 @@ module.exports = grammar({
     $._space,
     $.active_char,
     $.alignment_tab,
-    $.arara_comment,
-    $.bib_comment,
+    $.comment_arara,
+    $.comment_bib,
+    $.comment_tag,
+    $.comment_tex,
     $.comment,
     $.cs_begin,
     $.cs_begingroup,
@@ -116,7 +118,6 @@ module.exports = grammar({
     $.eol,
     $.exit,
     $.l,
-    $.magic_comment,
     $.make_verb_delim,
     $.math_shift,
     $.name,
@@ -125,7 +126,6 @@ module.exports = grammar({
     $.short_verb_delim,
     $.subscript,
     $.superscript,
-    $.tag_comment,
     $.verb_body,
     $.verb_delim,
     $.verb_end_delim,
@@ -134,11 +134,11 @@ module.exports = grammar({
 
   extras: $ => [
     $._space,
-    $.arara_comment,
-    $.bib_comment,
+    $.comment_arara,
+    $.comment_bib,
     $.comment,
-    $.magic_comment,
-    $.tag_comment,
+    $.comment_tex,
+    $.comment_tag,
   ],
 
   rules: {
@@ -193,16 +193,16 @@ module.exports = grammar({
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
-      $.comment_env,
-      $.verbatim_env,
+      alias($.comment_env, $.env),
+      alias($.verbatim_env, $.env),
       $.verb,
       alias($.cmd_t, $.cmd),
       $.tex_display_math,
       $.latex_display_math,
-      $.display_math_env,
+      alias($.display_math_env, $.env),
       $.tex_inline_math,
       $.latex_inline_math,
-      $.inline_math_env,
+      alias($.inline_math_env, $.env),
       $.env,
       $.group,
       $.semi_simple_group,
@@ -215,9 +215,9 @@ module.exports = grammar({
       prec(-1, alias($.rbrack, $.math)),
       $.subscript,
       $.superscript,
-      $.math_env,
+      alias($.math_env, $.env),
       alias($.cmd_m, $.cmd),
-      $.text_env,
+      alias($.text_env, $.env),
       alias($.math_group, $.group),
     ),
 
@@ -256,7 +256,7 @@ module.exports = grammar({
 
     comment_env: $ => seq(
       alias($.comment_begin, $.begin),
-      alias($.verbatim, $.comment),
+      alias($.verbatim, $.comment_block),
       choice(alias($.comment_end, $.end), $.exit)
     ),
 

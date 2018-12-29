@@ -23,8 +23,10 @@ enum SymbolType {
   _space,
   active_char,
   alignment_tab,
-  arara_comment,
-  bib_comment,
+  comment_arara,
+  comment_bib,
+  comment_tag,
+  comment_tex,
   comment,
   cs_begin,
   cs_begingroup,
@@ -58,7 +60,6 @@ enum SymbolType {
   eol,
   exit,
   l,
-  magic_comment,
   make_verb_delim,
   math_shift,
   name,
@@ -67,7 +68,6 @@ enum SymbolType {
   short_verb_delim,
   subscript,
   superscript,
-  tag_comment,
   verb_body,
   verb_delim,
   verb_end_delim,
@@ -531,7 +531,7 @@ struct Scanner {
 
     if (match_length(lexer, ":") == -1) {
       lexer->advance(lexer, false);
-      lexer->result_symbol = tag_comment;
+      lexer->result_symbol = comment_tag;
     } else {
       // Skip any leading spaces
       while (lexer->lookahead &&
@@ -542,15 +542,15 @@ struct Scanner {
       int len = match_length(lexer, "arara:");
 
       if (len == -1) {
-        lexer->result_symbol = arara_comment;
+        lexer->result_symbol = comment_arara;
       } else if (len == 0) {
         len = match_length(lexer, "!tex", EOL_FLAG | SPACE_FLAG | IGNORED_FLAG);
         if (len == -1) {
-          lexer->result_symbol = magic_comment;
+          lexer->result_symbol = comment_tex;
         } else if (len == 1 &&
                    match_length(lexer, "bib",
                                 EOL_FLAG | SPACE_FLAG | IGNORED_FLAG) == -1) {
-          lexer->result_symbol = bib_comment;
+          lexer->result_symbol = comment_bib;
         }
       }
     }

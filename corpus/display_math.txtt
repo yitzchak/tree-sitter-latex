@@ -47,7 +47,7 @@ quux
 -----------------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -64,7 +64,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -81,7 +81,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -98,7 +98,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -115,7 +115,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -132,7 +132,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin
       (cs)
       (group (l) (name) (r)))
@@ -152,7 +152,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin
       (cs)
       (group (l) (name) (r)))
@@ -172,7 +172,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -189,7 +189,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -206,7 +206,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -223,7 +223,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -240,7 +240,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -257,7 +257,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -274,7 +274,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -291,7 +291,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -308,7 +308,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -325,7 +325,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -342,7 +342,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -359,7 +359,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -410,7 +410,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -427,7 +427,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -444,7 +444,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -461,7 +461,7 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
+  (env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))

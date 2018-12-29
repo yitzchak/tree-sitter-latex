@@ -159,7 +159,7 @@ foo % arara: pdflatex
 -----------
 (document
   (text)
-  (arara_comment))
+  (comment_arara))
 
 ===========
 bib comment
@@ -168,7 +168,7 @@ foo %!Bib bar=wibble
 -----------
 (document
   (text)
-  (bib_comment))
+  (comment_bib))
 
 ===========
 magic comment
@@ -177,7 +177,7 @@ foo %!TeX bar=wibble
 -----------
 (document
   (text)
-  (magic_comment))
+  (comment_tex))
 
 ===========
 tag comment
@@ -186,7 +186,7 @@ foo %:wibble
 -----------
 (document
   (text)
-  (tag_comment))
+  (comment_tag))
 
 =================
 Square brackets do not trigger brack_group

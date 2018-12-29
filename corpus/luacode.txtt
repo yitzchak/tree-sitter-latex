@@ -266,7 +266,7 @@ luacode* environment
 \end{luacode*}
 -----------------------------
 (document
-  (verbatim_env
+  (env
     (begin
       (cs)
       (group (l) (name) (r)) (eol))
