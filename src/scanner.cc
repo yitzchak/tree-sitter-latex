@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -10,6 +11,7 @@
 
 namespace LaTeX {
 
+using std::any_of;
 using std::string;
 using std::unordered_map;
 using std::vector;
@@ -35,6 +37,7 @@ enum SymbolType {
   cs_c_Ga,
   cs_c_Gm,
   cs_def,
+  cs_delete_verb_delim,
   cs_display_math_begin,
   cs_display_math_end,
   cs_egroup,
@@ -43,13 +46,13 @@ enum SymbolType {
   cs_inline_math_begin,
   cs_inline_math_end,
   cs_m_Gt,
+  cs_make_verb_delim,
   cs_t_bt_Gu_bt,
   cs_t_bt_Gu,
   cs_t_Gd,
   cs_t_GD,
   cs_verb,
   cs,
-  delete_verb_delim,
   env_name_comment,
   env_name_display_math,
   env_name_inline_math,
@@ -60,7 +63,6 @@ enum SymbolType {
   eol,
   exit,
   l,
-  make_verb_delim,
   math_shift,
   name,
   parameter_char,
@@ -580,10 +582,28 @@ struct Scanner {
         cs_name += lexer->lookahead;
         lexer->advance(lexer, false);
       } while (lexer->lookahead && catcode_table[lexer->lookahead] == LETTER_CATEGORY);
+    } else if (valid_symbols[cs_make_verb_delim]) {
+      catcode_table.assign(lexer->lookahead, VERB_DELIM_EXT_CATEGORY, true);
+      lexer->advance(lexer, false);
+
+      lexer->result_symbol = cs_make_verb_delim;
+      lexer->mark_end(lexer);
+
+      return true;
+    } else if (valid_symbols[cs_delete_verb_delim]) {
+      catcode_table.erase(lexer->lookahead, true);
+      lexer->advance(lexer, false);
+
+      lexer->result_symbol = cs_delete_verb_delim;
+      lexer->mark_end(lexer);
+
+      return true;
     } else {
       cs_name += lexer->lookahead;
       lexer->advance(lexer, false);
     }
+
+    lexer->mark_end(lexer);
 
     auto it = control_sequences.find(cs_name);
     lexer->result_symbol = (it != control_sequences.end() && valid_symbols[it->second.symbol]) ? it->second.symbol : cs;
@@ -639,30 +659,6 @@ struct Scanner {
              (code == SPACE_CATEGORY || code == EOL_CATEGORY));
 
     lexer->result_symbol = _space;
-    lexer->mark_end(lexer);
-
-    return true;
-  }
-
-  bool scan_make_verb_delim(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-
-    catcode_table.assign(lexer->lookahead, VERB_DELIM_EXT_CATEGORY, true);
-    lexer->advance(lexer, false);
-
-    lexer->result_symbol = make_verb_delim;
-    lexer->mark_end(lexer);
-
-    return true;
-  }
-
-  bool scan_delete_verb_delim(TSLexer *lexer) {
-    lexer->advance(lexer, false);
-
-    catcode_table.erase(lexer->lookahead, true);
-    lexer->advance(lexer, false);
-
-    lexer->result_symbol = delete_verb_delim;
     lexer->mark_end(lexer);
 
     return true;
@@ -794,15 +790,9 @@ struct Scanner {
 
     switch (code) {
     case ESCAPE_CATEGORY:
-      if (valid_symbols[make_verb_delim]) {
-        return scan_make_verb_delim(lexer);
-      }
-      if (valid_symbols[delete_verb_delim]) {
-        return scan_delete_verb_delim(lexer);
-      }
-      // if (valid_symbols[cs] || valid_symbols[cs_end]) {
+      if (any_of(valid_symbols + cs_begin, valid_symbols + cs + 1, [](auto valid_symbol) { return valid_symbol; })) {
         return scan_cs(lexer, valid_symbols);
-      // }
+      }
       break;
     case BEGIN_CATEGORY:
       if (valid_symbols[l]) {

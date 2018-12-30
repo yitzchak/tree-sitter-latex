@@ -93,6 +93,7 @@ module.exports = grammar({
     $.cs_c_Ga,
     $.cs_c_Gm,
     $.cs_def,
+    $.cs_delete_verb_delim,
     $.cs_display_math_begin,
     $.cs_display_math_end,
     $.cs_egroup,
@@ -101,13 +102,13 @@ module.exports = grammar({
     $.cs_inline_math_begin,
     $.cs_inline_math_end,
     $.cs_m_Gt,
+    $.cs_make_verb_delim,
     $.cs_t_bt_Gu_bt,
     $.cs_t_bt_Gu,
     $.cs_t_Gd,
     $.cs_t_GD,
     $.cs_verb,
     $.cs,
-    $.delete_verb_delim,
     $.env_name_comment,
     $.env_name_display_math,
     $.env_name_inline_math,
@@ -118,7 +119,6 @@ module.exports = grammar({
     $.eol,
     $.exit,
     $.l,
-    $.make_verb_delim,
     $.math_shift,
     $.name,
     $.parameter_char,
@@ -447,7 +447,7 @@ module.exports = grammar({
         $.cs_t_Gd,
         optional('*'),
         choice(
-          alias($.make_verb_delim, $.cs),
+          alias($.cs_make_verb_delim, $.cs),
           alias($.make_verb_delim_group, $.group)
         ),
         $._cmd_apply
@@ -455,7 +455,7 @@ module.exports = grammar({
       cmd_opt($,
         $.cs_t_GD,
         choice(
-          alias($.delete_verb_delim, $.cs),
+          alias($.cs_delete_verb_delim, $.cs),
           alias($.delete_verb_delim_group, $.group)
         ),
         $._cmd_apply
@@ -483,14 +483,14 @@ module.exports = grammar({
 
     make_verb_delim_group: $ => group($,
       choice(
-        alias($.make_verb_delim, $.cs),
+        alias($.cs_make_verb_delim, $.cs),
         repeat($._text_mode)
       )
     ),
 
     delete_verb_delim_group: $ => group($,
       choice(
-        alias($.delete_verb_delim, $.cs),
+        alias($.cs_delete_verb_delim, $.cs),
         repeat($._text_mode)
       )
     ),
