@@ -368,11 +368,11 @@ MakeShortVerb and DeleteShortVerb
 ----------------------------
 (document
   (text)
-  (cmd (cs) (group (l) (cs) (r)))
+  (MakeShortVerb (cs) (group (l) (cs) (r)))
   (verb (verb_delim) (verbatim) (verb_delim))
-  (cmd (cs) (group (l) (cs) (r)))
+  (MakeShortVerb (cs) (group (l) (cs) (r)))
   (verb (verb_delim) (verbatim) (verb_delim))
-  (cmd (cs) (group (l) (cs) (r)))
+  (DeleteShortVerb (cs) (group (l) (cs) (r)))
   (text)
   (verb (verb_delim) (verbatim) (verb_delim)))
 
@@ -383,7 +383,7 @@ ltxdoc class triggers pipe verb delimiter
 |foo|
 -------------------------------
 (document
-  (cmd
+  (use
     (cs)
     (group (l) (name) (r)))
   (verb (verb_delim) (verbatim) (verb_delim)))
@@ -395,7 +395,7 @@ ltxguide class triggers pipe verb delimiter
 |foo|
 -------------------------------
 (document
-  (cmd
+  (use
     (cs)
     (group (l) (name) (r)))
   (verb (verb_delim) (verbatim) (verb_delim)))
@@ -408,7 +408,7 @@ l3doc class triggers pipe and double quote verb delimiter
 "bar"
 -------------------------------
 (document
-  (cmd
+  (use
     (cs)
     (group (l) (name) (r)))
   (verb (verb_delim) (verbatim) (verb_delim))

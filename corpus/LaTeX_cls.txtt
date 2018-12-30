@@ -6,7 +6,7 @@ ensuremath inside inline math
 (document
   (latex_inline_math
     (cs)
-    (cmd
+    (ensuremath
       (cs)
       (group (l) (math) (r)))
     (cs)))

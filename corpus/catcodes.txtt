@@ -37,7 +37,7 @@
 ----------------
 (document
   (cs)
-  (cmd (cs)
+  (use (cs)
     (brack_group
       (lbrack)
       (text)
@@ -113,7 +113,7 @@
 ----------------
 (document
   (cs)
-  (cmd (cs)
+  (use (cs)
     (brack_group
       (lbrack)
       (text)

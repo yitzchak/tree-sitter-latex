@@ -290,4 +290,4 @@ missing pacakge arguments
 =====================================
 \foo{\usepackage}
 -------------------------------------
-(document (cs) (group (l) (cmd (cs)) (r)))
+(document (cs) (group (l) (use (cs)) (r)))

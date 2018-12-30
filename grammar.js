@@ -89,28 +89,28 @@ module.exports = grammar({
     $.cs_begin,
     $.cs_begingroup,
     $.cs_bgroup,
-    $.cs_c_g0_Ga,
-    $.cs_c_Ga,
-    $.cs_c_Gm,
     $.cs_def,
     $.cs_delete_verb_delim,
+    $.cs_DeleteShortVerb,
     $.cs_display_math_begin,
     $.cs_display_math_end,
     $.cs_egroup,
     $.cs_end,
     $.cs_endgroup,
+    $.cs_ensuremath,
     $.cs_inline_math_begin,
     $.cs_inline_math_end,
-    $.cs_m_Gt,
+    $.cs_lua,
+    $.cs_luacode,
     $.cs_make_verb_delim,
-    $.cs_t_bt_Gu_bt,
-    $.cs_t_bt_Gu,
-    $.cs_t_Gd,
-    $.cs_t_GD,
+    $.cs_MakeShortVerb,
+    $.cs_tag,
+    $.cs_use_209,
+    $.cs_use,
     $.cs_verb,
     $.cs,
-    $.display_math_shift,
     $.display_math_shift_end,
+    $.display_math_shift,
     $.env_name_comment,
     $.env_name_display_math,
     $.env_name_inline_math,
@@ -121,8 +121,8 @@ module.exports = grammar({
     $.eol,
     $.exit,
     $.l,
-    $.math_shift,
     $.math_shift_end,
+    $.math_shift,
     $.name,
     $.parameter_char,
     $.r,
@@ -167,7 +167,9 @@ module.exports = grammar({
       // $.catcode,
       seq($.cs, $._cmd_apply),
       $.def,
-      alias($.cmd_c, $.cmd),
+      $.lua,
+      $.luacode,
+      $.ensuremath,
       $.parameter_ref,
     ),
 
@@ -199,7 +201,10 @@ module.exports = grammar({
       alias($.comment_env, $.env),
       alias($.verbatim_env, $.env),
       $.verb,
-      alias($.cmd_t, $.cmd),
+      $.use_209,
+      $.use,
+      $.MakeShortVerb,
+      $.DeleteShortVerb,
       $.tex_display_math,
       $.latex_display_math,
       alias($.display_math_env, $.env),
@@ -219,7 +224,7 @@ module.exports = grammar({
       $.subscript,
       $.superscript,
       alias($.math_env, $.env),
-      alias($.cmd_m, $.cmd),
+      $.tag,
       alias($.text_env, $.env),
       alias($.math_group, $.group),
     ),
@@ -407,62 +412,61 @@ module.exports = grammar({
     //
     // _catcode_word: $ => /(cat|del|kcat|lc|math|sf|uc)code/,
 
-    cmd_c: $ => choice(
-      cmd_opt($,
-        $.cs_c_Ga,
-        $._apply_parameter
-      ),
-      cmd_opt($,
-        $.cs_c_g0_Ga,
-        optional($._number),
-        $._apply_parameter
-      ),
-      cmd_opt($,
-        $.cs_c_Gm,
-        alias($.math_group, $.group),
-        $._cmd_apply
-      )
+    luacode: $ => cmd_opt($,
+      $.cs_luacode,
+      $._apply_parameter
     ),
 
-    cmd_m: $ => choice(
-      cmd_opt($,
-        $.cs_m_Gt,
-        $.group,
-        $._cmd_apply
-      )
+    lua: $ => cmd_opt($,
+      $.cs_lua,
+      optional($._number),
+      $._apply_parameter
     ),
 
-    cmd_t: $ => choice(
-      cmd_opt($,
-        $.cs_t_bt_Gu,
-        optional($.brack_group),
-        alias($.name_group, $.group),
-        $._cmd_apply
+    ensuremath: $ => cmd_opt($,
+      $.cs_ensuremath,
+      alias($.math_group, $.group),
+      $._cmd_apply
+    ),
+
+    tag: $ => cmd_opt($,
+      $.cs_tag,
+      $.group,
+      $._cmd_apply
+    ),
+
+    use_209: $ => cmd_opt($,
+      $.cs_use_209,
+      optional($.brack_group),
+      alias($.name_group, $.group),
+      $._cmd_apply
+    ),
+
+    use: $ => cmd_opt($,
+      $.cs_use,
+      optional($.brack_group),
+      alias($.name_group, $.group),
+      $._cmd_apply,
+      optional($.brack_group)
+    ),
+
+    MakeShortVerb: $ => cmd_opt($,
+      $.cs_MakeShortVerb,
+      optional('*'),
+      choice(
+        alias($.cs_make_verb_delim, $.cs),
+        alias($.make_verb_delim_group, $.group)
       ),
-      cmd_opt($,
-        $.cs_t_bt_Gu_bt,
-        optional($.brack_group),
-        alias($.name_group, $.group),
-        $._cmd_apply,
-        optional($.brack_group)
+      $._cmd_apply
+    ),
+
+    DeleteShortVerb: $ => cmd_opt($,
+      $.cs_DeleteShortVerb,
+      choice(
+        alias($.cs_delete_verb_delim, $.cs),
+        alias($.delete_verb_delim_group, $.group)
       ),
-      cmd_opt($,
-        $.cs_t_Gd,
-        optional('*'),
-        choice(
-          alias($.cs_make_verb_delim, $.cs),
-          alias($.make_verb_delim_group, $.group)
-        ),
-        $._cmd_apply
-      ),
-      cmd_opt($,
-        $.cs_t_GD,
-        choice(
-          alias($.cs_delete_verb_delim, $.cs),
-          alias($.delete_verb_delim_group, $.group)
-        ),
-        $._cmd_apply
-      )
+      $._cmd_apply
     ),
 
     def: $ => cmd($,

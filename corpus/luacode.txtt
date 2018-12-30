@@ -12,7 +12,7 @@ directlua
 }
 ---------------------------
 (document
-  (cmd
+  (lua
     (cs)
     (group
       (l)
@@ -49,7 +49,7 @@ directlua with number
 }
 ---------------------------
 (document
-  (cmd
+  (lua
     (cs)
     (hexadecimal)
     (group
@@ -87,7 +87,7 @@ latelua
 }
 ---------------------------
 (document
-  (cmd
+  (lua
     (cs)
     (group
       (l)
@@ -124,7 +124,7 @@ latelua with number
 }
 ---------------------------
 (document
-  (cmd
+  (lua
     (cs)
     (hexadecimal)
     (group
@@ -162,7 +162,7 @@ luadirect
 }
 ---------------------------
 (document
-  (cmd
+  (luacode
     (cs)
     (group
       (l)
@@ -199,7 +199,7 @@ luaexec
 }
 ----------------------------
 (document
-  (cmd
+  (luacode
     (cs)
     (group
       (l)
