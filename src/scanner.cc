@@ -53,6 +53,8 @@ enum SymbolType {
   cs_t_GD,
   cs_verb,
   cs,
+  display_math_shift,
+  display_math_shift_end,
   env_name_comment,
   env_name_display_math,
   env_name_inline_math,
@@ -64,6 +66,7 @@ enum SymbolType {
   exit,
   l,
   math_shift,
+  math_shift_end,
   name,
   parameter_char,
   r,
@@ -709,6 +712,23 @@ struct Scanner {
     return true;
   }
 
+  bool scan_math_delim(TSLexer *lexer, const bool *valid_symbols) {
+    lexer->advance(lexer, false);
+
+    if (valid_symbols[math_shift_end]) {
+      lexer->result_symbol = math_shift_end;
+    } else if (catcode_table[lexer->lookahead] == MATH_SHIFT_CATEGORY) {
+      lexer->advance(lexer, false);
+      lexer->result_symbol = valid_symbols[display_math_shift_end] ? display_math_shift_end : display_math_shift;
+    } else {
+      lexer->result_symbol = math_shift;
+    }
+
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
 
@@ -807,8 +827,9 @@ struct Scanner {
       }
       break;
     case MATH_SHIFT_CATEGORY:
-      if (valid_symbols[math_shift]) {
-        return scan_single_char_symbol(lexer, math_shift);
+      if (valid_symbols[display_math_shift] || valid_symbols[math_shift] ||
+          valid_symbols[display_math_shift_end] || valid_symbols[math_shift_end]) {
+        return scan_math_delim(lexer, valid_symbols);
       }
       break;
     case ALIGNMENT_TAB_CATEGORY:

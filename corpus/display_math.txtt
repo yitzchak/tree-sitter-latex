@@ -6,9 +6,9 @@ foo$$bar$$quux
 (document
   (text)
   (tex_display_math
-    (math_shift) (math_shift)
+    (display_math_shift)
     (math)
-    (math_shift) (math_shift))
+    (display_math_shift))
   (text))
 
 ============
@@ -19,8 +19,8 @@ foo$$$$quux
 (document
   (text)
   (tex_display_math
-    (math_shift) (math_shift)
-    (math_shift) (math_shift))
+    (display_math_shift)
+    (display_math_shift))
   (text))
 
 ==================

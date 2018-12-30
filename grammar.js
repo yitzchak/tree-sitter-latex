@@ -109,6 +109,8 @@ module.exports = grammar({
     $.cs_t_GD,
     $.cs_verb,
     $.cs,
+    $.display_math_shift,
+    $.display_math_shift_end,
     $.env_name_comment,
     $.env_name_display_math,
     $.env_name_inline_math,
@@ -120,6 +122,7 @@ module.exports = grammar({
     $.exit,
     $.l,
     $.math_shift,
+    $.math_shift_end,
     $.name,
     $.parameter_char,
     $.r,
@@ -227,10 +230,10 @@ module.exports = grammar({
     ),
 
     tex_display_math: $ => seq(
-      $.math_shift, $.math_shift,
+      $.display_math_shift,
       repeat($._math_mode),
       choice(
-        seq($.math_shift, $.math_shift),
+        alias($.display_math_shift_end, $.display_math_shift),
         seq($.math_shift, $.exit),
         $.exit
       )
@@ -245,7 +248,7 @@ module.exports = grammar({
     tex_inline_math: $ => seq(
       $.math_shift,
       repeat1($._math_mode),
-      choice($.math_shift, $.exit)
+      choice(alias($.math_shift_end, $.math_shift), $.exit)
     ),
 
     latex_inline_math: $ => seq(

@@ -49,8 +49,7 @@ TeX display math - unterminated inside group
     (l)
     (text)
     (tex_display_math
-      (math_shift)
-      (math_shift)
+      (display_math_shift)
       (math)
       (exit))
     (r))
@@ -58,8 +57,7 @@ TeX display math - unterminated inside group
     (l)
     (text)
     (tex_display_math
-      (math_shift)
-      (math_shift)
+      (display_math_shift)
       (math)
       (group
         (l)
@@ -72,8 +70,7 @@ TeX display math - unterminated inside group
       (l)
       (text)
       (tex_display_math
-        (math_shift)
-        (math_shift)
+        (display_math_shift)
         (math)
         (math_shift)
         (exit))
@@ -82,8 +79,7 @@ TeX display math - unterminated inside group
       (l)
       (text)
       (tex_display_math
-        (math_shift)
-        (math_shift)
+        (display_math_shift)
         (math)
         (group
           (l)
@@ -102,8 +98,7 @@ foo$$bar
 (document
   (text)
   (tex_display_math
-    (math_shift)
-    (math_shift)
+    (display_math_shift)
     (math)
     (exit)))
 
@@ -115,8 +110,7 @@ foo$$bar$
 (document
   (text)
   (tex_display_math
-    (math_shift)
-    (math_shift)
+    (display_math_shift)
     (math)
     (math_shift)
     (exit)))
