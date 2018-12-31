@@ -13,8 +13,7 @@ quux
     (comment_env
       (begin
         (cs)
-        (group (l) (name) (r))
-        (eol))
+        (group (l) (name) (r)))
       (comment_block)
       (end (cs) (group (l) (name) (r)) (ignored)))
     (text))
@@ -34,8 +33,7 @@ quux
     (verbatim_env
       (begin
         (cs)
-        (group (l) (name) (r))
-        (eol))
+        (group (l) (name) (r)))
       (verbatim)
       (end (cs) (group (l) (name) (r)) (ignored)))
     (text))
@@ -55,8 +53,7 @@ quux
     (verbatim_env
       (begin
         (cs)
-        (group (l) (name) (r))
-        (eol))
+        (group (l) (name) (r)))
       (verbatim)
       (end (cs) (group (l) (name) (r)) (ignored)))
     (text))
@@ -74,8 +71,7 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (group (l) (name) (r))
-      (eol))
+      (group (l) (name) (r)))
     (verbatim)
     (end (cs) (group (l) (name) (r)) (ignored)))
   (text))
@@ -95,8 +91,7 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (group (l) (name) (r))
-      (eol))
+      (group (l) (name) (r)))
     (verbatim)
     (end (cs) (group (l) (name) (r)) (ignored)))
   (text))
@@ -117,8 +112,7 @@ quux
     (verbatim_env
       (begin
         (cs)
-        (group (l) (name) (r))
-        (eol))
+        (group (l) (name) (r)))
       (verbatim)
       (end (cs) (group (l) (name) (r)) (ignored)))
     (text))
@@ -138,8 +132,7 @@ quux
   (verbatim_env
     (begin
       (cs)
-      (group (l) (name) (r))
-      (eol))
+      (group (l) (name) (r)))
     (verbatim)
     (end (cs) (group (l) (name) (r)) (ignored)))
   (text))
@@ -164,7 +157,7 @@ verbtest.tex
 ----------------------------------
 (document
   (verbatim_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (verbatim)
     (end (cs) (group (l) (name) (r)))))
 
@@ -177,7 +170,7 @@ the double end test<text>
 --------------------------------------
 (document
   (verbatim_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (verbatim)
     (end (cs) (group (l) (name) (r)) (ignored))))
 
@@ -190,6 +183,6 @@ the single brace test<text>
 --------------------------------------
 (document
   (verbatim_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (verbatim)
     (end (cs) (group (l) (name) (r)))))

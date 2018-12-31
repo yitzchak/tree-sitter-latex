@@ -9,13 +9,13 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
     (verbatim)
-    (end (cs) (group (l) (name) (r)) (ignored)))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -29,13 +29,13 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
     (verbatim)
-    (end (cs) (group (l) (name) (r)) (ignored)))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -49,13 +49,13 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
     (verbatim)
-    (end (cs) (group (l) (name) (r)) (ignored)))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -69,13 +69,13 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
     (verbatim)
-    (end (cs) (group (l) (name) (r)) (ignored)))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -89,13 +89,13 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
     (verbatim)
-    (end (cs) (group (l) (name) (r)) (ignored)))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ===========================
@@ -109,13 +109,13 @@ quux
 ---------------------------
 (document
   (text)
-  (verbatim_env
+  (Verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
       (eol))
     (verbatim)
-    (end (cs) (group (l) (name) (r)) (ignored)))
+    (end (cs) (group (l) (name) (r))))
   (text))
 
 ============================
