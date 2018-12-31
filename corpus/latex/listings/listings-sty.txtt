@@ -63,3 +63,16 @@ lstinline with optional parameter
     (verb_delim)
     (verbatim)
     (verb_delim)))
+
+===========================
+lstinline with optional parameter left bracket as verbatim delimiter
+===========================
+\lstinline[foo][wibble[
+--------------------------
+(document
+  (lstinline
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (verb_delim)
+    (verbatim)
+    (verb_delim)))
