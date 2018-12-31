@@ -1,0 +1,68 @@
+=======================
+displaymath environment
+=======================
+foo
+\begin{displaymath}
+bar
+\end{displaymath}
+quux
+-----------------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+eqnarray environment
+=============
+foo
+\begin{eqnarray}
+bar
+\end{eqnarray}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+eqnarray* environment
+=============
+foo
+\begin{eqnarray*}
+bar
+\end{eqnarray*}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+
+=============
+equation environment
+=============
+foo
+\begin{equation}
+bar
+\end{equation}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))

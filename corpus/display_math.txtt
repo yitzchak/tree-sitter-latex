@@ -36,301 +36,6 @@ foo\[bar\]quux
     (cs))
   (text))
 
-=======================
-LaTeX displaymath environment
-=======================
-foo
-\begin{displaymath}
-bar
-\end{displaymath}
-quux
------------------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-LaTeX eqnarray environment
-=============
-foo
-\begin{eqnarray}
-bar
-\end{eqnarray}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-LaTeX eqnarray* environment
-=============
-foo
-\begin{eqnarray*}
-bar
-\end{eqnarray*}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath align environment
-=============
-foo
-\begin{align}
-bar
-\end{align}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath align* environment
-=============
-foo
-\begin{align*}
-bar
-\end{align*}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath alignat environment
-=============
-foo
-\begin{alignat}{2}
-bar
-\end{alignat}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin
-      (cs)
-      (group (l) (name) (r)))
-    (group (l) (math) (r))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath alignat* environment
-=============
-foo
-\begin{alignat*}{2}
-bar
-\end{alignat*}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin
-      (cs)
-      (group (l) (name) (r)))
-    (group (l) (math) (r))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath equation environment
-=============
-foo
-\begin{equation}
-bar
-\end{equation}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath equation* environment
-=============
-foo
-\begin{equation*}
-bar
-\end{equation*}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath flalign environment
-=============
-foo
-\begin{flalign}
-bar
-\end{flalign}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath flalign* environment
-=============
-foo
-\begin{flalign*}
-bar
-\end{flalign*}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath gather environment
-=============
-foo
-\begin{gather}
-bar
-\end{gather}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath gather* environment
-=============
-foo
-\begin{gather*}
-bar
-\end{gather*}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath multiline environment
-=============
-foo
-\begin{multiline}
-bar
-\end{multiline}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath multiline* environment
-=============
-foo
-\begin{multiline*}
-bar
-\end{multiline*}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath split environment
-=============
-foo
-\begin{split}
-bar
-\end{split}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
-=============
-amsmath split* environment
-=============
-foo
-\begin{split*}
-bar
-\end{split*}
-quux
--------------
-(document
-  (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
 =========================
 breqn dmath environment
 =========================
@@ -342,7 +47,7 @@ quux
 -------------
 (document
   (text)
-  (env
+  (display_math_env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -359,7 +64,7 @@ quux
 -------------
 (document
   (text)
-  (env
+  (display_math_env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -410,7 +115,7 @@ quux
 -------------
 (document
   (text)
-  (env
+  (display_math_env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -427,7 +132,7 @@ quux
 -------------
 (document
   (text)
-  (env
+  (display_math_env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -444,7 +149,7 @@ quux
 -------------
 (document
   (text)
-  (env
+  (display_math_env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
@@ -461,7 +166,7 @@ quux
 -------------
 (document
   (text)
-  (env
+  (display_math_env
     (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))

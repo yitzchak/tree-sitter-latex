@@ -201,27 +201,6 @@ quux
     (end (cs) (group (l) (name) (r))))
   (text))
 
-===========================
-minted environment
-===========================
-foo
-\begin{minted}{wibble}
-bar
-\end{minted}
-quux
----------------------------
-(document
-  (text)
-  (minted_env
-    (begin
-      (cs)
-      (group (l) (name) (r))
-      (group (l) (text) (r))
-      (eol))
-    (verbatim)
-    (end (cs) (group (l) (name) (r))))
-  (text))
-
 ======================
 empty verbatim environment
 ======================
@@ -334,34 +313,6 @@ inline verbatim using various special character
   (verb (cs) (verb_delim) (verbatim) (verb_delim))
   (verb (cs) (verb_delim) (verbatim) (verb_delim))
   (verb (cs) (verb_delim) (verbatim) (verb_delim)))
-
-===========================
-mint
-===========================
-\mint[foo]{bar}|wibble|
---------------------------
-(document
-  (mint
-    (cs)
-    (brack_group (lbrack) (text) (rbrack))
-    (group (l) (text) (r))
-    (verb_delim)
-    (verbatim)
-    (verb_delim)))
-
-===========================
-mintinline
-===========================
-\mintinline[foo]{bar}|wibble|
---------------------------
-(document
-  (mintinline
-    (cs)
-    (brack_group (lbrack) (text) (rbrack))
-    (group (l) (text) (r))
-    (verb_delim)
-    (verbatim)
-    (verb_delim)))
 
 ===========================
 alltt environment

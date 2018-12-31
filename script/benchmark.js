@@ -38,13 +38,11 @@ if (process.argv.length < 3) {
 const fileName = process.argv[2]
 const code = fs.readFileSync(fileName, 'utf8')
 
-let document = null
-
 profile('Tree-sitter', () => {
-  parser = new Parser();
+  let parser = new Parser()
 
   parser.setLanguage(language)
-  document = parser.parse(code)
+  parser.parse(code)
 })
 
 function profile (name, action) {

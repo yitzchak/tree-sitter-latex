@@ -57,6 +57,7 @@ enum SymbolType {
   cs,
   display_math_shift_end,
   display_math_shift,
+  env_name_alignat,
   env_name_comment,
   env_name_display_math,
   env_name_inline_math,
@@ -310,8 +311,8 @@ struct Scanner {
   unordered_map<string, Environment> environments = {
       {"align", {env_name_display_math, {}}},
       {"align*", {env_name_display_math, {}}},
-      {"alignat", {env_name_display_math, {}}},
-      {"alignat*", {env_name_display_math, {}}},
+      {"alignat", {env_name_alignat, {}}},
+      {"alignat*", {env_name_alignat, {}}},
       {"alltt",
        {env_name,
         {{{'\t', '\t', OTHER_CATEGORY},

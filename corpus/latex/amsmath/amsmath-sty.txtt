@@ -1,0 +1,240 @@
+====================
+tag
+====================
+\begin{equation}
+foo\tag{bar}
+\end{equation}
+-----------------
+(document
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (tag (cs) (group (l) (text) (r)))
+    (end (cs) (group (l) (name) (r)))))
+
+=============
+align environment
+=============
+foo
+\begin{align}
+bar
+\end{align}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+align* environment
+=============
+foo
+\begin{align*}
+bar
+\end{align*}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+alignat environment
+=============
+foo
+\begin{alignat}{2}
+bar
+\end{alignat}
+quux
+-------------
+(document
+  (text)
+  (alignat_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+alignat* environment
+=============
+foo
+\begin{alignat*}{2}
+bar
+\end{alignat*}
+quux
+-------------
+(document
+  (text)
+  (alignat_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+equation* environment
+=============
+foo
+\begin{equation*}
+bar
+\end{equation*}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+flalign environment
+=============
+foo
+\begin{flalign}
+bar
+\end{flalign}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+flalign* environment
+=============
+foo
+\begin{flalign*}
+bar
+\end{flalign*}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+gather environment
+=============
+foo
+\begin{gather}
+bar
+\end{gather}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+gather* environment
+=============
+foo
+\begin{gather*}
+bar
+\end{gather*}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+multiline environment
+=============
+foo
+\begin{multiline}
+bar
+\end{multiline}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+multiline* environment
+=============
+foo
+\begin{multiline*}
+bar
+\end{multiline*}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+split environment
+=============
+foo
+\begin{split}
+bar
+\end{split}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+split* environment
+=============
+foo
+\begin{split*}
+bar
+\end{split*}
+quux
+-------------
+(document
+  (text)
+  (display_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
