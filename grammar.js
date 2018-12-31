@@ -109,6 +109,7 @@ let g = {
     $.cs_ensuremath,
     $.cs_inline_math_begin,
     $.cs_inline_math_end,
+    $.cs_lstinline,
     $.cs_lua,
     $.cs_luacode,
     $.cs_make_verb_delim,
@@ -126,6 +127,7 @@ let g = {
     $.env_name_comment,
     $.env_name_display_math,
     $.env_name_inline_math,
+    $.env_name_lstlisting,
     $.env_name_math,
     $.env_name_minted,
     $.env_name_text,
@@ -133,6 +135,9 @@ let g = {
     $.env_name,
     $.eol,
     $.exit,
+    $.ignored_line,
+    $.ignored,
+    $.invalid,
     $.l,
     $.math_shift_end,
     $.math_shift,
@@ -143,6 +148,7 @@ let g = {
     $.subscript,
     $.superscript,
     $.verb_body,
+    $.verb_delim_no_lbrack,
     $.verb_delim,
     $.verb_end_delim,
     $.verbatim
@@ -184,7 +190,9 @@ let g = {
       $.lua,
       $.luacode,
       $.ensuremath,
-      $.parameter_ref
+      $.parameter_ref,
+      $.ignored,
+      $.invalid
     ),
 
     verb: $ => choice(
@@ -502,7 +510,7 @@ function defCmd ({ label, cs, mode, parameters, local }) {
   rules[mode].push(label)
 }
 
-function defEnv ({ label, mode, name, parameters, contents, bare }) {
+function defEnv ({ label, mode, name, beginParameters, endParameters, contents, bare }) {
   const envSym = `${label}_env`
   const nameGroupRuleSym = `_${label}_name_group`
   const beginRuleSym = `_${label}_begin`
@@ -516,11 +524,12 @@ function defEnv ({ label, mode, name, parameters, contents, bare }) {
 
   g.rules[beginRuleSym] = $ => beginCmd($,
     alias(name ? $[nameGroupRuleSym] : $.name_group, $.group),
-    ...(parameters ? parameters($) : [])
+    ...(beginParameters ? beginParameters($) : [])
   )
 
   g.rules[endRuleSym] = $ => endCmd($,
-    alias(name ? $[nameGroupRuleSym] : $.name_group, $.group)
+    alias(name ? $[nameGroupRuleSym] : $.name_group, $.group),
+    ...(endParameters ? endParameters($) : [])
   )
 
   g.rules[envSym] = $ => seq(

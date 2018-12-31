@@ -66,3 +66,54 @@ quux
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
+
+======================
+inline verbatim
+======================
+text
+\verb+foo+bar
+\verb\foo\bar
+\verb+foo
+\verb*starred verb* is not what you expect (s is acting as the delim here)
+text
+----------------------
+(document
+  (text)
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text)
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text)
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text))
+
+======================
+not (quite) inline verbatim
+======================
+\verb  +foo+ the space here is the actual delim, so +foo+ is plain text
+----------------------
+(document
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text))
+
+========================
+inline verbatim using various special character
+========================
+\verb%foo%
+\verb\bar\
+\verb~baz~
+\verb#wibble#
+\verb{quux{
+\verb}gronk}
+\verb^nub^
+\verb_baffle_
+\verb&crank&
+\verb$conn$
+------------------------
+(document
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (verb_delim) (verbatim) (verb_delim)))

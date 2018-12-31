@@ -1,0 +1,142 @@
+===========================
+Verbatim environment
+===========================
+foo
+\begin{Verbatim}
+bar
+\end{Verbatim}
+quux
+---------------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)) (ignored)))
+  (text))
+
+===========================
+Verbatim star environment
+===========================
+foo
+\begin{Verbatim*}
+bar
+\end{Verbatim*}
+quux
+---------------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)) (ignored)))
+  (text))
+
+===========================
+BVerbatim environment
+===========================
+foo
+\begin{BVerbatim}
+bar
+\end{BVerbatim}
+quux
+---------------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)) (ignored)))
+  (text))
+
+===========================
+BVerbatim star environment
+===========================
+foo
+\begin{BVerbatim*}
+bar
+\end{BVerbatim*}
+quux
+---------------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)) (ignored)))
+  (text))
+
+===========================
+LVerbatim environment
+===========================
+foo
+\begin{LVerbatim}
+bar
+\end{LVerbatim}
+quux
+---------------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)) (ignored)))
+  (text))
+
+===========================
+LVerbatim star environment
+===========================
+foo
+\begin{LVerbatim*}
+bar
+\end{LVerbatim*}
+quux
+---------------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)) (ignored)))
+  (text))
+
+============================
+DefineShortVerb and UndefineShortVerb
+============================
+|foo|
++foo+
+\DefineShortVerb{\|}
+|bar|
+\DefineShortVerb*{\+}
++bar+
+\UndefineShortVerb{\|}
+|quux|
++quux+
+----------------------------
+(document
+  (text)
+  (MakeShortVerb (cs) (group (l) (cs) (r)))
+  (verb (verb_delim) (verbatim) (verb_delim))
+  (MakeShortVerb (cs) (group (l) (cs) (r)))
+  (verb (verb_delim) (verbatim) (verb_delim))
+  (DeleteShortVerb (cs) (group (l) (cs) (r)))
+  (text)
+  (verb (verb_delim) (verbatim) (verb_delim)))

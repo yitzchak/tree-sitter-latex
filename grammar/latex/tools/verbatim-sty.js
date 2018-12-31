@@ -8,7 +8,7 @@ module.exports = {
       // The comment environment provided does not really have any parameters
       // but the eol makes it possible to treat all possible comment
       // environments as a single rule.
-      parameters: $ => [
+      beginParameters: $ => [
         repeat(
           choice(
             $.text,
@@ -17,6 +17,9 @@ module.exports = {
           )
         ),
         $.eol
+      ],
+      endParameters: $ => [
+        optional(alias($.ignored_line, $.ignored))
       ],
       contents: $ => [alias($.verbatim, $.comment_block)]
     },
@@ -28,7 +31,7 @@ module.exports = {
       // The verbatim environment provided does not really have any parameters
       // but the eol makes it possible to treat all possible verbatim
       // environments as a single rule.
-      parameters: $ => [
+      beginParameters: $ => [
         repeat(
           choice(
             $.text,
@@ -37,6 +40,9 @@ module.exports = {
           )
         ),
         $.eol
+      ],
+      endParameters: $ => [
+        optional(alias($.ignored_line, $.ignored))
       ],
       contents: $ => [$.verbatim]
     }

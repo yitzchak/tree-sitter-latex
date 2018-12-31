@@ -1,8 +1,8 @@
 #include <algorithm>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <iostream>
 
 #include "tree_sitter/parser.h"
 
@@ -44,6 +44,7 @@ enum SymbolType {
   cs_ensuremath,
   cs_inline_math_begin,
   cs_inline_math_end,
+  cs_lstinline,
   cs_lua,
   cs_luacode,
   cs_make_verb_delim,
@@ -61,6 +62,7 @@ enum SymbolType {
   env_name_comment,
   env_name_display_math,
   env_name_inline_math,
+  env_name_lstlisting,
   env_name_math,
   env_name_minted,
   env_name_text,
@@ -68,6 +70,9 @@ enum SymbolType {
   env_name,
   eol,
   exit,
+  ignored_line,
+  ignored,
+  invalid,
   l,
   math_shift_end,
   math_shift,
@@ -78,6 +83,7 @@ enum SymbolType {
   subscript,
   superscript,
   verb_body,
+  verb_delim_no_lbrack,
   verb_delim,
   verb_end_delim,
   verbatim_text,
@@ -140,21 +146,24 @@ struct Scanner {
       {"def", {cs_def, false, {}}},
       {"DefineShortVerb", {cs_MakeShortVerb, false, {}}},
       {"DeleteShortVerb", {cs_DeleteShortVerb, false, {}}},
-      {"directlua", {cs_lua, false, {{{1, 9, EOL_CATEGORY},
-        {'\n', '\n', EOL_CATEGORY},
-        {11, '$', OTHER_CATEGORY},
-        {'%', '%', COMMENT_CATEGORY},
-        {'&', '@', OTHER_CATEGORY},
-        {'A', 'Z', LETTER_CATEGORY},
-        {'[', '[', OTHER_CATEGORY},
-        {'\\', '\\', ESCAPE_CATEGORY},
-        {']', '`', OTHER_CATEGORY},
-        {'a', 'z', LETTER_CATEGORY},
-        {'{', '{', BEGIN_CATEGORY},
-        {'|', '|', OTHER_CATEGORY},
-        {'}', '}', END_CATEGORY},
-        {'~', '~', ACTIVE_CHAR_CATEGORY},
-        {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
+      {"directlua",
+       {cs_lua,
+        false,
+        {{{1, 9, EOL_CATEGORY},
+          {'\n', '\n', EOL_CATEGORY},
+          {11, '$', OTHER_CATEGORY},
+          {'%', '%', COMMENT_CATEGORY},
+          {'&', '@', OTHER_CATEGORY},
+          {'A', 'Z', LETTER_CATEGORY},
+          {'[', '[', OTHER_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {']', '`', OTHER_CATEGORY},
+          {'a', 'z', LETTER_CATEGORY},
+          {'{', '{', BEGIN_CATEGORY},
+          {'|', '|', OTHER_CATEGORY},
+          {'}', '}', END_CATEGORY},
+          {'~', '~', ACTIVE_CHAR_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
       {"documentclass", {cs_use, false, {}}},
       {"documentstyle", {cs_use_209, false, {}}},
       {"edef", {cs_def, false, {}}},
@@ -187,53 +196,63 @@ struct Scanner {
           {'|', '|', OTHER_CATEGORY},
           {'~', '~', SPACE_CATEGORY}}}}},
       {"gdef", {cs_def, false, {}}},
-      {"latelua", {cs_lua, false, {{{1, 9, EOL_CATEGORY},
-        {'\n', '\n', EOL_CATEGORY},
-        {11, '$', OTHER_CATEGORY},
-        {'%', '%', COMMENT_CATEGORY},
-        {'&', '@', OTHER_CATEGORY},
-        {'A', 'Z', LETTER_CATEGORY},
-        {'[', '[', OTHER_CATEGORY},
-        {'\\', '\\', ESCAPE_CATEGORY},
-        {']', '`', OTHER_CATEGORY},
-        {'a', 'z', LETTER_CATEGORY},
-        {'{', '{', BEGIN_CATEGORY},
-        {'|', '|', OTHER_CATEGORY},
-        {'}', '}', END_CATEGORY},
-        {'~', '~', ACTIVE_CHAR_CATEGORY},
-        {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
+      {"latelua",
+       {cs_lua,
+        false,
+        {{{1, 9, EOL_CATEGORY},
+          {'\n', '\n', EOL_CATEGORY},
+          {11, '$', OTHER_CATEGORY},
+          {'%', '%', COMMENT_CATEGORY},
+          {'&', '@', OTHER_CATEGORY},
+          {'A', 'Z', LETTER_CATEGORY},
+          {'[', '[', OTHER_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {']', '`', OTHER_CATEGORY},
+          {'a', 'z', LETTER_CATEGORY},
+          {'{', '{', BEGIN_CATEGORY},
+          {'|', '|', OTHER_CATEGORY},
+          {'}', '}', END_CATEGORY},
+          {'~', '~', ACTIVE_CHAR_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
       {"LoadClass", {cs_use, false, {}}},
       {"LoadClassWithOptions", {cs_use, false, {}}},
-      {"luadirect", {cs_luacode, false, {{{1, 9, EOL_CATEGORY},
-        {'\n', '\n', EOL_CATEGORY},
-        {11, '$', OTHER_CATEGORY},
-        {'%', '%', COMMENT_CATEGORY},
-        {'&', '@', OTHER_CATEGORY},
-        {'A', 'Z', LETTER_CATEGORY},
-        {'[', '[', OTHER_CATEGORY},
-        {'\\', '\\', ESCAPE_CATEGORY},
-        {']', '`', OTHER_CATEGORY},
-        {'a', 'z', LETTER_CATEGORY},
-        {'{', '{', BEGIN_CATEGORY},
-        {'|', '|', OTHER_CATEGORY},
-        {'}', '}', END_CATEGORY},
-        {'~', '~', ACTIVE_CHAR_CATEGORY},
-        {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
-      {"luaexec", {cs_luacode, false, {{{1, 9, EOL_CATEGORY},
-        {'\n', '\n', EOL_CATEGORY},
-        {11, '$', OTHER_CATEGORY},
-        {'%', '%', COMMENT_CATEGORY},
-        {'&', '@', OTHER_CATEGORY},
-        {'A', 'Z', LETTER_CATEGORY},
-        {'[', '[', OTHER_CATEGORY},
-        {'\\', '\\', ESCAPE_CATEGORY},
-        {']', '`', OTHER_CATEGORY},
-        {'a', 'z', LETTER_CATEGORY},
-        {'{', '{', BEGIN_CATEGORY},
-        {'|', '|', OTHER_CATEGORY},
-        {'}', '}', END_CATEGORY},
-        {'~', '~', OTHER_CATEGORY},
-        {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
+      {"lstinline", {cs_lstinline, false, {}}},
+      {"luadirect",
+       {cs_luacode,
+        false,
+        {{{1, 9, EOL_CATEGORY},
+          {'\n', '\n', EOL_CATEGORY},
+          {11, '$', OTHER_CATEGORY},
+          {'%', '%', COMMENT_CATEGORY},
+          {'&', '@', OTHER_CATEGORY},
+          {'A', 'Z', LETTER_CATEGORY},
+          {'[', '[', OTHER_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {']', '`', OTHER_CATEGORY},
+          {'a', 'z', LETTER_CATEGORY},
+          {'{', '{', BEGIN_CATEGORY},
+          {'|', '|', OTHER_CATEGORY},
+          {'}', '}', END_CATEGORY},
+          {'~', '~', ACTIVE_CHAR_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
+      {"luaexec",
+       {cs_luacode,
+        false,
+        {{{1, 9, EOL_CATEGORY},
+          {'\n', '\n', EOL_CATEGORY},
+          {11, '$', OTHER_CATEGORY},
+          {'%', '%', COMMENT_CATEGORY},
+          {'&', '@', OTHER_CATEGORY},
+          {'A', 'Z', LETTER_CATEGORY},
+          {'[', '[', OTHER_CATEGORY},
+          {'\\', '\\', ESCAPE_CATEGORY},
+          {']', '`', OTHER_CATEGORY},
+          {'a', 'z', LETTER_CATEGORY},
+          {'{', '{', BEGIN_CATEGORY},
+          {'|', '|', OTHER_CATEGORY},
+          {'}', '}', END_CATEGORY},
+          {'~', '~', OTHER_CATEGORY},
+          {'\x7f', '\x7f', INVALID_CATEGORY}}}}},
       {"makeatletter", {cs, false, {{{'@', '@', LETTER_CATEGORY}}}}},
       {"makeatother", {cs, false, {{{'@', '@', OTHER_CATEGORY}}}}},
       {"MakeShortVerb", {cs_MakeShortVerb, false, {}}},
@@ -349,7 +368,7 @@ struct Scanner {
       {"flalign*", {env_name_display_math, {}}},
       {"gather", {env_name_display_math, {}}},
       {"gather*", {env_name_display_math, {}}},
-      {"lstlisting", {env_name_verbatim, {}}},
+      {"lstlisting", {env_name_lstlisting, {}}},
       {"luacode",
        {env_name,
         {{{1, '@', OTHER_CATEGORY},
@@ -469,37 +488,56 @@ struct Scanner {
     return (terminator[catcode_table[lexer->lookahead]]) ? -1 : length;
   }
 
-  bool matches_string(TSLexer *lexer, string value) {
+  bool match_or_advance(TSLexer *lexer, string value) {
+    bool advanced = false;
+
     for (char ch : value) {
       switch (ch) {
       case '\\':
         if (catcode_table[lexer->lookahead] != ESCAPE_CATEGORY) {
+          if (!advanced) {
+            lexer->advance(lexer, false);
+          }
           return false;
         }
+        advanced = true;
         lexer->advance(lexer, false);
         break;
       case '{':
         if (catcode_table[lexer->lookahead] != BEGIN_CATEGORY) {
+          if (!advanced) {
+            lexer->advance(lexer, false);
+          }
           return false;
         }
+        advanced = true;
         lexer->advance(lexer, false);
         break;
       case '}':
         if (catcode_table[lexer->lookahead] != END_CATEGORY) {
+          if (!advanced) {
+            lexer->advance(lexer, false);
+          }
           return false;
         }
+        advanced = true;
         lexer->advance(lexer, false);
         break;
       case ' ':
         while (lexer->lookahead &&
                catcode_table[lexer->lookahead] == SPACE_CATEGORY) {
+          advanced = true;
           lexer->advance(lexer, false);
         }
         break;
       default:
         if (lexer->lookahead != ch) {
+          if (!advanced) {
+            lexer->advance(lexer, false);
+          }
           return false;
         }
+        advanced = true;
         lexer->advance(lexer, false);
         break;
       }
@@ -509,22 +547,13 @@ struct Scanner {
   }
 
   bool scan_verbatim_text(TSLexer *lexer) {
-    string terminator = " \\end {" + e_name + "}";
+    string terminator = "\\end {" + e_name + "}";
     lexer->mark_end(lexer);
     lexer->result_symbol = verbatim_text;
 
     do {
-      if (matches_string(lexer, terminator)) {
+      if (match_or_advance(lexer, terminator)) {
         return true;
-      }
-
-      while (lexer->lookahead &&
-             catcode_table[lexer->lookahead] != EOL_CATEGORY) {
-        lexer->advance(lexer, false);
-      }
-
-      if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
-        lexer->advance(lexer, false);
       }
 
       lexer->mark_end(lexer);
@@ -590,7 +619,8 @@ struct Scanner {
       do {
         cs_name += lexer->lookahead;
         lexer->advance(lexer, false);
-      } while (lexer->lookahead && catcode_table[lexer->lookahead] == LETTER_CATEGORY);
+      } while (lexer->lookahead &&
+               catcode_table[lexer->lookahead] == LETTER_CATEGORY);
     } else if (valid_symbols[cs_make_verb_delim]) {
       catcode_table.assign(lexer->lookahead, VERB_DELIM_EXT_CATEGORY, true);
       lexer->advance(lexer, false);
@@ -615,7 +645,10 @@ struct Scanner {
     lexer->mark_end(lexer);
 
     auto it = control_sequences.find(cs_name);
-    lexer->result_symbol = (it != control_sequences.end() && valid_symbols[it->second.symbol]) ? it->second.symbol : cs;
+    lexer->result_symbol =
+        (it != control_sequences.end() && valid_symbols[it->second.symbol])
+            ? it->second.symbol
+            : cs;
 
     return true;
   }
@@ -725,11 +758,33 @@ struct Scanner {
       lexer->result_symbol = math_shift_end;
     } else if (catcode_table[lexer->lookahead] == MATH_SHIFT_CATEGORY) {
       lexer->advance(lexer, false);
-      lexer->result_symbol = valid_symbols[display_math_shift_end] ? display_math_shift_end : display_math_shift;
+      lexer->result_symbol = valid_symbols[display_math_shift_end]
+                                 ? display_math_shift_end
+                                 : display_math_shift;
     } else {
       lexer->result_symbol = math_shift;
     }
 
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_ignored_line(TSLexer *lexer) {
+    if (!lexer->lookahead) {
+      return false;
+    }
+
+    while (lexer->lookahead) {
+      if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
+        lexer->advance(lexer, false);
+        break;
+      }
+
+      lexer->advance(lexer, false);
+    };
+
+    lexer->result_symbol = ignored_line;
     lexer->mark_end(lexer);
 
     return true;
@@ -750,6 +805,10 @@ struct Scanner {
     }
 
     // Look for an inline verbatim.
+    if (valid_symbols[verb_delim_no_lbrack] && lexer->lookahead != '[') {
+      return scan_verb_start_delim(lexer, verb_delim_no_lbrack);
+    }
+
     if (valid_symbols[verb_delim]) {
       return scan_verb_start_delim(lexer, verb_delim);
     }
@@ -814,9 +873,14 @@ struct Scanner {
       return scan_empty_symbol(lexer, exit);
     }
 
+    if (valid_symbols[ignored_line]) {
+      return scan_ignored_line(lexer);
+    }
+
     switch (code) {
     case ESCAPE_CATEGORY:
-      if (any_of(valid_symbols + cs_begin, valid_symbols + cs + 1, [](auto valid_symbol) { return valid_symbol; })) {
+      if (any_of(valid_symbols + cs_begin, valid_symbols + cs + 1,
+                 [](auto valid_symbol) { return valid_symbol; })) {
         return scan_cs(lexer, valid_symbols);
       }
       break;
@@ -834,7 +898,8 @@ struct Scanner {
       break;
     case MATH_SHIFT_CATEGORY:
       if (valid_symbols[display_math_shift] || valid_symbols[math_shift] ||
-          valid_symbols[display_math_shift_end] || valid_symbols[math_shift_end]) {
+          valid_symbols[display_math_shift_end] ||
+          valid_symbols[math_shift_end]) {
         return scan_math_delim(lexer, valid_symbols);
       }
       break;
@@ -867,11 +932,12 @@ struct Scanner {
         return scan_single_char_symbol(lexer, subscript);
       }
       break;
-    // case IGNORED_CATEGORY:
-    //   do {
-    //     lexer->advance(lexer, true);
-    //   } while (lexer->lookahead && catcode_table[lexer->lookahead] ==
-    //   IGNORED_CATEGORY); return false;
+    case IGNORED_CATEGORY:
+      if (valid_symbols[ignored]) {
+        return scan_multi_char_symbol(lexer, ignored,
+                                      IGNORED_CATEGORY);
+      }
+      break;
     case SPACE_CATEGORY:
       if (valid_symbols[_space]) {
         return scan_space(lexer);

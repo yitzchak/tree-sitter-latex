@@ -28,7 +28,7 @@ module.exports = {
     label: 'minted',
     mode: 'text',
     name: $ => $.env_name_minted,
-    parameters: $ => [
+    beginParameters: $ => [
       optional($.brack_group),
       optional($._parameter),
       $.eol

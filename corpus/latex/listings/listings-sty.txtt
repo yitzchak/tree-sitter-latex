@@ -1,0 +1,65 @@
+===========================
+lstlisting environment
+===========================
+foo
+\begin{lstlisting}
+bar
+\end{lstlisting}
+quux
+---------------------------
+(document
+  (text)
+  (lstlisting_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+===========================
+lstlisting environment with optional argument
+===========================
+foo
+\begin{lstlisting}[wibble]
+bar
+\end{lstlisting}
+quux
+---------------------------
+(document
+  (text)
+  (lstlisting_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+===========================
+lstinline
+===========================
+\lstinline|wibble|
+--------------------------
+(document
+  (lstinline
+    (cs)
+    (verb_delim)
+    (verbatim)
+    (verb_delim)))
+
+===========================
+lstinline with optional parameter
+===========================
+\lstinline[foo]|wibble|
+--------------------------
+(document
+  (lstinline
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (verb_delim)
+    (verbatim)
+    (verb_delim)))

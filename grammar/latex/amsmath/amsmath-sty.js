@@ -15,7 +15,7 @@ module.exports = {
       label: 'alignat',
       mode: 'text',
       name: $ => $.env_name_alignat,
-      parameters: $ => [$._parameter],
+      beginParameters: $ => [$._parameter],
       contents: $ => [repeat($._math_mode)]
     }
   ]

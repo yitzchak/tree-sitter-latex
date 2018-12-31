@@ -1,0 +1,11 @@
+===============================
+ltxguide class triggers pipe verb delimiter
+==============================
+\documentclass{ltxguide}
+|foo|
+-------------------------------
+(document
+  (use
+    (cs)
+    (group (l) (name) (r)))
+  (verb (verb_delim) (verbatim) (verb_delim)))

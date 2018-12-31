@@ -16,7 +16,7 @@ quux
         (group (l) (name) (r))
         (eol))
       (comment_block)
-      (end (cs) (group (l) (name) (r))))
+      (end (cs) (group (l) (name) (r)) (ignored)))
     (text))
 
 ======================
@@ -37,7 +37,7 @@ quux
         (group (l) (name) (r))
         (eol))
       (verbatim)
-      (end (cs) (group (l) (name) (r))))
+      (end (cs) (group (l) (name) (r)) (ignored)))
     (text))
 
 ======================
@@ -58,7 +58,7 @@ quux
         (group (l) (name) (r))
         (eol))
       (verbatim)
-      (end (cs) (group (l) (name) (r))))
+      (end (cs) (group (l) (name) (r)) (ignored)))
     (text))
 
 ======================
@@ -77,7 +77,7 @@ quux
       (group (l) (name) (r))
       (eol))
     (verbatim)
-    (end (cs) (group (l) (name) (r))))
+    (end (cs) (group (l) (name) (r)) (ignored)))
   (text))
 
 ======================
@@ -98,7 +98,7 @@ quux
       (group (l) (name) (r))
       (eol))
     (verbatim)
-    (end (cs) (group (l) (name) (r))))
+    (end (cs) (group (l) (name) (r)) (ignored)))
   (text))
 
 ======================
@@ -120,5 +120,76 @@ quux
         (group (l) (name) (r))
         (eol))
       (verbatim)
-      (end (cs) (group (l) (name) (r))))
+      (end (cs) (group (l) (name) (r)) (ignored)))
     (text))
+
+======================
+verbatim environment with text afterward
+======================
+foo
+\begin{verbatim}
+bar
+wibble
+\end{verbatim}
+quux
+----------------------
+(document
+  (text)
+  (verbatim_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)) (ignored)))
+  (text))
+
+==============================
+verbtest.tex
+==============================
+\begin{verbatim}
+  test
+  \end{verbatim*}
+  test
+  \end{verbatim
+  test of ligatures: <`!`?`>
+  \endverbatim
+  test
+  \end  verbatim
+  test
+  test of end of line:
+  \end
+  {verbatim}
+\end{verbatim}
+----------------------------------
+(document
+  (verbatim_env
+    (begin (cs) (group (l) (name) (r)) (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)))))
+
+======================================
+verbtest.tex - First of Chris Rowley's fiendish tests
+======================================
+\begin{verbatim}
+the double end test<text>
+\end\end{verbatim}  or even \end \end{verbatim}
+--------------------------------------
+(document
+  (verbatim_env
+    (begin (cs) (group (l) (name) (r)) (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)) (ignored))))
+
+=========================================
+verbtest.tex - Another of Chris' devils
+===========================================
+\begin{verbatim}
+the single brace test<text>
+\end{not the end\end{verbatim}
+--------------------------------------
+(document
+  (verbatim_env
+    (begin (cs) (group (l) (name) (r)) (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r)))))
