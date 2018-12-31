@@ -213,8 +213,6 @@ let g = {
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
-      $.comment_env,
-      $.verbatim_env,
       $.verb,
       $.use_209,
       $.use,
@@ -273,54 +271,6 @@ let g = {
       repeat($._math_mode),
       choice(alias($.cs_inline_math_end, $.cs), $.exit)
     ),
-
-    comment_env: $ => seq(
-      alias($.comment_begin, $.begin),
-      alias($.verbatim, $.comment_block),
-      choice(alias($.comment_end, $.end), $.exit)
-    ),
-
-    comment_begin: $ => beginCmd($,
-      alias($.comment_env_group, $.group),
-      repeat(
-        choice(
-          $.text,
-          $.brack_group,
-          $.group
-        )
-      ),
-      $.eol
-    ),
-
-    comment_end: $ => endCmd($,
-      alias($.comment_env_group, $.group)
-    ),
-
-    comment_env_group: $ => group($, alias($.env_name_comment, $.name)),
-
-    verbatim_env: $ => seq(
-      alias($.verbatim_begin, $.begin),
-      $.verbatim,
-      choice(alias($.verbatim_end, $.end), $.exit)
-    ),
-
-    verbatim_begin: $ => beginCmd($,
-      alias($.verbatim_env_group, $.group),
-      repeat(
-        choice(
-          $.text,
-          $.brack_group,
-          $.group
-        )
-      ),
-      $.eol
-    ),
-
-    verbatim_end: $ => endCmd($,
-      alias($.verbatim_env_group, $.group)
-    ),
-
-    verbatim_env_group: $ => group($, alias($.env_name_verbatim, $.name)),
 
     text_env: $ => seq(
       alias($.text_begin, $.begin),
