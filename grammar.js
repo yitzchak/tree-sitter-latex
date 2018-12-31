@@ -129,6 +129,8 @@ let g = {
     $.env_name_filecontents,
     $.env_name_inline_math,
     $.env_name_lstlisting,
+    $.env_name_luacode,
+    $.env_name_luacodestar,
     $.env_name_math,
     $.env_name_minted,
     $.env_name_text,
@@ -160,9 +162,9 @@ let g = {
     $._space,
     $.comment_arara,
     $.comment_bib,
-    $.comment,
+    $.comment_tag,
     $.comment_tex,
-    $.comment_tag
+    $.comment
   ],
 
   rules: {
@@ -189,8 +191,6 @@ let g = {
       // $.catcode,
       seq($.cs, $._cmd_apply),
       $.def,
-      $.lua,
-      $.luacode,
       $.ensuremath,
       $.parameter_ref,
       $.ignored,
@@ -365,17 +365,6 @@ let g = {
     // catcode_cs: $ => cs($, $._catcode_word),
     //
     // _catcode_word: $ => /(cat|del|kcat|lc|math|sf|uc)code/,
-
-    luacode: $ => cmdOpt($,
-      $.cs_luacode,
-      $._apply_parameter
-    ),
-
-    lua: $ => cmdOpt($,
-      $.cs_lua,
-      optional($._number),
-      $._apply_parameter
-    ),
 
     ensuremath: $ => cmdOpt($,
       $.cs_ensuremath,
