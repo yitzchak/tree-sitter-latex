@@ -10,7 +10,7 @@ quux
 ----------------------
 (document
     (text)
-    (env
+    (comment_env
       (begin
         (cs)
         (group (l) (name) (r))
@@ -31,7 +31,7 @@ quux
 ----------------------
 (document
     (text)
-    (env
+    (verbatim_env
       (begin
         (cs)
         (group (l) (name) (r))
@@ -51,7 +51,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -71,7 +71,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -91,7 +91,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -111,7 +111,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -131,7 +131,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -151,7 +151,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -171,7 +171,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -191,7 +191,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -212,7 +212,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (minted_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -232,7 +232,7 @@ quux
 ----------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -253,7 +253,7 @@ quux
 ----------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -275,7 +275,7 @@ quux
 ----------------------
 (document
     (text)
-    (env
+    (verbatim_env
       (begin
         (cs)
         (group (l) (name) (r))
@@ -334,6 +334,34 @@ inline verbatim using various special character
   (verb (cs) (verb_delim) (verbatim) (verb_delim))
   (verb (cs) (verb_delim) (verbatim) (verb_delim))
   (verb (cs) (verb_delim) (verbatim) (verb_delim)))
+
+===========================
+mint
+===========================
+\mint[foo]{bar}|wibble|
+--------------------------
+(document
+  (mint
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))
+    (verb_delim)
+    (verbatim)
+    (verb_delim)))
+
+===========================
+mintinline
+===========================
+\mintinline[foo]{bar}|wibble|
+--------------------------
+(document
+  (mintinline
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))
+    (verb_delim)
+    (verbatim)
+    (verb_delim)))
 
 ===========================
 alltt environment
@@ -425,7 +453,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))
@@ -446,7 +474,7 @@ quux
 ---------------------------
 (document
   (text)
-  (env
+  (verbatim_env
     (begin
       (cs)
       (group (l) (name) (r))

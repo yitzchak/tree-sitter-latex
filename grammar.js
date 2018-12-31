@@ -104,6 +104,8 @@ module.exports = grammar({
     $.cs_luacode,
     $.cs_make_verb_delim,
     $.cs_MakeShortVerb,
+    $.cs_mint,
+    $.cs_mintinline,
     $.cs_tag,
     $.cs_use_209,
     $.cs_use,
@@ -115,6 +117,7 @@ module.exports = grammar({
     $.env_name_display_math,
     $.env_name_inline_math,
     $.env_name_math,
+    $.env_name_minted,
     $.env_name_text,
     $.env_name_verbatim,
     $.env_name,
@@ -193,13 +196,16 @@ module.exports = grammar({
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
       // Underscore produces an error by default in LaTeX text mode. Some
-      // some package define underscore to produce \tex­tun­der­score. We assume
+      // some packages define underscore to produce \tex­tun­der­score. We assume
       // that this has been done since underscore is never actually subscript
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
-      alias($.comment_env, $.env),
-      alias($.verbatim_env, $.env),
+      $.comment_env,
+      $.verbatim_env,
+      $.minted_env,
+      $.mint,
+      $.mintinline,
       $.verb,
       $.use_209,
       $.use,
@@ -309,6 +315,43 @@ module.exports = grammar({
     ),
 
     verbatim_env_group: $ => group($, alias($.env_name_verbatim, $.name)),
+
+    mint: $ =>  cmd($,
+      $.cs_mint,
+      optional($.brack_group),
+      $.group,
+      $.verb_delim,
+      alias($.verb_body, $.verbatim),
+      alias($.verb_end_delim, $.verb_delim)
+    ),
+
+    mintinline: $ =>  cmd($,
+      $.cs_mintinline,
+      optional($.brack_group),
+      $.group,
+      $.verb_delim,
+      alias($.verb_body, $.verbatim),
+      alias($.verb_end_delim, $.verb_delim)
+    ),
+
+    minted_env: $ => seq(
+      alias($.minted_begin, $.begin),
+      $.verbatim,
+      choice(alias($.minted_end, $.end), $.exit)
+    ),
+
+    minted_begin: $ => begin_cmd($,
+      alias($.minted_env_group, $.group),
+      $.group,
+      optional($.brack_group),
+      $.eol
+    ),
+
+    minted_end: $ => end_cmd($,
+      alias($.minted_env_group, $.group)
+    ),
+
+    minted_env_group: $ => group($, alias($.env_name_minted, $.name)),
 
     text_env: $ => seq(
       alias($.text_begin, $.begin),
