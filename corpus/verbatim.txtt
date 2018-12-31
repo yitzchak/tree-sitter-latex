@@ -332,29 +332,6 @@ $foo$ \(bar\) \emph{quux} ~ % wibble
     (text)
     (end (cs) (group (l) (name) (r)))))
 
-============================
-MakeShortVerb and DeleteShortVerb
-============================
-|foo|
-+foo+
-\MakeShortVerb{\|}
-|bar|
-\MakeShortVerb*{\+}
-+bar+
-\DeleteShortVerb{\|}
-|quux|
-+quux+
-----------------------------
-(document
-  (text)
-  (MakeShortVerb (cs) (group (l) (cs) (r)))
-  (verb (verb_delim) (verbatim) (verb_delim))
-  (MakeShortVerb (cs) (group (l) (cs) (r)))
-  (verb (verb_delim) (verbatim) (verb_delim))
-  (DeleteShortVerb (cs) (group (l) (cs) (r)))
-  (text)
-  (verb (verb_delim) (verbatim) (verb_delim)))
-
 ===============================
 ltxdoc class triggers pipe verb delimiter
 ==============================

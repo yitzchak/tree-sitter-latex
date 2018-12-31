@@ -218,8 +218,6 @@ let g = {
       $.verb,
       $.use_209,
       $.use,
-      $.MakeShortVerb,
-      $.DeleteShortVerb,
       $.tex_display_math,
       $.latex_display_math,
       $.tex_inline_math,
@@ -440,25 +438,6 @@ let g = {
       optional($.brack_group)
     ),
 
-    MakeShortVerb: $ => cmdOpt($,
-      $.cs_MakeShortVerb,
-      optional('*'),
-      choice(
-        alias($.cs_make_verb_delim, $.cs),
-        alias($.make_verb_delim_group, $.group)
-      ),
-      $._cmd_apply
-    ),
-
-    DeleteShortVerb: $ => cmdOpt($,
-      $.cs_DeleteShortVerb,
-      choice(
-        alias($.cs_delete_verb_delim, $.cs),
-        alias($.delete_verb_delim_group, $.group)
-      ),
-      $._cmd_apply
-    ),
-
     def: $ => cmd($,
       $.cs_def,
       $.cs,
@@ -478,11 +457,21 @@ let g = {
 
     apply_group: $ => group($, $._cmd_apply, repeat($._text_mode)),
 
+    _make_verb_delim_parameter: $ => choice(
+      alias($.cs_make_verb_delim, $.cs),
+      alias($.make_verb_delim_group, $.group)
+    ),
+
     make_verb_delim_group: $ => group($,
       choice(
         alias($.cs_make_verb_delim, $.cs),
         repeat($._text_mode)
       )
+    ),
+
+    _delete_verb_delim_parameter: $ => choice(
+      alias($.cs_delete_verb_delim, $.cs),
+      alias($.delete_verb_delim_group, $.group)
     ),
 
     delete_verb_delim_group: $ => group($,
