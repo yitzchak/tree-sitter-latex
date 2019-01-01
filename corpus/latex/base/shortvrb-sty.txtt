@@ -14,9 +14,9 @@ MakeShortVerb and DeleteShortVerb
 (document
   (text)
   (MakeShortVerb (cs) (group (l) (cs) (r)))
-  (verb (verb_delim) (verbatim) (verb_delim))
+  (short_verb (verb_delim) (verbatim) (verb_delim))
   (MakeShortVerb (cs) (group (l) (cs) (r)))
-  (verb (verb_delim) (verbatim) (verb_delim))
+  (short_verb (verb_delim) (verbatim) (verb_delim))
   (DeleteShortVerb (cs) (group (l) (cs) (r)))
   (text)
-  (verb (verb_delim) (verbatim) (verb_delim)))
+  (short_verb (verb_delim) (verbatim) (verb_delim)))

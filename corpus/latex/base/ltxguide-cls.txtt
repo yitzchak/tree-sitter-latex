@@ -8,4 +8,4 @@ ltxguide class triggers pipe verb delimiter
   (use
     (cs)
     (group (l) (name) (r)))
-  (verb (verb_delim) (verbatim) (verb_delim)))
+  (short_verb (verb_delim) (verbatim) (verb_delim)))

@@ -126,6 +126,8 @@ let g = {
     $.env_name_alignat,
     $.env_name_comment,
     $.env_name_display_math,
+    $.env_name_dmath,
+    $.env_name_dseries,
     $.env_name_filecontents,
     $.env_name_inline_math,
     $.env_name_lstlisting,
@@ -185,221 +187,45 @@ let g = {
     ),
 
     _common: $ => choice(
-      ...rules.common.map(name => $[name]),
       $.active_char,
       $.alignment_tab,
-      // $.catcode,
-      seq($.cs, $._cmd_apply),
-      $.def,
-      $.ensuremath,
-      $.parameter_ref,
       $.ignored,
-      $.invalid
-    ),
-
-    verb: $ => choice(
-      cmd($,
-        $.cs_verb,
-        $.verb_delim,
-        alias($.verb_body, $.verbatim),
-        alias($.verb_end_delim, $.verb_delim)
-      ),
-      seq(
-        alias($.short_verb_delim, $.verb_delim),
-        alias($.verb_body, $.verbatim),
-        alias($.verb_end_delim, $.verb_delim)
-      )
+      $.invalid,
+      $.parameter_ref,
+      seq($.cs, $._cmd_apply),
+      ...rules.common.map(name => $[name])
     ),
 
     _text_mode: $ => choice(
       $._common,
-      ...rules.text.map(name => $[name]),
+      $.group,
+      $.semi_simple_group,
       $.text,
-      prec(-1, alias($.lbrack, $.text)),
-      prec(-1, alias($.rbrack, $.text)),
       // Underscore produces an error by default in LaTeX text mode. Some
       // some packages define underscore to produce \tex­tun­der­score. We assume
       // that this has been done since underscore is never actually subscript
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
-      $.verb,
-      $.use_209,
-      $.use,
-      $.tex_display_math,
-      $.latex_display_math,
-      $.tex_inline_math,
-      $.latex_inline_math,
-      alias($.inline_math_env, $.env),
-      $.env,
-      $.group,
-      $.semi_simple_group
+      prec(-1, alias($.lbrack, $.text)),
+      prec(-1, alias($.rbrack, $.text)),
+      ...rules.text.map(name => $[name])
     ),
 
     _math_mode: $ => choice(
       $._common,
-      ...rules.math.map(name => $[name]),
+      $.subscript,
+      $.superscript,
+      alias($.math_group, $.group),
       alias($.text, $.math),
       prec(-1, alias($.lbrack, $.math)),
       prec(-1, alias($.rbrack, $.math)),
-      $.subscript,
-      $.superscript,
-      alias($.math_env, $.env),
-      alias($.text_env, $.env),
-      alias($.math_group, $.group)
+      ...rules.math.map(name => $[name])
     ),
 
     parameter_ref: $ => seq(
       $.parameter_char,
       optional(/[1-9]/)
-    ),
-
-    tex_display_math: $ => seq(
-      $.display_math_shift,
-      repeat($._math_mode),
-      choice(
-        alias($.display_math_shift_end, $.display_math_shift),
-        seq($.math_shift, $.exit),
-        $.exit
-      )
-    ),
-
-    latex_display_math: $ => seq(
-      alias($.cs_display_math_begin, $.cs),
-      repeat($._math_mode),
-      choice(alias($.cs_display_math_end, $.cs), $.exit)
-    ),
-
-    tex_inline_math: $ => seq(
-      $.math_shift,
-      repeat1($._math_mode),
-      choice(alias($.math_shift_end, $.math_shift), $.exit)
-    ),
-
-    latex_inline_math: $ => seq(
-      alias($.cs_inline_math_begin, $.cs),
-      repeat($._math_mode),
-      choice(alias($.cs_inline_math_end, $.cs), $.exit)
-    ),
-
-    text_env: $ => seq(
-      alias($.text_begin, $.begin),
-      $._env_begin,
-      repeat($._text_mode),
-      choice($.exit, alias($.text_end, $.end)),
-      $._env_end
-    ),
-
-    text_begin: $ => beginCmd($,
-      alias($.text_env_group, $.group)
-    ),
-
-    text_end: $ => endCmd($,
-      alias($.text_env_group, $.group)
-    ),
-
-    text_env_group: $ => group($, alias($.env_name_text, $.name)),
-
-    env: $ => seq(
-      $.begin,
-      $._env_begin,
-      repeat($._text_mode),
-      choice($.exit, $.end),
-      $._env_end
-    ),
-
-    begin: $ => beginCmd($,
-      alias($.env_group, $.group)
-    ),
-
-    end: $ => endCmd($,
-      alias($.env_group, $.group)
-    ),
-
-    env_group: $ => group($, alias($.env_name, $.name)),
-
-    math_env: $ => seq(
-      alias($.math_begin, $.begin),
-      $._env_begin,
-      repeat($._math_mode),
-      choice($.exit, alias($.math_end, $.end)),
-      $._env_end
-    ),
-
-    math_begin: $ => beginCmd($,
-      alias($.math_env_group, $.group)
-    ),
-
-    math_end: $ => endCmd($,
-      alias($.math_env_group, $.group)
-    ),
-
-    math_env_group: $ => group($, alias($.env_name_math, $.name)),
-
-    inline_math_env: $ => seq(
-      alias($.inline_math_begin, $.begin),
-      $._env_begin,
-      repeat($._math_mode),
-      // We don't allow exit here since braces are meaningless in verbatim.
-      choice($.exit, alias($.inline_math_end, $.end)),
-      $._env_end
-    ),
-
-    inline_math_begin: $ => beginCmd($,
-      alias($.inline_math_env_group, $.group)
-    ),
-
-    inline_math_end: $ => endCmd($,
-      alias($.inline_math_env_group, $.group)
-    ),
-
-    inline_math_env_group: $ => group($, alias($.env_name_inline_math, $.name)),
-
-    // catcode: $ => prec.right(-1, cmd($,
-    //   $.catcode_cs,
-    //   optional(choice($._number, $.cs, $.parameter_ref)),
-    //   optional('='),
-    //   optional(choice($._number, $.cs, $.parameter_ref))
-    // )),
-    //
-    // catcode_cs: $ => cs($, $._catcode_word),
-    //
-    // _catcode_word: $ => /(cat|del|kcat|lc|math|sf|uc)code/,
-
-    ensuremath: $ => cmdOpt($,
-      $.cs_ensuremath,
-      alias($.math_group, $.group),
-      $._cmd_apply
-    ),
-
-    use_209: $ => cmdOpt($,
-      $.cs_use_209,
-      optional($.brack_group),
-      alias($.name_group, $.group),
-      $._cmd_apply
-    ),
-
-    use: $ => cmdOpt($,
-      $.cs_use,
-      optional($.brack_group),
-      alias($.name_group, $.group),
-      $._cmd_apply,
-      optional($.brack_group)
-    ),
-
-    def: $ => cmd($,
-      $.cs_def,
-      $.cs,
-      repeat(
-        choice(
-          $.parameter_ref,
-          $.text,
-          alias($.lbrack, $.text),
-          alias($.rbrack, $.text),
-          $.text
-        )
-      ),
-      $._no_parameter
     ),
 
     _apply_parameter: $ => choice($.cs, alias($.apply_group, $.group)),
@@ -492,7 +318,13 @@ let g = {
   }
 }
 
-function defCmd ({ label, cs, mode, parameters, local }) {
+function defRule (mode, label, rule) {
+  g.rules[label] = rule
+
+  rules[mode].push(label)
+}
+
+function defCmd (mode, label, { cs, parameters, local }) {
   g.rules[label] = $ => cmdOpt($,
     cs($),
     ...(parameters ? parameters($) : []),
@@ -501,11 +333,11 @@ function defCmd ({ label, cs, mode, parameters, local }) {
   rules[mode].push(label)
 }
 
-function defEnv ({ label, mode, name, beginParameters, endParameters, contents, bare }) {
+function defEnv (mode, label, { name, beginParameters, endParameters, contents, bare }) {
   const envSym = `${label}_env`
-  const nameGroupRuleSym = `_${label}_name_group`
-  const beginRuleSym = `_${label}_begin`
-  const endRuleSym = `_${label}_end`
+  const nameGroupRuleSym = `${label}_name_group`
+  const beginRuleSym = `${label}_begin`
+  const endRuleSym = `${label}_end`
 
   if (name) {
     g.rules[nameGroupRuleSym] = $ => group($,
@@ -545,8 +377,27 @@ for (const filePath of readdir.sync(root, { deep: true, filter: '**/*.js' })) {
   console.log(`  ${path.join(root, filePath)}`)
   const m = require(path.join(__dirname, root, filePath))
 
-  if (m.cmd) m.cmd.forEach(defCmd)
-  if (m.env) m.env.forEach(defEnv)
+  for (const mode in m) {
+    const obj = m[mode]
+
+    if (obj.commands) {
+      for (const label in obj.commands) {
+        defCmd(mode, label, obj.commands[label])
+      }
+    }
+
+    if (obj.environments) {
+      for (const label in obj.environments) {
+        defEnv(mode, label, obj.environments[label])
+      }
+    }
+
+    if (obj.rules) {
+      for (const label in obj.rules) {
+        defRule(mode, label, obj.rules[label])
+      }
+    }
+  }
 }
 
 module.exports = grammar(g)

@@ -6,7 +6,7 @@
   "scripts": {
     "benchmark": "node script/benchmark.js",
     "build": "tree-sitter generate && node-gyp configure",
-    "fix": "clang-format -i src/catcode.hh src/catcode.cc src/scanner.cc src/serialization.hh",
+    "fix": "clang-format -i src/catcode.hh src/catcode.cc src/scanner.cc src/serialization.hh && standard --fix",
     "parse-test": "node script/parse-test.js",
     "parse": "tree-sitter parse",
     "test": "standard --verbose | snazzy && tree-sitter test"

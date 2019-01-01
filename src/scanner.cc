@@ -61,6 +61,8 @@ enum SymbolType {
   env_name_alignat,
   env_name_comment,
   env_name_display_math,
+  env_name_dmath,
+  env_name_dseries,
   env_name_filecontents,
   env_name_inline_math,
   env_name_lstlisting,
@@ -126,8 +128,14 @@ struct Scanner {
       // NUL is technically ignored, but tree sitter seems to use it to indicate
       // EOF.
       // {'\0',   '\0',   IGNORED_CATEGORY},
+      // SOH is subscript in plain.tex but not in latex.ltx
+      // {'\1', '\1', SUBSCRIPT_CATEGORY},
+      // FF is active character for \par in latex.ltx
+      {'\f', '\f', ACTIVE_CHAR_CATEGORY},
       {'\n', '\n', EOL_CATEGORY},
       {'\t', '\t', SPACE_CATEGORY},
+      // VT superscript in plain.tex but not in latex.ltx
+      // {'\v', '\v', SUPERSCRIPT_CATEGORY},
       {'\x7f', '\x7f', INVALID_CATEGORY},
       {'&', '&', ALIGNMENT_TAB_CATEGORY},
       {'#', '#', PARAMETER_CATEGORY},
@@ -355,13 +363,15 @@ struct Scanner {
       {"BVerbatim", {env_name_Verbatim, {}}},
       {"BVerbatim*", {env_name_Verbatim, {}}},
       {"comment", {env_name_comment, {}}},
-      {"darray", {env_name_display_math, {}}},
-      {"darray*", {env_name_display_math, {}}},
-      {"dgroup", {env_name_display_math, {}}},
-      {"dgroup*", {env_name_display_math, {}}},
+      {"darray", {env_name_dmath, {}}},
+      {"darray*", {env_name_dmath, {}}},
+      {"dgroup", {env_name_dmath, {}}},
+      {"dgroup*", {env_name_dmath, {}}},
       {"displaymath", {env_name_display_math, {}}},
-      {"dmath", {env_name_display_math, {}}},
-      {"dmath*", {env_name_display_math, {}}},
+      {"dmath", {env_name_dmath, {}}},
+      {"dmath*", {env_name_dmath, {}}},
+      {"dseries", {env_name_dseries, {}}},
+      {"dseries*", {env_name_dseries, {}}},
       {"eqnarray", {env_name_display_math, {}}},
       {"eqnarray*", {env_name_display_math, {}}},
       {"equation", {env_name_display_math, {}}},
@@ -794,13 +804,16 @@ struct Scanner {
     return true;
   }
 
+  bool valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
+                             SymbolType last) {
+    return any_of(valid_symbols + first, valid_symbols + last + 1,
+                  [](auto valid_symbol) { return valid_symbol; });
+  }
+
   bool scan(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
 
-    if (valid_symbols[env_name] || valid_symbols[env_name_text] ||
-        valid_symbols[env_name_verbatim] ||
-        valid_symbols[env_name_inline_math] ||
-        valid_symbols[env_name_display_math]) {
+    if (valid_symbol_in_range(valid_symbols, env_name_alignat, env_name)) {
       return scan_env_name(lexer);
     }
 
@@ -883,8 +896,7 @@ struct Scanner {
 
     switch (code) {
     case ESCAPE_CATEGORY:
-      if (any_of(valid_symbols + cs_begin, valid_symbols + cs + 1,
-                 [](auto valid_symbol) { return valid_symbol; })) {
+      if (valid_symbol_in_range(valid_symbols, cs_begin, cs)) {
         return scan_cs(lexer, valid_symbols);
       }
       break;
@@ -938,8 +950,7 @@ struct Scanner {
       break;
     case IGNORED_CATEGORY:
       if (valid_symbols[ignored]) {
-        return scan_multi_char_symbol(lexer, ignored,
-                                      IGNORED_CATEGORY);
+        return scan_multi_char_symbol(lexer, ignored, IGNORED_CATEGORY);
       }
       break;
     case SPACE_CATEGORY:

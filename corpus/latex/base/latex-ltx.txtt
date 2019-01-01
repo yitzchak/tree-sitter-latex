@@ -117,3 +117,386 @@ inline verbatim using various special character
   (verb (cs) (verb_delim) (verbatim) (verb_delim))
   (verb (cs) (verb_delim) (verbatim) (verb_delim))
   (verb (cs) (verb_delim) (verbatim) (verb_delim)))
+
+=============
+documentclass
+=============
+\documentclass[foo]{bar}
+----------------
+(document
+  (use
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (name) (r))))
+
+=============
+documentclass with date
+=============
+\documentclass[foo]{bar}[2000/01/01]
+----------------
+(document
+  (use
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (name) (r))
+    (brack_group (lbrack) (text) (rbrack))))
+
+=============
+documentstyle
+=============
+\documentstyle[foo]{bar}
+----------------
+(document
+  (use_209
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (name) (r))))
+
+======================
+usepackage
+======================
+\usepackage[foo]{bar}
+-------------------
+(document
+  (use
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (name) (r))))
+
+=============
+usepackage with date
+=============
+\usepackage[foo]{bar}[2000/01/01]
+----------------
+(document
+  (use
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (name) (r))
+    (brack_group (lbrack) (text) (rbrack))))
+
+=============
+LaTeX inline math
+=============
+foo\(bar\)quux
+-------------
+(document
+  (text)
+  (latex_inline_math
+    (cs)
+    (math)
+    (cs))
+  (text))
+
+=============
+LaTeX inline math with control sequence
+=============
+foo\(bar\wibble\)quux
+-------------
+(document
+  (text)
+  (latex_inline_math
+    (cs)
+    (math)
+    (cs)
+    (cs))
+  (text))
+
+
+=============
+math environment
+=============
+foo
+\begin{math}
+bar
+\end{math}
+quux
+-------------
+(document
+  (text)
+  (inline_math_env
+    (begin (cs) (group (l) (name) (r)))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+==================
+LaTeX display math
+==================
+foo\[bar\]quux
+-------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (math)
+    (cs))
+  (text))
+
+================================
+[makeatletter] @ sign not letter
+================================
+\bar@wibble
+--------------------------------
+(document
+  (cs)
+  (text))
+
+=================================
+[makeatletter] @ sign is letter
+=================================
+\makeatletter\bar@wibble\makeatother
+---------------------------------
+(document
+  (cs)
+  (cs)
+  (cs))
+
+==============================
+[makeatletter] @ sign is letter in text group
+==============================
+\makeatletter{\bar@wibble}\makeatother
+----------------
+(document
+  (cs)
+  (group
+    (l)
+    (cs)
+    (r))
+  (cs))
+
+==============================
+[makeatletter] @ sign is letter in optional text group
+==============================
+\makeatletter\usepackage[foo\bar@wibble]{foo}\makeatother
+----------------
+(document
+  (cs)
+  (use (cs)
+    (brack_group
+      (lbrack)
+      (text)
+      (cs)
+      (rbrack))
+    (group (l) (name) (r)))
+  (cs))
+
+============================
+[makeatletter] @ sign is letter then other
+=============================
+\makeatletter\bar@wibble\makeatother\quux@gronk
+----------------
+(document
+  (cs)
+  (cs)
+  (cs)
+  (cs)
+  (text))
+
+=================================
+[ProvidesClass] @ sign is letter
+=================================
+\ProvidesClass{bar}
+\bar@wibble
+---------------------------------
+(document
+  (cs)
+  (group (l) (text) (r))
+  (cs))
+
+===========================================
+Error Recovery - inline math - unterminated inside group
+===========================================
+{foo\(bar}
+{foo\(bar{quux}wibble}
+-------------------------------------------
+(document
+  (group
+    (l)
+    (text)
+    (latex_inline_math
+      (cs)
+      (math)
+      (exit))
+    (r))
+  (group
+    (l)
+    (text)
+    (latex_inline_math
+      (cs)
+      (math)
+      (group
+        (l)
+        (math)
+        (r))
+      (math)
+      (exit))
+    (r)))
+
+===========================================
+Error Recovery - inline math - unterminated by EOF
+===========================================
+foo\(bar
+-------------------------------------------
+(document
+  (text)
+  (latex_inline_math
+    (cs)
+    (math)
+    (exit)))
+
+===========================================
+Error Recovery - display math - unterminated inside group
+===========================================
+{foo\[bar}
+{foo\[bar{quux}wibble}
+-------------------------------------------
+(document
+  (group
+    (l)
+    (text)
+    (latex_display_math
+      (cs)
+      (math)
+      (exit))
+    (r))
+  (group
+    (l)
+    (text)
+    (latex_display_math
+      (cs)
+      (math)
+      (group
+        (l)
+        (math)
+        (r))
+      (math)
+      (exit))
+    (r)))
+
+===========================================
+Error Recovery - display math - unterminated by EOF
+===========================================
+foo\[bar
+-------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (math)
+    (exit)))
+
+===========================================
+Error Recovery - display math inside newenvironment
+============================================
+\newenvironment{mathluacode}{\[\luacode}{\endluacode\]}
+--------------------------------------------
+(document
+  (newenvironment
+    (cs)
+    (group (l) (name) (name) (r))
+    (group
+      (l) (latex_display_math (cs) (cs) (exit)) (r))
+    (group
+      (l) (cs) (cs) (r))))
+
+===========================================
+Error Recovery - display math inside newenvironment
+============================================
+\newenvironment{mathluacode}{\(\luacode}{\endluacode\)}
+--------------------------------------------
+(document
+  (cs)
+  (group (l) (text) (r))
+  (group
+    (l) (latex_inline_math (cs) (cs) (exit)) (r))
+  (group
+    (l) (cs) (cs) (r)))
+
+==========================================
+Error Recovery - newenvironment based on existing environment (the wrong way)
+======================================
+\newenvironment{foo}{\begin{bar}}{\end{bar}}
+--------------------------------------
+(document
+  (cs)
+  (group (l) (text) (r))
+  (group
+    (l)
+    (text_env
+      (begin (cs) (group (l) (name) (r)))
+      (exit))
+    (r))
+  (group
+    (l)
+    (cs)
+    (group (l) (text) (r)) (r)))
+
+=====================================
+Error Recovery - missing pacakge arguments
+=====================================
+\foo{\usepackage}
+-------------------------------------
+(document (cs) (group (l) (use (cs)) (r)))
+
+=============
+text environment
+=============
+foo
+\begin{wibble}
+bar
+\end{wibble}
+quux
+-------------
+(document
+  (text)
+  (text_env
+    (begin (cs) (group (l) (name) (r)))
+    (text)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=============
+math environment
+=============
+foo
+\[
+\begin{wibble}
+bar
+\end{wibble}
+\]
+quux
+-------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (math_env
+      (begin (cs) (group (l) (name) (r)))
+      (math)
+      (end (cs) (group (l) (name) (r))))
+    (cs))
+  (text))
+
+===============
+ensuremath in text mode
+===============
+\ensuremath{foo}
+--------------
+(document
+  (ensuremath
+    (cs)
+    (group (l) (math) (r))))
+
+===============
+ensuremath in math mode
+===============
+\(\ensuremath{foo}\)
+--------------
+(document
+  (latex_inline_math
+    (cs)
+    (ensuremath
+      (cs)
+      (group (l) (math) (r)))
+    (cs)))

@@ -1,41 +1,3 @@
-=============
-TeX display math
-=============
-foo$$bar$$quux
--------------
-(document
-  (text)
-  (tex_display_math
-    (display_math_shift)
-    (math)
-    (display_math_shift))
-  (text))
-
-============
-TeX empty display math
-=============
-foo$$$$quux
--------------
-(document
-  (text)
-  (tex_display_math
-    (display_math_shift)
-    (display_math_shift))
-  (text))
-
-==================
-LaTeX display math
-==================
-foo\[bar\]quux
--------------
-(document
-  (text)
-  (latex_display_math
-    (cs)
-    (math)
-    (cs))
-  (text))
-
 =========================
 breqn dmath environment
 =========================
@@ -47,8 +9,29 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
-    (begin (cs) (group (l) (name) (r)))
+  (dmath_env
+    (begin (cs) (group (l) (name) (r)) (eol))
+    (math)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+=========================
+breqn dmath environment with optional parameter
+=========================
+foo
+\begin{dmath}[wibble]
+bar
+\end{dmath}
+quux
+-------------
+(document
+  (text)
+  (dmath_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (eol))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -64,8 +47,8 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
-    (begin (cs) (group (l) (name) (r)))
+  (dmath_env
+    (begin (cs) (group (l) (name) (r)) (eol))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -81,8 +64,8 @@ quux
 -------------
 (document
   (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
+  (dseries_env
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -98,8 +81,8 @@ quux
 -------------
 (document
   (text)
-  (env
-    (begin (cs) (group (l) (name) (r)))
+  (dseries_env
+    (begin (cs) (group (l) (name) (r)) (eol))
     (text)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -115,8 +98,8 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
-    (begin (cs) (group (l) (name) (r)))
+  (dmath_env
+    (begin (cs) (group (l) (name) (r)) (eol))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -132,8 +115,8 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
-    (begin (cs) (group (l) (name) (r)))
+  (dmath_env
+    (begin (cs) (group (l) (name) (r)) (eol))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -149,8 +132,8 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
-    (begin (cs) (group (l) (name) (r)))
+  (dmath_env
+    (begin (cs) (group (l) (name) (r)) (eol))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -166,8 +149,8 @@ quux
 -------------
 (document
   (text)
-  (display_math_env
-    (begin (cs) (group (l) (name) (r)))
+  (dmath_env
+    (begin (cs) (group (l) (name) (r)) (eol))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))

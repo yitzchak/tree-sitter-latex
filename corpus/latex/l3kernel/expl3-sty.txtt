@@ -1,63 +1,3 @@
-================================
-[makeatletter] @ sign not letter
-================================
-\bar@wibble
---------------------------------
-(document
-  (cs)
-  (text))
-
-=================================
-[makeatletter] @ sign is letter
-=================================
-\makeatletter\bar@wibble\makeatother
----------------------------------
-(document
-  (cs)
-  (cs)
-  (cs))
-
-==============================
-[makeatletter] @ sign is letter in text group
-==============================
-\makeatletter{\bar@wibble}\makeatother
-----------------
-(document
-  (cs)
-  (group
-    (l)
-    (cs)
-    (r))
-  (cs))
-
-==============================
-[makeatletter] @ sign is letter in optional text group
-==============================
-\makeatletter\usepackage[foo\bar@wibble]{foo}\makeatother
-----------------
-(document
-  (cs)
-  (use (cs)
-    (brack_group
-      (lbrack)
-      (text)
-      (cs)
-      (rbrack))
-    (group (l) (name) (r)))
-  (cs))
-
-============================
-[makeatletter] @ sign is letter then other
-=============================
-\makeatletter\bar@wibble\makeatother\quux@gronk
-----------------
-(document
-  (cs)
-  (cs)
-  (cs)
-  (cs)
-  (text))
-
 =================
 [ExplSyntaxOn] colon/underscore is not letter
 =================
@@ -167,15 +107,4 @@
   (cs)
   (cs)
   (cs)
-  (cs))
-
-=================================
-[ProvidesClass] @ sign is letter
-=================================
-\ProvidesClass{bar}
-\bar@wibble
----------------------------------
-(document
-  (cs)
-  (group (l) (text) (r))
   (cs))

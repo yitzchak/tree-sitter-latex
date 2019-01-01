@@ -9,5 +9,5 @@ l3doc class triggers pipe and double quote verb delimiter
   (use
     (cs)
     (group (l) (name) (r)))
-  (verb (verb_delim) (verbatim) (verb_delim))
-  (verb (verb_delim) (verbatim) (verb_delim)))
+  (short_verb (verb_delim) (verbatim) (verb_delim))
+  (short_verb (verb_delim) (verbatim) (verb_delim)))
