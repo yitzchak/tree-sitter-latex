@@ -75,6 +75,7 @@ function brackGroup ($, contents) {
 let rules = {
   common: [],
   math: [],
+  nil: [],
   text: []
 }
 
@@ -172,28 +173,24 @@ let g = {
   rules: {
     document: $ => repeat($._text_mode),
 
-    _no_mode: $ => choice(
-      $.active_char,
-      $.alignment_tab,
-      $.math_shift,
-      $.parameter_ref,
-      $.subscript,
-      $.superscript,
-      $.text,
-      prec(-1, alias($.lbrack, $.text)),
-      prec(-1, alias($.rbrack, $.text)),
-      seq($.cs, $._cmd_apply),
-      alias($.no_group, $.group)
-    ),
-
     _common: $ => choice(
       $.active_char,
       $.alignment_tab,
       $.ignored,
       $.invalid,
-      $.parameter_ref,
-      seq($.cs, $._cmd_apply),
       ...rules.common.map(name => $[name])
+    ),
+
+    _nil_mode: $ => choice(
+      $._common,
+      $.math_shift,
+      $.subscript,
+      $.superscript,
+      $.text,
+      alias($.nil_group, $.group),
+      prec(-1, alias($.lbrack, $.text)),
+      prec(-1, alias($.rbrack, $.text)),
+      ...rules.nil.map(name => $[name])
     ),
 
     _text_mode: $ => choice(
@@ -223,58 +220,57 @@ let g = {
       ...rules.math.map(name => $[name])
     ),
 
-    parameter_ref: $ => seq(
-      $.parameter_char,
-      optional(/[1-9]/)
-    ),
-
-    _apply_parameter: $ => choice($.cs, alias($.apply_group, $.group)),
-
-    apply_group: $ => group($, $._cmd_apply, repeat($._text_mode)),
-
-    _make_verb_delim_parameter: $ => choice(
-      alias($.cs_make_verb_delim, $.cs),
-      alias($.make_verb_delim_group, $.group)
-    ),
-
-    make_verb_delim_group: $ => group($,
-      choice(
-        alias($.cs_make_verb_delim, $.cs),
-        repeat($._text_mode)
-      )
-    ),
-
-    _delete_verb_delim_parameter: $ => choice(
-      alias($.cs_delete_verb_delim, $.cs),
-      alias($.delete_verb_delim_group, $.group)
-    ),
-
-    delete_verb_delim_group: $ => group($,
-      choice(
-        alias($.cs_delete_verb_delim, $.cs),
-        repeat($._text_mode)
-      )
-    ),
-
     group: $ => group($, repeat($._text_mode)),
 
-    no_group: $ => group($, repeat($._no_mode)),
-
-    semi_simple_group: $ => semiSimpleGroup($, repeat($._text_mode)),
-
-    _no_parameter: $ => choice(alias($.no_group, $.group), $.cs),
-
     _parameter: $ => choice($.group, $.cs),
+
+    math_group: $ => group($, repeat($._math_mode)),
+
+    _math_parameter: $ => choice(alias($.math_group, $.group), $.cs),
+
+    nil_group: $ => group($, repeat($._nil_mode)),
+
+    _nil_parameter: $ => choice(alias($.nil_group, $.group), $.cs),
 
     name_group: $ => group($, $.name),
 
     _name_parameter: $ => choice(alias($.name_group, $.group), $.cs),
 
+    apply_group: $ => group($, $._cmd_apply, repeat($._text_mode)),
+
+    _apply_parameter: $ => choice($.cs, alias($.apply_group, $.group)),
+
+    make_verb_delim_group: $ => group($,
+      choice(
+        cmd($, $.cs_make_verb_delim),
+        repeat($._text_mode)
+      )
+    ),
+
+    _make_verb_delim_parameter: $ => choice(
+      cmd($, $.cs_make_verb_delim),
+      $.cs,
+      alias($.make_verb_delim_group, $.group)
+    ),
+
+    delete_verb_delim_group: $ => group($,
+      choice(
+        cmd($, $.cs_delete_verb_delim),
+        repeat($._text_mode)
+      )
+    ),
+
+    _delete_verb_delim_parameter: $ => choice(
+      cmd($, $.cs_delete_verb_delim),
+      $.cs,
+      alias($.delete_verb_delim_group, $.group)
+    ),
+
     brack_group: $ => brackGroup($, repeat($._text_mode)),
 
-    math_group: $ => group($, repeat($._math_mode)),
-
     math_brack_group: $ => brackGroup($, repeat($._math_mode)),
+
+    semi_simple_group: $ => semiSimpleGroup($, repeat($._text_mode)),
 
     lbrack: $ => '[',
 

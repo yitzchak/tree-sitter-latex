@@ -15,9 +15,16 @@ module.exports = {
               $.text
             )
           ),
-          $._no_parameter
+          $._nil_parameter
         ]
       }
+    },
+    rules: {
+      _cmd: $ => seq($.cs, $._cmd_apply),
+      parameter_ref: $ => seq(
+        $.parameter_char,
+        optional(/[1-9]/)
+      )
     }
   },
   text: {
