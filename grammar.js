@@ -364,7 +364,7 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
   g.rules[envSym] = $ => seq(
     alias($[beginRuleSym], $.begin),
     ...(bare ? [] : [$._env_begin]),
-    ...(contents ? contents($) : [repeat(mode === 'text' ? $._text_mode : $._math_mode)]),
+    ...(contents ? contents($) : [repeat(mode === 'math' ? $._math_mode : $._text_mode)]),
     choice(
       alias($[endRuleSym], $.end),
       $.exit
