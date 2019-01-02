@@ -406,12 +406,11 @@ Error Recovery - display math inside newenvironment
 \newenvironment{mathluacode}{\(\luacode}{\endluacode\)}
 --------------------------------------------
 (document
-  (cs)
-  (group (l) (text) (r))
-  (group
-    (l) (latex_inline_math (cs) (cs) (exit)) (r))
-  (group
-    (l) (cs) (cs) (r)))
+  (newenvironment
+    (cs)
+    (group (l) (name) (r))
+    (group (l) (cs) (cs) (r))
+    (group (l) (cs) (cs) (r))))
 
 ==========================================
 Error Recovery - newenvironment based on existing environment (the wrong way)
@@ -419,18 +418,11 @@ Error Recovery - newenvironment based on existing environment (the wrong way)
 \newenvironment{foo}{\begin{bar}}{\end{bar}}
 --------------------------------------
 (document
-  (cs)
-  (group (l) (text) (r))
-  (group
-    (l)
-    (text_env
-      (begin (cs) (group (l) (name) (r)))
-      (exit))
-    (r))
-  (group
-    (l)
+  (newenvironment
     (cs)
-    (group (l) (text) (r)) (r)))
+    (group (l) (name) (r))
+    (group (l) (cs) (group (l) (text) (r)) (r))
+    (group (l) (cs) (group (l) (text) (r)) (r))))
 
 =====================================
 Error Recovery - missing pacakge arguments
@@ -500,3 +492,39 @@ ensuremath in math mode
       (cs)
       (group (l) (math) (r)))
     (cs)))
+
+=====================
+newcommand
+=====================
+\newcommand\foo{$\bar}
+--------------------
+(document
+  (newcommand
+    (cs)
+    (cs)
+    (group (l) (math_shift) (cs) (r))))
+
+=====================
+newcommand with parameter count
+=====================
+\newcommand\foo[2]{$\bar}
+--------------------
+(document
+  (newcommand
+    (cs)
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (math_shift) (cs) (r))))
+
+=====================
+newcommand with parameter count and default value
+=====================
+\newcommand\foo[2][wibble]{$\bar}
+--------------------
+(document
+  (newcommand
+    (cs)
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (math_shift) (cs) (r))))

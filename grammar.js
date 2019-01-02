@@ -117,6 +117,8 @@ let g = {
     $.cs_MakeShortVerb,
     $.cs_mint,
     $.cs_mintinline,
+    $.cs_newcommand,
+    $.cs_newenvironment,
     $.cs_tag,
     $.cs_use_209,
     $.cs_use,
@@ -173,16 +175,12 @@ let g = {
   rules: {
     document: $ => repeat($._text_mode),
 
-    _common: $ => choice(
+    _nil_mode: $ => choice(
       $.active_char,
       $.alignment_tab,
+      $.cs,
       $.ignored,
       $.invalid,
-      ...rules.common.map(name => $[name])
-    ),
-
-    _nil_mode: $ => choice(
-      $._common,
       $.math_shift,
       $.subscript,
       $.superscript,
@@ -191,6 +189,14 @@ let g = {
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
       ...rules.nil.map(name => $[name])
+    ),
+
+    _common: $ => choice(
+      $.active_char,
+      $.alignment_tab,
+      $.ignored,
+      $.invalid,
+      ...rules.common.map(name => $[name])
     ),
 
     _text_mode: $ => choice(
@@ -265,6 +271,10 @@ let g = {
       $.cs,
       alias($.delete_verb_delim_group, $.group)
     ),
+
+    _cs_parameter: $ => choice($.cs, alias($.cs_group, $.group)),
+
+    cs_group: $ => group($, $.cs),
 
     brack_group: $ => brackGroup($, repeat($._text_mode)),
 

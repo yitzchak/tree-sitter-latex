@@ -5,6 +5,26 @@ module.exports = {
         cs: $ => $.cs_ensuremath,
         parameters: $ => [alias($.math_group, $.group)]
       },
+      newcommand: {
+        cs: $ => $.cs_newcommand,
+        parameters: $ => [
+          $._cs_parameter,
+          optional('*'),
+          optional($.brack_group),
+          optional($.brack_group),
+          $._nil_parameter
+        ]
+      },
+      newenvironment: {
+        cs: $ => $.cs_newenvironment,
+        parameters: $ => [
+          alias($.name_group, $.group),
+          optional($.brack_group),
+          optional($.brack_group),
+          $._nil_parameter,
+          $._nil_parameter
+        ]
+      },
       verb: {
         cs: $ => $.cs_verb,
         local: true,
