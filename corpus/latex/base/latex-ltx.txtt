@@ -528,3 +528,95 @@ newcommand with parameter count and default value
     (brack_group (lbrack) (text) (rbrack))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (math_shift) (cs) (r))))
+
+=============================
+tabular environment
+==============================
+foo
+\begin{tabular}{l|c|r}
+bar
+\end{tabular}
+wibble
+-----------------------------
+(document
+  (text)
+  (tabular_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+=============================
+tabular environment with position
+==============================
+foo
+\begin{tabular}[t]{l|c|r}
+bar
+\end{tabular}
+wibble
+-----------------------------
+(document
+  (text)
+  (tabular_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+=============================
+tabular* environment
+==============================
+foo
+\begin{tabular*}{10pc}{l|c|r}
+bar
+\end{tabular*}
+wibble
+-----------------------------
+(document
+  (text)
+  (tabularstar_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+=============================
+tabular* environment with position
+==============================
+foo
+\begin{tabular*}{10pc}[t]{l|c|r}
+bar
+\end{tabular*}
+wibble
+-----------------------------
+(document
+  (text)
+  (tabularstar_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))

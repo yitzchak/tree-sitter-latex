@@ -34,6 +34,25 @@ module.exports = {
           alias($.verb_end_delim, $.verb_delim)
         ]
       }
+    },
+    environments: {
+      tabular: {
+        name: $ => $.env_name_tabular,
+        beginParameters: $ => [
+          optional($.brack_group),
+          $._parameter
+        ],
+        contents: $ => [repeat($._text_mode)]
+      },
+      tabularstar: {
+        name: $ => $.env_name_tabularstar,
+        beginParameters: $ => [
+          $._parameter,
+          optional($.brack_group),
+          $._parameter
+        ],
+        contents: $ => [repeat($._text_mode)]
+      }
     }
   },
   math: {

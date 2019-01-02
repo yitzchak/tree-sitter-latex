@@ -3,13 +3,13 @@ const path = require('path')
 
 const DECIMAL_DIGIT = choice('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
 const ONE_MORE_DECIMAL_DIGITS = prec.right(2, repeat1(DECIMAL_DIGIT))
-// const ZERO_MORE_DECIMAL_DIGITS = prec.right(2, repeat(DECIMAL_DIGIT))
-// const SIGN = choice('+', '-')
-// const FIXED_PATTERN = choice(
-//   SIGN,
-//   seq(optional(SIGN), ONE_MORE_DECIMAL_DIGITS, optional(seq('.', ZERO_MORE_DECIMAL_DIGITS))),
-//   seq(optional(SIGN), '.', ONE_MORE_DECIMAL_DIGITS)
-// )
+const ZERO_MORE_DECIMAL_DIGITS = prec.right(2, repeat(DECIMAL_DIGIT))
+const SIGN = choice('+', '-')
+const FIXED_PATTERN = choice(
+  SIGN,
+  seq(optional(SIGN), ONE_MORE_DECIMAL_DIGITS, optional(seq('.', ZERO_MORE_DECIMAL_DIGITS))),
+  seq(optional(SIGN), '.', ONE_MORE_DECIMAL_DIGITS)
+)
 
 function cmd ($, cs, ...args) {
   cs = alias(cs, $.cs)
@@ -138,6 +138,9 @@ let g = {
     $.env_name_luacodestar,
     $.env_name_math,
     $.env_name_minted,
+    $.env_name_tabu,
+    $.env_name_tabular,
+    $.env_name_tabularstar,
     $.env_name_text,
     $.env_name_verbatim,
     $.env_name_Verbatim,
@@ -188,7 +191,7 @@ let g = {
       alias($.nil_group, $.group),
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
-      ...rules.nil.map(name => $[name])
+      ...rules.nil.map(rule => rule($))
     ),
 
     _common: $ => choice(
@@ -196,7 +199,7 @@ let g = {
       $.alignment_tab,
       $.ignored,
       $.invalid,
-      ...rules.common.map(name => $[name])
+      ...rules.common.map(rule => rule($))
     ),
 
     _text_mode: $ => choice(
@@ -212,7 +215,7 @@ let g = {
       alias($.superscript, $.text),
       prec(-1, alias($.lbrack, $.text)),
       prec(-1, alias($.rbrack, $.text)),
-      ...rules.text.map(name => $[name])
+      ...rules.text.map(rule => rule($))
     ),
 
     _math_mode: $ => choice(
@@ -223,7 +226,7 @@ let g = {
       alias($.text, $.math),
       prec(-1, alias($.lbrack, $.math)),
       prec(-1, alias($.rbrack, $.math)),
-      ...rules.math.map(name => $[name])
+      ...rules.math.map(rule => rule($))
     ),
 
     group: $ => group($, repeat($._text_mode)),
@@ -296,15 +299,20 @@ let g = {
 
     egroup: $ => cmd($, $.cs_egroup),
 
-    // dimension: $ => token(
-    //     seq(
-    //       FIXED_PATTERN,
-    //       // fi introduced by LuaTeX
-    //       /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/
-    //   )
-    // ),
+    dimension: () => token(
+      seq(
+        FIXED_PATTERN,
+        // fi introduced by LuaTeX
+        /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/
+      )
+    ),
 
-    // fixed: $ => FIXED_PATTERN,
+    fixed: () => FIXED_PATTERN,
+
+    _dimension: $ => choice(
+      $.dimension,
+      prec.right(-1, seq(optional($.fixed), $.cs))
+    ),
 
     _number: $ => choice(
       $.decimal,
@@ -314,11 +322,11 @@ let g = {
       // $.catcode_ref
     ),
 
-    decimal: $ => token(ONE_MORE_DECIMAL_DIGITS),
+    decimal: () => token(ONE_MORE_DECIMAL_DIGITS),
 
-    octal: $ => /'[0-7]+/,
+    octal: () => /'[0-7]+/,
 
-    hexadecimal: $ => /"[0-9a-fA-F]+/,
+    hexadecimal: () => /"[0-9a-fA-F]+/,
 
     charcode: $ => seq('`', choice(/./, $.cs))
   }
@@ -327,7 +335,7 @@ let g = {
 function defRule (mode, label, rule) {
   g.rules[label] = rule
 
-  rules[mode].push(label)
+  rules[mode].push($ => $[label])
 }
 
 function defCmd (mode, label, { cs, parameters, local }) {
@@ -336,11 +344,13 @@ function defCmd (mode, label, { cs, parameters, local }) {
     ...(parameters ? parameters($) : []),
     ...(local ? [] : [$._cmd_apply]))
 
-  rules[mode].push(label)
+  rules[mode].push($ => $[label])
 }
 
 function defEnv (mode, label, { name, beginParameters, endParameters, contents, bare }) {
   const envSym = `${label}_env`
+  const envMathSym = `${label}_math_env`
+  const envTextSym = `${label}_text_env`
   const nameGroupRuleSym = `${label}_name_group`
   const beginRuleSym = `${label}_begin`
   const endRuleSym = `${label}_end`
@@ -361,18 +371,45 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
     ...(endParameters ? endParameters($) : [])
   )
 
-  g.rules[envSym] = $ => seq(
-    alias($[beginRuleSym], $.begin),
-    ...(bare ? [] : [$._env_begin]),
-    ...(contents ? contents($) : [repeat(mode === 'math' ? $._math_mode : $._text_mode)]),
-    choice(
-      alias($[endRuleSym], $.end),
-      $.exit
-    ),
-    ...(bare ? [] : [$._env_end])
-  )
+  if (mode === 'common' && !contents) {
+    g.rules[envMathSym] = $ => seq(
+      alias($[beginRuleSym], $.begin),
+      ...(bare ? [] : [$._env_begin]),
+      repeat($._math_mode),
+      choice(
+        alias($[endRuleSym], $.end),
+        $.exit
+      ),
+      ...(bare ? [] : [$._env_end])
+    )
 
-  rules[mode].push(envSym)
+    g.rules[envTextSym] = $ => seq(
+      alias($[beginRuleSym], $.begin),
+      ...(bare ? [] : [$._env_begin]),
+      repeat($._text_mode),
+      choice(
+        alias($[endRuleSym], $.end),
+        $.exit
+      ),
+      ...(bare ? [] : [$._env_end])
+    )
+
+    rules.math.push($ => alias($[envMathSym], $[envSym]))
+    rules.text.push($ => alias($[envTextSym], $[envSym]))
+  } else {
+    g.rules[envSym] = $ => seq(
+      alias($[beginRuleSym], $.begin),
+      ...(bare ? [] : [$._env_begin]),
+      ...(contents ? contents($) : [repeat(mode === 'math' ? $._math_mode : $._text_mode)]),
+      choice(
+        alias($[endRuleSym], $.end),
+        $.exit
+      ),
+      ...(bare ? [] : [$._env_end])
+    )
+
+    rules[mode].push($ => $[envSym])
+  }
 }
 
 const root = 'grammar'

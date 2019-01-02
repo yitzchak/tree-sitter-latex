@@ -1,0 +1,44 @@
+=============================
+longtable environment
+==============================
+foo
+\begin{longtable}{l|c|r}
+bar
+\end{longtable}
+wibble
+-----------------------------
+(document
+  (text)
+  (tabular_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+=============================
+longtable environment with position
+==============================
+foo
+\begin{longtable}[t]{l|c|r}
+bar
+\end{longtable}
+wibble
+-----------------------------
+(document
+  (text)
+  (tabular_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
