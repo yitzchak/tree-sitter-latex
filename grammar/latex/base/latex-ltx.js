@@ -77,14 +77,30 @@ module.exports = {
   },
   math: {
     environments: {
+      array: {
+        name: $ => $.env_name_array,
+        beginParameters: $ => [
+          optional($.brack_group),
+          $._parameter
+        ]
+      },
       math: {
-        name: $ => $.env_name,
-        contents: $ => [repeat($._math_mode)]
+        name: $ => $.env_name
       }
     }
   },
   text: {
     commands: {
+      // section is actually in the class file, but it's here in the core for
+      // simplicity.
+      section: {
+        cs: $ => $.cs_section,
+        parameters: $ => [
+          optional('*'),
+          optional($.brack_group),
+          $._parameter
+        ]
+      },
       use_209: {
         cs: $ => $.cs_use_209,
         parameters: $ => [
@@ -113,8 +129,7 @@ module.exports = {
         contents: $ => [repeat($._math_mode)]
       },
       text: {
-        name: $ => $.env_name,
-        contents: $ => [repeat($._text_mode)]
+        name: $ => $.env_name
       }
     },
     rules: {

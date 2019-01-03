@@ -31,10 +31,18 @@ module.exports = {
       hyperref: {
         cs: $ => $.cs_hyperref,
         parameters: $ => [
-          $._parameter,
-          $._parameter,
-          $._parameter,
-          $._parameter
+          choice(
+            seq(
+              $._parameter,
+              $._parameter,
+              $._parameter,
+              $._parameter
+            ),
+            seq(
+              $.brack_group,
+              $._parameter
+            )
+          )
         ]
       }
     }

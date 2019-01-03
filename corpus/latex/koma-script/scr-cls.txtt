@@ -1,156 +1,125 @@
 ================================================================================
-breqn dmath environment
+addchap
 ================================================================================
-foo
-\begin{dmath}
-bar
-\end{dmath}
-quux
+\addchap{foo}
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
+  (section
+    (cs)
+    (group (l) (text) (r))))
 
 ================================================================================
-breqn dmath environment with optional parameter
+addchap with optional parameter
 ================================================================================
-foo
-\begin{dmath}[wibble]
-bar
-\end{dmath}
-quux
+\addchap[bar]{foo}
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (dmath_env
-    (begin
-      (cs)
-      (group (l) (name) (r))
-      (brack_group (lbrack) (text) (rbrack))
-      (eol))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
+  (section
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))))
 
 ================================================================================
-breqn dmath* environment
+addchap*
 ================================================================================
-foo
-\begin{dmath*}
-bar
-\end{dmath*}
-quux
+\addchap*{foo}
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
+  (section
+    (cs)
+    (group (l) (text) (r))))
 
 ================================================================================
-breqn dseries environment
+addchap* with optional parameter
 ================================================================================
-foo
-\begin{dseries}
-bar
-\end{dseries}
-quux
+\addchap*[bar]{foo}
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (dseries_env
-    (begin (cs) (group (l) (name) (r)) (eol))
-    (text)
-    (end (cs) (group (l) (name) (r))))
-  (text))
+  (section
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))))
 
 ================================================================================
-breqn dseries* environment
+addpart
 ================================================================================
-foo
-\begin{dseries*}
-bar
-\end{dseries*}
-quux
+\addpart{foo}
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (dseries_env
-    (begin (cs) (group (l) (name) (r)) (eol))
-    (text)
-    (end (cs) (group (l) (name) (r))))
-  (text))
+  (section
+    (cs)
+    (group (l) (text) (r))))
 
 ================================================================================
-breqn dgroup environment
+addpart with optional parameter
 ================================================================================
-foo
-\begin{dgroup}
-bar
-\end{dgroup}
-quux
+\addpart[bar]{foo}
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
+  (section
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))))
 
 ================================================================================
-breqn dgroup* environment
+addpart*
 ================================================================================
-foo
-\begin{dgroup*}
-bar
-\end{dgroup*}
-quux
+\addpart*{foo}
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
+  (section
+    (cs)
+    (group (l) (text) (r))))
 
 ================================================================================
-breqn darray environment
+addpart* with optional parameter
 ================================================================================
-foo
-\begin{darray}
-bar
-\end{darray}
-quux
+\addpart*[bar]{foo}
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
+  (section
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))))
 
 ================================================================================
-breqn darray* environment
+addsec
 ================================================================================
-foo
-\begin{darray*}
-bar
-\end{darray*}
-quux
+\addsec{foo}
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
-    (math)
-    (end (cs) (group (l) (name) (r))))
-  (text))
+  (section
+    (cs)
+    (group (l) (text) (r))))
+
+================================================================================
+addsec with optional parameter
+================================================================================
+\addsec[bar]{foo}
+--------------------------------------------------------------------------------
+(document
+  (section
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))))
+
+================================================================================
+addsec*
+================================================================================
+\addsec*{foo}
+--------------------------------------------------------------------------------
+(document
+  (section
+    (cs)
+    (group (l) (text) (r))))
+
+================================================================================
+addsec* with optional parameter
+================================================================================
+\addsec*[bar]{foo}
+--------------------------------------------------------------------------------
+(document
+  (section
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))))
