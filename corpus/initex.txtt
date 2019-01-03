@@ -492,4 +492,14 @@ mathcode
 ======================
 \mathcode`\+="202B
 -------------------
-(document (code (cs) (charcode (cs)) (hexadecimal))) 
+(document (code (cs) (charcode (cs)) (hexadecimal)))
+
+======================
+input
+======================
+\input{foo}
+-----------------------
+(document
+  (input
+    (cs)
+    (group (l) (text) (r))))

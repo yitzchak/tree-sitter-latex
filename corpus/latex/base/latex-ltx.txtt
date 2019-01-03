@@ -650,3 +650,13 @@ ref
   (ref
     (cs)
     (group (l) (text) (r))))
+
+======================
+include
+======================
+\include{foo}
+-----------------------
+(document
+  (input
+    (cs)
+    (group (l) (text) (r))))

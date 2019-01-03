@@ -116,6 +116,7 @@ let g = {
     $.cs_hyperref,
     $.cs_inline_math_begin,
     $.cs_inline_math_end,
+    $.cs_input,
     $.cs_label,
     $.cs_lstinline,
     $.cs_lua,

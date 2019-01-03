@@ -25,6 +25,10 @@ module.exports = {
           ),
           $._nil_parameter
         ]
+      },
+      input: {
+        cs: $ => $.cs_input,
+        parameters: $ => [$._parameter]
       }
     },
     rules: {
