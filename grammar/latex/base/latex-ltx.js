@@ -5,11 +5,20 @@ module.exports = {
         cs: $ => $.cs_ensuremath,
         parameters: $ => [alias($.math_group, $.group)]
       },
+      label: {
+        cs: $ => $.cs_label,
+        parameters: $ => [
+          // Base LaTeX doesn't actually allow an optional arguments, but
+          // cleveref does. It's just easier to join the two definitions.
+          optional($.brack_group),
+          $._parameter
+        ]
+      },
       newcommand: {
         cs: $ => $.cs_newcommand,
         parameters: $ => [
-          $._cs_parameter,
           optional('*'),
+          $._cs_parameter,
           optional($.brack_group),
           optional($.brack_group),
           $._nil_parameter
@@ -18,11 +27,22 @@ module.exports = {
       newenvironment: {
         cs: $ => $.cs_newenvironment,
         parameters: $ => [
+          optional('*'),
           alias($.name_group, $.group),
           optional($.brack_group),
           optional($.brack_group),
           $._nil_parameter,
           $._nil_parameter
+        ]
+      },
+      ref: {
+        cs: $ => $.cs_ref,
+        parameters: $ => [
+          // Base LaTeX doesn't actually allow a starred version, but hyperref
+          // adds \ref* and \pageref*. This combined with the starred versions
+          // of varioref makes just simpler to define one command.
+          optional('*'),
+          $._parameter
         ]
       },
       verb: {

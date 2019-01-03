@@ -620,3 +620,33 @@ wibble
       (cs)
       (group (l) (name) (r))))
   (text))
+
+======================
+label
+======================
+\label{eq:foo}
+----------------------
+(document
+  (label
+    (cs)
+    (group (l) (text) (r))))
+
+======================
+pageref
+======================
+\pageref{eq:foo}
+----------------------
+(document
+  (ref
+    (cs)
+    (group (l) (text) (r))))
+
+======================
+ref
+======================
+\ref{eq:foo}
+----------------------
+(document
+  (ref
+    (cs)
+    (group (l) (text) (r))))

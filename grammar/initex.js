@@ -1,6 +1,14 @@
 module.exports = {
   common: {
     commands: {
+      code: {
+        cs: $ => $.cs_code,
+        parameters: $ => [
+          $._number_parameter,
+          optional('='),
+          $._number_parameter
+        ]
+      },
       def: {
         local: true,
         cs: $ => $.cs_def,

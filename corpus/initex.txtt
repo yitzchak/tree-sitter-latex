@@ -420,3 +420,76 @@ bar
 \end{verbatimfoo}
 --------------------------------------
 (document (text_env (begin (cs) (group (l) (name) (r))) (text) (end (cs) (group (l) (name) (r)))))
+
+========================
+catcode with decimal number
+=======================
+\catcode70=3
+----------------------
+(document
+  (code
+    (cs)
+    (decimal)
+    (decimal)))
+
+========================
+catcode with octal number
+=======================
+\catcode'10=3
+----------------------
+(document
+  (code
+    (cs)
+    (octal)
+    (decimal)))
+
+========================
+catcode with hexadecimal number
+=======================
+\catcode"A0=3
+----------------------
+(document
+  (code
+    (cs)
+    (hexadecimal)
+    (decimal)))
+
+========================
+catcode with char code by letter
+=======================
+\catcode`A=3
+----------------------
+(document
+  (code
+    (cs)
+    (charcode)
+    (decimal)))
+
+========================
+catcode with char code by escaped character
+=======================
+\catcode`\\=3
+----------------------
+(document
+  (code
+    (cs)
+    (charcode (cs))
+    (decimal)))
+
+========================
+catcode with control sequence
+=======================
+\catcode`@=\active
+----------------------
+(document
+  (code
+    (cs)
+    (charcode)
+    (cs)))
+
+=======================
+mathcode
+======================
+\mathcode`\+="202B
+-------------------
+(document (code (cs) (charcode (cs)) (hexadecimal))) 

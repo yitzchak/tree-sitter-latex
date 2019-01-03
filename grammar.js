@@ -99,6 +99,7 @@ let g = {
     $.cs_begin,
     $.cs_begingroup,
     $.cs_bgroup,
+    $.cs_code,
     $.cs_def,
     $.cs_delete_verb_delim,
     $.cs_DeleteShortVerb,
@@ -108,8 +109,14 @@ let g = {
     $.cs_end,
     $.cs_endgroup,
     $.cs_ensuremath,
+    $.cs_fref,
+    $.cs_href,
+    $.cs_hyperbaseurl,
+    $.cs_hyperimage,
+    $.cs_hyperref,
     $.cs_inline_math_begin,
     $.cs_inline_math_end,
+    $.cs_label,
     $.cs_lstinline,
     $.cs_lua,
     $.cs_luacode,
@@ -119,7 +126,10 @@ let g = {
     $.cs_mintinline,
     $.cs_newcommand,
     $.cs_newenvironment,
+    $.cs_ref,
+    $.cs_refrange,
     $.cs_tag,
+    $.cs_url,
     $.cs_use_209,
     $.cs_use,
     $.cs_verb,
@@ -317,9 +327,17 @@ let g = {
     _number: $ => choice(
       $.decimal,
       $.octal,
-      $.hexadecimal
-      // $.charcode,
+      $.hexadecimal,
+      $.charcode
+      // $.parameter_ref,
+      // $.cs
       // $.catcode_ref
+    ),
+
+    _number_parameter: $ => choice(
+      $._number,
+      $.parameter_ref,
+      $.cs
     ),
 
     decimal: () => token(ONE_MORE_DECIMAL_DIGITS),

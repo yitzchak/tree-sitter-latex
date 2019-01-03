@@ -238,3 +238,13 @@ quux
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
+
+======================
+eqref
+======================
+\eqref{eq:foo}
+----------------------
+(document
+  (ref
+    (cs)
+    (group (l) (text) (r))))
