@@ -91,6 +91,10 @@ module.exports = {
   },
   text: {
     commands: {
+      item: {
+        cs: $ => $.cs_item,
+        parameters: $ => [optional($.brack_group)]
+      },
       // section is actually in the class file, but it's here in the core for
       // simplicity.
       section: {
@@ -123,6 +127,10 @@ module.exports = {
       display_math: {
         name: $ => $.env_name_display_math,
         contents: $ => [repeat($._math_mode)]
+      },
+      figure: {
+        name: $ => $.env_name_figure,
+        beginParameters: $ => [optional($.brack_group)]
       },
       inline_math: {
         name: $ => $.env_name_inline_math,
