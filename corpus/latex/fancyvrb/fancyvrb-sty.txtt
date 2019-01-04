@@ -135,7 +135,7 @@ DefineShortVerb and UndefineShortVerb
   (text)
   (MakeShortVerb (cs) (group (l) (cs) (r)))
   (short_verb (verb_delim) (verbatim) (verb_delim))
-  (MakeShortVerb (cs) (group (l) (cs) (r)))
+  (MakeShortVerb (cs) (star) (group (l) (cs) (r)))
   (short_verb (verb_delim) (verbatim) (verb_delim))
   (DeleteShortVerb (cs) (group (l) (cs) (r)))
   (text)

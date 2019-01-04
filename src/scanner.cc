@@ -26,6 +26,7 @@ enum SymbolType {
   _space,
   active_char,
   alignment_tab,
+  backtick,
   comment_arara,
   comment_bib,
   comment_tag,
@@ -54,6 +55,7 @@ enum SymbolType {
   cs_input,
   cs_item,
   cs_label,
+  cs_let,
   cs_lstinline,
   cs_lua,
   cs_luacode,
@@ -72,6 +74,7 @@ enum SymbolType {
   cs_use,
   cs_verb,
   cs,
+  decimal,
   display_math_shift_end,
   display_math_shift,
   env_name_alignat,
@@ -96,19 +99,31 @@ enum SymbolType {
   env_name_Verbatim,
   env_name,
   eol,
+  equals,
   exit,
+  fixed,
+  hexadecimal,
   ignored_line,
   ignored,
   invalid,
   l,
+  lbrack,
   math_shift_end,
   math_shift,
   name,
-  parameter_char,
+  octal,
+  parameter_ref,
   r,
+  rbrack,
   short_verb_delim,
+  spread,
+  star,
   subscript,
   superscript,
+  text_single,
+  text,
+  to,
+  unit,
   verb_body,
   verb_delim_no_lbrack,
   verb_delim,
@@ -289,6 +304,7 @@ struct Scanner {
       {"lccode", {cs_code}},
       {"lcnamecref", {cs_ref}},
       {"lcnamecrefs", {cs_ref}},
+      {"let", {cs_let}},
       {"LoadClass", {cs_use}},
       {"LoadClassWithOptions", {cs_use}},
       {"lstinline", {cs_lstinline}},
@@ -513,6 +529,14 @@ struct Scanner {
       {"Verbatim", {env_name_Verbatim}},
       {"verbatim*", {env_name_verbatim}},
       {"Verbatim*", {env_name_Verbatim}},
+  };
+
+  unordered_map<string, SymbolType> keywords = {
+      {"to", to},    {"bp", unit},   {"cc", unit},    {"cm", unit},
+      {"dd", unit},  {"em", unit},   {"ex", unit},    {"fi", unit},
+      {"fil", unit}, {"fill", unit}, {"filll", unit}, {"in", unit},
+      {"mm", unit},  {"mu", unit},   {"nc", unit},    {"nd", unit},
+      {"pc", unit},  {"pt", unit},   {"sp", unit},    {"spread", spread},
   };
 
   Scanner() {}
@@ -799,7 +823,7 @@ struct Scanner {
     return true;
   }
 
-  bool scan_space(TSLexer *lexer) {
+  bool scan_space(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
     bool eol = false;
 
@@ -808,7 +832,7 @@ struct Scanner {
         // If we are ready have an EOL then do not scan as space since this is
         // a paragraph break.
         if (eol) {
-          return false;
+          return valid_symbols[text] ? scan_text(lexer, valid_symbols) : false;
         }
         eol = true;
       }
@@ -825,6 +849,9 @@ struct Scanner {
   }
 
   bool scan_env_name(TSLexer *lexer) {
+    if (!lexer->lookahead)
+      return false;
+
     e_name.clear();
 
     while (lexer->lookahead &&
@@ -914,39 +941,187 @@ struct Scanner {
                   [](auto valid_symbol) { return valid_symbol; });
   }
 
+  bool scan_octal(TSLexer *lexer) {
+    lexer->advance(lexer, false);
+
+    while (lexer->lookahead >= '0' && lexer->lookahead <= '7') {
+      lexer->advance(lexer, false);
+    }
+
+    lexer->result_symbol = octal;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_decimal(TSLexer *lexer) {
+    while (lexer->lookahead >= '0' && lexer->lookahead <= '9') {
+      lexer->advance(lexer, false);
+    }
+
+    lexer->result_symbol = decimal;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_parameter_ref(TSLexer *lexer) {
+    do {
+      lexer->advance(lexer, false);
+    } while (lexer->lookahead &&
+             catcode_table[lexer->lookahead] == PARAMETER_CATEGORY);
+
+    if (lexer->lookahead >= '1' && lexer->lookahead <= '9') {
+      lexer->advance(lexer, false);
+    }
+
+    lexer->result_symbol = parameter_ref;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_hexadecimal(TSLexer *lexer) {
+    lexer->advance(lexer, false);
+
+    while ((lexer->lookahead >= '0' && lexer->lookahead <= '9') ||
+           (lexer->lookahead >= 'a' && lexer->lookahead <= 'f') ||
+           (lexer->lookahead >= 'A' && lexer->lookahead <= 'F')) {
+      lexer->advance(lexer, false);
+    }
+
+    lexer->result_symbol = hexadecimal;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_fixed(TSLexer *lexer) {
+    if (lexer->lookahead == '+' || lexer->lookahead == '-') {
+      lexer->advance(lexer, false);
+    }
+
+    while (lexer->lookahead >= '0' && lexer->lookahead <= '9') {
+      lexer->advance(lexer, false);
+    }
+
+    if (lexer->lookahead == '.') {
+      lexer->advance(lexer, false);
+    }
+
+    while (lexer->lookahead >= '0' && lexer->lookahead <= '9') {
+      lexer->advance(lexer, false);
+    }
+
+    lexer->result_symbol = fixed;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_text(TSLexer *lexer, const bool *valid_symbols) {
+    if (valid_symbols[text_single]) {
+      return scan_single_char_symbol(lexer, text_single);
+    }
+
+    switch (lexer->lookahead) {
+    case '*':
+      if (valid_symbols[star]) {
+        return scan_single_char_symbol(lexer, star);
+      }
+      break;
+    case '[':
+      if (valid_symbols[lbrack]) {
+        return scan_single_char_symbol(lexer, lbrack);
+      }
+      break;
+    case ']':
+      if (valid_symbols[rbrack]) {
+        return scan_single_char_symbol(lexer, rbrack);
+      }
+      break;
+    case '=':
+      if (valid_symbols[equals]) {
+        return scan_single_char_symbol(lexer, equals);
+      }
+      break;
+    case '`':
+      if (valid_symbols[backtick]) {
+        return scan_single_char_symbol(lexer, backtick);
+      }
+      break;
+    case '\'':
+      if (valid_symbols[octal]) {
+        return scan_octal(lexer);
+      }
+      break;
+    case '"':
+      if (valid_symbols[hexadecimal]) {
+        return scan_hexadecimal(lexer);
+      }
+      break;
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+      if (valid_symbols[decimal]) {
+        return scan_decimal(lexer);
+      }
+      if (valid_symbols[fixed]) {
+        return scan_fixed(lexer);
+      }
+      break;
+    case '+':
+    case '-':
+    case '.':
+      if (valid_symbols[fixed]) {
+        return scan_fixed(lexer);
+      }
+      break;
+    }
+
+    if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
+      string keyword;
+
+      do {
+        keyword += lexer->lookahead;
+        lexer->advance(lexer, false);
+      } while (lexer->lookahead &&
+               catcode_table[lexer->lookahead] == LETTER_CATEGORY);
+
+      auto it = keywords.find(keyword);
+
+      if (it != keywords.end() && valid_symbols[it->second]) {
+        lexer->result_symbol = it->second;
+        lexer->mark_end(lexer);
+        return true;
+      }
+    }
+
+    while (lexer->lookahead &&
+           (lexer->lookahead != '[' || !valid_symbols[lbrack]) &&
+           (lexer->lookahead != ']' || !valid_symbols[rbrack]) &&
+           (catcode_table[lexer->lookahead] == LETTER_CATEGORY ||
+            catcode_table[lexer->lookahead] == OTHER_CATEGORY ||
+            catcode_table[lexer->lookahead] == SPACE_CATEGORY ||
+            catcode_table[lexer->lookahead] == EOL_CATEGORY)) {
+      lexer->advance(lexer, false);
+    }
+
+    lexer->result_symbol = text;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
   bool scan(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
-
-    if (valid_symbol_in_range(valid_symbols, env_name_alignat, env_name)) {
-      return scan_env_name(lexer);
-    }
-
-    if (valid_symbols[name]) {
-      return scan_name(lexer);
-    }
-
-    // Look for an inline verbatim.
-    if (valid_symbols[verb_delim_no_lbrack] && lexer->lookahead != '[') {
-      return scan_verb_start_delim(lexer, verb_delim_no_lbrack);
-    }
-
-    if (valid_symbols[verb_delim]) {
-      return scan_verb_start_delim(lexer, verb_delim);
-    }
-
-    // Look for an inline verbatim delimiter and end the verbatim.
-    if (valid_symbols[verb_end_delim]) {
-      return scan_verb_end_delim(lexer);
-    }
-
-    // Scan an inline verbatim body.
-    if (valid_symbols[verb_body]) {
-      return scan_verb_body(lexer);
-    }
-
-    if (valid_symbols[verbatim_text]) {
-      return scan_verbatim_text(lexer);
-    }
 
     if (valid_symbols[_cmd_apply]) {
       auto it = control_sequences.find(cs_name);
@@ -990,8 +1165,31 @@ struct Scanner {
       return true;
     }
 
-    if (lexer->lookahead == 0 && valid_symbols[exit]) {
-      return scan_empty_symbol(lexer, exit);
+    if (!lexer->lookahead) {
+      return valid_symbols[exit] ? scan_empty_symbol(lexer, exit) : false;
+    }
+
+    // Look for an inline verbatim.
+    if (valid_symbols[verb_delim_no_lbrack] && lexer->lookahead != '[') {
+      return scan_verb_start_delim(lexer, verb_delim_no_lbrack);
+    }
+
+    if (valid_symbols[verb_delim]) {
+      return scan_verb_start_delim(lexer, verb_delim);
+    }
+
+    // Look for an inline verbatim delimiter and end the verbatim.
+    if (valid_symbols[verb_end_delim]) {
+      return scan_verb_end_delim(lexer);
+    }
+
+    // Scan an inline verbatim body.
+    if (valid_symbols[verb_body]) {
+      return scan_verb_body(lexer);
+    }
+
+    if (valid_symbols[verbatim_text]) {
+      return scan_verbatim_text(lexer);
     }
 
     if (valid_symbols[ignored_line]) {
@@ -1012,7 +1210,8 @@ struct Scanner {
     case END_CATEGORY:
       if (valid_symbols[exit]) {
         return scan_empty_symbol(lexer, exit);
-      } else if (valid_symbols[r]) {
+      }
+      if (valid_symbols[r]) {
         return scan_single_char_symbol(lexer, r);
       }
       break;
@@ -1033,13 +1232,12 @@ struct Scanner {
         return scan_single_char_symbol(lexer, eol);
       }
       if (valid_symbols[_space]) {
-        return scan_space(lexer);
+        return scan_space(lexer, valid_symbols);
       }
       break;
     case PARAMETER_CATEGORY:
-      if (valid_symbols[parameter_char]) {
-        return scan_multi_char_symbol(lexer, parameter_char,
-                                      PARAMETER_CATEGORY);
+      if (valid_symbols[parameter_ref]) {
+        return scan_parameter_ref(lexer);
       }
       break;
     case SUPERSCRIPT_CATEGORY:
@@ -1059,7 +1257,7 @@ struct Scanner {
       break;
     case SPACE_CATEGORY:
       if (valid_symbols[_space]) {
-        return scan_space(lexer);
+        return scan_space(lexer, valid_symbols);
       }
       break;
     case ACTIVE_CHAR_CATEGORY:
@@ -1078,7 +1276,13 @@ struct Scanner {
       }
       break;
     default:
-      break;
+      if (valid_symbol_in_range(valid_symbols, env_name_alignat, env_name)) {
+        return scan_env_name(lexer);
+      }
+      if (valid_symbols[name]) {
+        return scan_name(lexer);
+      }
+      return scan_text(lexer, valid_symbols);
     }
 
     return false;

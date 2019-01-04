@@ -17,7 +17,7 @@ module.exports = {
       newcommand: {
         cs: $ => $.cs_newcommand,
         parameters: $ => [
-          optional('*'),
+          optional($.star),
           $._cs_parameter,
           optional($.brack_group),
           optional($.brack_group),
@@ -27,7 +27,7 @@ module.exports = {
       newenvironment: {
         cs: $ => $.cs_newenvironment,
         parameters: $ => [
-          optional('*'),
+          optional($.star),
           alias($.name_group, $.group),
           optional($.brack_group),
           optional($.brack_group),
@@ -41,7 +41,7 @@ module.exports = {
           // Base LaTeX doesn't actually allow a starred version, but hyperref
           // adds \ref* and \pageref*. This combined with the starred versions
           // of varioref makes just simpler to define one command.
-          optional('*'),
+          optional($.star),
           $._parameter
         ]
       },
@@ -93,14 +93,14 @@ module.exports = {
     commands: {
       item: {
         cs: $ => $.cs_item,
-        parameters: $ => [optional($.brack_group)]
+        parameters: $ => [$.brack_group]
       },
       // section is actually in the class file, but it's here in the core for
       // simplicity.
       section: {
         cs: $ => $.cs_section,
         parameters: $ => [
-          optional('*'),
+          optional($.star),
           optional($.brack_group),
           $._parameter
         ]
@@ -130,6 +130,7 @@ module.exports = {
       },
       figure: {
         name: $ => $.env_name_figure,
+        bare: true,
         beginParameters: $ => [optional($.brack_group)]
       },
       inline_math: {

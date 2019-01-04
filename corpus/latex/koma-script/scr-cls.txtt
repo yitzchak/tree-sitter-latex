@@ -27,6 +27,7 @@ addchap*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -37,6 +38,7 @@ addchap* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 
@@ -69,6 +71,7 @@ addpart*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -79,6 +82,7 @@ addpart* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 
@@ -111,6 +115,7 @@ addsec*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -121,5 +126,6 @@ addsec* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))

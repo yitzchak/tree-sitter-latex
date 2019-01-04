@@ -36,6 +36,7 @@ cref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -56,6 +57,7 @@ Cref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -76,6 +78,7 @@ cpageref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -96,6 +99,7 @@ Cpageref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -116,6 +120,7 @@ namecref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -136,6 +141,7 @@ nameCref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -156,6 +162,7 @@ lcnamecref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -176,6 +183,7 @@ namecrefs*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -196,6 +204,7 @@ nameCrefs*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -216,6 +225,7 @@ lcnamecrefs*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -237,6 +247,7 @@ crefrange*
 (document
   (refrange
     (cs)
+    (star)
     (group (l) (text) (r))
     (group (l) (text) (r))))
 
@@ -259,6 +270,7 @@ Crefrange*
 (document
   (refrange
     (cs)
+    (star)
     (group (l) (text) (r))
     (group (l) (text) (r))))
 
@@ -281,6 +293,7 @@ cpagerefrange*
 (document
   (refrange
     (cs)
+    (star)
     (group (l) (text) (r))
     (group (l) (text) (r))))
 
@@ -303,6 +316,7 @@ Cpagerefrange*
 (document
   (refrange
     (cs)
+    (star)
     (group (l) (text) (r))
     (group (l) (text) (r))))
 

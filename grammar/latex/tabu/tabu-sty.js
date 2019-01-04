@@ -6,7 +6,7 @@ module.exports = {
         beginParameters: $ => [
           optional(
             seq(
-              choice('to', 'spread'),
+              choice($.to, $.spread),
               $._dimension
             )
           ),

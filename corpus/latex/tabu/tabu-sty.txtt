@@ -58,7 +58,8 @@ wibble
     (begin
       (cs)
       (group (l) (name) (r))
-      (dimension)
+      (to)
+      (dimension (fixed) (unit))
       (group (l) (text) (r)))
     (text)
     (end
@@ -81,7 +82,8 @@ wibble
     (begin
       (cs)
       (group (l) (name) (r))
-      (dimension)
+      (spread)
+      (dimension (fixed) (unit))
       (brack_group (lbrack) (text) (rbrack))
       (group (l) (text) (r)))
     (text)
@@ -164,7 +166,8 @@ wibble
       (begin
         (cs)
         (group (l) (name) (r))
-        (dimension)
+        (to)
+        (dimension (fixed) (unit))
         (group (l) (text) (r)))
       (math)
       (end
@@ -192,7 +195,8 @@ wibble
       (begin
         (cs)
         (group (l) (name) (r))
-        (dimension)
+        (spread)
+        (dimension (fixed) (unit))
         (brack_group (lbrack) (text) (rbrack))
         (group (l) (text) (r)))
       (math)
@@ -262,7 +266,8 @@ wibble
     (begin
       (cs)
       (group (l) (name) (r))
-      (dimension)
+      (to)
+      (dimension (fixed) (unit))
       (group (l) (text) (r)))
     (text)
     (end
@@ -285,7 +290,8 @@ wibble
     (begin
       (cs)
       (group (l) (name) (r))
-      (dimension)
+      (spread)
+      (dimension (fixed) (unit))
       (brack_group (lbrack) (text) (rbrack))
       (group (l) (text) (r)))
     (text)
@@ -368,7 +374,8 @@ wibble
       (begin
         (cs)
         (group (l) (name) (r))
-        (dimension)
+        (to)
+        (dimension (fixed) (unit))
         (group (l) (text) (r)))
       (math)
       (end
@@ -396,7 +403,8 @@ wibble
       (begin
         (cs)
         (group (l) (name) (r))
-        (dimension)
+        (spread) 
+        (dimension (fixed) (unit))
         (brack_group (lbrack) (text) (rbrack))
         (group (l) (text) (r)))
       (math)

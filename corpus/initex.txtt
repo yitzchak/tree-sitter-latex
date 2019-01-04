@@ -275,9 +275,9 @@ foo##1bar
 --------------------------------------------------------------------------------
 (document
   (text)
-  (parameter_ref (parameter_char))
+  (parameter_ref)
   (text)
-  (parameter_ref (parameter_char))
+  (parameter_ref)
   (text))
 
 ================================================================================
@@ -375,10 +375,6 @@ Square brackets do not trigger brack_group
 foo[bar]wibble
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (text)
-  (text)
-  (text)
   (text))
 
 ================================================================================
@@ -387,8 +383,6 @@ Allow unmatch square brackets
 foo[bar
 --------------------------------------------------------------------------------
 (document
-  (text)
-  (text)
   (text))
 
 ================================================================================
@@ -419,12 +413,28 @@ verbatimfoo
 bar
 \end{verbatimfoo}
 --------------------------------------------------------------------------------
-(document (text_env (begin (cs) (group (l) (name) (r))) (text) (end (cs) (group (l) (name) (r)))))
+(document
+  (text_env
+    (begin (cs) (group (l) (name) (r)))
+    (text)
+    (end (cs) (group (l) (name) (r)))))
 
 ================================================================================
 catcode with decimal number
 ================================================================================
 \catcode70=3
+--------------------------------------------------------------------------------
+(document
+  (code
+    (cs)
+    (decimal)
+    (equals)
+    (decimal)))
+
+================================================================================
+catcode without equals
+================================================================================
+\catcode70 3
 --------------------------------------------------------------------------------
 (document
   (code
@@ -441,6 +451,7 @@ catcode with octal number
   (code
     (cs)
     (octal)
+    (equals)
     (decimal)))
 
 ================================================================================
@@ -452,6 +463,7 @@ catcode with hexadecimal number
   (code
     (cs)
     (hexadecimal)
+    (equals)
     (decimal)))
 
 ================================================================================
@@ -462,7 +474,8 @@ catcode with char code by letter
 (document
   (code
     (cs)
-    (charcode)
+    (charcode (backtick) (text_single))
+    (equals)
     (decimal)))
 
 ================================================================================
@@ -473,7 +486,8 @@ catcode with char code by escaped character
 (document
   (code
     (cs)
-    (charcode (cs))
+    (charcode (backtick) (cs))
+    (equals)
     (decimal)))
 
 ================================================================================
@@ -484,7 +498,8 @@ catcode with control sequence
 (document
   (code
     (cs)
-    (charcode)
+    (charcode (backtick) (text_single))
+    (equals)
     (cs)))
 
 ================================================================================
@@ -492,7 +507,12 @@ mathcode
 ================================================================================
 \mathcode`\+="202B
 --------------------------------------------------------------------------------
-(document (code (cs) (charcode (cs)) (hexadecimal)))
+(document
+  (code
+    (cs)
+    (charcode (backtick) (cs))
+    (equals)
+    (hexadecimal)))
 
 ================================================================================
 input

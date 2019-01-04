@@ -737,6 +737,7 @@ chapter*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -747,6 +748,7 @@ chapter* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 
@@ -779,6 +781,7 @@ part*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -789,6 +792,7 @@ part* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 
@@ -821,6 +825,7 @@ paragraph*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -831,6 +836,7 @@ paragraph* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 
@@ -863,6 +869,7 @@ subparagraph*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -873,6 +880,7 @@ subparagraph* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 
@@ -905,6 +913,7 @@ section*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -915,6 +924,7 @@ section* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 
@@ -947,6 +957,7 @@ subsection*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -957,6 +968,7 @@ subsection* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 
@@ -989,6 +1001,7 @@ subsubsection*
 (document
   (section
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -999,6 +1012,7 @@ subsubsection* with optional parameter
 (document
   (section
     (cs)
+    (star)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))))
 

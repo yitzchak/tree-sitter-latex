@@ -16,6 +16,7 @@ vpageref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -36,6 +37,7 @@ vref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -56,6 +58,7 @@ Vref*
 (document
   (ref
     (cs)
+    (star)
     (group (l) (text) (r))))
 
 ================================================================================
@@ -87,6 +90,7 @@ vpagerefrange*
 (document
   (refrange
     (cs)
+    (star)
     (group (l) (text) (r))
     (group (l) (text) (r))))
 
@@ -109,5 +113,6 @@ vrefrange*
 (document
   (refrange
     (cs)
+    (star)
     (group (l) (text) (r))
     (group (l) (text) (r))))

@@ -1,16 +1,6 @@
 const readdir = require('readdir-enhanced')
 const path = require('path')
 
-const DECIMAL_DIGIT = choice('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
-const ONE_MORE_DECIMAL_DIGITS = prec.right(2, repeat1(DECIMAL_DIGIT))
-const ZERO_MORE_DECIMAL_DIGITS = prec.right(2, repeat(DECIMAL_DIGIT))
-const SIGN = choice('+', '-')
-const FIXED_PATTERN = choice(
-  SIGN,
-  seq(optional(SIGN), ONE_MORE_DECIMAL_DIGITS, optional(seq('.', ZERO_MORE_DECIMAL_DIGITS))),
-  seq(optional(SIGN), '.', ONE_MORE_DECIMAL_DIGITS)
-)
-
 function cmd ($, cs, ...args) {
   cs = alias(cs, $.cs)
 
@@ -56,21 +46,8 @@ function semiSimpleGroup ($, ...contents) {
 }
 
 function brackGroup ($, contents) {
-  return seq($.lbrack, contents, $.rbrack)
+  return seq(prec.dynamic(-10, $.lbrack), contents, $.rbrack)
 }
-
-// function optional_seq () {
-//   var result
-//
-//   for (var i = arguments.length - 1; i > -1; i--) {
-//     result = optional(
-//       result
-//         ? seq(arguments[i], result)
-//         : arguments[i])
-//   }
-//
-//   return result
-// }
 
 let rules = {
   common: [],
@@ -91,6 +68,7 @@ let g = {
     $._space,
     $.active_char,
     $.alignment_tab,
+    $.backtick,
     $.comment_arara,
     $.comment_bib,
     $.comment_tag,
@@ -119,6 +97,7 @@ let g = {
     $.cs_input,
     $.cs_item,
     $.cs_label,
+    $.cs_let,
     $.cs_lstinline,
     $.cs_lua,
     $.cs_luacode,
@@ -137,6 +116,7 @@ let g = {
     $.cs_use,
     $.cs_verb,
     $.cs,
+    $.decimal,
     $.display_math_shift_end,
     $.display_math_shift,
     $.env_name_alignat,
@@ -161,19 +141,31 @@ let g = {
     $.env_name_Verbatim,
     $.env_name,
     $.eol,
+    $.equals,
     $.exit,
+    $.fixed,
+    $.hexadecimal,
     $.ignored_line,
     $.ignored,
     $.invalid,
     $.l,
+    $.lbrack,
     $.math_shift_end,
     $.math_shift,
     $.name,
-    $.parameter_char,
+    $.octal,
+    $.parameter_ref,
     $.r,
+    $.rbrack,
     $.short_verb_delim,
+    $.spread,
+    $.star,
     $.subscript,
     $.superscript,
+    $.text_single,
+    $.text,
+    $.to,
+    $.unit,
     $.verb_body,
     $.verb_delim_no_lbrack,
     $.verb_delim,
@@ -190,6 +182,10 @@ let g = {
     $.comment
   ],
 
+  conflicts: $ => [
+    [$.lbrack, $.text]
+  ],
+
   rules: {
     document: $ => repeat($._text_mode),
 
@@ -200,12 +196,12 @@ let g = {
       $.ignored,
       $.invalid,
       $.math_shift,
+      $.display_math_shift,
+      $.parameter_ref,
       $.subscript,
       $.superscript,
       $.text,
       alias($.nil_group, $.group),
-      prec(-1, alias($.lbrack, $.text)),
-      prec(-1, alias($.rbrack, $.text)),
       ...rules.nil.map(rule => rule($))
     ),
 
@@ -214,6 +210,8 @@ let g = {
       $.alignment_tab,
       $.ignored,
       $.invalid,
+      $.parameter_ref,
+      // $.eol,
       ...rules.common.map(rule => rule($))
     ),
 
@@ -221,15 +219,13 @@ let g = {
       $._common,
       $.group,
       $.semi_simple_group,
-      $.text,
+      prec.dynamic(10, $.text),
       // Underscore produces an error by default in LaTeX text mode. Some
       // some packages define underscore to produce \tex­tun­der­score. We assume
       // that this has been done since underscore is never actually subscript
       // in text mode.
       alias($.subscript, $.text),
       alias($.superscript, $.text),
-      prec(-1, alias($.lbrack, $.text)),
-      prec(-1, alias($.rbrack, $.text)),
       ...rules.text.map(rule => rule($))
     ),
 
@@ -239,8 +235,6 @@ let g = {
       $.superscript,
       alias($.math_group, $.group),
       alias($.text, $.math),
-      prec(-1, alias($.lbrack, $.math)),
-      prec(-1, alias($.rbrack, $.math)),
       ...rules.math.map(rule => rule($))
     ),
 
@@ -300,12 +294,6 @@ let g = {
 
     semi_simple_group: $ => semiSimpleGroup($, repeat($._text_mode)),
 
-    lbrack: $ => '[',
-
-    rbrack: $ => ']',
-
-    text: $ => prec.left(-1, repeat1(/[^\][]/)),
-
     begingroup: $ => cmd($, $.cs_begingroup),
 
     endgroup: $ => cmd($, $.cs_endgroup),
@@ -314,15 +302,7 @@ let g = {
 
     egroup: $ => cmd($, $.cs_egroup),
 
-    dimension: () => token(
-      seq(
-        FIXED_PATTERN,
-        // fi introduced by LuaTeX
-        /bp|cc|cm|dd|em|ex|fil{0,3}|in|mm|mu|nc|nd|pc|pt|sp/
-      )
-    ),
-
-    fixed: () => FIXED_PATTERN,
+    dimension: $ => seq($.fixed, $.unit),
 
     _dimension: $ => choice(
       $.dimension,
@@ -345,13 +325,7 @@ let g = {
       $.cs
     ),
 
-    decimal: () => token(ONE_MORE_DECIMAL_DIGITS),
-
-    octal: () => /'[0-7]+/,
-
-    hexadecimal: () => /"[0-9a-fA-F]+/,
-
-    charcode: $ => seq('`', choice(/./, $.cs))
+    charcode: $ => seq($.backtick, choice($.text_single, $.cs))
   }
 }
 

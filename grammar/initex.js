@@ -5,7 +5,7 @@ module.exports = {
         cs: $ => $.cs_code,
         parameters: $ => [
           $._number_parameter,
-          optional('='),
+          optional($.equals),
           $._number_parameter
         ]
       },
@@ -18,25 +18,23 @@ module.exports = {
             choice(
               $.parameter_ref,
               $.text,
-              alias($.lbrack, $.text),
-              alias($.rbrack, $.text),
-              $.text
+              $.cs
             )
           ),
-          $._nil_parameter
+          alias($.nil_group, $.group)
         ]
       },
       input: {
         cs: $ => $.cs_input,
         parameters: $ => [$._parameter]
+      },
+      let: {
+        cs: $ => $.cs_let,
+        parameters: $ => [$.cs, $.cs]
       }
     },
     rules: {
-      _cmd: $ => seq($.cs, $._cmd_apply),
-      parameter_ref: $ => seq(
-        $.parameter_char,
-        optional(/[1-9]/)
-      )
+      _cmd: $ => seq($.cs, $._cmd_apply)
     }
   },
   text: {

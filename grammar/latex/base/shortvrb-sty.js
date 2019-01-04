@@ -4,14 +4,14 @@ module.exports = {
       DeleteShortVerb: {
         cs: $ => $.cs_DeleteShortVerb,
         parameters: $ => [
-          optional('*'),
+          optional($.star),
           $._delete_verb_delim_parameter
         ]
       },
       MakeShortVerb: {
         cs: $ => $.cs_MakeShortVerb,
         parameters: $ => [
-          optional('*'),
+          optional($.star),
           $._make_verb_delim_parameter
         ]
       }
