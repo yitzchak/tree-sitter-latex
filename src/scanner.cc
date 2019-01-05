@@ -83,6 +83,7 @@ enum SymbolType {
   env_name_comment,
   env_name_display_math,
   env_name_dmath,
+  env_name_document,
   env_name_dseries,
   env_name_figure,
   env_name_filecontents,
@@ -105,6 +106,7 @@ enum SymbolType {
   fixed,
   hexadecimal,
   ignored_line,
+  ignored_rest,
   ignored,
   invalid,
   l,
@@ -113,6 +115,7 @@ enum SymbolType {
   math_shift,
   name,
   octal,
+  par,
   parameter_ref,
   r,
   rbrack,
@@ -481,6 +484,7 @@ struct Scanner {
       {"displaymath", {env_name_display_math}},
       {"dmath", {env_name_dmath}},
       {"dmath*", {env_name_dmath}},
+      {"document", {env_name_document}},
       {"dseries", {env_name_dseries}},
       {"dseries*", {env_name_dseries}},
       {"eqnarray", {env_name_display_math}},
@@ -827,24 +831,20 @@ struct Scanner {
 
   bool scan_space(TSLexer *lexer, const bool *valid_symbols) {
     Category code = catcode_table[lexer->lookahead];
-    bool eol = false;
+    int eol = 0;
 
     do {
-      if (code == EOL_CATEGORY) {
-        // If we are ready have an EOL then do not scan as space since this is
-        // a paragraph break.
-        if (eol) {
-          return valid_symbols[text] ? scan_text(lexer, valid_symbols) : false;
-        }
-        eol = true;
-      }
-
+      if (code == EOL_CATEGORY) eol++;
       lexer->advance(lexer, false);
       code = catcode_table[lexer->lookahead];
     } while (lexer->lookahead &&
              (code == SPACE_CATEGORY || code == EOL_CATEGORY));
 
-    lexer->result_symbol = _space;
+    if (eol > 1 && !valid_symbols[par]) {
+      return scan_text(lexer, valid_symbols);
+    }
+
+    lexer->result_symbol = (eol > 1) ? par : _space;
     lexer->mark_end(lexer);
 
     return true;
@@ -932,6 +932,21 @@ struct Scanner {
     };
 
     lexer->result_symbol = ignored_line;
+    lexer->mark_end(lexer);
+
+    return true;
+  }
+
+  bool scan_ignored_rest(TSLexer *lexer) {
+    if (!lexer->lookahead) {
+      return false;
+    }
+
+    while (lexer->lookahead) {
+      lexer->advance(lexer, false);
+    };
+
+    lexer->result_symbol = ignored_rest;
     lexer->mark_end(lexer);
 
     return true;
@@ -1195,6 +1210,10 @@ struct Scanner {
 
     if (valid_symbols[ignored_line]) {
       return scan_ignored_line(lexer);
+    }
+
+    if (valid_symbols[ignored_rest]) {
+      return scan_ignored_rest(lexer);
     }
 
     switch (code) {

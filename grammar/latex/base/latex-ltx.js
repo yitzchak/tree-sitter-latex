@@ -126,6 +126,10 @@ module.exports = {
         name: $ => $.env_name_display_math,
         contents: $ => [repeat($._math_mode)]
       },
+      document: {
+        name: $ => $.env_name_document,
+        endParameters: $ => [alias($.ignored_rest, $.ignored)]
+      },
       figure: {
         name: $ => $.env_name_figure,
         bare: true,

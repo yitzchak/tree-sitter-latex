@@ -125,6 +125,7 @@ let g = {
     $.env_name_comment,
     $.env_name_display_math,
     $.env_name_dmath,
+    $.env_name_document,
     $.env_name_dseries,
     $.env_name_figure,
     $.env_name_filecontents,
@@ -147,6 +148,7 @@ let g = {
     $.fixed,
     $.hexadecimal,
     $.ignored_line,
+    $.ignored_rest,
     $.ignored,
     $.invalid,
     $.l,
@@ -155,6 +157,7 @@ let g = {
     $.math_shift,
     $.name,
     $.octal,
+    $.par,
     $.parameter_ref,
     $.r,
     $.rbrack,
@@ -219,6 +222,7 @@ let g = {
     _text_mode: $ => choice(
       $._common,
       $.group,
+      $.par,
       $.semi_simple_group,
       prec.dynamic(10, $.text),
       // Underscore produces an error by default in LaTeX text mode. Some
@@ -380,7 +384,7 @@ function defCmd (mode, label, { cs, parameters, local, alt }) {
     return cmd($,
       cs($),
       ...head,
-      ...[body.reduceRight((c, p) => choice($.exit, c ? seq(p, c) : p),
+      ...[body.reduceRight((c, p) => choice($.exit, $.par, c ? seq(p, c) : p),
         tail.length === 0 ? undefined : (tail.length === 1 ? tail[0] : seq(...tail)))])
   }
 
