@@ -1,6 +1,10 @@
 module.exports = {
   common: {
     commands: {
+      endinput: {
+        cs: $ => $.cs_endinput,
+        parameters: $ => [alias($.ignored_rest, $.ignored)]
+      },
       ensuremath: {
         cs: $ => $.cs_ensuremath,
         parameters: $ => [alias($.math_group, $.group)]

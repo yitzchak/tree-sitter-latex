@@ -86,6 +86,7 @@ let g = {
     $.cs_egroup,
     $.cs_end,
     $.cs_endgroup,
+    $.cs_endinput,
     $.cs_ensuremath,
     $.cs_expandafter,
     $.cs_fref,
