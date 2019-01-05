@@ -24,6 +24,13 @@ module.exports = {
           alias($.nil_group, $.group)
         ]
       },
+      expandafter: {
+        cs: $ => $.cs_expandafter,
+        parameters: $ => [
+          $._text_token_parameter,
+          $._text_parameter
+        ]
+      },
       input: {
         cs: $ => $.cs_input,
         parameters: $ => [$._parameter]

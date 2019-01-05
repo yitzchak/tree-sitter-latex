@@ -9,13 +9,13 @@ function cmd ($, cs, ...args) {
     : seq(cs, ...args)
 }
 
-function cmdOpt ($, cs, ...args) {
-  cs = alias(cs, $.cs)
-
-  return (args.length === 0)
-    ? cs
-    : prec.right(-1, seq(cs, optional(seq(...args))))
-}
+// function cmdOpt ($, cs, ...args) {
+//   cs = alias(cs, $.cs)
+//
+//   return (args.length === 0)
+//     ? cs
+//     : prec.right(-1, seq(cs, optional(seq(...args))))
+// }
 
 function beginCmd ($, ...args) {
   const cs = alias($.cs_begin, $.cs)
@@ -87,6 +87,7 @@ let g = {
     $.cs_end,
     $.cs_endgroup,
     $.cs_ensuremath,
+    $.cs_expandafter,
     $.cs_fref,
     $.cs_href,
     $.cs_hyperbaseurl,
@@ -240,6 +241,25 @@ let g = {
 
     group: $ => group($, repeat($._text_mode)),
 
+    _text_token_parameter: $ => choice(
+      $.group,
+      $.parameter_ref,
+      $.text_single,
+      $.cs
+    ),
+
+    _common_parameter: $ => choice(
+      $.parameter_ref,
+      ...rules.common.map(rule => rule($))
+    ),
+
+    _text_parameter: $ => choice(
+      $._common_parameter,
+      $.group,
+      $.text_single,
+      ...rules.text.map(rule => rule($))
+    ),
+
     _parameter: $ => choice($.group, $.cs),
 
     math_group: $ => group($, repeat($._math_mode)),
@@ -335,11 +355,34 @@ function defRule (mode, label, rule) {
   rules[mode].push($ => $[label])
 }
 
-function defCmd (mode, label, { cs, parameters, local }) {
-  g.rules[label] = $ => cmdOpt($,
-    cs($),
-    ...(parameters ? parameters($) : []),
-    ...(local ? [] : [$._cmd_apply]))
+function isOptional (p) {
+  return p.type === 'CHOICE' && p.members.length === 2 && p.members[1].type === 'BLANK'
+}
+
+function defCmd (mode, label, { cs, parameters, local, alt }) {
+  g.rules[label] = function ($) {
+    const head = []
+    const body = parameters ? parameters($) : []
+    const tail = []
+
+    while (body.length && isOptional(body[body.length - 1])) {
+      tail.unshift(body.pop())
+    }
+
+    while (body.length && isOptional(body[0])) {
+      head.push(body.shift())
+    }
+
+    if (!local) {
+      tail.unshift($._cmd_apply)
+    }
+
+    return cmd($,
+      cs($),
+      ...head,
+      ...[body.reduceRight((c, p) => choice($.exit, c ? seq(p, c) : p),
+        tail.length === 0 ? undefined : (tail.length === 1 ? tail[0] : seq(...tail)))])
+  }
 
   rules[mode].push($ => $[label])
 }

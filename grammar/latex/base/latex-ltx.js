@@ -93,7 +93,7 @@ module.exports = {
     commands: {
       item: {
         cs: $ => $.cs_item,
-        parameters: $ => [$.brack_group]
+        parameters: $ => [optional($.brack_group)]
       },
       // section is actually in the class file, but it's here in the core for
       // simplicity.
@@ -114,11 +114,9 @@ module.exports = {
       },
       use: {
         cs: $ => $.cs_use,
-        local: true,
         parameters: $ => [
           optional($.brack_group),
           alias($.name_group, $.group),
-          $._cmd_apply,
           optional($.brack_group)
         ]
       }

@@ -45,6 +45,7 @@ enum SymbolType {
   cs_end,
   cs_endgroup,
   cs_ensuremath,
+  cs_expandafter,
   cs_fref,
   cs_href,
   cs_hyperbaseurl,
@@ -245,6 +246,7 @@ struct Scanner {
       {"endgroup", {cs_endgroup}},
       {"ensuremath", {cs_ensuremath}},
       {"eqref", {cs_ref}},
+      {"expandafter", {cs_expandafter}},
       {"ExplSyntaxOff",
        {cs,
         false,
@@ -1104,13 +1106,12 @@ struct Scanner {
       }
     }
 
+    CategoryFlags flags = LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG;
+
     while (lexer->lookahead &&
-           (lexer->lookahead != '[' || !valid_symbols[lbrack]) &&
+           // (lexer->lookahead != '[' || !valid_symbols[lbrack]) &&
            (lexer->lookahead != ']' || !valid_symbols[rbrack]) &&
-           (catcode_table[lexer->lookahead] == LETTER_CATEGORY ||
-            catcode_table[lexer->lookahead] == OTHER_CATEGORY ||
-            catcode_table[lexer->lookahead] == SPACE_CATEGORY ||
-            catcode_table[lexer->lookahead] == EOL_CATEGORY)) {
+           flags[catcode_table[lexer->lookahead]]) {
       lexer->advance(lexer, false);
     }
 
