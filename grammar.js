@@ -373,7 +373,8 @@ function defRule (mode, label, rule) {
 }
 
 function isOptional (p) {
-  return p.type === 'CHOICE' && p.members.length === 2 && p.members[1].type === 'BLANK'
+  return p.type === 'REPEAT' ||
+    (p.type === 'CHOICE' && p.members.some(member => member.type === 'BLANK'))
 }
 
 function defCmd (mode, label, { cs, parameters, local, alt }) {
