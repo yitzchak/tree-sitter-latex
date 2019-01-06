@@ -1,0 +1,63 @@
+================================================================================
+newglossaryentry
+================================================================================
+\newglossaryentry{baffles}{
+  name=baffles,
+  description={The blind spot behind a submarine which makes a good hidding spot
+    for other submarines}
+}
+--------------------------------------------------------------------------------
+(document
+  (newglossaryentry
+    (cs)
+    (group (l) (text) (r))
+    (group
+      (l)
+      (text)
+      (group (l) (text) (r))
+      (r))))
+
+================================================================================
+provideglossaryentry
+================================================================================
+\provideglossaryentry{baffles}{
+  name=baffles,
+  description={The blind spot behind a submarine which makes a good hidding spot
+    for other submarines}
+}
+--------------------------------------------------------------------------------
+(document
+  (newglossaryentry
+    (cs)
+    (group (l) (text) (r))
+    (group
+      (l)
+      (text)
+      (group (l) (text) (r))
+      (r))))
+
+================================================================================
+longnewglossaryentry
+================================================================================
+\longnewglossaryentry{baffles}{name=baffles}{The blind spot behind a submarine
+  which makes a good hidding spot for other submarines}
+--------------------------------------------------------------------------------
+(document
+  (longnewglossaryentry
+    (cs)
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
+
+================================================================================
+longprovideglossaryentry
+================================================================================
+\longprovideglossaryentry{baffles}{name=baffles}{The blind spot behind a submarine
+  which makes a good hidding spot for other submarines}
+--------------------------------------------------------------------------------
+(document
+  (longnewglossaryentry
+    (cs)
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r))))
