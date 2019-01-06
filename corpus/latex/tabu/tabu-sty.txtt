@@ -1,0 +1,415 @@
+================================================================================
+tabu environment
+================================================================================
+foo
+\begin{tabu}{l|c|r}
+bar
+\end{tabu}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabu_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+================================================================================
+tabu environment with position
+================================================================================
+foo
+\begin{tabu}[t]{l|c|r}
+bar
+\end{tabu}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabu_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+================================================================================
+tabu environment with width
+================================================================================
+foo
+\begin{tabu}to 5in{l|c|r}
+bar
+\end{tabu}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabu_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (to)
+      (dimension (fixed) (unit))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+================================================================================
+tabu environment with position and width
+================================================================================
+foo
+\begin{tabu}spread 5in[t]{l|c|r}
+bar
+\end{tabu}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabu_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (spread)
+      (dimension (fixed) (unit))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+================================================================================
+tabu environment inside math
+================================================================================
+foo
+\[
+\begin{tabu}{l|c|r}
+bar
+\end{tabu}
+\]
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (tabu_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (group (l) (text) (r)))
+      (math)
+      (end
+        (cs)
+        (group (l) (name) (r))))
+    (cs))
+  (text))
+
+================================================================================
+tabu environment inside math with position
+================================================================================
+foo
+\[
+\begin{tabu}[t]{l|c|r}
+bar
+\end{tabu}
+\]
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (tabu_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (brack_group (lbrack) (text) (rbrack))
+        (group (l) (text) (r)))
+      (math)
+      (end
+        (cs)
+        (group (l) (name) (r))))
+    (cs))
+  (text))
+
+================================================================================
+tabu environment inside math with width
+================================================================================
+foo
+\[
+\begin{tabu}to 5in{l|c|r}
+bar
+\end{tabu}
+\]
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (tabu_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (to)
+        (dimension (fixed) (unit))
+        (group (l) (text) (r)))
+      (math)
+      (end
+        (cs)
+        (group (l) (name) (r))))
+    (cs))
+  (text))
+
+================================================================================
+tabu environment inside math with position and width
+================================================================================
+foo
+\[
+\begin{tabu}spread 5in[t]{l|c|r}
+bar
+\end{tabu}
+\]
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (tabu_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (spread)
+        (dimension (fixed) (unit))
+        (brack_group (lbrack) (text) (rbrack))
+        (group (l) (text) (r)))
+      (math)
+      (end
+        (cs)
+        (group (l) (name) (r))))
+    (cs))
+  (text))
+
+================================================================================
+longtabu environment
+================================================================================
+foo
+\begin{longtabu}{l|c|r}
+bar
+\end{longtabu}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabu_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+================================================================================
+longtabu environment with position
+================================================================================
+foo
+\begin{longtabu}[t]{l|c|r}
+bar
+\end{longtabu}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabu_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+================================================================================
+longtabu environment with width
+================================================================================
+foo
+\begin{longtabu}to 5in{l|c|r}
+bar
+\end{longtabu}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabu_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (to)
+      (dimension (fixed) (unit))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+================================================================================
+longtabu environment with position and width
+================================================================================
+foo
+\begin{longtabu}spread 5in[t]{l|c|r}
+bar
+\end{longtabu}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabu_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (spread)
+      (dimension (fixed) (unit))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+================================================================================
+longtabu environment inside math
+================================================================================
+foo
+\[
+\begin{longtabu}{l|c|r}
+bar
+\end{longtabu}
+\]
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (tabu_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (group (l) (text) (r)))
+      (math)
+      (end
+        (cs)
+        (group (l) (name) (r))))
+    (cs))
+  (text))
+
+================================================================================
+longtabu environment inside math with position
+================================================================================
+foo
+\[
+\begin{longtabu}[t]{l|c|r}
+bar
+\end{longtabu}
+\]
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (tabu_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (brack_group (lbrack) (text) (rbrack))
+        (group (l) (text) (r)))
+      (math)
+      (end
+        (cs)
+        (group (l) (name) (r))))
+    (cs))
+  (text))
+
+================================================================================
+longtabu environment inside math with width
+================================================================================
+foo
+\[
+\begin{longtabu}to 5in{l|c|r}
+bar
+\end{longtabu}
+\]
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (tabu_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (to)
+        (dimension (fixed) (unit))
+        (group (l) (text) (r)))
+      (math)
+      (end
+        (cs)
+        (group (l) (name) (r))))
+    (cs))
+  (text))
+
+================================================================================
+longtabu environment inside math with position and width
+================================================================================
+foo
+\[
+\begin{longtabu}spread 5in[t]{l|c|r}
+bar
+\end{longtabu}
+\]
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (tabu_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (spread) 
+        (dimension (fixed) (unit))
+        (brack_group (lbrack) (text) (rbrack))
+        (group (l) (text) (r)))
+      (math)
+      (end
+        (cs)
+        (group (l) (name) (r))))
+    (cs))
+  (text))

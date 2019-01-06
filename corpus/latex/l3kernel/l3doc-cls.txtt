@@ -1,0 +1,13 @@
+================================================================================
+l3doc class triggers pipe and double quote verb delimiter
+================================================================================
+\documentclass{l3doc}
+|foo|
+"bar"
+--------------------------------------------------------------------------------
+(document
+  (use
+    (cs)
+    (group (l) (name) (r)))
+  (short_verb (verb_delim) (verbatim) (verb_delim))
+  (short_verb (verb_delim) (verbatim) (verb_delim)))

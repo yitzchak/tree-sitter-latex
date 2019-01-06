@@ -1,0 +1,17 @@
+================================================================================
+alltt environment
+================================================================================
+\begin{alltt}
+$foo$ \(bar\) \emph{quux} ~ % wibble
+\end{alltt}
+--------------------------------------------------------------------------------
+(document
+  (text_env
+    (begin (cs) (group (l) (name) (r)))
+    (text)
+    (latex_inline_math (cs) (math) (cs))
+    (text)
+    (cs)
+    (group (l) (text) (r))
+    (text)
+    (end (cs) (group (l) (name) (r)))))

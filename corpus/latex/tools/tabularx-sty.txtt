@@ -1,0 +1,46 @@
+================================================================================
+tabularx environment
+================================================================================
+foo
+\begin{tabularx}{10pc}{l|c|r}
+bar
+\end{tabularx}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabularstar_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))
+
+================================================================================
+tabularx environment with position
+================================================================================
+foo
+\begin{tabularx}{10pc}[t]{l|c|r}
+bar
+\end{tabularx}
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (tabularstar_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r))))
+  (text))

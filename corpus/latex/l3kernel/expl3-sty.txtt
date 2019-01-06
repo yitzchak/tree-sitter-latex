@@ -1,0 +1,110 @@
+================================================================================
+[ExplSyntaxOn] colon/underscore is not letter
+================================================================================
+\bar:wibble_wobble
+--------------------------------------------------------------------------------
+(document
+  (cs)
+  (text)
+  (text)
+  (text))
+
+================================================================================
+[ExplSyntaxOn] colon/underscore is letter
+================================================================================
+\ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff
+--------------------------------------------------------------------------------
+(document
+  (cs)
+  (cs)
+  (cs))
+
+================================================================================
+[ProvidesExplPackage] colon/underscore is letter
+================================================================================
+\ProvidesExplPackage{foo}{bar}{wibble}{wobble}
+\bar:wibble_wobble
+--------------------------------------------------------------------------------
+(document
+  (cs)
+  (group (l) (text) (r))
+  (group (l) (text) (r))
+  (group (l) (text) (r))
+  (group (l) (text) (r))
+  (cs))
+
+================================================================================
+[ExplSyntaxOn] colon/underscore is letter in text group
+================================================================================
+\ExplSyntaxOn{\bar:wibble_wobble}\ExplSyntaxOff
+--------------------------------------------------------------------------------
+(document
+  (cs)
+  (group
+    (l)
+    (cs)
+    (r))
+  (cs))
+
+================================================================================
+[ExplSyntaxOn] colon/underscore is letter in optional text group
+================================================================================
+\ExplSyntaxOn\usepackage[foo\bar:wibble_wobble]{foo}\ExplSyntaxOff
+--------------------------------------------------------------------------------
+(document
+  (cs)
+  (use (cs)
+    (brack_group
+      (lbrack)
+      (text)
+      (cs)
+      (rbrack))
+    (group (l) (name) (r)))
+  (cs))
+
+================================================================================
+[ExplSyntaxOn] colon/underscore is letter then other
+================================================================================
+\ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
+--------------------------------------------------------------------------------
+(document
+  (cs)
+  (cs)
+  (cs)
+  (cs)
+  (text)
+  (text)
+  (text))
+
+================================================================================
+[ExplSyntaxOn/makeatletter] Nested regions
+================================================================================
+\ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\makeatother\ExplSyntaxOff\zap@zip:nil_zil
+--------------------------------------------------------------------------------
+(document
+  (cs)
+  (cs)
+  (text)
+  (cs)
+  (cs)
+  (cs)
+  (cs)
+  (cs)
+  (text)
+  (text)
+  (text))
+
+================================================================================
+[ExplSyntaxOn/makeatletter] Interleaved regions
+================================================================================
+\ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\ExplSyntaxOff\zap@zip\makeatother
+--------------------------------------------------------------------------------
+(document
+  (cs)
+  (cs)
+  (text)
+  (cs)
+  (cs)
+  (cs)
+  (cs)
+  (cs))

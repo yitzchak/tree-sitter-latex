@@ -1,0 +1,166 @@
+================================================================================
+directlua
+================================================================================
+\directlua{
+  texio.write_nl("Special chars: _ ^ & $ { } working.\string\n"
+  .. "Backslashes need a bit of care.\string\n"
+  .. "Sharps and tildes too: # doubled, but \string# and \string~")
+  % a tex comment: no easy way to get a %
+  tex.sprint("\string\\pi \string\\neq", tostring(math.pi))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+--------------------------------------------------------------------------------
+(document
+  (lua
+    (cs)
+    (group
+      (l)
+      (text)
+      (group (l) (text) (r))
+      (text)
+      (cs) (cs)
+      (text)
+      (cs) (cs)
+      (text)
+      (cs)
+      (text)
+      (cs) (active_char)
+      (text)
+      (comment)
+      (text)
+      (cs) (cs)
+      (text)
+      (cs) (cs)
+      (text)
+      (comment)
+      (text)
+      (cs)
+      (text)
+      (r))))
+
+================================================================================
+directlua with number
+================================================================================
+\directlua"7F{
+  texio.write_nl("Special chars: _ ^ & $ { } working.\string\n"
+  .. "Backslashes need a bit of care.\string\n"
+  .. "Sharps and tildes too: # doubled, but \string# and \string~")
+  % a tex comment: no easy way to get a %
+  tex.sprint("\string\\pi \string\\neq", tostring(math.pi))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+--------------------------------------------------------------------------------
+(document
+  (lua
+    (cs)
+    (hexadecimal)
+    (group
+      (l)
+      (text)
+      (group (l) (text) (r))
+      (text)
+      (cs) (cs)
+      (text)
+      (cs) (cs)
+      (text)
+      (cs)
+      (text)
+      (cs) (active_char)
+      (text)
+      (comment)
+      (text)
+      (cs) (cs)
+      (text)
+      (cs) (cs)
+      (text)
+      (comment)
+      (text)
+      (cs)
+      (text)
+      (r))))
+
+================================================================================
+latelua
+================================================================================
+\latelua{
+  texio.write_nl("Special chars: _ ^ & $ { } working.\string\n"
+  .. "Backslashes need a bit of care.\string\n"
+  .. "Sharps and tildes too: # doubled, but \string# and \string~")
+  % a tex comment: no easy way to get a %
+  tex.sprint("\string\\pi \string\\neq", tostring(math.pi))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+--------------------------------------------------------------------------------
+(document
+  (lua
+    (cs)
+    (group
+      (l)
+      (text)
+      (group (l) (text) (r))
+      (text)
+      (cs) (cs)
+      (text)
+      (cs) (cs)
+      (text)
+      (cs)
+      (text)
+      (cs) (active_char)
+      (text)
+      (comment)
+      (text)
+      (cs) (cs)
+      (text)
+      (cs) (cs)
+      (text)
+      (comment)
+      (text)
+      (cs)
+      (text)
+      (r))))
+
+================================================================================
+latelua with number
+================================================================================
+\latelua"7F{
+  texio.write_nl("Special chars: _ ^ & $ { } working.\string\n"
+  .. "Backslashes need a bit of care.\string\n"
+  .. "Sharps and tildes too: # doubled, but \string# and \string~")
+  % a tex comment: no easy way to get a %
+  tex.sprint("\string\\pi \string\\neq", tostring(math.pi))
+  % we can use TeX macros
+  tex.sprint("-", math.sqrt(\foo))
+}
+--------------------------------------------------------------------------------
+(document
+  (lua
+    (cs)
+    (hexadecimal)
+    (group
+      (l)
+      (text)
+      (group (l) (text) (r))
+      (text)
+      (cs) (cs)
+      (text)
+      (cs) (cs)
+      (text)
+      (cs)
+      (text)
+      (cs) (active_char)
+      (text)
+      (comment)
+      (text)
+      (cs) (cs)
+      (text)
+      (cs) (cs)
+      (text)
+      (comment)
+      (text)
+      (cs)
+      (text)
+      (r))))
+      

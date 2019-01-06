@@ -1,0 +1,41 @@
+================================================================================
+filecontents environment
+================================================================================
+foo
+\begin{filecontents}{wibble}
+bar
+\end{filecontents}
+quux
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (filecontents_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+================================================================================
+filecontents* environment
+================================================================================
+foo
+\begin{filecontents*}{wibble}
+bar
+\end{filecontents*}
+quux
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (filecontents_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (group (l) (text) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r))))
+  (text))
