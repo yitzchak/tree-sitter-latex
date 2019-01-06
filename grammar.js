@@ -69,6 +69,7 @@ let g = {
     $.active_char,
     $.alignment_tab,
     $.backtick,
+    $.comma,
     $.comment_arara,
     $.comment_bib,
     $.comment_tag,
@@ -278,6 +279,8 @@ let g = {
     _nil_parameter: $ => choice(alias($.nil_group, $.group), $.cs),
 
     name_group: $ => group($, $.name),
+
+    names_group: $ => group($, $.name, repeat(seq($.comma, $.name))),
 
     _name_parameter: $ => choice(alias($.name_group, $.group), $.cs),
 

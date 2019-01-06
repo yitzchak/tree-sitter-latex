@@ -117,14 +117,14 @@ module.exports = {
         cs: $ => $.cs_use_209,
         parameters: $ => [
           optional($.brack_group),
-          alias($.name_group, $.group)
+          alias($.names_group, $.group)
         ]
       },
       use: {
         cs: $ => $.cs_use,
         parameters: $ => [
           optional($.brack_group),
-          alias($.name_group, $.group),
+          alias($.names_group, $.group),
           optional($.brack_group)
         ]
       }

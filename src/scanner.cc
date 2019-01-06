@@ -27,6 +27,7 @@ enum SymbolType {
   active_char,
   alignment_tab,
   backtick,
+  comma,
   comment_arara,
   comment_bib,
   comment_tag,
@@ -840,7 +841,8 @@ struct Scanner {
     int eol = 0;
 
     do {
-      if (code == EOL_CATEGORY) eol++;
+      if (code == EOL_CATEGORY)
+        eol++;
       lexer->advance(lexer, false);
       code = catcode_table[lexer->lookahead];
     } while (lexer->lookahead &&
@@ -860,10 +862,11 @@ struct Scanner {
     if (!lexer->lookahead)
       return false;
 
+    CategoryFlags flags = LETTER_FLAG | OTHER_FLAG;
+
     e_name.clear();
 
-    while (lexer->lookahead &&
-           catcode_table[lexer->lookahead] != END_CATEGORY) {
+    while (lexer->lookahead && flags[catcode_table[lexer->lookahead]]) {
       e_name += lexer->lookahead;
       lexer->advance(lexer, false);
     }
@@ -882,10 +885,12 @@ struct Scanner {
   }
 
   bool scan_name(TSLexer *lexer) {
+    CategoryFlags flags = LETTER_FLAG | OTHER_FLAG;
+
     u_name.clear();
 
-    while (lexer->lookahead &&
-           catcode_table[lexer->lookahead] != END_CATEGORY) {
+    while (lexer->lookahead && lexer->lookahead != ',' &&
+           flags[catcode_table[lexer->lookahead]]) {
       u_name += lexer->lookahead;
       lexer->advance(lexer, false);
     }
@@ -1048,6 +1053,11 @@ struct Scanner {
     }
 
     switch (lexer->lookahead) {
+    case ',':
+      if (valid_symbols[comma]) {
+        return scan_single_char_symbol(lexer, comma);
+      }
+      break;
     case '*':
       if (valid_symbols[star]) {
         return scan_single_char_symbol(lexer, star);
