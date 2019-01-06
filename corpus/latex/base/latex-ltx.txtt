@@ -1103,3 +1103,37 @@ quux
   (endinput
     (cs)
     (ignored)))
+
+================================================================================
+thebibliography environment
+================================================================================
+\begin{thebibliography}{9}
+\bibitem{latexdps}
+  Leslie Lamport.
+  \textit{\LaTeX{}: a document preparation system}.
+  Addison-Wesley, Reading, Massachusetts, 1993.
+\bibitem[wibble]{texbook}
+  Donald Ervin Knuth.
+  \textit{The \TeX book}.
+  Addison-Wesley, Reading, Massachusetts, 1983.
+\end{thebibliography}
+--------------------------------------------------------------------------------
+(document
+  (thebibliography_env
+    (begin (cs) (group (l) (name) (r)) (group (l) (text) (r)))
+    (bibitem
+      (cs)
+      (group (l) (text) (r)))
+    (text)
+    (cs)
+    (group (l) (cs) (group (l) (r)) (text) (r))
+    (text)
+    (bibitem
+      (cs)
+      (brack_group (lbrack) (text) (rbrack))
+      (group (l) (text) (r)))
+    (text)
+    (cs)
+    (group (l) (text) (cs) (text) (r))
+    (text)
+    (end (cs) (group (l) (name) (r)))))

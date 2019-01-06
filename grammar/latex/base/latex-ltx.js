@@ -95,6 +95,10 @@ module.exports = {
   },
   text: {
     commands: {
+      bibitem: {
+        cs: $ => $.cs_bibitem,
+        parameters: $ => [optional($.brack_group), $._parameter]
+      },
       item: {
         cs: $ => $.cs_item,
         parameters: $ => [optional($.brack_group)]
@@ -145,6 +149,10 @@ module.exports = {
       },
       text: {
         name: $ => $.env_name
+      },
+      thebibliography: {
+        name: $ => $.env_name_thebibliography,
+        beginParameters: $ => [$._parameter]
       }
     },
     rules: {
