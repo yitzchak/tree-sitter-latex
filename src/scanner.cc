@@ -966,7 +966,7 @@ struct Scanner {
   bool valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
                              SymbolType last) {
     return any_of(valid_symbols + first, valid_symbols + last + 1,
-                  [](auto valid_symbol) { return valid_symbol; });
+                  [](bool valid_symbol) { return valid_symbol; });
   }
 
   bool scan_octal(TSLexer *lexer) {
@@ -1338,25 +1338,25 @@ void *tree_sitter_latex_external_scanner_create() {
 
 bool tree_sitter_latex_external_scanner_scan(void *payload, TSLexer *lexer,
                                              const bool *valid_symbols) {
-  LaTeX::Scanner *scanner = static_cast<LaTeX::Scanner *>(payload);
+  auto *scanner = static_cast<LaTeX::Scanner *>(payload);
   return scanner->scan(lexer, valid_symbols);
 }
 
 unsigned tree_sitter_latex_external_scanner_serialize(void *payload,
                                                       char *buffer) {
-  LaTeX::Scanner *scanner = static_cast<LaTeX::Scanner *>(payload);
+  auto *scanner = static_cast<LaTeX::Scanner *>(payload);
   return scanner->serialize(buffer);
 }
 
 void tree_sitter_latex_external_scanner_deserialize(void *payload,
                                                     const char *buffer,
                                                     unsigned length) {
-  LaTeX::Scanner *scanner = static_cast<LaTeX::Scanner *>(payload);
+  auto *scanner = static_cast<LaTeX::Scanner *>(payload);
   scanner->deserialize(buffer, length);
 }
 
 void tree_sitter_latex_external_scanner_destroy(void *payload) {
-  LaTeX::Scanner *scanner = static_cast<LaTeX::Scanner *>(payload);
+  auto *scanner = static_cast<LaTeX::Scanner *>(payload);
   delete scanner;
 }
 }
