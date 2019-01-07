@@ -15,6 +15,22 @@ module.exports = {
           $._parameter,
           $._parameter
         ]
+      },
+      gls: {
+        cs: $ => $.cs_gls,
+        parameters: $ => [
+          optional($.brack_group),
+          $._parameter,
+          optional($.brack_group)
+        ]
+      },
+      glsdisp: {
+        cs: $ => $.cs_glsdisp,
+        parameters: $ => [
+          optional($.brack_group),
+          $._parameter,
+          $._parameter
+        ]
       }
     }
   }

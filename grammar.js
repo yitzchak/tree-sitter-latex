@@ -94,6 +94,8 @@ let g = {
     $.cs_ensuremath,
     $.cs_expandafter,
     $.cs_fref,
+    $.cs_gls,
+    $.cs_glsdisp,
     $.cs_href,
     $.cs_hyperbaseurl,
     $.cs_hyperimage,
