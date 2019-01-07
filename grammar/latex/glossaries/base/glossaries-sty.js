@@ -16,9 +16,10 @@ module.exports = {
           $._parameter
         ]
       },
-      gls: {
-        cs: $ => $.cs_gls,
+      gls_acr: {
+        cs: $ => $.cs_gls_acr,
         parameters: $ => [
+          optional(choice($.star, $.plus)),
           optional($.brack_group),
           $._parameter,
           optional($.brack_group)
