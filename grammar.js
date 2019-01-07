@@ -94,6 +94,10 @@ let g = {
     $.cs_ensuremath,
     $.cs_expandafter,
     $.cs_fref,
+    $.cs_gls_acr,
+    $.cs_glsdisp,
+    $.cs_glsentry,
+    $.cs_glssee,
     $.cs_href,
     $.cs_hyperbaseurl,
     $.cs_hyperimage,
@@ -104,6 +108,7 @@ let g = {
     $.cs_item,
     $.cs_label,
     $.cs_let,
+    $.cs_longnewglossaryentry,
     $.cs_lstinline,
     $.cs_lua,
     $.cs_luacode,
@@ -111,8 +116,10 @@ let g = {
     $.cs_MakeShortVerb,
     $.cs_mint,
     $.cs_mintinline,
+    $.cs_newacronym,
     $.cs_newcommand,
     $.cs_newenvironment,
+    $.cs_newglossaryentry,
     $.cs_nocite,
     $.cs_ref,
     $.cs_refrange,
@@ -168,6 +175,7 @@ let g = {
     $.octal,
     $.par,
     $.parameter_ref,
+    $.plus,
     $.r,
     $.rbrack,
     $.short_verb_delim,
@@ -371,7 +379,8 @@ function defRule (mode, label, rule) {
 }
 
 function isOptional (p) {
-  return p.type === 'CHOICE' && p.members.length === 2 && p.members[1].type === 'BLANK'
+  return p.type === 'REPEAT' ||
+    (p.type === 'CHOICE' && p.members.some(member => member.type === 'BLANK'))
 }
 
 function defCmd (mode, label, { cs, parameters, local, alt }) {

@@ -7,9 +7,13 @@
         "src"
       ],
       "sources": [
-        "src/parser.c",
         "src/binding.cc",
         "src/catcode.cc",
+        "src/parser.c",
+        "src/scanner_control_sequences.cc",
+        "src/scanner_environments.cc",
+        "src/scanner_keywords.cc",
+        "src/scanner_names.cc",
         "src/scanner.cc"
       ],
       "cflags_c": [
