@@ -48,6 +48,7 @@ enum SymbolType {
   cs_fref,
   cs_gls_acr,
   cs_glsdisp,
+  cs_glsentry,
   cs_glssee,
   cs_href,
   cs_hyperbaseurl,

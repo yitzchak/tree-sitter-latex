@@ -33,6 +33,12 @@ module.exports = {
           $._parameter
         ]
       },
+      glsentry: {
+        cs: $ => $.cs_glsentry,
+        parameters: $ => [
+          $._parameter
+        ]
+      },
       glssee: {
         cs: $ => $.cs_glssee,
         parameters: $ => [
