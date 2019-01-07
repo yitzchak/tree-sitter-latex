@@ -32,6 +32,23 @@ module.exports = {
           $._parameter,
           $._parameter
         ]
+      },
+      glssee: {
+        cs: $ => $.cs_glssee,
+        parameters: $ => [
+          optional($.brack_group),
+          $._parameter,
+          $._parameter
+        ]
+      },
+      newacronym: {
+        cs: $ => $.cs_newacronym,
+        parameters: $ => [
+          optional($.brack_group),
+          $._parameter,
+          $._parameter,
+          $._parameter
+        ]
       }
     }
   }
