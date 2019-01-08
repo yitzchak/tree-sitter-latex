@@ -474,7 +474,7 @@ catcode with char code by letter
 (document
   (code
     (cs)
-    (charcode (backtick) (text_single))
+    (charcode (backtick) (text))
     (equals)
     (decimal)))
 
@@ -498,7 +498,7 @@ catcode with control sequence
 (document
   (code
     (cs)
-    (charcode (backtick) (text_single))
+    (charcode (backtick) (text))
     (equals)
     (cs)))
 

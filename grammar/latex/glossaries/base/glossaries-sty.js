@@ -4,16 +4,16 @@ module.exports = {
       longnewglossaryentry: {
         cs: $ => $.cs_longnewglossaryentry,
         parameters: $ => [
-          $._parameter,
-          $._parameter,
-          $._parameter
+          $._text_token_parameter,
+          $._text_token_parameter,
+          $._text_token_parameter
         ]
       },
       newglossaryentry: {
         cs: $ => $.cs_newglossaryentry,
         parameters: $ => [
-          $._parameter,
-          $._parameter
+          $._text_token_parameter,
+          $._text_token_parameter
         ]
       },
       gls_acr: {
@@ -21,7 +21,7 @@ module.exports = {
         parameters: $ => [
           optional(choice($.star, $.plus_sym)),
           optional($.brack_group),
-          $._parameter,
+          $._text_token_parameter,
           optional($.brack_group)
         ]
       },
@@ -29,31 +29,31 @@ module.exports = {
         cs: $ => $.cs_glsdisp,
         parameters: $ => [
           optional($.brack_group),
-          $._parameter,
-          $._parameter
+          $._text_token_parameter,
+          $._text_token_parameter
         ]
       },
       glsentry: {
         cs: $ => $.cs_glsentry,
         parameters: $ => [
-          $._parameter
+          $._text_token_parameter
         ]
       },
       glssee: {
         cs: $ => $.cs_glssee,
         parameters: $ => [
           optional($.brack_group),
-          $._parameter,
-          $._parameter
+          $._text_token_parameter,
+          $._text_token_parameter
         ]
       },
       newacronym: {
         cs: $ => $.cs_newacronym,
         parameters: $ => [
           optional($.brack_group),
-          $._parameter,
-          $._parameter,
-          $._parameter
+          $._text_token_parameter,
+          $._text_token_parameter,
+          $._text_token_parameter
         ]
       }
     }

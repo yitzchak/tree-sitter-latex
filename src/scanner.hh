@@ -78,6 +78,7 @@ enum SymbolType {
   cs_nocite,
   cs_ref,
   cs_refrange,
+  cs_relax,
   cs_section,
   cs_setlength,
   cs_tag,

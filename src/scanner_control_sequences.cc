@@ -69,6 +69,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"ProvidesFile", {cs, false, {{'@', '@', LETTER_CATEGORY}}}},
     {"ProvidesPackage", {cs, false, {{'@', '@', LETTER_CATEGORY}}}},
     {"ref", {cs_ref}},
+    {"relax", {cs_relax}},
     {"renewcommand", {cs_newcommand}},
     {"renewenvironment", {cs_newenvironment}},
     {"RequirePackage", {cs_use}},

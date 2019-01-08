@@ -54,6 +54,7 @@ function parenGroup ($, ...contents) {
 }
 
 let rules = {
+  _: [],
   common: [],
   math: [],
   nil: [],
@@ -130,6 +131,7 @@ let g = {
     $.cs_nocite,
     $.cs_ref,
     $.cs_refrange,
+    $.cs_relax,
     $.cs_section,
     $.cs_setlength,
     $.cs_tag,
@@ -219,26 +221,22 @@ let g = {
     $.comment
   ],
 
-  conflicts: $ => [
-    [$.lbrack, $.text]
-  ],
-
   rules: {
     document: $ => repeat($._text_mode),
 
     _nil_mode: $ => choice(
+      $._nil_group,
       $.active_char,
       $.alignment_tab,
       $.cs,
+      $.display_math_shift,
       $.ignored,
       $.invalid,
       $.math_shift,
-      $.display_math_shift,
       $.parameter_ref,
       $.subscript,
       $.superscript,
       $.text,
-      alias($.nil_group, $.group),
       ...rules.nil.map(rule => rule($))
     ),
 
@@ -254,10 +252,10 @@ let g = {
 
     _text_mode: $ => choice(
       $._common,
-      $.group,
+      $._text_group,
       $.par,
       $.semi_simple_group,
-      prec.dynamic(10, $.text),
+      $.text,
       // Underscore produces an error by default in LaTeX text mode. Some
       // some packages define underscore to produce \tex­tun­der­score. We assume
       // that this has been done since underscore is never actually subscript
@@ -269,49 +267,78 @@ let g = {
 
     _math_mode: $ => choice(
       $._common,
+      $._math_group,
       $.subscript,
       $.superscript,
-      alias($.math_group, $.group),
       alias($.text, $.math),
       ...rules.math.map(rule => rule($))
     ),
 
-    group: $ => group($, repeat($._text_mode)),
+    nil_group: $ => group($, repeat($._nil_mode)),
 
-    _text_token_parameter: $ => choice(
-      $.group,
+    _nil_group: $ => alias($.nil_group, $.group),
+
+    text_group: $ => group($, repeat($._text_mode)),
+
+    _text_group: $ => alias($.text_group, $.group),
+
+    math_group: $ => group($, repeat($._math_mode)),
+
+    _math_group: $ => alias($.math_group, $.group),
+
+    name_group: $ => group($, $.name),
+
+    _name_group: $ => alias($.name_group, $.group),
+
+    names_group: $ => group($, $.name, repeat(seq($.comma, $.name))),
+
+    _names_group: $ => alias($.names_group, $.group),
+
+    _nil_token_parameter: $ => choice(
+      $.cs,
+      $._nil_group,
       $.parameter_ref,
-      $.text_single,
-      $.cs
+      alias($.text_single, $.text)
     ),
 
-    _common_parameter: $ => choice(
+    _text_token_parameter: $ => choice(
+      $.cs,
+      $._text_group,
+      $.parameter_ref,
+      alias($.text_single, $.text)
+    ),
+
+    _math_token_parameter: $ => choice(
+      $.cs,
+      $._math_group,
+      $.parameter_ref,
+      alias($.text_single, $.math)
+    ),
+
+    _name_parameter: $ => choice(
+      $.cs,
+      $._name_group,
+      $.parameter_ref
+    ),
+
+    _common_expanded_parameter: $ => choice(
       $.parameter_ref,
       ...rules.common.map(rule => rule($))
     ),
 
-    _text_parameter: $ => choice(
-      $._common_parameter,
-      $.group,
-      $.text_single,
+    _text_expanded_parameter: $ => choice(
+      $._common_expanded_parameter,
+      $._text_group,
+      alias($.text_single, $.text),
       ...rules.text.map(rule => rule($))
     ),
 
-    _parameter: $ => choice($.group, $.cs),
-
-    math_group: $ => group($, repeat($._math_mode)),
-
-    _math_parameter: $ => choice(alias($.math_group, $.group), $.cs),
-
-    nil_group: $ => group($, repeat($._nil_mode)),
-
-    _nil_parameter: $ => choice(alias($.nil_group, $.group), $.cs),
-
-    name_group: $ => group($, $.name),
-
-    names_group: $ => group($, $.name, repeat(seq($.comma, $.name))),
-
-    _name_parameter: $ => choice(alias($.name_group, $.group), $.cs),
+    _math_expanded_parameter: $ => choice(
+      $._common_expanded_parameter,
+      $._math_group,
+      alias($.text_single, $.math),
+      ...rules.text.map(rule => rule($))
+    ),
 
     apply_group: $ => group($, $._cmd_apply, repeat($._text_mode)),
 
@@ -352,14 +379,6 @@ let g = {
     math_brack_group: $ => brackGroup($, repeat($._math_mode)),
 
     semi_simple_group: $ => semiSimpleGroup($, repeat($._text_mode)),
-
-    begingroup: $ => cmd($, $.cs_begingroup),
-
-    endgroup: $ => cmd($, $.cs_endgroup),
-
-    bgroup: $ => cmd($, $.cs_bgroup),
-
-    egroup: $ => cmd($, $.cs_egroup),
 
     dimension: $ => seq($.fixed, $.unit),
 
@@ -406,7 +425,7 @@ let g = {
       $.cs
     ),
 
-    charcode: $ => seq($.backtick, choice($.text_single, $.cs))
+    charcode: $ => seq($.backtick, choice(alias($.text_single, $.text), $.cs))
   }
 }
 

@@ -503,10 +503,6 @@ bool Scanner::scan_fixed(TSLexer *lexer) {
 }
 
 bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
-  if (valid_symbols[text_single]) {
-    return scan_single_char_symbol(lexer, text_single);
-  }
-
   switch (lexer->lookahead) {
   case '\'':
     if (valid_symbols[octal]) {
@@ -543,14 +539,23 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
   string keyword;
 
   if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
-    do {
+    keyword += lexer->lookahead;
+    lexer->advance(lexer, false);
+
+    // Mark the end in case we have to bail out for text_single
+    lexer->mark_end(lexer);
+
+    while (lexer->lookahead &&
+           catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
       keyword += lexer->lookahead;
       lexer->advance(lexer, false);
-    } while (lexer->lookahead &&
-             catcode_table[lexer->lookahead] == LETTER_CATEGORY);
+    }
   } else {
     keyword += lexer->lookahead;
     lexer->advance(lexer, false);
+
+    // Mark the end in case we have to bail out for text_single
+    lexer->mark_end(lexer);
   }
 
   auto it = keywords.find(keyword);
@@ -558,6 +563,11 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
   if (it != keywords.end() && valid_symbols[it->second]) {
     lexer->result_symbol = it->second;
     lexer->mark_end(lexer);
+    return true;
+  }
+
+  if (valid_symbols[text_single]) {
+    lexer->result_symbol = text_single;
     return true;
   }
 

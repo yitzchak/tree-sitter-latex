@@ -6,7 +6,7 @@ module.exports = {
         local: true,
         parameters: $ => [
           optional($.brack_group),
-          $.group,
+          $._text_token_parameter,
           $.verb_delim,
           alias($.verb_body, $.verbatim),
           alias($.verb_end_delim, $.verb_delim)
@@ -17,7 +17,7 @@ module.exports = {
         local: true,
         parameters: $ => [
           optional($.brack_group),
-          $.group,
+          $._text_token_parameter,
           $.verb_delim,
           alias($.verb_body, $.verbatim),
           alias($.verb_end_delim, $.verb_delim)
@@ -29,7 +29,7 @@ module.exports = {
         name: $ => $.env_name_minted,
         beginParameters: $ => [
           optional($.brack_group),
-          optional($._parameter),
+          optional($._text_token_parameter),
           $.eol
         ],
         contents: $ => [

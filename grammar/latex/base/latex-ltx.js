@@ -7,7 +7,7 @@ module.exports = {
       },
       ensuremath: {
         cs: $ => $.cs_ensuremath,
-        parameters: $ => [alias($.math_group, $.group)]
+        parameters: $ => [$._math_token_parameter]
       },
       label: {
         cs: $ => $.cs_label,
@@ -15,7 +15,7 @@ module.exports = {
           // Base LaTeX doesn't actually allow an optional arguments, but
           // cleveref does. It's just easier to join the two definitions.
           optional($.brack_group),
-          $._parameter
+          $._text_token_parameter
         ]
       },
       newcommand: {
@@ -25,7 +25,7 @@ module.exports = {
           $._cs_parameter,
           optional($.brack_group),
           optional($.brack_group),
-          $._nil_parameter
+          $._nil_token_parameter
         ]
       },
       newenvironment: {
@@ -35,8 +35,8 @@ module.exports = {
           alias($.name_group, $.group),
           optional($.brack_group),
           optional($.brack_group),
-          $._nil_parameter,
-          $._nil_parameter
+          $._nil_token_parameter,
+          $._nil_token_parameter
         ]
       },
       ref: {
@@ -46,7 +46,7 @@ module.exports = {
           // adds \ref* and \pageref*. This combined with the starred versions
           // of varioref makes just simpler to define one command.
           optional($.star),
-          $._parameter
+          $._text_token_parameter
         ]
       },
       setlength: {
@@ -71,16 +71,16 @@ module.exports = {
         name: $ => $.env_name_tabular,
         beginParameters: $ => [
           optional($.brack_group),
-          $._parameter
+          $._text_token_parameter
         ],
         contents: $ => [repeat($._text_mode)]
       },
       tabularstar: {
         name: $ => $.env_name_tabularstar,
         beginParameters: $ => [
-          $._parameter,
+          $._text_token_parameter,
           optional($.brack_group),
-          $._parameter
+          $._text_token_parameter
         ],
         contents: $ => [repeat($._text_mode)]
       }
@@ -91,7 +91,7 @@ module.exports = {
       mathstyle: {
         cs: $ => $.cs_mathstyle,
         parameters: $ => [
-          $._math_parameter
+          $._math_token_parameter
         ]
       }
     },
@@ -100,7 +100,7 @@ module.exports = {
         name: $ => $.env_name_array,
         beginParameters: $ => [
           optional($.brack_group),
-          $._parameter
+          $._text_token_parameter
         ]
       },
       math: {
@@ -112,12 +112,12 @@ module.exports = {
     commands: {
       bibitem: {
         cs: $ => $.cs_bibitem,
-        parameters: $ => [optional($.brack_group), $._parameter]
+        parameters: $ => [optional($.brack_group), $._text_token_parameter]
       },
       emph: {
         cs: $ => $.cs_emph,
         parameters: $ => [
-          $._parameter
+          $._text_token_parameter
         ]
       },
       item: {
@@ -133,9 +133,8 @@ module.exports = {
       section: {
         cs: $ => $.cs_section,
         parameters: $ => [
-          optional($.star),
-          optional($.brack_group),
-          $._parameter
+          optional(choice($.star, $.brack_group)),
+          $._text_token_parameter
         ]
       },
       use_209: {
@@ -148,7 +147,7 @@ module.exports = {
       textstyle: {
         cs: $ => $.cs_textstyle,
         parameters: $ => [
-          $._parameter
+          $._text_token_parameter
         ]
       },
       use: {
@@ -202,7 +201,7 @@ module.exports = {
       },
       thebibliography: {
         name: $ => $.env_name_thebibliography,
-        beginParameters: $ => [$._parameter]
+        beginParameters: $ => [$._text_token_parameter]
       }
     },
     rules: {
