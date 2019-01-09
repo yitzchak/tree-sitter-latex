@@ -59,6 +59,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"mathsf", {cs_mathstyle}},
     {"mathtt", {cs_mathstyle}},
     {"mit", {cs_mathstyle}},
+    {"multicolumn", {cs_multicolumn}},
     {"newcommand", {cs_newcommand}},
     {"newenvironment", {cs_newenvironment}},
     {"newline", {cs_newline}},

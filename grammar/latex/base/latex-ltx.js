@@ -93,6 +93,14 @@ module.exports = {
         parameters: $ => [
           $._math_token_parameter
         ]
+      },
+      multicolumn: {
+        cs: $ => $.cs_multicolumn,
+        parameters: $ => [
+          $._math_token_parameter,
+          $._math_token_parameter,
+          $._math_token_parameter
+        ]
       }
     },
     environments: {
@@ -123,6 +131,14 @@ module.exports = {
       item: {
         cs: $ => $.cs_item,
         parameters: $ => [optional($.brack_group)]
+      },
+      multicolumn: {
+        cs: $ => $.cs_multicolumn,
+        parameters: $ => [
+          $._text_token_parameter,
+          $._text_token_parameter,
+          $._text_token_parameter
+        ]
       },
       newline: {
         cs: $ => $.cs_newline,

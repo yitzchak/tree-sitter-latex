@@ -40,13 +40,6 @@ module.exports = {
           $._nil_group
         ]
       },
-      expandafter: {
-        cs: $ => $.cs_expandafter,
-        parameters: $ => [
-          $._text_token_parameter,
-          $._text_expanded_parameter
-        ]
-      },
       input: {
         cs: $ => $.cs_input,
         parameters: $ => [$._text_token_parameter]
@@ -63,7 +56,27 @@ module.exports = {
       _cmd: $ => seq($.cs, $._cmd_apply)
     }
   },
+  math: {
+    commands: {
+      expandafter: {
+        cs: $ => $.cs_expandafter,
+        parameters: $ => [
+          $._math_token_parameter,
+          $._math_expanded_parameter
+        ]
+      }
+    }
+  },
   text: {
+    commands: {
+      expandafter: {
+        cs: $ => $.cs_expandafter,
+        parameters: $ => [
+          $._text_token_parameter,
+          $._text_expanded_parameter
+        ]
+      }
+    },
     rules: {
       tex_display_math: $ => seq(
         $.display_math_shift,

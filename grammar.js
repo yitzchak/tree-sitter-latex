@@ -123,6 +123,7 @@ let g = {
     $.cs_mathstyle,
     $.cs_mint,
     $.cs_mintinline,
+    $.cs_multicolumn,
     $.cs_newacronym,
     $.cs_newcommand,
     $.cs_newenvironment,
@@ -337,7 +338,7 @@ let g = {
       $._common_expanded_parameter,
       $._math_group,
       alias($.text_single, $.math),
-      ...rules.text.map(rule => rule($))
+      ...rules.math.map(rule => rule($))
     ),
 
     apply_group: $ => group($, $._cmd_apply, repeat($._text_mode)),
@@ -441,7 +442,9 @@ function isOptional (p) {
 }
 
 function defCmd (mode, label, { cs, parameters, local }) {
-  g.rules[label] = function ($) {
+  const cmdSym = (label in g.rules) ? `${mode}_${label}` : label
+
+  g.rules[cmdSym] = function ($) {
     const head = []
     const body = parameters ? parameters($) : []
     const tail = []
@@ -465,7 +468,7 @@ function defCmd (mode, label, { cs, parameters, local }) {
         tail.length === 0 ? undefined : (tail.length === 1 ? tail[0] : seq(...tail)))])
   }
 
-  rules[mode].push($ => $[label])
+  rules[mode].push($ => label === cmdSym ? $[cmdSym] : alias($[cmdSym], $[label]))
 }
 
 function defEnv (mode, label, { name, beginParameters, endParameters, contents, bare }) {

@@ -70,6 +70,7 @@ enum SymbolType {
   cs_mathstyle,
   cs_mint,
   cs_mintinline,
+  cs_multicolumn,
   cs_newacronym,
   cs_newcommand,
   cs_newenvironment,

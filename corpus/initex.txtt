@@ -527,7 +527,7 @@ input
 ================================================================================
 expandafter
 ================================================================================
-\expandafter\def\expandafter#1\bar{wibble}
+\expandafter\def\expandafter{foo}\bar{wibble}
 --------------------------------------------------------------------------------
 (document
   (expandafter
@@ -535,9 +535,27 @@ expandafter
     (cs)
     (expandafter
       (cs)
-      (parameter_ref)
+      (group (l) (text) (r))
       (cs)))
   (group (l) (text) (r)))
+
+================================================================================
+expandafter im math mode
+================================================================================
+\[\expandafter\def\expandafter{foo}\bar{wibble}\]
+--------------------------------------------------------------------------------
+(document
+  (latex_display_math
+    (cs)
+    (expandafter
+      (cs)
+      (cs)
+      (expandafter
+        (cs)
+        (group (l) (math) (r))
+        (cs)))
+    (group (l) (math) (r))
+    (cs)))
 
 ================================================================================
 expandafter - error recovery with exit
