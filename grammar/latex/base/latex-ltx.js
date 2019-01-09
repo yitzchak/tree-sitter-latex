@@ -132,6 +132,10 @@ module.exports = {
         cs: $ => $.cs_item,
         parameters: $ => [optional($.brack_group)]
       },
+      marginpar: {
+        cs: $ => $.cs_marginpar,
+        parameters: $ => [optional($.brack_group), $._text_token_parameter]
+      },
       multicolumn: {
         cs: $ => $.cs_multicolumn,
         parameters: $ => [

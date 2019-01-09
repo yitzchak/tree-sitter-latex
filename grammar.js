@@ -120,6 +120,7 @@ let g = {
     $.cs_luacode,
     $.cs_make_verb_delim,
     $.cs_MakeShortVerb,
+    $.cs_marginpar,
     $.cs_mathstyle,
     $.cs_mint,
     $.cs_mintinline,

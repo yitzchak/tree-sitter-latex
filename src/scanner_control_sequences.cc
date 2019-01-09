@@ -51,6 +51,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"LoadClassWithOptions", {cs_use}},
     {"makeatletter", {cs, false, {{'@', '@', LETTER_CATEGORY}}}},
     {"makeatother", {cs, false, {{'@', '@', OTHER_CATEGORY}}}},
+    {"marginpar", {cs_marginpar}},
     {"mathbf", {cs_mathstyle}},
     {"mathcal", {cs_mathstyle}},
     {"mathit", {cs_mathstyle}},
