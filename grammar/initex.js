@@ -42,7 +42,7 @@ module.exports = {
       },
       input: {
         cs: $ => $.cs_input,
-        parameters: $ => [$._text_token_parameter]
+        parameters: $ => [$._text_token]
       },
       let: {
         cs: $ => $.cs_let,
@@ -61,7 +61,7 @@ module.exports = {
       expandafter: {
         cs: $ => $.cs_expandafter,
         parameters: $ => [
-          $._math_token_parameter,
+          $._math_token,
           $._math_expanded_parameter
         ]
       }
@@ -72,7 +72,7 @@ module.exports = {
       expandafter: {
         cs: $ => $.cs_expandafter,
         parameters: $ => [
-          $._text_token_parameter,
+          $._text_token,
           $._text_expanded_parameter
         ]
       }

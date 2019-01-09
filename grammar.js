@@ -80,6 +80,7 @@ let g = {
     $.comment_tag,
     $.comment_tex,
     $.comment,
+    $.cs_author,
     $.cs_begin,
     $.cs_begingroup,
     $.cs_bgroup,
@@ -87,6 +88,7 @@ let g = {
     $.cs_cite,
     $.cs_cites,
     $.cs_code,
+    $.cs_date,
     $.cs_def,
     $.cs_delete_verb_delim,
     $.cs_DeleteShortVerb,
@@ -99,6 +101,7 @@ let g = {
     $.cs_endinput,
     $.cs_ensuremath,
     $.cs_expandafter,
+    $.cs_frac,
     $.cs_fref,
     $.cs_gls_acr,
     $.cs_glsdisp,
@@ -138,8 +141,12 @@ let g = {
     $.cs_relax,
     $.cs_section,
     $.cs_setlength,
+    $.cs_sqrt,
+    $.cs_stackrel,
     $.cs_tag,
     $.cs_textstyle,
+    $.cs_thanks,
+    $.cs_title,
     $.cs_url,
     $.cs_use_209,
     $.cs_use,
@@ -299,21 +306,21 @@ let g = {
 
     _names_group: $ => alias($.names_group, $.group),
 
-    _nil_token_parameter: $ => choice(
+    _nil_token: $ => choice(
       $.cs,
       $._nil_group,
       $.parameter_ref,
       alias($.text_single, $.text)
     ),
 
-    _text_token_parameter: $ => choice(
+    _text_token: $ => choice(
       $.cs,
       $._text_group,
       $.parameter_ref,
       alias($.text_single, $.text)
     ),
 
-    _math_token_parameter: $ => choice(
+    _math_token: $ => choice(
       $.cs,
       $._math_group,
       $.parameter_ref,

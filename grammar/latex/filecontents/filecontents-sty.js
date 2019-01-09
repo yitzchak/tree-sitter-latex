@@ -5,7 +5,7 @@ module.exports = {
         name: $ => $.env_name_filecontents,
         bare: true,
         beginParameters: $ => [
-          $._text_token_parameter,
+          $._text_token,
           $.eol
         ],
         contents: $ => [$.verbatim]
