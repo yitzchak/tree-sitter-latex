@@ -542,7 +542,7 @@ expandafter
 ================================================================================
 expandafter im math mode
 ================================================================================
-\[\expandafter\def\expandafter{foo}\bar{wibble}\]
+\[\expandafter\def\expandafter{foo}\baz{wibble}\]
 --------------------------------------------------------------------------------
 (document
   (latex_display_math

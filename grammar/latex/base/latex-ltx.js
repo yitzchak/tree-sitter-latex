@@ -88,6 +88,12 @@ module.exports = {
   },
   math: {
     commands: {
+      mathaccent: {
+        cs: $ => $.cs_mathaccent,
+        parameters: $ => [
+          $._math_token_parameter
+        ]
+      },
       mathstyle: {
         cs: $ => $.cs_mathstyle,
         parameters: $ => [
