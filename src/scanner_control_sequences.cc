@@ -63,6 +63,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"newcommand", {cs_newcommand}},
     {"newenvironment", {cs_newenvironment}},
     {"newline", {cs_newline}},
+    {"newtheorem", {cs_newtheorem}},
     {"paragraph", {cs_section}},
     {"part", {cs_section}},
     {"providecommand", {cs_newcommand}},

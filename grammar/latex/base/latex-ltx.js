@@ -144,6 +144,24 @@ module.exports = {
         cs: $ => $.cs_newline,
         parameters: $ => [optional($.star), optional($._glue_brack_parameter)]
       },
+      newtheorem: {
+        cs: $ => $.cs_newtheorem,
+        local: true,
+        parameters: $ => [
+          optional($.star),
+          $._text_token_parameter,
+          choice(
+            seq(
+              $.brack_group,
+              $._text_token_parameter
+            ),
+            seq(
+              $._text_token_parameter,
+              optional($.brack_group)
+            )
+          )
+        ]
+      },
       // section is actually in the class file, but it's here in the core for
       // simplicity.
       section: {
@@ -218,6 +236,10 @@ module.exports = {
       thebibliography: {
         name: $ => $.env_name_thebibliography,
         beginParameters: $ => [$._text_token_parameter]
+      },
+      theorem: {
+        name: $ => $.env_name_theorem,
+        beginParameters: $ => [optional($.brack_group)]
       }
     },
     rules: {

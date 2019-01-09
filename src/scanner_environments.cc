@@ -54,6 +54,7 @@ unordered_map<string, Environment> Scanner::environments = {
     {"tabular", {env_name_tabular}},
     {"tabular*", {env_name_tabularstar}},
     {"thebibliography", {env_name_thebibliography}},
+    {"theorem", {env_name_theorem}},
     // latex breqn breqn-sty
     {"darray", {env_name_dmath}},
     {"darray*", {env_name_dmath}},
