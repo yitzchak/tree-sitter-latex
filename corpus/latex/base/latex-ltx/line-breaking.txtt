@@ -32,3 +32,33 @@ newline with optional parameter
         (minus) (dimension (fixed) (unit))
         (plus) (dimension (fixed) (unit)))
       (rbrack))))
+
+================================================================================
+newline* with optional parameter
+================================================================================
+\newline*[1in minus 0.5in plus 1in]
+--------------------------------------------------------------------------------
+(document
+  (newline
+    (cs)
+    (star)
+    (brack_group
+      (lbrack)
+      (glue
+        (dimension (fixed) (unit))
+        (minus) (dimension (fixed) (unit))
+        (plus) (dimension (fixed) (unit)))
+      (rbrack))))
+
+================================================================================
+obeycr and restorecr
+================================================================================
+\obeycr
+\restorecr
+foo
+--------------------------------------------------------------------------------
+ (document
+   (cs)
+   (active_char)
+   (cs)
+   (text)) 
