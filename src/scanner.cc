@@ -98,7 +98,7 @@ int Scanner::match_length(TSLexer *lexer, string value,
 bool Scanner::match_or_advance(TSLexer *lexer, string value) {
   bool advanced = false;
 
-  for (char ch : value) {
+  for (wchar_t ch : convert.from_bytes(value)) {
     switch (ch) {
     case '\\':
       if (catcode_table[lexer->lookahead] != ESCAPE_CATEGORY) {
