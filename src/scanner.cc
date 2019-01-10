@@ -47,7 +47,6 @@ bool Scanner::scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols, S
 
   if (lexer->lookahead) {
     start_delim = lexer->lookahead;
-
     return scan_single_char_symbol(lexer, symbol);
   }
 
@@ -59,11 +58,9 @@ bool Scanner::scan_verb_end_delim(TSLexer *lexer) {
     return scan_single_char_symbol(lexer, verb_end_delim);
   }
 
+  // EOL is not allowed in inline verbatim
   if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
-    lexer->result_symbol =
-        exit; // don't eat the newline (for consistency)
-    lexer->mark_end(lexer);
-    return true;
+    return scan_empty_symbol(lexer, exit);
   }
 
   return false;
@@ -585,49 +582,64 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
   return true;
 }
 
+bool Scanner::scan_cmd_apply(TSLexer *lexer) {
+  auto it = control_sequences.find(cs_name);
+  if (it != control_sequences.end()) {
+    catcode_table.assign(it->second.intervals);
+  }
+
+  return scan_empty_symbol(lexer, _cmd_apply);
+}
+
+bool Scanner::scan_env_begin(TSLexer *lexer) {
+  catcode_table.push();
+  auto it = environments.find(e_name);
+  if (it != environments.end()) {
+    catcode_table.assign(it->second.intervals);
+  }
+
+  return scan_empty_symbol(lexer, _env_begin);
+}
+
+bool Scanner::scan_env_end(TSLexer *lexer) {
+  catcode_table.pop();
+
+  return scan_empty_symbol(lexer, _env_end);
+}
+
+bool Scanner::scan_scope_begin(TSLexer *lexer) {
+  catcode_table.push();
+
+  return scan_empty_symbol(lexer, _scope_begin);
+}
+
+bool Scanner::scan_scope_end(TSLexer *lexer) {
+  catcode_table.pop();
+
+  return scan_empty_symbol(lexer, _scope_end);
+}
+
 bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
   Category code = catcode_table[lexer->lookahead];
 
   if (valid_symbols[_cmd_apply]) {
-    auto it = control_sequences.find(cs_name);
-    if (it != control_sequences.end()) {
-      catcode_table.assign(it->second.intervals);
-    }
-    lexer->mark_end(lexer);
-    lexer->result_symbol = _cmd_apply;
-    return true;
+    return scan_cmd_apply(lexer);
   }
 
   if (valid_symbols[_env_begin]) {
-    catcode_table.push();
-    auto it = environments.find(e_name);
-    if (it != environments.end()) {
-      catcode_table.assign(it->second.intervals);
-    }
-    lexer->mark_end(lexer);
-    lexer->result_symbol = _env_begin;
-    return true;
+    return scan_env_begin(lexer);
   }
 
   if (valid_symbols[_env_end]) {
-    catcode_table.pop();
-    lexer->mark_end(lexer);
-    lexer->result_symbol = _env_end;
-    return true;
+    return scan_env_end(lexer);
   }
 
   if (valid_symbols[_scope_begin]) {
-    catcode_table.push();
-    lexer->mark_end(lexer);
-    lexer->result_symbol = _scope_begin;
-    return true;
+    return scan_scope_begin(lexer);
   }
 
   if (valid_symbols[_scope_end]) {
-    catcode_table.pop();
-    lexer->mark_end(lexer);
-    lexer->result_symbol = _scope_end;
-    return true;
+    return scan_scope_end(lexer);
   }
 
   if (!lexer->lookahead) {

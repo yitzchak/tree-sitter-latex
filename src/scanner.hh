@@ -292,6 +292,16 @@ class Scanner {
 
   bool scan_text(TSLexer *lexer, const bool *valid_symbols);
 
+  bool scan_cmd_apply(TSLexer *lexer);
+
+  bool scan_env_begin(TSLexer *lexer);
+
+  bool scan_env_end(TSLexer *lexer);
+
+  bool scan_scope_begin(TSLexer *lexer);
+
+  bool scan_scope_end(TSLexer *lexer);
+
 public:
   Scanner() {}
 
