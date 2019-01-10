@@ -122,10 +122,12 @@ let g = {
     $.cs_lua,
     $.cs_luacode,
     $.cs_make_verb_delim,
+    $.cs_makebox,
     $.cs_MakeShortVerb,
     $.cs_marginpar,
     $.cs_mathaccent,
     $.cs_mathstyle,
+    $.cs_mbox,
     $.cs_mint,
     $.cs_mintinline,
     $.cs_multicolumn,
@@ -136,6 +138,7 @@ let g = {
     $.cs_newline,
     $.cs_newtheorem,
     $.cs_nocite,
+    $.cs_parbox,
     $.cs_ref,
     $.cs_refrange,
     $.cs_relax,
@@ -400,6 +403,8 @@ let g = {
     ),
 
     dimension_brack_group: $ => brackGroup($, $._dimension),
+
+    _dimension_brack_group: $ => alias($.dimension_brack_group, $.brack_group),
 
     dimension_group: $ => group($, $._dimension),
 

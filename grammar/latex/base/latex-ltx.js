@@ -171,9 +171,23 @@ module.exports = {
         cs: $ => $.cs_item,
         parameters: $ => [optional($.brack_group)]
       },
+      makebox: {
+        cs: $ => $.cs_makebox,
+        parameters: $ => [
+          optional($._dimension_brack_group),
+          optional($.brack_group),
+          $._text_token
+        ]
+      },
       marginpar: {
         cs: $ => $.cs_marginpar,
         parameters: $ => [optional($.brack_group), $._text_token]
+      },
+      mbox: {
+        cs: $ => $.cs_mbox,
+        parameters: $ => [
+          $._text_token
+        ]
       },
       multicolumn: {
         cs: $ => $.cs_multicolumn,
@@ -203,6 +217,16 @@ module.exports = {
               optional($.brack_group)
             )
           )
+        ]
+      },
+      parbox: {
+        cs: $ => $.cs_parbox,
+        parameters: $ => [
+          optional($.brack_group),
+          optional($._dimension_brack_group),
+          optional($.brack_group),
+          $._dimension_parameter,
+          $._text_token
         ]
       },
       // section is actually in the class file, but it's here in the core for
