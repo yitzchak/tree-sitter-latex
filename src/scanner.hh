@@ -1,6 +1,8 @@
 #ifndef SCANNER_HH_
 #define SCANNER_HH_
 
+#include <codecvt>
+#include <locale>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -204,6 +206,7 @@ struct Environment {
 };
 
 class Scanner {
+  std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
   std::string cs_name, e_name, u_name;
   int32_t start_delim = 0;
   CatCodeTable catcode_table = {
@@ -249,7 +252,8 @@ class Scanner {
 
   bool match_or_advance(TSLexer *lexer, std::string value);
 
-  bool scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols, SymbolType symbol);
+  bool scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols,
+                             SymbolType symbol);
 
   bool scan_verb_end_delim(TSLexer *lexer);
 

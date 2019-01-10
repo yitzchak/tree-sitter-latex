@@ -37,7 +37,8 @@ void Scanner::deserialize(const char *buffer, unsigned length) {
   buf >> start_delim >> cs_name >> e_name >> u_name >> catcode_table;
 }
 
-bool Scanner::scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols, SymbolType symbol) {
+bool Scanner::scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols,
+                                    SymbolType symbol) {
   // NOTE: ' ' (space) is a perfectly valid delim, as is %
   // Also: The first * (if present) is gobbled by the main grammar, but the
   // second is a valid delim
@@ -222,7 +223,7 @@ bool Scanner::scan_cs(TSLexer *lexer, const bool *valid_symbols) {
 
   if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
     do {
-      cs_name += lexer->lookahead;
+      cs_name += convert.to_bytes(lexer->lookahead);
       lexer->advance(lexer, false);
     } while (lexer->lookahead &&
              catcode_table[lexer->lookahead] == LETTER_CATEGORY);
@@ -243,7 +244,7 @@ bool Scanner::scan_cs(TSLexer *lexer, const bool *valid_symbols) {
 
     return true;
   } else {
-    cs_name += lexer->lookahead;
+    cs_name += convert.to_bytes(lexer->lookahead);
     lexer->advance(lexer, false);
   }
 
@@ -318,7 +319,7 @@ bool Scanner::scan_env_name(TSLexer *lexer) {
   e_name.clear();
 
   while (lexer->lookahead && flags[catcode_table[lexer->lookahead]]) {
-    e_name += lexer->lookahead;
+    e_name += convert.to_bytes(lexer->lookahead);
     lexer->advance(lexer, false);
   }
 
@@ -342,7 +343,7 @@ bool Scanner::scan_name(TSLexer *lexer) {
 
   while (lexer->lookahead && lexer->lookahead != ',' &&
          flags[catcode_table[lexer->lookahead]]) {
-    u_name += lexer->lookahead;
+    u_name += convert.to_bytes(lexer->lookahead);
     lexer->advance(lexer, false);
   }
 
@@ -535,7 +536,7 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
   string keyword;
 
   if (catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
-    keyword += lexer->lookahead;
+    keyword += convert.to_bytes(lexer->lookahead);
     lexer->advance(lexer, false);
 
     // Mark the end in case we have to bail out for text_single
@@ -543,11 +544,11 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
 
     while (lexer->lookahead &&
            catcode_table[lexer->lookahead] == LETTER_CATEGORY) {
-      keyword += lexer->lookahead;
+      keyword += convert.to_bytes(lexer->lookahead);
       lexer->advance(lexer, false);
     }
   } else {
-    keyword += lexer->lookahead;
+    keyword += convert.to_bytes(lexer->lookahead);
     lexer->advance(lexer, false);
 
     // Mark the end in case we have to bail out for text_single
@@ -679,7 +680,7 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
 
   switch (code) {
   case ESCAPE_CATEGORY:
-    if (valid_symbol_in_range(valid_symbols, cs_begin, cs)) {
+    if (valid_symbol_in_range(valid_symbols, cs_author, cs)) {
       return scan_cs(lexer, valid_symbols);
     }
     break;
