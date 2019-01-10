@@ -7,7 +7,7 @@ module.exports = {
           optional($.star),
           optional($.brack_group),
           optional($.brack_group),
-          $._parameter
+          $._text_token
         ]
       },
       cites: {
@@ -19,7 +19,7 @@ module.exports = {
               seq(
                 optional($.brack_group),
                 optional($.brack_group),
-                $._parameter
+                $._text_token
               )
             )
           )
@@ -27,16 +27,16 @@ module.exports = {
       },
       nocite: {
         cs: $ => $.cs_nocite,
-        parameters: $ => [$._parameter]
+        parameters: $ => [$._text_token]
       },
       volcite: {
         cs: $ => $.cs_volcite,
         parameters: $ => [
           optional($.star),
           optional($.brack_group),
-          $._parameter,
+          $._text_token,
           optional($.brack_group),
-          $._parameter
+          $._text_token
         ]
       },
       volcites: {
@@ -47,9 +47,9 @@ module.exports = {
             repeat1(
               seq(
                 optional($.brack_group),
-                $._parameter,
+                $._text_token,
                 optional($.brack_group),
-                $._parameter
+                $._text_token
               )
             )
           )

@@ -10,7 +10,7 @@ quux
 (document
   (text)
   (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -30,8 +30,7 @@ quux
     (begin
       (cs)
       (group (l) (name) (r))
-      (brack_group (lbrack) (text) (rbrack))
-      (eol))
+      (brack_group (lbrack) (text) (rbrack)))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -48,7 +47,7 @@ quux
 (document
   (text)
   (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -65,7 +64,7 @@ quux
 (document
   (text)
   (dseries_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (text)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -82,7 +81,7 @@ quux
 (document
   (text)
   (dseries_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (text)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -99,7 +98,7 @@ quux
 (document
   (text)
   (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -116,7 +115,7 @@ quux
 (document
   (text)
   (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -133,7 +132,7 @@ quux
 (document
   (text)
   (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))
@@ -150,7 +149,7 @@ quux
 (document
   (text)
   (dmath_env
-    (begin (cs) (group (l) (name) (r)) (eol))
+    (begin (cs) (group (l) (name) (r)))
     (math)
     (end (cs) (group (l) (name) (r))))
   (text))

@@ -6,7 +6,7 @@ module.exports = {
     environments: {
       alignat: {
         name: $ => $.env_name_alignat,
-        beginParameters: $ => [$._parameter],
+        beginParameters: $ => [$._text_token],
         contents: $ => [repeat($._math_mode)]
       }
     }
@@ -15,7 +15,7 @@ module.exports = {
     commands: {
       tag: {
         cs: $ => $.cs_tag,
-        parameters: $ => [$._parameter]
+        parameters: $ => [$._text_token]
       }
     }
   }

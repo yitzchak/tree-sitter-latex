@@ -11,7 +11,7 @@ module.exports = {
             )
           ),
           optional($.brack_group),
-          $._parameter
+          $._text_token
         ]
       }
     }

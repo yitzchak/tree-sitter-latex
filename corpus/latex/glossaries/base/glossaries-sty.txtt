@@ -105,7 +105,7 @@ gls+ with optional parameters
 (document
   (gls_acr
     (cs)
-    (plus)
+    (plus_sym)
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))))

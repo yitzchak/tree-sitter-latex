@@ -1,6 +1,8 @@
 #ifndef SCANNER_HH_
 #define SCANNER_HH_
 
+#include <codecvt>
+#include <locale>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -27,6 +29,7 @@ enum SymbolType {
   comment_tag,
   comment_tex,
   comment,
+  cs_author,
   cs_begin,
   cs_begingroup,
   cs_bgroup,
@@ -34,17 +37,20 @@ enum SymbolType {
   cs_cite,
   cs_cites,
   cs_code,
+  cs_date,
   cs_def,
   cs_delete_verb_delim,
   cs_DeleteShortVerb,
   cs_display_math_begin,
   cs_display_math_end,
   cs_egroup,
+  cs_emph,
   cs_end,
   cs_endgroup,
   cs_endinput,
   cs_ensuremath,
   cs_expandafter,
+  cs_frac,
   cs_fref,
   cs_gls_acr,
   cs_glsdisp,
@@ -65,18 +71,37 @@ enum SymbolType {
   cs_lua,
   cs_luacode,
   cs_make_verb_delim,
+  cs_makebox,
   cs_MakeShortVerb,
+  cs_marginpar,
+  cs_mathaccent,
+  cs_mathstyle,
+  cs_mbox,
   cs_mint,
   cs_mintinline,
+  cs_multicolumn,
   cs_newacronym,
   cs_newcommand,
   cs_newenvironment,
   cs_newglossaryentry,
+  cs_newline,
+  cs_newtheorem,
   cs_nocite,
+  cs_obeycr,
+  cs_parbox,
   cs_ref,
   cs_refrange,
+  cs_relax,
+  cs_restorecr,
   cs_section,
+  cs_setlength,
+  cs_sqrt,
+  cs_stackrel,
+  cs_string,
   cs_tag,
+  cs_textstyle,
+  cs_thanks,
+  cs_title,
   cs_url,
   cs_use_209,
   cs_use,
@@ -101,12 +126,16 @@ enum SymbolType {
   env_name_luacode,
   env_name_luacodestar,
   env_name_math,
+  env_name_minipage,
   env_name_minted,
+  env_name_picture,
+  env_name_table,
   env_name_tabu,
   env_name_tabular,
   env_name_tabularstar,
   env_name_text,
   env_name_thebibliography,
+  env_name_theorem,
   env_name_verbatim,
   env_name_Verbatim,
   env_name,
@@ -121,20 +150,25 @@ enum SymbolType {
   invalid,
   l,
   lbrack,
+  lparen,
   math_shift_end,
   math_shift,
+  minus,
   name,
   octal,
   par,
   parameter_ref,
+  plus_sym,
   plus,
   r,
   rbrack,
+  rparen,
   short_verb_delim,
   spread,
   star,
   subscript,
   superscript,
+  text_non_escape,
   text_single,
   text,
   to,
@@ -176,6 +210,7 @@ struct Environment {
 };
 
 class Scanner {
+  std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
   std::string cs_name, e_name, u_name;
   int32_t start_delim = 0;
   CatCodeTable catcode_table = {
@@ -221,7 +256,8 @@ class Scanner {
 
   bool match_or_advance(TSLexer *lexer, std::string value);
 
-  bool scan_verb_start_delim(TSLexer *lexer, SymbolType symbol);
+  bool scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols,
+                             SymbolType symbol);
 
   bool scan_verb_end_delim(TSLexer *lexer);
 
@@ -263,6 +299,16 @@ class Scanner {
   bool scan_parameter_ref(TSLexer *lexer);
 
   bool scan_text(TSLexer *lexer, const bool *valid_symbols);
+
+  bool scan_cmd_apply(TSLexer *lexer);
+
+  bool scan_env_begin(TSLexer *lexer);
+
+  bool scan_env_end(TSLexer *lexer);
+
+  bool scan_scope_begin(TSLexer *lexer);
+
+  bool scan_scope_end(TSLexer *lexer);
 
 public:
   Scanner() {}

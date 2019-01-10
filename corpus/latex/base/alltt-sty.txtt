@@ -11,7 +11,8 @@ $foo$ \(bar\) \emph{quux} ~ % wibble
     (text)
     (latex_inline_math (cs) (math) (cs))
     (text)
-    (cs)
-    (group (l) (text) (r))
+    (emph
+      (cs)
+      (group (l) (text) (r)))
     (text)
     (end (cs) (group (l) (name) (r)))))

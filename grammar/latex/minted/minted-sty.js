@@ -6,10 +6,13 @@ module.exports = {
         local: true,
         parameters: $ => [
           optional($.brack_group),
-          $.group,
+          $._text_token,
           $.verb_delim,
           alias($.verb_body, $.verbatim),
-          alias($.verb_end_delim, $.verb_delim)
+          choice(
+            alias($.verb_end_delim, $.verb_delim),
+            $.exit
+          )
         ]
       },
       mintinline: {
@@ -17,10 +20,13 @@ module.exports = {
         local: true,
         parameters: $ => [
           optional($.brack_group),
-          $.group,
+          $._text_token,
           $.verb_delim,
           alias($.verb_body, $.verbatim),
-          alias($.verb_end_delim, $.verb_delim)
+          choice(
+            alias($.verb_end_delim, $.verb_delim),
+            $.exit
+          )
         ]
       }
     },
@@ -29,7 +35,7 @@ module.exports = {
         name: $ => $.env_name_minted,
         beginParameters: $ => [
           optional($.brack_group),
-          optional($._parameter),
+          optional($._text_token),
           $.eol
         ],
         contents: $ => [

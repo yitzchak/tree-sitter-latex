@@ -3,7 +3,7 @@ module.exports = {
     commands: {
       refrange: {
         cs: $ => $.cs_refrange,
-        parameters: $ => [optional($.star), $._parameter, $._parameter]
+        parameters: $ => [optional($.star), $._text_token, $._text_token]
       }
     }
   }

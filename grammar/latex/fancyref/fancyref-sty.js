@@ -5,7 +5,7 @@ module.exports = {
         cs: $ => $.cs_fref,
         parameters: $ => [
           optional($.brack_group),
-          $._parameter
+          $._text_token
         ]
       }
     }

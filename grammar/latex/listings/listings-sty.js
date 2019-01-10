@@ -13,7 +13,10 @@ module.exports = {
             alias($.verb_delim_no_lbrack, $.verb_delim)
           ),
           alias($.verb_body, $.verbatim),
-          alias($.verb_end_delim, $.verb_delim)
+          choice(
+            alias($.verb_end_delim, $.verb_delim),
+            $.exit
+          )
         ]
       }
     },

@@ -5,27 +5,27 @@ module.exports = {
         cs: $ => $.cs_href,
         parameters: $ => [
           optional($.brack_group),
-          $._parameter,
-          $._parameter
+          $._text_token,
+          $._text_token
         ]
       },
       url: {
         cs: $ => $.cs_url,
         parameters: $ => [
-          $._parameter
+          $._text_token
         ]
       },
       hyperbaseurl: {
         cs: $ => $.cs_hyperbaseurl,
         parameters: $ => [
-          $._parameter
+          $._text_token
         ]
       },
       hyperimage: {
         cs: $ => $.cs_hyperimage,
         parameters: $ => [
-          $._parameter,
-          $._parameter
+          $._text_token,
+          $._text_token
         ]
       },
       hyperref: {
@@ -33,14 +33,14 @@ module.exports = {
         parameters: $ => [
           choice(
             seq(
-              $._parameter,
-              $._parameter,
-              $._parameter,
-              $._parameter
+              $._text_token,
+              $._text_token,
+              $._text_token,
+              $._text_token
             ),
             seq(
               $.brack_group,
-              $._parameter
+              $._text_token
             )
           )
         ]

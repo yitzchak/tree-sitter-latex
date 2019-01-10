@@ -1,4 +1,20 @@
 module.exports = {
+  _: {
+    commands: {
+      begingroup: {
+        cs: $ => $.cs_begingroup
+      },
+      bgroup: {
+        cs: $ => $.cs_bgroup
+      },
+      endgroup: {
+        cs: $ => $.cs_endgroup
+      },
+      egroup: {
+        cs: $ => $.cs_egroup
+      }
+    }
+  },
   common: {
     commands: {
       code: {
@@ -21,30 +37,50 @@ module.exports = {
               $.cs
             )
           ),
-          alias($.nil_group, $.group)
-        ]
-      },
-      expandafter: {
-        cs: $ => $.cs_expandafter,
-        parameters: $ => [
-          $._text_token_parameter,
-          $._text_parameter
+          $._nil_group
         ]
       },
       input: {
         cs: $ => $.cs_input,
-        parameters: $ => [$._parameter]
+        parameters: $ => [$._text_token]
       },
       let: {
         cs: $ => $.cs_let,
         parameters: $ => [$.cs, $.cs]
+      },
+      relax: {
+        cs: $ => $.cs_relax
+      },
+      string: {
+        cs: $ => $.cs_string,
+        parameters: $ => [choice($.cs, alias($.text_non_escape, $.text))]
       }
     },
     rules: {
       _cmd: $ => seq($.cs, $._cmd_apply)
     }
   },
+  math: {
+    commands: {
+      expandafter: {
+        cs: $ => $.cs_expandafter,
+        parameters: $ => [
+          $._math_token,
+          $._math_expanded_parameter
+        ]
+      }
+    }
+  },
   text: {
+    commands: {
+      expandafter: {
+        cs: $ => $.cs_expandafter,
+        parameters: $ => [
+          $._text_token,
+          $._text_expanded_parameter
+        ]
+      }
+    },
     rules: {
       tex_display_math: $ => seq(
         $.display_math_shift,
