@@ -60,9 +60,13 @@ module.exports = {
         cs: $ => $.cs_verb,
         local: true,
         parameters: $ => [
+          optional($.star),
           $.verb_delim,
           alias($.verb_body, $.verbatim),
-          alias($.verb_end_delim, $.verb_delim)
+          choice(
+            alias($.verb_end_delim, $.verb_delim),
+            $.exit
+          )
         ]
       }
     },

@@ -9,7 +9,10 @@ module.exports = {
           $._text_token,
           $.verb_delim,
           alias($.verb_body, $.verbatim),
-          alias($.verb_end_delim, $.verb_delim)
+          choice(
+            alias($.verb_end_delim, $.verb_delim),
+            $.exit
+          )
         ]
       },
       mintinline: {
@@ -20,7 +23,10 @@ module.exports = {
           $._text_token,
           $.verb_delim,
           alias($.verb_body, $.verbatim),
-          alias($.verb_end_delim, $.verb_delim)
+          choice(
+            alias($.verb_end_delim, $.verb_delim),
+            $.exit
+          )
         ]
       }
     },

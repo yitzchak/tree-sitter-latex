@@ -570,15 +570,32 @@ text
 \verb+foo+bar
 \verb\foo\bar
 \verb+foo
-\verb*starred verb* is not what you expect (s is acting as the delim here)
+\verb*|starred verb|
+\verb**starred verb* is not what you expect (s is acting as the delim here)
 text
 --------------------------------------------------------------------------------
 (document
   (text)
   (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text)
   (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text)
-  (verb (cs) (verb_delim) (verbatim) (verb_delim))
-  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text))
+  (verb (cs) (verb_delim) (verbatim) (exit))
+  (verb (cs) (star) (verb_delim) (verbatim) (verb_delim))
+  (verb (cs) (star) (verb_delim) (verbatim) (verb_delim)) (text))
+
+================================================================================
+verb delimited by EOL
+================================================================================
+\verb
+foo
+bar
+--------------------------------------------------------------------------------
+(document
+  (verb
+    (cs)
+    (verb_delim)
+    (verbatim)
+    (verb_delim))
+  (text)) 
 
 ================================================================================
 not (quite) inline verbatim

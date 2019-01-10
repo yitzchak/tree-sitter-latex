@@ -249,7 +249,7 @@ class Scanner {
 
   bool match_or_advance(TSLexer *lexer, std::string value);
 
-  bool scan_verb_start_delim(TSLexer *lexer, SymbolType symbol);
+  bool scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols, SymbolType symbol);
 
   bool scan_verb_end_delim(TSLexer *lexer);
 

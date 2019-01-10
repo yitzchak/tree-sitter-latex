@@ -20,7 +20,10 @@ module.exports = {
       short_verb: $ => seq(
         alias($.short_verb_delim, $.verb_delim),
         alias($.verb_body, $.verbatim),
-        alias($.verb_end_delim, $.verb_delim)
+        choice(
+          alias($.verb_end_delim, $.verb_delim),
+          $.exit
+        )
       )
     }
   }

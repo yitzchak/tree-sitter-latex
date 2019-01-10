@@ -37,16 +37,18 @@ void Scanner::deserialize(const char *buffer, unsigned length) {
   buf >> start_delim >> cs_name >> e_name >> u_name >> catcode_table;
 }
 
-bool Scanner::scan_verb_start_delim(TSLexer *lexer, SymbolType symbol) {
+bool Scanner::scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols, SymbolType symbol) {
   // NOTE: ' ' (space) is a perfectly valid delim, as is %
   // Also: The first * (if present) is gobbled by the main grammar, but the
   // second is a valid delim
-  if (lexer->lookahead && catcode_table[lexer->lookahead] != EOL_CATEGORY) {
+  if (lexer->lookahead == '*' && valid_symbols[star]) {
+    return scan_single_char_symbol(lexer, star);
+  }
+
+  if (lexer->lookahead) {
     start_delim = lexer->lookahead;
-    lexer->advance(lexer, false);
-    lexer->result_symbol = symbol;
-    lexer->mark_end(lexer);
-    return true;
+
+    return scan_single_char_symbol(lexer, symbol);
   }
 
   return false;
@@ -54,15 +56,12 @@ bool Scanner::scan_verb_start_delim(TSLexer *lexer, SymbolType symbol) {
 
 bool Scanner::scan_verb_end_delim(TSLexer *lexer) {
   if (lexer->lookahead == start_delim) {
-    lexer->advance(lexer, false);
-    lexer->result_symbol = verb_end_delim;
-    lexer->mark_end(lexer);
-    return true;
+    return scan_single_char_symbol(lexer, verb_end_delim);
   }
 
   if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
     lexer->result_symbol =
-        verb_end_delim; // don't eat the newline (for consistency)
+        exit; // don't eat the newline (for consistency)
     lexer->mark_end(lexer);
     return true;
   }
@@ -637,11 +636,11 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
 
   // Look for an inline verbatim.
   if (valid_symbols[verb_delim_no_lbrack] && lexer->lookahead != '[') {
-    return scan_verb_start_delim(lexer, verb_delim_no_lbrack);
+    return scan_verb_start_delim(lexer, valid_symbols, verb_delim_no_lbrack);
   }
 
   if (valid_symbols[verb_delim]) {
-    return scan_verb_start_delim(lexer, verb_delim);
+    return scan_verb_start_delim(lexer, valid_symbols, verb_delim);
   }
 
   // Look for an inline verbatim delimiter and end the verbatim.
@@ -742,7 +741,7 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     break;
   case VERB_DELIM_EXT_CATEGORY:
     if (valid_symbols[short_verb_delim]) {
-      return scan_verb_start_delim(lexer, short_verb_delim);
+      return scan_verb_start_delim(lexer, valid_symbols, short_verb_delim);
     }
     break;
   default:
