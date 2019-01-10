@@ -758,6 +758,9 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     }
     break;
   default:
+    if (valid_symbols[text_non_escape]) {
+      break;
+    }
     if (valid_symbol_in_range(valid_symbols, env_name_alignat, env_name)) {
       return scan_env_name(lexer);
     }
@@ -765,6 +768,10 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
       return scan_name(lexer);
     }
     return scan_text(lexer, valid_symbols);
+  }
+
+  if (valid_symbols[text_non_escape]) {
+    return scan_single_char_symbol(lexer, text_non_escape);
   }
 
   return false;

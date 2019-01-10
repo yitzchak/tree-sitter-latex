@@ -50,6 +50,10 @@ module.exports = {
       },
       relax: {
         cs: $ => $.cs_relax
+      },
+      string: {
+        cs: $ => $.cs_string,
+        parameters: $ => [choice($.cs, alias($.text_non_escape, $.text))]
       }
     },
     rules: {

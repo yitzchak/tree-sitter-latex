@@ -23,6 +23,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"let", cs_let},
     {"mathcode", cs_code},
     {"sfcode", cs_code},
+    {"string", cs_string},
     {"uccode", cs_code},
     {"xdef", cs_def},
     // latex amsmath amsmath-sty
