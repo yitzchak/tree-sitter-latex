@@ -12,7 +12,7 @@ module.exports = {
             ),
             alias($.verb_delim_no_lbrack, $.verb_delim)
           ),
-          alias($.verb_body, $.verbatim),
+          optional(alias($.verb_body, $.verbatim)),
           choice(
             alias($.verb_end_delim, $.verb_delim),
             $.exit

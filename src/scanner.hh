@@ -23,6 +23,7 @@ enum SymbolType {
   active_char,
   alignment_tab,
   backtick,
+  char_ref_invalid,
   comma,
   comment_arara,
   comment_bib,
@@ -43,6 +44,7 @@ enum SymbolType {
   cs_DeleteShortVerb,
   cs_display_math_begin,
   cs_display_math_end,
+  cs_DoNotIndex,
   cs_egroup,
   cs_emph,
   cs_end,
@@ -210,9 +212,13 @@ struct Environment {
 };
 
 class Scanner {
+  const std::wstring octal_digits = L"01234567";
+  const std::wstring decimal_digits = L"0123456789";
+  const std::wstring hexadecimal_digits = L"0123456789ABCDEFabcdef";
+
   std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
   std::string cs_name, e_name, u_name;
-  int32_t start_delim = 0;
+  int32_t start_delim = 0, lookahead = 0;
   CatCodeTable catcode_table = {
       {' ', ' ', SPACE_CATEGORY},
       {'_', '_', SUBSCRIPT_CATEGORY},
@@ -251,8 +257,15 @@ class Scanner {
   bool valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
                              SymbolType last);
 
-  int match_length(TSLexer *lexer, std::string value,
-                   CategoryFlags terminator = ~0);
+  bool read_char(TSLexer *lexer, bool mark = true);
+
+  std::string read_string(TSLexer *lexer, Category catcode);
+
+  std::string read_string(TSLexer *lexer, const CategoryFlags &flags,
+                          const std::wstring &chars = L"", bool exclude = true);
+
+  void skip_chars(TSLexer *lexer, const CategoryFlags &flags,
+                  const std::wstring &chars = L"", bool exclude = true);
 
   bool match_or_advance(TSLexer *lexer, std::string value);
 

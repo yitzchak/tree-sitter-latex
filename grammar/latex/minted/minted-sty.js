@@ -8,7 +8,7 @@ module.exports = {
           optional($.brack_group),
           $._text_token,
           $.verb_delim,
-          alias($.verb_body, $.verbatim),
+          optional(alias($.verb_body, $.verbatim)),
           choice(
             alias($.verb_end_delim, $.verb_delim),
             $.exit
@@ -22,7 +22,7 @@ module.exports = {
           optional($.brack_group),
           $._text_token,
           $.verb_delim,
-          alias($.verb_body, $.verbatim),
+          optional(alias($.verb_body, $.verbatim)),
           choice(
             alias($.verb_end_delim, $.verb_delim),
             $.exit
