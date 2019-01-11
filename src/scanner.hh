@@ -212,6 +212,10 @@ struct Environment {
 };
 
 class Scanner {
+  const std::wstring octal_digits = L"01234567";
+  const std::wstring decimal_digits = L"0123456789";
+  const std::wstring hexadecimal_digits = L"0123456789ABCDEFabcdef";
+
   std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
   std::string cs_name, e_name, u_name;
   int32_t start_delim = 0, lookahead = 0;
@@ -254,6 +258,14 @@ class Scanner {
                              SymbolType last);
 
   bool read_char(TSLexer *lexer, bool mark = true);
+
+  std::string read_string(TSLexer *lexer, Category catcode);
+
+  std::string read_string(TSLexer *lexer, const CategoryFlags &flags,
+                          const std::wstring &chars = L"", bool exclude = true);
+
+  void skip_chars(TSLexer *lexer, const CategoryFlags &flags,
+                  const std::wstring &chars = L"", bool exclude = true);
 
   bool match_or_advance(TSLexer *lexer, std::string value);
 

@@ -99,6 +99,41 @@ bool Scanner::read_char(TSLexer *lexer, bool mark) {
   return true;
 }
 
+void Scanner::skip_chars(TSLexer *lexer, const CategoryFlags &flags,
+                         const std::wstring &chars, bool exclude) {
+  while (flags[catcode_table[lookahead]] &&
+         exclude == (chars.find(lookahead) == std::wstring::npos)) {
+    if (!read_char(lexer))
+      break;
+  }
+}
+
+string Scanner::read_string(TSLexer *lexer, Category catcode) {
+  if (catcode_table[lookahead] == catcode) {
+    return read_string(lexer, 1 << catcode);
+  }
+
+  string result(convert.to_bytes(lookahead));
+
+  read_char(lexer);
+
+  return result;
+}
+
+string Scanner::read_string(TSLexer *lexer, const CategoryFlags &flags,
+                            const std::wstring &chars, bool exclude) {
+  string result;
+
+  while (flags[catcode_table[lookahead]] &&
+         exclude == (chars.find(lookahead) == std::wstring::npos)) {
+    result.append(convert.to_bytes(lookahead));
+    if (!read_char(lexer))
+      break;
+  }
+
+  return result;
+}
+
 bool Scanner::scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols,
                                     SymbolType symbol) {
   // NOTE: ' ' (space) is a perfectly valid delim, as is %
@@ -226,8 +261,7 @@ bool Scanner::scan_comment(TSLexer *lexer) {
     if (lookahead == ':') {
       lexer->result_symbol = comment_tag;
     } else {
-      while (catcode_table[lookahead] == SPACE_CATEGORY && read_char(lexer)) {
-      }
+      skip_chars(lexer, SPACE_FLAG);
 
       if (lookahead == 'a') {
         if (read_char(lexer) && lookahead == 'r' && read_char(lexer) &&
@@ -265,32 +299,29 @@ bool Scanner::scan_comment(TSLexer *lexer) {
 }
 
 bool Scanner::scan_cs(TSLexer *lexer, const bool *valid_symbols) {
-  cs_name.clear();
   read_char(lexer);
-  // lexer->advance(lexer, false);
 
-  if (catcode_table[lookahead] == LETTER_CATEGORY) {
-    do {
-      cs_name += convert.to_bytes(lookahead);
-    } while (read_char(lexer) && catcode_table[lookahead] == LETTER_CATEGORY);
-  } else if (valid_symbols[cs_make_verb_delim]) {
-    catcode_table.assign(lookahead, VERB_DELIM_EXT_CATEGORY, true);
+  if (catcode_table[lookahead] != LETTER_CATEGORY) {
+    if (valid_symbols[cs_make_verb_delim]) {
+      catcode_table.assign(lookahead, VERB_DELIM_EXT_CATEGORY, true);
 
-    lexer->result_symbol = cs_make_verb_delim;
-    lexer->mark_end(lexer);
+      lexer->result_symbol = cs_make_verb_delim;
+      lexer->mark_end(lexer);
 
-    return true;
-  } else if (valid_symbols[cs_delete_verb_delim]) {
-    catcode_table.erase(lookahead, true);
+      return true;
+    }
 
-    lexer->result_symbol = cs_delete_verb_delim;
-    lexer->mark_end(lexer);
+    if (valid_symbols[cs_delete_verb_delim]) {
+      catcode_table.erase(lookahead, true);
 
-    return true;
-  } else {
-    cs_name += convert.to_bytes(lookahead);
-    lexer->mark_end(lexer);
+      lexer->result_symbol = cs_delete_verb_delim;
+      lexer->mark_end(lexer);
+
+      return true;
+    }
   }
+
+  cs_name = read_string(lexer, LETTER_CATEGORY);
 
   auto it = control_sequences.find(cs_name);
   lexer->result_symbol =
@@ -317,9 +348,7 @@ inline bool Scanner::scan_single_char_symbol(TSLexer *lexer,
 
 inline bool Scanner::scan_multi_char_symbol(TSLexer *lexer, SymbolType symbol,
                                             Category code) {
-  while (read_char(lexer) && catcode_table[lookahead] == code) {
-  }
-
+  skip_chars(lexer, 1 << code);
   lexer->result_symbol = symbol;
 
   return true;
@@ -347,14 +376,7 @@ bool Scanner::scan_env_name(TSLexer *lexer) {
   if (!lexer->lookahead)
     return false;
 
-  CategoryFlags flags = LETTER_FLAG | OTHER_FLAG;
-
-  e_name.clear();
-
-  do {
-    e_name += convert.to_bytes(lookahead);
-    // lexer->advance(lexer, false);
-  } while (read_char(lexer) && flags[catcode_table[lookahead]]);
+  e_name = read_string(lexer, LETTER_FLAG | OTHER_FLAG);
 
   auto it = environments.find(e_name);
 
@@ -368,14 +390,7 @@ bool Scanner::scan_env_name(TSLexer *lexer) {
 }
 
 bool Scanner::scan_name(TSLexer *lexer) {
-  CategoryFlags flags = LETTER_FLAG | OTHER_FLAG;
-
-  u_name.clear();
-
-  do {
-    u_name += convert.to_bytes(lookahead);
-  } while (read_char(lexer) && lookahead != ',' &&
-           flags[catcode_table[lookahead]]);
+  u_name = read_string(lexer, LETTER_FLAG | OTHER_FLAG, L",");
 
   auto it = names.find(u_name);
 
@@ -407,8 +422,7 @@ bool Scanner::scan_math_delim(TSLexer *lexer, const bool *valid_symbols) {
 }
 
 bool Scanner::scan_ignored_line(TSLexer *lexer) {
-  while (catcode_table[lookahead] != EOL_CATEGORY && read_char(lexer)) {
-  }
+  skip_chars(lexer, ~EOL_FLAG);
 
   if (catcode_table[lookahead] == EOL_CATEGORY) {
     lexer->mark_end(lexer);
@@ -437,17 +451,16 @@ bool Scanner::valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
 }
 
 bool Scanner::scan_octal(TSLexer *lexer) {
-  while (read_char(lexer) && lookahead >= '0' && lookahead <= '7') {
-  }
-
+  // Skip the octal quote
+  read_char(lexer);
+  skip_chars(lexer, ~0, octal_digits, false);
   lexer->result_symbol = octal;
 
   return true;
 }
 
 bool Scanner::scan_decimal(TSLexer *lexer) {
-  while (read_char(lexer) && lookahead >= '0' && lookahead <= '9') {
-  }
+  skip_chars(lexer, ~0, decimal_digits, false);
 
   lexer->result_symbol = decimal;
 
@@ -455,8 +468,7 @@ bool Scanner::scan_decimal(TSLexer *lexer) {
 }
 
 bool Scanner::scan_parameter_ref(TSLexer *lexer) {
-  while (read_char(lexer) && catcode_table[lookahead] == PARAMETER_CATEGORY) {
-  }
+  skip_chars(lexer, PARAMETER_FLAG);
 
   if (lookahead >= '1' && lookahead <= '9') {
     lexer->mark_end(lexer);
@@ -468,26 +480,26 @@ bool Scanner::scan_parameter_ref(TSLexer *lexer) {
 }
 
 bool Scanner::scan_hexadecimal(TSLexer *lexer) {
-
-  while (read_char(lexer) && ((lookahead >= '0' && lookahead <= '9') ||
-                              (lookahead >= 'a' && lookahead <= 'f') ||
-                              (lookahead >= 'A' && lookahead <= 'F'))) {
-  }
-
+  // Skip the hexadecimal quote
+  read_char(lexer);
+  skip_chars(lexer, ~0, hexadecimal_digits, false);
   lexer->result_symbol = hexadecimal;
 
   return true;
 }
 
 bool Scanner::scan_fixed(TSLexer *lexer) {
+  if (lookahead == '+' || lookahead == '-') {
+    read_char(lexer);
+  }
+
   if (lookahead != '.') {
-    while (read_char(lexer) && lookahead >= '0' && lookahead <= '9') {
-    }
+    skip_chars(lexer, ~0, decimal_digits, false);
   }
 
   if (lookahead == '.') {
-    while (read_char(lexer) && lookahead >= '0' && lookahead <= '9') {
-    }
+    read_char(lexer);
+    skip_chars(lexer, ~0, decimal_digits, false);
   }
 
   lexer->result_symbol = fixed;
@@ -529,19 +541,7 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     break;
   }
 
-  string keyword;
-
-  if (catcode_table[lookahead] == LETTER_CATEGORY) {
-    do {
-      keyword += convert.to_bytes(lookahead);
-    } while (
-        read_char(
-            lexer /*, keyword.size() == 1 || !valid_symbols[text_single]*/) &&
-        catcode_table[lookahead] == LETTER_CATEGORY);
-  } else {
-    keyword += convert.to_bytes(lookahead);
-    read_char(lexer);
-  }
+  string keyword = read_string(lexer, LETTER_CATEGORY);
 
   auto it = keywords.find(keyword);
 
@@ -555,15 +555,17 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     return true;
   }
 
-  CategoryFlags flags = LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG;
+  std::wstring excluded;
 
-  while ((lookahead != ']' || !valid_symbols[rbrack]) &&
-         (lookahead != ')' || !valid_symbols[rparen]) &&
-         flags[catcode_table[lookahead]]) {
-    keyword += convert.to_bytes(lookahead);
-    if (!read_char(lexer))
-      break;
+  if (valid_symbols[rbrack]) {
+    excluded.push_back(L']');
   }
+
+  if (valid_symbols[rparen]) {
+    excluded.push_back(L')');
+  }
+
+  skip_chars(lexer, LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG, excluded);
 
   lexer->result_symbol = text;
 
