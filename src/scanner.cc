@@ -692,8 +692,9 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
   }
 
   if (!read_char(lexer)) {
-    std::cout << "foo" << lexer->lookahead << std::endl;
-    // invalid_char ref
+    lexer->result_symbol = char_ref_invalid;
+    lexer->mark_end(lexer);
+    return true;
   }
 
   // Look for an inline verbatim.

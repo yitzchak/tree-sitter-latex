@@ -23,6 +23,7 @@ enum SymbolType {
   active_char,
   alignment_tab,
   backtick,
+  char_ref_invalid,
   comma,
   comment_arara,
   comment_bib,

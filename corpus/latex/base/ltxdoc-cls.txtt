@@ -9,3 +9,15 @@ ltxdoc class triggers pipe verb delimiter
     (cs)
     (group (l) (name) (r)))
   (short_verb (verb_delim) (verbatim) (verb_delim)))
+
+================================================================================
+ltxdoc class triggers pipe verb delimiter via char ref
+================================================================================
+\documentclass{^^,^^4xdoc}
+|foo|
+--------------------------------------------------------------------------------
+(document
+  (use
+    (cs)
+    (group (l) (name) (r)))
+  (short_verb (verb_delim) (verbatim) (verb_delim)))

@@ -74,6 +74,7 @@ let g = {
     $.active_char,
     $.alignment_tab,
     $.backtick,
+    $.char_ref_invalid,
     $.comma,
     $.comment_arara,
     $.comment_bib,
@@ -247,6 +248,7 @@ let g = {
       $._nil_group,
       $.active_char,
       $.alignment_tab,
+      $.char_ref_invalid,
       $.cs,
       $.display_math_shift,
       $.ignored,
@@ -262,6 +264,7 @@ let g = {
     _common: $ => choice(
       $.active_char,
       $.alignment_tab,
+      $.char_ref_invalid,
       $.ignored,
       $.invalid,
       $.parameter_ref,
