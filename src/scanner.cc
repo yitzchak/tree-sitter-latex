@@ -278,7 +278,7 @@ bool Scanner::scan_comment(TSLexer *lexer) {
           lexer->result_symbol = comment_tex;
         } else if (lookahead == 'B' && read_char(lexer) &&
                    (lookahead == 'i' || lookahead == 'I') && read_char(lexer) &&
-                   lookahead == 'b' && read_char(lexer) &&
+                   (lookahead == 'b' || lookahead == 'B') && read_char(lexer) &&
                    catcode_table[lookahead] == SPACE_CATEGORY) {
           lexer->result_symbol = comment_bib;
         }
