@@ -29,7 +29,7 @@ module.exports = {
         local: true,
         cs: $ => $.cs_def,
         parameters: $ => [
-          $.cs,
+          choice($.active_char, $.cs),
           repeat(
             choice(
               $.parameter_ref,
@@ -46,7 +46,7 @@ module.exports = {
       },
       let: {
         cs: $ => $.cs_let,
-        parameters: $ => [$.cs, $.cs]
+        parameters: $ => [$.cs, optional($.equals), $.cs]
       },
       relax: {
         cs: $ => $.cs_relax

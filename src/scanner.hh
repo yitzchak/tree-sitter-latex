@@ -44,6 +44,7 @@ enum SymbolType {
   cs_DeleteShortVerb,
   cs_display_math_begin,
   cs_display_math_end,
+  cs_DoNotIndex,
   cs_egroup,
   cs_emph,
   cs_end,
@@ -253,9 +254,6 @@ class Scanner {
                              SymbolType last);
 
   bool read_char(TSLexer *lexer, bool mark = true);
-
-  int match_length(TSLexer *lexer, std::string value,
-                   CategoryFlags terminator = ~0);
 
   bool match_or_advance(TSLexer *lexer, std::string value);
 

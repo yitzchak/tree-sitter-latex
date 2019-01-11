@@ -95,6 +95,7 @@ let g = {
     $.cs_DeleteShortVerb,
     $.cs_display_math_begin,
     $.cs_display_math_end,
+    $.cs_DoNotIndex,
     $.cs_egroup,
     $.cs_emph,
     $.cs_end,

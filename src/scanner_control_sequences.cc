@@ -29,6 +29,8 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     // latex amsmath amsmath-sty
     {"eqref", cs_ref},
     {"tag", cs_tag},
+    // latex base doc-sty
+    {"DoNotIndex", cs_DoNotIndex},
     // latex base latex-ltx
     {"(", cs_inline_math_begin},
     {")", cs_inline_math_end},
