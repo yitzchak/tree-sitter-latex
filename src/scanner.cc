@@ -372,9 +372,6 @@ bool Scanner::scan_space(TSLexer *lexer, const bool *valid_symbols) {
 }
 
 bool Scanner::scan_env_name(TSLexer *lexer) {
-  if (!lexer->lookahead)
-    return false;
-
   e_name = read_string(lexer, LETTER_FLAG | OTHER_FLAG);
 
   auto it = environments.find(e_name);
