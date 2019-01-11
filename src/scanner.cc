@@ -286,8 +286,7 @@ bool Scanner::scan_comment(TSLexer *lexer) {
     }
 
     // Gobble the reset of the comment
-    while (catcode_table[lookahead] != EOL_CATEGORY && read_char(lexer)) {
-    }
+    skip_chars(lexer, ~EOL_FLAG);
 
     // Eat any EOL
     if (catcode_table[lookahead] == EOL_CATEGORY) {
