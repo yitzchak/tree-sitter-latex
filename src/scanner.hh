@@ -212,7 +212,7 @@ struct Environment {
 class Scanner {
   std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
   std::string cs_name, e_name, u_name;
-  int32_t start_delim = 0;
+  int32_t start_delim = 0, lookahead = 0;
   CatCodeTable catcode_table = {
       {' ', ' ', SPACE_CATEGORY},
       {'_', '_', SUBSCRIPT_CATEGORY},
@@ -250,6 +250,8 @@ class Scanner {
 
   bool valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
                              SymbolType last);
+
+  bool read_char(TSLexer *lexer, bool mark = true);
 
   int match_length(TSLexer *lexer, std::string value,
                    CategoryFlags terminator = ~0);

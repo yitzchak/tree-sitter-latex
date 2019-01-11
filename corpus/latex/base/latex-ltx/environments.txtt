@@ -595,7 +595,7 @@ bar
     (verb_delim)
     (verbatim)
     (verb_delim))
-  (text)) 
+  (text))
 
 ================================================================================
 not (quite) inline verbatim
@@ -603,7 +603,7 @@ not (quite) inline verbatim
 \verb  +foo+ the space here is the actual delim, so +foo+ is plain text
 --------------------------------------------------------------------------------
 (document
-  (verb (cs) (verb_delim) (verbatim) (verb_delim)) (text))
+  (verb (cs) (verb_delim) (verb_delim)) (text))
 
 ================================================================================
 inline verbatim using various special character
@@ -630,6 +630,29 @@ inline verbatim using various special character
   (verb (cs) (verb_delim) (verbatim) (verb_delim))
   (verb (cs) (verb_delim) (verbatim) (verb_delim))
   (verb (cs) (verb_delim) (verbatim) (verb_delim)))
+
+================================================================================
+verb with char ref as delimeter
+================================================================================
+\verb^^a!
+--------------------------------------------------------------------------------
+(document
+  (verb
+    (cs)
+    (verb_delim)
+    (verb_delim)))
+
+================================================================================
+verb with char ref as delimeter and char ref inside verb body
+================================================================================
+\verb^^a^^a!
+--------------------------------------------------------------------------------
+(document
+  (verb
+    (cs)
+    (verb_delim)
+    (verbatim)
+    (verb_delim)))
 
 ================================================================================
 item

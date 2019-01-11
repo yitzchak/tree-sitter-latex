@@ -62,7 +62,7 @@ module.exports = {
         parameters: $ => [
           optional($.star),
           $.verb_delim,
-          alias($.verb_body, $.verbatim),
+          optional(alias($.verb_body, $.verbatim)),
           choice(
             alias($.verb_end_delim, $.verb_delim),
             $.exit
