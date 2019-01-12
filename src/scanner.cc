@@ -51,10 +51,11 @@ bool Scanner::read_char(TSLexer *lexer, bool mark) {
   if (!lexer->lookahead)
     return false;
 
+  advanced = true;
   lookahead = lexer->lookahead;
   lexer->advance(lexer, false);
 
-  if (catcode_table[lookahead] != SUPERSCRIPT_CATEGORY) {
+  if (raw || catcode_table[lookahead] != SUPERSCRIPT_CATEGORY) {
     return true;
   }
 
@@ -101,10 +102,12 @@ bool Scanner::read_char(TSLexer *lexer, bool mark) {
 
 void Scanner::skip_chars(TSLexer *lexer, const CategoryFlags &flags,
                          const std::wstring &chars, bool exclude) {
-  while (flags[catcode_table[lookahead]] &&
-         exclude == (chars.find(lookahead) == std::wstring::npos)) {
-    if (!read_char(lexer))
-      break;
+  if (advanced || read_char(lexer)) {
+    while (flags[catcode_table[lookahead]] &&
+           exclude == (chars.find(lookahead) == std::wstring::npos)) {
+      if (!read_char(lexer))
+        break;
+    }
   }
 }
 
@@ -152,27 +155,29 @@ bool Scanner::scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols,
 }
 
 bool Scanner::scan_verb_end_delim(TSLexer *lexer) {
-  if (lexer->lookahead == start_delim) {
-    lexer->advance(lexer, false);
-    return scan_single_char_symbol(lexer, verb_end_delim);
-  }
+  raw = true;
 
-  // EOL is not allowed in inline verbatim
-  if (catcode_table[lexer->lookahead] == EOL_CATEGORY) {
-    return scan_empty_symbol(lexer, exit);
+  if (read_char(lexer)) {
+    if (lookahead == start_delim) {
+      return scan_single_char_symbol(lexer, verb_end_delim);
+    }
+
+    // EOL is not allowed in inline verbatim
+    if (catcode_table[lookahead] == EOL_CATEGORY) {
+      return scan_empty_symbol(lexer, exit);
+    }
   }
 
   return false;
 }
 
 bool Scanner::scan_verb_body(TSLexer *lexer) {
-  while (lexer->lookahead && lexer->lookahead != start_delim &&
-         catcode_table[lexer->lookahead] != EOL_CATEGORY) {
-    lexer->advance(lexer, false);
-  }
+  raw = true;
+
+  skip_chars(lexer, ~EOL_FLAG,
+             std::wstring(1, static_cast<wchar_t>(start_delim)));
 
   lexer->result_symbol = verb_body;
-  lexer->mark_end(lexer);
 
   return true;
 }
@@ -252,6 +257,8 @@ bool Scanner::scan_verbatim_text(TSLexer *lexer) {
 }
 
 bool Scanner::scan_comment(TSLexer *lexer) {
+  raw = true;
+
   string comment_type;
 
   lexer->result_symbol = comment;
@@ -430,12 +437,11 @@ bool Scanner::scan_ignored_line(TSLexer *lexer) {
 }
 
 bool Scanner::scan_ignored_rest(TSLexer *lexer) {
-  while (lexer->lookahead) {
-    lexer->advance(lexer, false);
-  };
+  raw = true;
+
+  skip_chars(lexer);
 
   lexer->result_symbol = ignored_rest;
-  lexer->mark_end(lexer);
 
   return true;
 }
@@ -606,6 +612,9 @@ bool Scanner::scan_scope_end(TSLexer *lexer) {
 }
 
 bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
+  raw = false;
+  advanced = false;
+
   if (valid_symbols[_cmd_apply]) {
     return scan_cmd_apply(lexer);
   }
