@@ -293,6 +293,11 @@ module.exports = {
         name: $ => $.env_name_inline_math,
         contents: $ => [repeat($._math_mode)]
       },
+      itemize: {
+        name: $ => $.env_name_itemize,
+        // enumitem allows an optional parameter
+        beginParameters: $ => [optional($.brack_group)]
+      },
       minipage: {
         name: $ => $.env_name_minipage,
         beginParameters: $ => [

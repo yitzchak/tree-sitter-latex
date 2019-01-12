@@ -1,0 +1,158 @@
+================================================================================
+description environment with optional parameter
+================================================================================
+\begin{description}[foo]
+bar
+\end{description}
+--------------------------------------------------------------------------------
+(document
+  (itemize_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+description*
+================================================================================
+\begin{description*}
+bar
+\end{description*}
+--------------------------------------------------------------------------------
+(document
+  (itemize_env
+    (begin
+      (cs)
+      (group (l) (name) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+description* environment with optional parameter
+================================================================================
+\begin{description*}[foo]
+bar
+\end{description*}
+--------------------------------------------------------------------------------
+(document
+  (itemize_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+enumerate environment with optional parameter
+================================================================================
+\begin{enumerate}[foo]
+bar
+\end{enumerate}
+--------------------------------------------------------------------------------
+(document
+  (itemize_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+enumerate*
+================================================================================
+\begin{enumerate*}
+bar
+\end{enumerate*}
+--------------------------------------------------------------------------------
+(document
+  (itemize_env
+    (begin
+      (cs)
+      (group (l) (name) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+enumerate* environment with optional parameter
+================================================================================
+\begin{enumerate*}[foo]
+bar
+\end{enumerate*}
+--------------------------------------------------------------------------------
+(document
+  (itemize_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+itemize environment with optional parameter
+================================================================================
+\begin{itemize}[foo]
+bar
+\end{itemize}
+--------------------------------------------------------------------------------
+(document
+  (itemize_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+itemize*
+================================================================================
+\begin{itemize*}
+bar
+\end{itemize*}
+--------------------------------------------------------------------------------
+(document
+  (itemize_env
+    (begin
+      (cs)
+      (group (l) (name) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+itemize* environment with optional parameter
+================================================================================
+\begin{itemize*}[foo]
+bar
+\end{itemize*}
+--------------------------------------------------------------------------------
+(document
+  (itemize_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))

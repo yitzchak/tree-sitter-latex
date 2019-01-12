@@ -39,13 +39,16 @@ unordered_map<string, Environment> Scanner::environments = {
        {'~', '~', OTHER_CATEGORY}}}},
     // laxex base latex-ltx
     {"array", env_name_array},
+    {"description", env_name_itemize},
     {"displaymath", env_name_display_math},
     {"document", env_name_document},
+    {"enumerate", env_name_itemize},
     {"eqnarray", env_name_display_math},
     {"eqnarray*", env_name_display_math},
     {"equation", env_name_display_math},
     {"figure", env_name_figure},
     {"figure*", env_name_figure},
+    {"itemize", env_name_itemize},
     {"math", env_name_inline_math},
     {"minipage", env_name_minipage},
     {"picture", env_name_picture},
@@ -64,6 +67,10 @@ unordered_map<string, Environment> Scanner::environments = {
     {"dmath*", env_name_dmath},
     {"dseries", env_name_dseries},
     {"dseries*", env_name_dseries},
+    // latex enumitem enumitem-sty
+    {"description*", env_name_itemize},
+    {"enumerate*", env_name_itemize},
+    {"itemize*", env_name_itemize},
     // latex fancyvrb fancyvrb-sty
     {"BVerbatim", env_name_Verbatim},
     {"BVerbatim*", env_name_Verbatim},
