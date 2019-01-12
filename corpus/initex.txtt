@@ -777,3 +777,85 @@ invalid 4 digit char ref with missing digit
 ^^^^^023
 --------------------------------------------------------------------------------
 (document (char_ref_invalid) (text))
+
+================================================================================
+delimiter group
+================================================================================
+$foo\left(bar\right)wibble$
+--------------------------------------------------------------------------------
+(document
+  (tex_inline_math
+    (math_shift)
+    (math)
+    (delimiter_group
+      (left (cs) (math))
+      (math)
+      (right (cs) (math)))
+    (math)
+    (math_shift)))
+
+================================================================================
+delimiter group with missing right
+================================================================================
+$foo\left(bar$
+--------------------------------------------------------------------------------
+(document
+  (tex_inline_math
+    (math_shift)
+    (math)
+    (delimiter_group
+      (left (cs) (math))
+      (math)
+      (exit))
+    (math_shift)))
+
+================================================================================
+delimiter group with missing right delimiter
+================================================================================
+$foo\left(bar\right$
+--------------------------------------------------------------------------------
+(document
+  (tex_inline_math
+    (math_shift)
+    (math)
+    (delimiter_group
+      (left (cs) (math))
+      (math)
+      (right (cs) (exit)))
+    (math_shift)))
+
+================================================================================
+delimiter group with missing right inside group
+================================================================================
+$foo{\left(bar}$
+--------------------------------------------------------------------------------
+(document
+  (tex_inline_math
+    (math_shift)
+    (math)
+    (group
+      (l)
+      (delimiter_group
+        (left (cs) (math))
+        (math)
+        (exit))
+      (r))
+    (math_shift)))
+
+================================================================================
+delimiter group with missing right delimiter inside group
+================================================================================
+$foo{\left(bar\right}$
+--------------------------------------------------------------------------------
+(document
+  (tex_inline_math
+    (math_shift)
+    (math)
+    (group
+      (l)
+      (delimiter_group
+        (left (cs) (math))
+        (math)
+        (right (cs) (exit)))
+      (r))
+    (math_shift)))

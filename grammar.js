@@ -42,7 +42,7 @@ function group ($, ...contents) {
 // }
 
 function semiSimpleGroup ($, ...contents) {
-  return seq($.begingroup, $._scope_begin, ...contents, choice($.endgroup, $.exit), $._scope_end)
+  return seq($.begingroup, $._scope_begin, ...contents, choice($.endgroup, $.exit, alias($.exit_math, $.exit)), $._scope_end)
 }
 
 function brackGroup ($, ...contents) {
@@ -118,6 +118,7 @@ let g = {
     $.cs_input,
     $.cs_item,
     $.cs_label,
+    $.cs_left,
     $.cs_let,
     $.cs_longnewglossaryentry,
     $.cs_lstinline,
@@ -146,6 +147,7 @@ let g = {
     $.cs_refrange,
     $.cs_relax,
     $.cs_restorecr,
+    $.cs_right,
     $.cs_section,
     $.cs_setlength,
     $.cs_sqrt,
@@ -195,6 +197,7 @@ let g = {
     $.env_name,
     $.eol,
     $.equals,
+    $.exit_math,
     $.exit,
     $.fixed,
     $.hexadecimal,
@@ -473,6 +476,15 @@ function defCmd (mode, label, { cs, parameters, local }) {
     const head = []
     const body = parameters ? parameters($) : []
     const tail = []
+    const exit = [$.exit]
+
+    if (mode !== 'math') {
+      exit.push($.par)
+    }
+
+    if (mode !== 'text') {
+      exit.push(alias($.exit_math, $.exit))
+    }
 
     while (body.length && isOptional(body[body.length - 1])) {
       tail.unshift(body.pop())
@@ -489,7 +501,7 @@ function defCmd (mode, label, { cs, parameters, local }) {
     return cmd($,
       cs($),
       ...head,
-      ...[body.reduceRight((c, p) => choice($.exit, $.par, c ? seq(p, c) : p),
+      ...[body.reduceRight((c, p) => choice(...exit, c ? seq(p, c) : p),
         tail.length === 0 ? undefined : (tail.length === 1 ? tail[0] : seq(...tail)))])
   }
 

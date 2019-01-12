@@ -700,6 +700,9 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     }
     break;
   case MATH_SHIFT_CATEGORY:
+    if (valid_symbols[exit_math]) {
+      return scan_empty_symbol(lexer, exit_math);
+    }
     if (valid_symbols[display_math_shift] || valid_symbols[math_shift] ||
         valid_symbols[display_math_shift_end] ||
         valid_symbols[math_shift_end]) {
