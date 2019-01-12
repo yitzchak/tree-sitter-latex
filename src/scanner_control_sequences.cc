@@ -34,6 +34,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     // latex base doc-sty
     {"DoNotIndex", cs_DoNotIndex},
     // latex base latex-ltx
+    {"@ifpackagelater", cs_at_ifpackagelater},
     {"(", cs_inline_math_begin},
     {")", cs_inline_math_end},
     {"[", cs_display_math_begin},
@@ -182,6 +183,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"Pvolcite", cs_volcite},
     {"pvolcites", cs_volcites},
     {"Pvolcites", cs_volcites},
+    {"regexp", cs_regexp},
     {"svolcite", cs_volcite},
     {"Svolcite", cs_volcite},
     {"svolcites", cs_volcites},

@@ -149,6 +149,15 @@ module.exports = {
   },
   text: {
     commands: {
+      at_ifpackagelater: {
+        cs: $ => $.cs_at_ifpackagelater,
+        parameters: $ => [
+          $._text_token,
+          $._text_token,
+          $._nil_token,
+          $._nil_token
+        ]
+      },
       author: {
         cs: $ => $.cs_author,
         parameters: $ => [

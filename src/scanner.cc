@@ -682,7 +682,7 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
 
   switch (code) {
   case ESCAPE_CATEGORY:
-    if (valid_symbol_in_range(valid_symbols, cs_author, cs)) {
+    if (valid_symbol_in_range(valid_symbols, cs_at_ifpackagelater, cs)) {
       return scan_cs(lexer, valid_symbols);
     }
     break;
