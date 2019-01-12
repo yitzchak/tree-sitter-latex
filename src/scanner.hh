@@ -219,6 +219,7 @@ class Scanner {
   std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
   std::string cs_name, e_name, u_name;
   int32_t start_delim = 0, lookahead = 0;
+  bool raw = false, advanced = false;
   CatCodeTable catcode_table = {
       {' ', ' ', SPACE_CATEGORY},
       {'_', '_', SUBSCRIPT_CATEGORY},
@@ -261,10 +262,10 @@ class Scanner {
 
   std::string read_string(TSLexer *lexer, Category catcode);
 
-  std::string read_string(TSLexer *lexer, const CategoryFlags &flags,
+  std::string read_string(TSLexer *lexer, const CategoryFlags &flags = ~0,
                           const std::wstring &chars = L"", bool exclude = true);
 
-  void skip_chars(TSLexer *lexer, const CategoryFlags &flags,
+  void skip_chars(TSLexer *lexer, const CategoryFlags &flags = ~0,
                   const std::wstring &chars = L"", bool exclude = true);
 
   bool match_or_advance(TSLexer *lexer, std::string value);
