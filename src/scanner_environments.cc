@@ -85,6 +85,8 @@ unordered_map<string, Environment> Scanner::environments = {
     {"lstlisting", env_name_lstlisting},
     // latex minted minted-sty
     {"minted", env_name_minted},
+    // latex pgf frontendlayer tikz-sty
+    {"tikzpicture", env_name_tikzpicture},
     // latex supertabular supertabular-sty
     {"supertabular", env_name_tabular},
     {"supertabular*", env_name_tabularstar},

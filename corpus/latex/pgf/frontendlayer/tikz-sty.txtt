@@ -1,0 +1,34 @@
+================================================================================
+tikzpicture
+================================================================================
+\begin{tikzpicture}
+bar
+\end{tikzpicture}
+--------------------------------------------------------------------------------
+(document
+  (tikzpicture_env
+    (begin
+      (cs)
+      (group (l) (name) (r)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))
+
+================================================================================
+tikzpicture environment with optional parameter
+================================================================================
+\begin{tikzpicture}[foo]
+bar
+\end{tikzpicture}
+--------------------------------------------------------------------------------
+(document
+  (tikzpicture_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack)))
+    (text)
+    (end
+      (cs)
+      (group (l) (name) (r)))))

@@ -143,6 +143,7 @@ enum SymbolType {
   env_name_text,
   env_name_thebibliography,
   env_name_theorem,
+  env_name_tikzpicture,
   env_name_verbatim,
   env_name_Verbatim,
   env_name,
