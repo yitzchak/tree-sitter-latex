@@ -8,8 +8,9 @@ namespace LaTeX {
 
 using std::any_of;
 using std::string;
+using std::u32string;
 
-inline bool isHexDigit(int32_t ch) {
+inline bool isHexDigit(char32_t ch) {
   return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f');
 }
 
@@ -85,7 +86,7 @@ bool Scanner::read_char(TSLexer *lexer) {
 
   int count = 1;
 
-  while (count < 6 && lexer->lookahead == lookahead) {
+  while (count < 6 && static_cast<char32_t>(lexer->lookahead) == lookahead) {
     lexer->advance(lexer, false);
     count++;
   }
@@ -101,7 +102,7 @@ bool Scanner::read_char(TSLexer *lexer) {
   case 6:
     lookahead = 0;
     for (int digit = 0; digit < count; digit++) {
-      int32_t current = lexer->lookahead;
+      char32_t current = lexer->lookahead;
 
       lexer->advance(lexer, false);
 
@@ -125,9 +126,9 @@ bool Scanner::read_char(TSLexer *lexer) {
 }
 
 bool Scanner::match_char(TSLexer *lexer, const CategoryFlags &flags,
-                         const std::wstring &chars, bool exclude) {
+                         const u32string &chars, bool exclude) {
   if (flags[catcode_table[lookahead]] &&
-      exclude == (chars.find(lookahead) == std::wstring::npos)) {
+      exclude == (chars.find(lookahead) == u32string::npos)) {
     read_char(lexer);
     return true;
   }
@@ -136,11 +137,11 @@ bool Scanner::match_char(TSLexer *lexer, const CategoryFlags &flags,
 }
 
 bool Scanner::match_chars(TSLexer *lexer, const CategoryFlags &flags,
-                          const std::wstring &chars, bool exclude) {
+                          const u32string &chars, bool exclude) {
   bool skipped = false;
 
   while (flags[catcode_table[lookahead]] &&
-         exclude == (chars.find(lookahead) == std::wstring::npos)) {
+         exclude == (chars.find(lookahead) == u32string::npos)) {
     skipped = true;
     if (!read_char(lexer))
       break;
@@ -150,7 +151,7 @@ bool Scanner::match_chars(TSLexer *lexer, const CategoryFlags &flags,
 }
 
 bool Scanner::match_string(TSLexer *lexer, const std::string &value) {
-  for (wchar_t ch : convert.from_bytes(value)) {
+  for (char32_t ch : convert.from_bytes(value)) {
     if (lookahead != ch) {
       return false;
     }
@@ -173,11 +174,11 @@ string Scanner::read_string(TSLexer *lexer, Category catcode) {
 }
 
 string Scanner::read_string(TSLexer *lexer, const CategoryFlags &flags,
-                            const std::wstring &chars, bool exclude) {
+                            const u32string &chars, bool exclude) {
   string result;
 
   while (flags[catcode_table[lookahead]] &&
-         exclude == (chars.find(lookahead) == std::wstring::npos)) {
+         exclude == (chars.find(lookahead) == u32string::npos)) {
     result.append(convert.to_bytes(lookahead));
     if (!read_char(lexer))
       break;
@@ -220,8 +221,7 @@ bool Scanner::scan_verb_end_delim(TSLexer *lexer) {
 
 bool Scanner::scan_verb_body(TSLexer *lexer) {
   return enter_raw_mode(lexer) &&
-         match_chars(lexer, ~EOL_FLAG,
-                     std::wstring(1, static_cast<wchar_t>(start_delim))) &&
+         match_chars(lexer, ~EOL_FLAG, u32string(1, start_delim)) &&
          symbol(lexer, verb_body);
 }
 
@@ -380,7 +380,7 @@ bool Scanner::scan_env_name(TSLexer *lexer) {
 }
 
 bool Scanner::scan_name(TSLexer *lexer) {
-  u_name = read_string(lexer, LETTER_FLAG | OTHER_FLAG, L",");
+  u_name = read_string(lexer, LETTER_FLAG | OTHER_FLAG, U",");
 
   auto it = names.find(u_name);
 
@@ -431,51 +431,37 @@ bool Scanner::valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
 
 bool Scanner::scan_octal(TSLexer *lexer) {
   // Skip the octal quote and then gobble the digits
-  return read_char(lexer) && match_chars(lexer, ~0, octal_digits, false) &&
+  return read_char(lexer) &&
+         match_chars(lexer, ANY_FLAG, octal_digits, false) &&
          symbol(lexer, octal);
 }
 
 bool Scanner::scan_decimal(TSLexer *lexer) {
-  return match_chars(lexer, ~0, decimal_digits, false) &&
+  return match_chars(lexer, ANY_FLAG, decimal_digits, false) &&
          symbol(lexer, decimal);
 }
 
 bool Scanner::scan_parameter_ref(TSLexer *lexer) {
-  match_chars(lexer, PARAMETER_FLAG);
-
-  if (lookahead >= '1' && lookahead <= '9') {
-    lexer->mark_end(lexer);
-  }
-
-  lexer->result_symbol = parameter_ref;
-
-  return true;
+  return match_chars(lexer, PARAMETER_FLAG) &&
+         symbol(lexer, parameter_ref, lookahead >= '1' && lookahead <= '9');
 }
 
 bool Scanner::scan_hexadecimal(TSLexer *lexer) {
   // Skip the hexadecimal quote and then gobble the digits
   return read_char(lexer) &&
-         match_chars(lexer, ~0, hexadecimal_digits, false) &&
+         match_chars(lexer, ANY_FLAG, hexadecimal_digits, false) &&
          symbol(lexer, hexadecimal);
 }
 
 bool Scanner::scan_fixed(TSLexer *lexer) {
-  if (lookahead == '+' || lookahead == '-') {
-    read_char(lexer);
+  match_char(lexer, ANY_FLAG, signs);
+  match_chars(lexer, ANY_FLAG, decimal_digits, false);
+
+  if (match_char(lexer, ANY_FLAG, decimal_separator, false)) {
+    match_chars(lexer, ANY_FLAG, decimal_digits, false);
   }
 
-  if (lookahead != '.') {
-    match_chars(lexer, ~0, decimal_digits, false);
-  }
-
-  if (lookahead == '.') {
-    read_char(lexer);
-    match_chars(lexer, ~0, decimal_digits, false);
-  }
-
-  lexer->result_symbol = fixed;
-
-  return true;
+  return symbol(lexer, fixed);
 }
 
 bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
@@ -527,7 +513,7 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     return true;
   }
 
-  std::wstring excluded;
+  u32string excluded;
 
   if (valid_symbols[rbrack]) {
     excluded.push_back(L']');

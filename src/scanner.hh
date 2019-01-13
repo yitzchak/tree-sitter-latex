@@ -222,13 +222,15 @@ struct Environment {
 };
 
 class Scanner {
-  const std::wstring octal_digits = L"01234567";
-  const std::wstring decimal_digits = L"0123456789";
-  const std::wstring hexadecimal_digits = L"0123456789ABCDEFabcdef";
+  const std::u32string decimal_separator = U".";
+  const std::u32string signs = U"+-";
+  const std::u32string octal_digits = U"01234567";
+  const std::u32string decimal_digits = U"0123456789";
+  const std::u32string hexadecimal_digits = U"0123456789ABCDEFabcdef";
 
-  std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
+  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
   std::string cs_name, e_name, u_name;
-  int32_t start_delim = 0, lookahead = 0;
+  char32_t start_delim = 0, lookahead = 0;
   bool raw = false, advanced = false;
   CatCodeTable catcode_table = {
       {' ', ' ', SPACE_CATEGORY},
@@ -276,14 +278,15 @@ class Scanner {
 
   std::string read_string(TSLexer *lexer, Category catcode);
 
-  std::string read_string(TSLexer *lexer, const CategoryFlags &flags = ~0,
-                          const std::wstring &chars = L"", bool exclude = true);
+  std::string read_string(TSLexer *lexer, const CategoryFlags &flags = ANY_FLAG,
+                          const std::u32string &chars = U"",
+                          bool exclude = true);
 
-  bool match_char(TSLexer *lexer, const CategoryFlags &flags = ~0,
-                  const std::wstring &chars = L"", bool exclude = true);
+  bool match_char(TSLexer *lexer, const CategoryFlags &flags = ANY_FLAG,
+                  const std::u32string &chars = U"", bool exclude = true);
 
-  bool match_chars(TSLexer *lexer, const CategoryFlags &flags = ~0,
-                   const std::wstring &chars = L"", bool exclude = true);
+  bool match_chars(TSLexer *lexer, const CategoryFlags &flags = ANY_FLAG,
+                   const std::u32string &chars = U"", bool exclude = true);
 
   bool match_string(TSLexer *lexer, const std::string &value);
 
