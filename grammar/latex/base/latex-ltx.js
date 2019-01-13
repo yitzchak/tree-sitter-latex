@@ -158,6 +158,10 @@ module.exports = {
           $._nil_token
         ]
       },
+      At: {
+        cs: $ => $.cs_At,
+        parameters: $ => [$._text_token]
+      },
       author: {
         cs: $ => $.cs_author,
         parameters: $ => [
@@ -167,6 +171,13 @@ module.exports = {
       bibitem: {
         cs: $ => $.cs_bibitem,
         parameters: $ => [optional($.brack_group), $._text_token]
+      },
+      DeclareOption: {
+        cs: $ => $.cs_DeclareOption,
+        parameters: $ => [
+          choice($.star, $._text_token),
+          $._text_token
+        ]
       },
       date: {
         cs: $ => $.cs_date,
