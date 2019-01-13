@@ -106,6 +106,7 @@ enum SymbolType {
   cs_stackrel,
   cs_string,
   cs_tag,
+  cs_text,
   cs_textstyle,
   cs_thanks,
   cs_title,
