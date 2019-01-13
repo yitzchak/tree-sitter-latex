@@ -418,8 +418,9 @@ bool Scanner::scan_ignored_line(TSLexer *lexer) {
 }
 
 bool Scanner::scan_ignored_rest(TSLexer *lexer) {
-  return enter_raw_mode(lexer) && match_chars(lexer) &&
-         symbol(lexer, ignored_rest);
+  match_chars(lexer);
+
+  return symbol(lexer, ignored_rest);
 }
 
 bool Scanner::valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
