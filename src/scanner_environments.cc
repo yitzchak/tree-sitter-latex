@@ -80,9 +80,11 @@ unordered_map<string, Environment> Scanner::environments = {
     {"LVerbatim*", env_name_Verbatim},
     {"Verbatim", env_name_Verbatim},
     {"Verbatim*", env_name_Verbatim},
-    // latex filecontents filecontents
+    // latex filecontents filecontents-sty
     {"filecontents", env_name_filecontents},
     {"filecontents*", env_name_filecontents},
+    // latex gnuplotex gnumplotex-sty
+    {"gnuplot", env_name_gnuplot},
     // latex listings listings-sty
     {"lstlisting", env_name_lstlisting},
     // latex minted minted-sty

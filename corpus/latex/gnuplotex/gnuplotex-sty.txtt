@@ -1,0 +1,40 @@
+================================================================================
+gnuplot environment
+================================================================================
+foo
+\begin{gnuplot}
+bar
+\end{gnuplot}
+quux
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (gnuplot_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r))))
+  (text))
+
+================================================================================
+gnuplot environment with optional parameter
+================================================================================
+foo
+\begin{gnuplot}[wibble]
+bar
+\end{gnuplot}
+quux
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (gnuplot_env
+    (begin
+      (cs)
+      (group (l) (name) (r))
+      (brack_group (lbrack) (text) (rbrack))
+      (eol))
+    (verbatim)
+    (end (cs) (group (l) (name) (r))))
+  (text))

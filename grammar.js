@@ -179,6 +179,7 @@ let g = {
     $.env_name_dseries,
     $.env_name_figure,
     $.env_name_filecontents,
+    $.env_name_gnuplot,
     $.env_name_inline_math,
     $.env_name_itemize,
     $.env_name_lstlisting,
