@@ -6,6 +6,8 @@ using std::string;
 using std::unordered_map;
 
 unordered_map<string, Environment> Scanner::environments = {
+    // latex amscls amsthm-sty
+    {"proof", env_name_theorem},
     // latex amsmath amsmath-sty
     {"align", env_name_display_math},
     {"align*", env_name_display_math},
@@ -85,6 +87,19 @@ unordered_map<string, Environment> Scanner::environments = {
     {"lstlisting", env_name_lstlisting},
     // latex minted minted-sty
     {"minted", env_name_minted},
+    // latex ntheorem ntheorem-sty
+    {"anmerkung", env_name_theorem},
+    {"beispiel", env_name_theorem},
+    {"bemerkung", env_name_theorem},
+    {"beweis", env_name_theorem},
+    {"corollary", env_name_theorem},
+    {"definition", env_name_theorem},
+    {"example", env_name_theorem},
+    {"korollar", env_name_theorem},
+    {"lemma", env_name_theorem},
+    {"proposition", env_name_theorem},
+    {"remark", env_name_theorem},
+    {"satz", env_name_theorem},
     // latex pgf frontendlayer tikz-sty
     {"tikzpicture", env_name_tikzpicture},
     // latex supertabular supertabular-sty
