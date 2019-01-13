@@ -23,6 +23,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"left", cs_left},
     {"let", cs_let},
     {"mathcode", cs_code},
+    {"par", cs_par},
     {"right", cs_right},
     {"sfcode", cs_code},
     {"string", cs_string},

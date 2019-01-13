@@ -369,11 +369,11 @@ bool Scanner::scan_space(TSLexer *lexer, const bool *valid_symbols) {
   } while (read_char(lexer) && (catcode_table[lookahead] == SPACE_CATEGORY ||
                                 catcode_table[lookahead] == EOL_CATEGORY));
 
-  if (eol > 1 && !valid_symbols[par]) {
+  if (eol > 1 && !valid_symbols[par_eol]) {
     return scan_text(lexer, valid_symbols);
   }
 
-  lexer->result_symbol = (eol > 1) ? par : _space;
+  lexer->result_symbol = (eol > 1) ? par_eol : _space;
 
   return true;
 }
@@ -534,6 +534,7 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[decimal]) {
       return scan_decimal(lexer);
     }
+    [[fallthrough]];
   case '+':
   case '-':
   case '.':

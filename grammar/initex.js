@@ -21,6 +21,12 @@ module.exports = {
         cs: $ => $.cs_right,
         parameters: $ => [$._math_token]
       }
+    },
+    rules: {
+      par: $ => choice(
+        alias($.par_eol, $.eol),
+        alias($.cs_par, $.cs)
+      )
     }
   },
   common: {
