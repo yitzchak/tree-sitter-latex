@@ -268,17 +268,24 @@ class Scanner {
   bool valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
                              SymbolType last);
 
-  bool read_char(TSLexer *lexer, bool mark = true);
+  bool enter_raw_mode(TSLexer *lexer);
+
+  bool enter_translated_mode(TSLexer *lexer);
+
+  bool read_char(TSLexer *lexer);
 
   std::string read_string(TSLexer *lexer, Category catcode);
 
   std::string read_string(TSLexer *lexer, const CategoryFlags &flags = ~0,
                           const std::wstring &chars = L"", bool exclude = true);
 
-  void skip_chars(TSLexer *lexer, const CategoryFlags &flags = ~0,
+  bool match_char(TSLexer *lexer, const CategoryFlags &flags = ~0,
                   const std::wstring &chars = L"", bool exclude = true);
 
-  bool match_or_advance(TSLexer *lexer, std::string value);
+  bool match_chars(TSLexer *lexer, const CategoryFlags &flags = ~0,
+                   const std::wstring &chars = L"", bool exclude = true);
+
+  bool match_string(TSLexer *lexer, const std::string &value);
 
   bool scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols,
                              SymbolType symbol);
@@ -293,12 +300,7 @@ class Scanner {
 
   bool scan_cs(TSLexer *lexer, const bool *valid_symbols);
 
-  inline bool scan_empty_symbol(TSLexer *lexer, SymbolType symbol);
-
-  inline bool scan_single_char_symbol(TSLexer *lexer, SymbolType symbol);
-
-  inline bool scan_multi_char_symbol(TSLexer *lexer, SymbolType symbol,
-                                     Category code);
+  inline bool symbol(TSLexer *lexer, SymbolType symbol, bool advance = false);
 
   bool scan_space(TSLexer *lexer, const bool *valid_symbols);
 

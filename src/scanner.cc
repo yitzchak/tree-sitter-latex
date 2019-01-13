@@ -41,21 +41,45 @@ void Scanner::deserialize(const char *buffer, unsigned length) {
   buf >> start_delim >> cs_name >> e_name >> u_name >> catcode_table;
 }
 
-bool Scanner::read_char(TSLexer *lexer, bool mark) {
-  lookahead = 0;
+bool Scanner::enter_raw_mode(TSLexer *lexer) {
+  raw = true;
+  advanced = false;
+  return read_char(lexer);
+}
 
-  if (mark) {
-    lexer->mark_end(lexer);
+bool Scanner::enter_translated_mode(TSLexer *lexer) {
+  raw = false;
+  advanced = false;
+  return read_char(lexer);
+}
+
+bool Scanner::read_char(TSLexer *lexer) {
+  if (raw) {
+    if (advanced) {
+      lexer->advance(lexer, false);
+    } else {
+      advanced = true;
+    }
+
+    lookahead = lexer->lookahead;
+
+    if (!lexer->lookahead)
+      return false;
+
+    return true;
   }
+
+  lookahead = lexer->lookahead;
+
+  lexer->mark_end(lexer);
 
   if (!lexer->lookahead)
     return false;
 
   advanced = true;
-  lookahead = lexer->lookahead;
   lexer->advance(lexer, false);
 
-  if (raw || catcode_table[lookahead] != SUPERSCRIPT_CATEGORY) {
+  if (catcode_table[lookahead] != SUPERSCRIPT_CATEGORY) {
     return true;
   }
 
@@ -100,15 +124,40 @@ bool Scanner::read_char(TSLexer *lexer, bool mark) {
   return true;
 }
 
-void Scanner::skip_chars(TSLexer *lexer, const CategoryFlags &flags,
+bool Scanner::match_char(TSLexer *lexer, const CategoryFlags &flags,
                          const std::wstring &chars, bool exclude) {
-  if (advanced || read_char(lexer)) {
-    while (flags[catcode_table[lookahead]] &&
-           exclude == (chars.find(lookahead) == std::wstring::npos)) {
-      if (!read_char(lexer))
-        break;
-    }
+  if (flags[catcode_table[lookahead]] &&
+      exclude == (chars.find(lookahead) == std::wstring::npos)) {
+    read_char(lexer);
+    return true;
   }
+
+  return false;
+}
+
+bool Scanner::match_chars(TSLexer *lexer, const CategoryFlags &flags,
+                          const std::wstring &chars, bool exclude) {
+  bool skipped = false;
+
+  while (flags[catcode_table[lookahead]] &&
+         exclude == (chars.find(lookahead) == std::wstring::npos)) {
+    skipped = true;
+    if (!read_char(lexer))
+      break;
+  }
+
+  return skipped;
+}
+
+bool Scanner::match_string(TSLexer *lexer, const std::string &value) {
+  for (wchar_t ch : convert.from_bytes(value)) {
+    if (lookahead != ch) {
+      return false;
+    }
+    read_char(lexer);
+  }
+
+  return true;
 }
 
 string Scanner::read_string(TSLexer *lexer, Category catcode) {
@@ -138,33 +187,31 @@ string Scanner::read_string(TSLexer *lexer, const CategoryFlags &flags,
 }
 
 bool Scanner::scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols,
-                                    SymbolType symbol) {
+                                    SymbolType sym) {
   // NOTE: ' ' (space) is a perfectly valid delim, as is %
   // Also: The first * (if present) is gobbled by the main grammar, but the
   // second is a valid delim
   if (lookahead == '*' && valid_symbols[star]) {
-    return scan_single_char_symbol(lexer, star);
+    return symbol(lexer, star, true);
   }
 
   if (lookahead) {
     start_delim = lookahead;
-    return scan_single_char_symbol(lexer, symbol);
+    return symbol(lexer, sym, true);
   }
 
   return false;
 }
 
 bool Scanner::scan_verb_end_delim(TSLexer *lexer) {
-  raw = true;
-
-  if (read_char(lexer)) {
+  if (enter_raw_mode(lexer)) {
     if (lookahead == start_delim) {
-      return scan_single_char_symbol(lexer, verb_end_delim);
+      return symbol(lexer, verb_end_delim, true);
     }
 
     // EOL is not allowed in inline verbatim
     if (catcode_table[lookahead] == EOL_CATEGORY) {
-      return scan_empty_symbol(lexer, exit);
+      return symbol(lexer, exit);
     }
   }
 
@@ -172,103 +219,48 @@ bool Scanner::scan_verb_end_delim(TSLexer *lexer) {
 }
 
 bool Scanner::scan_verb_body(TSLexer *lexer) {
-  raw = true;
-
-  skip_chars(lexer, ~EOL_FLAG,
-             std::wstring(1, static_cast<wchar_t>(start_delim)));
-
-  lexer->result_symbol = verb_body;
-
-  return true;
-}
-
-bool Scanner::match_or_advance(TSLexer *lexer, string value) {
-  bool advanced = false;
-
-  for (wchar_t ch : convert.from_bytes(value)) {
-    switch (ch) {
-    case '\\':
-      if (catcode_table[lexer->lookahead] != ESCAPE_CATEGORY) {
-        if (!advanced) {
-          lexer->advance(lexer, false);
-        }
-        return false;
-      }
-      advanced = true;
-      lexer->advance(lexer, false);
-      break;
-    case '{':
-      if (catcode_table[lexer->lookahead] != BEGIN_CATEGORY) {
-        if (!advanced) {
-          lexer->advance(lexer, false);
-        }
-        return false;
-      }
-      advanced = true;
-      lexer->advance(lexer, false);
-      break;
-    case '}':
-      if (catcode_table[lexer->lookahead] != END_CATEGORY) {
-        if (!advanced) {
-          lexer->advance(lexer, false);
-        }
-        return false;
-      }
-      advanced = true;
-      lexer->advance(lexer, false);
-      break;
-    case ' ':
-      while (lexer->lookahead &&
-             catcode_table[lexer->lookahead] == SPACE_CATEGORY) {
-        advanced = true;
-        lexer->advance(lexer, false);
-      }
-      break;
-    default:
-      if (lexer->lookahead != ch) {
-        if (!advanced) {
-          lexer->advance(lexer, false);
-        }
-        return false;
-      }
-      advanced = true;
-      lexer->advance(lexer, false);
-      break;
-    }
-  }
-
-  return true;
+  return enter_raw_mode(lexer) &&
+         match_chars(lexer, ~EOL_FLAG,
+                     std::wstring(1, static_cast<wchar_t>(start_delim))) &&
+         symbol(lexer, verb_body);
 }
 
 bool Scanner::scan_verbatim_text(TSLexer *lexer) {
-  string terminator = "\\end {" + e_name + "}";
-  lexer->mark_end(lexer);
-  lexer->result_symbol = verbatim_text;
+  if (enter_raw_mode(lexer)) {
+    lexer->result_symbol = verbatim_text;
 
-  do {
-    if (match_or_advance(lexer, terminator)) {
-      return true;
-    }
+    do {
+      lexer->mark_end(lexer);
 
-    lexer->mark_end(lexer);
-  } while (lexer->lookahead);
+      if (match_char(lexer, ESCAPE_FLAG)) {
+        if (match_string(lexer, "end")) {
+          match_chars(lexer, SPACE_FLAG);
+          if (match_char(lexer, BEGIN_FLAG) && match_string(lexer, e_name) &&
+              match_char(lexer, END_FLAG)) {
+            break;
+          }
+        }
+      } else {
+        read_char(lexer);
+      }
+    } while (lookahead);
 
-  return true;
+    return true;
+  }
+
+  return false;
 }
 
 bool Scanner::scan_comment(TSLexer *lexer) {
-  raw = true;
-
-  string comment_type;
-
   lexer->result_symbol = comment;
 
-  // Skip the comment char
-  if (read_char(lexer)) {
+  if (enter_raw_mode(lexer)) {
+    string comment_type;
+
     if (lookahead == ':') {
       lexer->result_symbol = comment_tag;
     } else {
-      skip_chars(lexer, SPACE_FLAG);
+      match_chars(lexer, SPACE_FLAG);
 
       if (lookahead == 'a') {
         if (read_char(lexer) && lookahead == 'r' && read_char(lexer) &&
@@ -293,13 +285,15 @@ bool Scanner::scan_comment(TSLexer *lexer) {
     }
 
     // Gobble the reset of the comment
-    skip_chars(lexer, ~EOL_FLAG);
+    match_chars(lexer, ~EOL_FLAG);
 
     // Eat any EOL
     if (catcode_table[lookahead] == EOL_CATEGORY) {
       read_char(lexer);
     }
   }
+
+  lexer->mark_end(lexer);
 
   return true;
 }
@@ -338,23 +332,16 @@ bool Scanner::scan_cs(TSLexer *lexer, const bool *valid_symbols) {
   return true;
 }
 
-inline bool Scanner::scan_empty_symbol(TSLexer *lexer, SymbolType symbol) {
-  lexer->result_symbol = symbol;
+inline bool Scanner::symbol(TSLexer *lexer, SymbolType symbol, bool advance) {
+  if (advance) {
+    if (raw) {
+      lexer->advance(lexer, false);
+    }
+    lexer->mark_end(lexer);
+  } else if (raw) {
+    lexer->mark_end(lexer);
+  }
 
-  return true;
-}
-
-inline bool Scanner::scan_single_char_symbol(TSLexer *lexer,
-                                             SymbolType symbol) {
-  lexer->result_symbol = symbol;
-  lexer->mark_end(lexer);
-
-  return true;
-}
-
-inline bool Scanner::scan_multi_char_symbol(TSLexer *lexer, SymbolType symbol,
-                                            Category code) {
-  skip_chars(lexer, 1 << code);
   lexer->result_symbol = symbol;
 
   return true;
@@ -425,25 +412,14 @@ bool Scanner::scan_math_delim(TSLexer *lexer, const bool *valid_symbols) {
 }
 
 bool Scanner::scan_ignored_line(TSLexer *lexer) {
-  skip_chars(lexer, ~EOL_FLAG);
+  match_chars(lexer, ~EOL_FLAG);
 
-  if (catcode_table[lookahead] == EOL_CATEGORY) {
-    lexer->mark_end(lexer);
-  }
-
-  lexer->result_symbol = ignored_line;
-
-  return true;
+  return symbol(lexer, ignored_line, catcode_table[lookahead] == EOL_CATEGORY);
 }
 
 bool Scanner::scan_ignored_rest(TSLexer *lexer) {
-  raw = true;
-
-  skip_chars(lexer);
-
-  lexer->result_symbol = ignored_rest;
-
-  return true;
+  return enter_raw_mode(lexer) && match_chars(lexer) &&
+         symbol(lexer, ignored_rest);
 }
 
 bool Scanner::valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
@@ -453,24 +429,18 @@ bool Scanner::valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
 }
 
 bool Scanner::scan_octal(TSLexer *lexer) {
-  // Skip the octal quote
-  read_char(lexer);
-  skip_chars(lexer, ~0, octal_digits, false);
-  lexer->result_symbol = octal;
-
-  return true;
+  // Skip the octal quote and then gobble the digits
+  return read_char(lexer) && match_chars(lexer, ~0, octal_digits, false) &&
+         symbol(lexer, octal);
 }
 
 bool Scanner::scan_decimal(TSLexer *lexer) {
-  skip_chars(lexer, ~0, decimal_digits, false);
-
-  lexer->result_symbol = decimal;
-
-  return true;
+  return match_chars(lexer, ~0, decimal_digits, false) &&
+         symbol(lexer, decimal);
 }
 
 bool Scanner::scan_parameter_ref(TSLexer *lexer) {
-  skip_chars(lexer, PARAMETER_FLAG);
+  match_chars(lexer, PARAMETER_FLAG);
 
   if (lookahead >= '1' && lookahead <= '9') {
     lexer->mark_end(lexer);
@@ -482,12 +452,10 @@ bool Scanner::scan_parameter_ref(TSLexer *lexer) {
 }
 
 bool Scanner::scan_hexadecimal(TSLexer *lexer) {
-  // Skip the hexadecimal quote
-  read_char(lexer);
-  skip_chars(lexer, ~0, hexadecimal_digits, false);
-  lexer->result_symbol = hexadecimal;
-
-  return true;
+  // Skip the hexadecimal quote and then gobble the digits
+  return read_char(lexer) &&
+         match_chars(lexer, ~0, hexadecimal_digits, false) &&
+         symbol(lexer, hexadecimal);
 }
 
 bool Scanner::scan_fixed(TSLexer *lexer) {
@@ -496,12 +464,12 @@ bool Scanner::scan_fixed(TSLexer *lexer) {
   }
 
   if (lookahead != '.') {
-    skip_chars(lexer, ~0, decimal_digits, false);
+    match_chars(lexer, ~0, decimal_digits, false);
   }
 
   if (lookahead == '.') {
     read_char(lexer);
-    skip_chars(lexer, ~0, decimal_digits, false);
+    match_chars(lexer, ~0, decimal_digits, false);
   }
 
   lexer->result_symbol = fixed;
@@ -568,7 +536,8 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     excluded.push_back(L')');
   }
 
-  skip_chars(lexer, LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG, excluded);
+  match_chars(lexer, LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG,
+              excluded);
 
   lexer->result_symbol = text;
 
@@ -581,7 +550,7 @@ bool Scanner::scan_cmd_apply(TSLexer *lexer) {
     catcode_table.assign(it->second.intervals);
   }
 
-  return scan_empty_symbol(lexer, _cmd_apply);
+  return symbol(lexer, _cmd_apply);
 }
 
 bool Scanner::scan_env_begin(TSLexer *lexer) {
@@ -591,31 +560,28 @@ bool Scanner::scan_env_begin(TSLexer *lexer) {
     catcode_table.assign(it->second.intervals);
   }
 
-  return scan_empty_symbol(lexer, _env_begin);
+  return symbol(lexer, _env_begin);
 }
 
 bool Scanner::scan_env_end(TSLexer *lexer) {
   catcode_table.pop();
 
-  return scan_empty_symbol(lexer, _env_end);
+  return symbol(lexer, _env_end);
 }
 
 bool Scanner::scan_scope_begin(TSLexer *lexer) {
   catcode_table.push();
 
-  return scan_empty_symbol(lexer, _scope_begin);
+  return symbol(lexer, _scope_begin);
 }
 
 bool Scanner::scan_scope_end(TSLexer *lexer) {
   catcode_table.pop();
 
-  return scan_empty_symbol(lexer, _scope_end);
+  return symbol(lexer, _scope_end);
 }
 
 bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
-  raw = false;
-  advanced = false;
-
   if (valid_symbols[_cmd_apply]) {
     return scan_cmd_apply(lexer);
   }
@@ -637,7 +603,7 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
   }
 
   if (!lexer->lookahead) {
-    return valid_symbols[exit] ? scan_empty_symbol(lexer, exit) : false;
+    return valid_symbols[exit] ? symbol(lexer, exit) : false;
   }
 
   // Look for an inline verbatim delimiter and end the verbatim.
@@ -656,7 +622,7 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     return scan_verbatim_text(lexer);
   }
 
-  if (!read_char(lexer)) {
+  if (!enter_translated_mode(lexer)) {
     lexer->result_symbol = char_ref_invalid;
     lexer->mark_end(lexer);
     return true;
@@ -689,20 +655,20 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     break;
   case BEGIN_CATEGORY:
     if (valid_symbols[l]) {
-      return scan_single_char_symbol(lexer, l);
+      return symbol(lexer, l, true);
     }
     break;
   case END_CATEGORY:
     if (valid_symbols[exit]) {
-      return scan_empty_symbol(lexer, exit);
+      return symbol(lexer, exit);
     }
     if (valid_symbols[r]) {
-      return scan_single_char_symbol(lexer, r);
+      return symbol(lexer, r, true);
     }
     break;
   case MATH_SHIFT_CATEGORY:
     if (valid_symbols[exit_math]) {
-      return scan_empty_symbol(lexer, exit_math);
+      return symbol(lexer, exit_math);
     }
     if (valid_symbols[display_math_shift] || valid_symbols[math_shift] ||
         valid_symbols[display_math_shift_end] ||
@@ -712,12 +678,12 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     break;
   case ALIGNMENT_TAB_CATEGORY:
     if (valid_symbols[alignment_tab]) {
-      return scan_single_char_symbol(lexer, alignment_tab);
+      return symbol(lexer, alignment_tab, true);
     }
     break;
   case EOL_CATEGORY:
     if (valid_symbols[eol]) {
-      return scan_single_char_symbol(lexer, eol);
+      return symbol(lexer, eol, true);
     }
     if (valid_symbols[_space]) {
       return scan_space(lexer, valid_symbols);
@@ -730,17 +696,17 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     break;
   case SUPERSCRIPT_CATEGORY:
     if (valid_symbols[superscript]) {
-      return scan_single_char_symbol(lexer, superscript);
+      return symbol(lexer, superscript, true);
     }
     break;
   case SUBSCRIPT_CATEGORY:
     if (valid_symbols[subscript]) {
-      return scan_single_char_symbol(lexer, subscript);
+      return symbol(lexer, subscript, true);
     }
     break;
   case IGNORED_CATEGORY:
     if (valid_symbols[ignored]) {
-      return scan_multi_char_symbol(lexer, ignored, IGNORED_CATEGORY);
+      return match_chars(lexer, IGNORED_FLAG) && symbol(lexer, ignored);
     }
     break;
   case SPACE_CATEGORY:
@@ -750,7 +716,7 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     break;
   case ACTIVE_CHAR_CATEGORY:
     if (valid_symbols[active_char]) {
-      return scan_single_char_symbol(lexer, active_char);
+      return symbol(lexer, active_char, true);
     }
     break;
   case COMMENT_CATEGORY:
@@ -777,7 +743,7 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
   }
 
   if (valid_symbols[text_non_escape]) {
-    return scan_single_char_symbol(lexer, text_non_escape);
+    return symbol(lexer, text_non_escape, true);
   }
 
   return false;
