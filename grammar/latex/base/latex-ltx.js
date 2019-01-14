@@ -27,6 +27,14 @@ module.exports = {
           $._text_token
         ]
       },
+      IfFileExists: {
+        cs: $ => $.cs_IfFileExists,
+        parameters: $ => [
+          $._text_token,
+          $._text_token,
+          $._text_token
+        ]
+      },
       label: {
         cs: $ => $.cs_label,
         parameters: $ => [
@@ -50,7 +58,7 @@ module.exports = {
         cs: $ => $.cs_newenvironment,
         parameters: $ => [
           optional($.star),
-          alias($.name_group, $.group),
+          $._name_group,
           optional($.brack_group),
           optional($.brack_group),
           $._nil_token,
@@ -216,6 +224,12 @@ module.exports = {
           $._text_token
         ]
       },
+      ExecuteOptions: {
+        cs: $ => $.cs_ExecuteOptions,
+        parameters: $ => [
+          $._text_token
+        ]
+      },
       item: {
         cs: $ => $.cs_item,
         parameters: $ => [optional($.brack_group)]
@@ -244,6 +258,13 @@ module.exports = {
           $._text_token,
           $._text_token,
           $._text_token
+        ]
+      },
+      NeedsTeXFormat: {
+        cs: $ => $.cs_NeedsTeXFormat,
+        parameters: $ => [
+          $._text_token,
+          optional($.brack_group)
         ]
       },
       newline: {
@@ -276,6 +297,26 @@ module.exports = {
           optional($.brack_group),
           $._dimension_parameter,
           $._text_token
+        ]
+      },
+      PassOptionsTo: {
+        cs: $ => $.cs_PassOptionsTo,
+        parameters: $ => [
+          $._text_token,
+          $._name_group
+        ]
+      },
+      ProcessOptions: {
+        cs: $ => $.cs_ProcessOptions,
+        parameters: $ => [
+          optional($.star)
+        ]
+      },
+      Provides: {
+        cs: $ => $.cs_Provides,
+        parameters: $ => [
+          $._name_parameter,
+          optional($.brack_group)
         ]
       },
       // section is actually in the class file, but it's here in the core for
