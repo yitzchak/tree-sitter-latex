@@ -16,6 +16,10 @@ module.exports = {
       tag: {
         cs: $ => $.cs_tag,
         parameters: $ => [$._text_token]
+      },
+      text_cmd: {
+        cs: $ => $.cs_text,
+        parameters: $ => [$._text_token]
       }
     }
   }

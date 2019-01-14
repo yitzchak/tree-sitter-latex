@@ -6,6 +6,8 @@ using std::string;
 using std::unordered_map;
 
 unordered_map<string, Environment> Scanner::environments = {
+    // latex amscls amsthm-sty
+    {"proof", env_name_theorem},
     // latex amsmath amsmath-sty
     {"align", env_name_display_math},
     {"align*", env_name_display_math},
@@ -39,13 +41,16 @@ unordered_map<string, Environment> Scanner::environments = {
        {'~', '~', OTHER_CATEGORY}}}},
     // laxex base latex-ltx
     {"array", env_name_array},
+    {"description", env_name_itemize},
     {"displaymath", env_name_display_math},
     {"document", env_name_document},
+    {"enumerate", env_name_itemize},
     {"eqnarray", env_name_display_math},
     {"eqnarray*", env_name_display_math},
     {"equation", env_name_display_math},
     {"figure", env_name_figure},
     {"figure*", env_name_figure},
+    {"itemize", env_name_itemize},
     {"math", env_name_inline_math},
     {"minipage", env_name_minipage},
     {"picture", env_name_picture},
@@ -64,6 +69,10 @@ unordered_map<string, Environment> Scanner::environments = {
     {"dmath*", env_name_dmath},
     {"dseries", env_name_dseries},
     {"dseries*", env_name_dseries},
+    // latex enumitem enumitem-sty
+    {"description*", env_name_itemize},
+    {"enumerate*", env_name_itemize},
+    {"itemize*", env_name_itemize},
     // latex fancyvrb fancyvrb-sty
     {"BVerbatim", env_name_Verbatim},
     {"BVerbatim*", env_name_Verbatim},
@@ -71,13 +80,30 @@ unordered_map<string, Environment> Scanner::environments = {
     {"LVerbatim*", env_name_Verbatim},
     {"Verbatim", env_name_Verbatim},
     {"Verbatim*", env_name_Verbatim},
-    // latex filecontents filecontents
+    // latex filecontents filecontents-sty
     {"filecontents", env_name_filecontents},
     {"filecontents*", env_name_filecontents},
+    // latex gnuplotex gnumplotex-sty
+    {"gnuplot", env_name_gnuplot},
     // latex listings listings-sty
     {"lstlisting", env_name_lstlisting},
     // latex minted minted-sty
     {"minted", env_name_minted},
+    // latex ntheorem ntheorem-sty
+    {"anmerkung", env_name_theorem},
+    {"beispiel", env_name_theorem},
+    {"bemerkung", env_name_theorem},
+    {"beweis", env_name_theorem},
+    {"corollary", env_name_theorem},
+    {"definition", env_name_theorem},
+    {"example", env_name_theorem},
+    {"korollar", env_name_theorem},
+    {"lemma", env_name_theorem},
+    {"proposition", env_name_theorem},
+    {"remark", env_name_theorem},
+    {"satz", env_name_theorem},
+    // latex pgf frontendlayer tikz-sty
+    {"tikzpicture", env_name_tikzpicture},
     // latex supertabular supertabular-sty
     {"supertabular", env_name_tabular},
     {"supertabular*", env_name_tabularstar},

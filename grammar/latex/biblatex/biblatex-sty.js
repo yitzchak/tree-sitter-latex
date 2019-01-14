@@ -29,6 +29,10 @@ module.exports = {
         cs: $ => $.cs_nocite,
         parameters: $ => [$._text_token]
       },
+      regexp: {
+        cs: $ => $.cs_regexp,
+        parameters: $ => [$._text_token]
+      },
       volcite: {
         cs: $ => $.cs_volcite,
         parameters: $ => [

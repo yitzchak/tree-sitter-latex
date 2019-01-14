@@ -42,7 +42,7 @@ function group ($, ...contents) {
 // }
 
 function semiSimpleGroup ($, ...contents) {
-  return seq($.begingroup, $._scope_begin, ...contents, choice($.endgroup, $.exit), $._scope_end)
+  return seq($.begingroup, $._scope_begin, ...contents, choice($.endgroup, $.exit, alias($.exit_math, $.exit)), $._scope_end)
 }
 
 function brackGroup ($, ...contents) {
@@ -81,6 +81,8 @@ let g = {
     $.comment_tag,
     $.comment_tex,
     $.comment,
+    $.cs_at_ifpackagelater,
+    $.cs_At,
     $.cs_author,
     $.cs_begin,
     $.cs_begingroup,
@@ -90,6 +92,7 @@ let g = {
     $.cs_cites,
     $.cs_code,
     $.cs_date,
+    $.cs_DeclareOption,
     $.cs_def,
     $.cs_delete_verb_delim,
     $.cs_DeleteShortVerb,
@@ -118,6 +121,7 @@ let g = {
     $.cs_input,
     $.cs_item,
     $.cs_label,
+    $.cs_left,
     $.cs_let,
     $.cs_longnewglossaryentry,
     $.cs_lstinline,
@@ -141,17 +145,21 @@ let g = {
     $.cs_newtheorem,
     $.cs_nocite,
     $.cs_obeycr,
+    $.cs_par,
     $.cs_parbox,
     $.cs_ref,
     $.cs_refrange,
+    $.cs_regexp,
     $.cs_relax,
     $.cs_restorecr,
+    $.cs_right,
     $.cs_section,
     $.cs_setlength,
     $.cs_sqrt,
     $.cs_stackrel,
     $.cs_string,
     $.cs_tag,
+    $.cs_text,
     $.cs_textstyle,
     $.cs_thanks,
     $.cs_title,
@@ -174,7 +182,9 @@ let g = {
     $.env_name_dseries,
     $.env_name_figure,
     $.env_name_filecontents,
+    $.env_name_gnuplot,
     $.env_name_inline_math,
+    $.env_name_itemize,
     $.env_name_lstlisting,
     $.env_name_luacode,
     $.env_name_luacodestar,
@@ -189,11 +199,13 @@ let g = {
     $.env_name_text,
     $.env_name_thebibliography,
     $.env_name_theorem,
+    $.env_name_tikzpicture,
     $.env_name_verbatim,
     $.env_name_Verbatim,
     $.env_name,
     $.eol,
     $.equals,
+    $.exit_math,
     $.exit,
     $.fixed,
     $.hexadecimal,
@@ -209,7 +221,7 @@ let g = {
     $.minus,
     $.name,
     $.octal,
-    $.par,
+    $.par_eol,
     $.parameter_ref,
     $.plus_sym,
     $.plus,
@@ -472,6 +484,15 @@ function defCmd (mode, label, { cs, parameters, local }) {
     const head = []
     const body = parameters ? parameters($) : []
     const tail = []
+    const exit = [$.exit]
+
+    if (mode !== 'math') {
+      exit.push($.par)
+    }
+
+    if (mode !== 'text') {
+      exit.push(alias($.exit_math, $.exit))
+    }
 
     while (body.length && isOptional(body[body.length - 1])) {
       tail.unshift(body.pop())
@@ -488,7 +509,7 @@ function defCmd (mode, label, { cs, parameters, local }) {
     return cmd($,
       cs($),
       ...head,
-      ...[body.reduceRight((c, p) => choice($.exit, $.par, c ? seq(p, c) : p),
+      ...[body.reduceRight((c, p) => choice(...exit, c ? seq(p, c) : p),
         tail.length === 0 ? undefined : (tail.length === 1 ? tail[0] : seq(...tail)))])
   }
 

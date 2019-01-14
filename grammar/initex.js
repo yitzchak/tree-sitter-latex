@@ -12,7 +12,21 @@ module.exports = {
       },
       egroup: {
         cs: $ => $.cs_egroup
+      },
+      left: {
+        cs: $ => $.cs_left,
+        parameters: $ => [$._math_token]
+      },
+      right: {
+        cs: $ => $.cs_right,
+        parameters: $ => [$._math_token]
       }
+    },
+    rules: {
+      par: $ => choice(
+        alias($.par_eol, $.eol),
+        alias($.cs_par, $.cs)
+      )
     }
   },
   common: {
@@ -69,6 +83,15 @@ module.exports = {
           $._math_expanded_parameter
         ]
       }
+    },
+    rules: {
+      delimiter_group: $ => seq(
+        $.left,
+        $._scope_begin,
+        repeat($._math_mode),
+        choice($.right, $.exit, alias($.exit_math, $.exit)),
+        $._scope_end
+      )
     }
   },
   text: {

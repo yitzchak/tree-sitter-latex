@@ -149,6 +149,19 @@ module.exports = {
   },
   text: {
     commands: {
+      at_ifpackagelater: {
+        cs: $ => $.cs_at_ifpackagelater,
+        parameters: $ => [
+          $._text_token,
+          $._text_token,
+          $._nil_token,
+          $._nil_token
+        ]
+      },
+      At: {
+        cs: $ => $.cs_At,
+        parameters: $ => [$._text_token]
+      },
       author: {
         cs: $ => $.cs_author,
         parameters: $ => [
@@ -158,6 +171,13 @@ module.exports = {
       bibitem: {
         cs: $ => $.cs_bibitem,
         parameters: $ => [optional($.brack_group), $._text_token]
+      },
+      DeclareOption: {
+        cs: $ => $.cs_DeclareOption,
+        parameters: $ => [
+          choice($.star, $._text_token),
+          $._text_token
+        ]
       },
       date: {
         cs: $ => $.cs_date,
@@ -292,6 +312,11 @@ module.exports = {
       inline_math: {
         name: $ => $.env_name_inline_math,
         contents: $ => [repeat($._math_mode)]
+      },
+      itemize: {
+        name: $ => $.env_name_itemize,
+        // enumitem allows an optional parameter
+        beginParameters: $ => [optional($.brack_group)]
       },
       minipage: {
         name: $ => $.env_name_minipage,

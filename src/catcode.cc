@@ -8,19 +8,19 @@ using std::map;
 using std::pair;
 using std::vector;
 
-// Category& CatCodeTable::operator[](const int32_t key) {
+// Category& CatCodeTable::operator[](const char32_t key) {
 //   return codes[key][level];
 // }
 
-void CatCodeTable::assign(const int32_t key, Category code, bool global) {
+void CatCodeTable::assign(const char32_t key, Category code, bool global) {
   codes[key][(global) ? 1 : level] = code;
 }
 
-void CatCodeTable::erase(const int32_t key, bool global) {
+void CatCodeTable::erase(const char32_t key, bool global) {
   codes[key].erase((global) ? 1 : level);
 }
 
-Category CatCodeTable::operator[](const int32_t key) const {
+Category CatCodeTable::operator[](const char32_t key) const {
   auto it = codes.find(key);
 
   // OTHER is the default category.
@@ -55,7 +55,7 @@ void CatCodeTable::assign(const vector<CatCodeInterval> &intervals,
   uint8_t _level = (global) ? 1 : level;
 
   for (const CatCodeInterval &interval : intervals) {
-    for (int32_t ch = interval.begin; ch <= interval.end; ch++) {
+    for (char32_t ch = interval.begin; ch <= interval.end; ch++) {
       codes[ch][_level] = interval.category;
     }
   }
@@ -83,7 +83,7 @@ SerializationBuffer &operator<<(SerializationBuffer &buffer,
   // Count the characters that have non-zero level.
   unsigned ch_count = count_if(
       table.codes.cbegin(), table.codes.cend(),
-      [](pair<int32_t, map<uint8_t, Category>> p) {
+      [](pair<char32_t, map<uint8_t, Category>> p) {
         return any_of(p.second.cbegin(), p.second.cend(),
                       [](pair<uint8_t, Category> p2) { return p2.first != 0; });
       });
@@ -114,7 +114,7 @@ DeserializationBuffer &operator>>(DeserializationBuffer &buffer,
   table.reset();
 
   if (buffer.length != 0) {
-    int32_t ch;
+    char32_t ch;
     unsigned ch_count;
     uint8_t level, level_count;
     Category cat;

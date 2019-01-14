@@ -366,7 +366,25 @@ cites with multiple citations
     (brack_group (lbrack) (text) (rbrack))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
+  (text)
+  (group (l) (text) (r)))
+
+================================================================================
+cites with multiple citations terminated by par
+================================================================================
+\cites[kilroy]{foo}{bar}[was][here]{wibble}\par[but][not]{here}
+--------------------------------------------------------------------------------
+(document
+  (cites
+    (cs)
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (brack_group (lbrack) (text) (rbrack))
+    (brack_group (lbrack) (text) (rbrack))
+    (group (l) (text) (r)))
+  (par (cs))
   (text)
   (group (l) (text) (r)))
 
@@ -724,7 +742,7 @@ volcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -745,7 +763,7 @@ Volcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -766,7 +784,7 @@ pvolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -787,7 +805,7 @@ Pvolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -808,7 +826,7 @@ fvolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -829,7 +847,7 @@ Fvolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -850,7 +868,7 @@ ftvolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -871,7 +889,7 @@ Ftvolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -892,7 +910,7 @@ svolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -913,7 +931,7 @@ Svolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -934,7 +952,7 @@ tvolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -955,7 +973,7 @@ Tvolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -976,7 +994,7 @@ avolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
@@ -997,7 +1015,17 @@ Avolcites
     (group (l) (text) (r))
     (brack_group (lbrack) (text) (rbrack))
     (group (l) (text) (r)))
-  (par)
+  (par (eol))
   (text)
   (group (l) (text) (r))
   (group (l) (text) (r)))
+
+================================================================================
+regexp
+================================================================================
+\regexp{foo}
+--------------------------------------------------------------------------------
+(document
+  (regexp
+    (cs)
+    (group (l) (text) (r))))

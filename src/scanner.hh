@@ -30,6 +30,8 @@ enum SymbolType {
   comment_tag,
   comment_tex,
   comment,
+  cs_at_ifpackagelater,
+  cs_At,
   cs_author,
   cs_begin,
   cs_begingroup,
@@ -39,6 +41,7 @@ enum SymbolType {
   cs_cites,
   cs_code,
   cs_date,
+  cs_DeclareOption,
   cs_def,
   cs_delete_verb_delim,
   cs_DeleteShortVerb,
@@ -67,6 +70,7 @@ enum SymbolType {
   cs_input,
   cs_item,
   cs_label,
+  cs_left,
   cs_let,
   cs_longnewglossaryentry,
   cs_lstinline,
@@ -90,17 +94,21 @@ enum SymbolType {
   cs_newtheorem,
   cs_nocite,
   cs_obeycr,
+  cs_par,
   cs_parbox,
   cs_ref,
   cs_refrange,
+  cs_regexp,
   cs_relax,
   cs_restorecr,
+  cs_right,
   cs_section,
   cs_setlength,
   cs_sqrt,
   cs_stackrel,
   cs_string,
   cs_tag,
+  cs_text,
   cs_textstyle,
   cs_thanks,
   cs_title,
@@ -123,7 +131,9 @@ enum SymbolType {
   env_name_dseries,
   env_name_figure,
   env_name_filecontents,
+  env_name_gnuplot,
   env_name_inline_math,
+  env_name_itemize,
   env_name_lstlisting,
   env_name_luacode,
   env_name_luacodestar,
@@ -138,11 +148,13 @@ enum SymbolType {
   env_name_text,
   env_name_thebibliography,
   env_name_theorem,
+  env_name_tikzpicture,
   env_name_verbatim,
   env_name_Verbatim,
   env_name,
   eol,
   equals,
+  exit_math,
   exit,
   fixed,
   hexadecimal,
@@ -158,7 +170,7 @@ enum SymbolType {
   minus,
   name,
   octal,
-  par,
+  par_eol,
   parameter_ref,
   plus_sym,
   plus,
@@ -212,13 +224,15 @@ struct Environment {
 };
 
 class Scanner {
-  const std::wstring octal_digits = L"01234567";
-  const std::wstring decimal_digits = L"0123456789";
-  const std::wstring hexadecimal_digits = L"0123456789ABCDEFabcdef";
+  const std::u32string decimal_separator = U".";
+  const std::u32string signs = U"+-";
+  const std::u32string octal_digits = U"01234567";
+  const std::u32string decimal_digits = U"0123456789";
+  const std::u32string hexadecimal_digits = U"0123456789ABCDEFabcdef";
 
-  std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
+  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
   std::string cs_name, e_name, u_name;
-  int32_t start_delim = 0, lookahead = 0;
+  char32_t start_delim = 0, lookahead = 0;
   bool raw = false, advanced = false;
   CatCodeTable catcode_table = {
       {' ', ' ', SPACE_CATEGORY},
@@ -258,17 +272,25 @@ class Scanner {
   bool valid_symbol_in_range(const bool *valid_symbols, SymbolType first,
                              SymbolType last);
 
-  bool read_char(TSLexer *lexer, bool mark = true);
+  bool enter_raw_mode(TSLexer *lexer);
+
+  bool enter_translated_mode(TSLexer *lexer);
+
+  bool read_char(TSLexer *lexer);
 
   std::string read_string(TSLexer *lexer, Category catcode);
 
-  std::string read_string(TSLexer *lexer, const CategoryFlags &flags = ~0,
-                          const std::wstring &chars = L"", bool exclude = true);
+  std::string read_string(TSLexer *lexer, const CategoryFlags &flags = ANY_FLAG,
+                          const std::u32string &chars = U"",
+                          bool exclude = true);
 
-  void skip_chars(TSLexer *lexer, const CategoryFlags &flags = ~0,
-                  const std::wstring &chars = L"", bool exclude = true);
+  bool match_char(TSLexer *lexer, const CategoryFlags &flags = ANY_FLAG,
+                  const std::u32string &chars = U"", bool exclude = true);
 
-  bool match_or_advance(TSLexer *lexer, std::string value);
+  bool match_chars(TSLexer *lexer, const CategoryFlags &flags = ANY_FLAG,
+                   const std::u32string &chars = U"", bool exclude = true);
+
+  bool match_string(TSLexer *lexer, const std::string &value);
 
   bool scan_verb_start_delim(TSLexer *lexer, const bool *valid_symbols,
                              SymbolType symbol);
@@ -283,12 +305,7 @@ class Scanner {
 
   bool scan_cs(TSLexer *lexer, const bool *valid_symbols);
 
-  inline bool scan_empty_symbol(TSLexer *lexer, SymbolType symbol);
-
-  inline bool scan_single_char_symbol(TSLexer *lexer, SymbolType symbol);
-
-  inline bool scan_multi_char_symbol(TSLexer *lexer, SymbolType symbol,
-                                     Category code);
+  inline bool symbol(TSLexer *lexer, SymbolType symbol, bool advance = false);
 
   bool scan_space(TSLexer *lexer, const bool *valid_symbols);
 

@@ -47,13 +47,15 @@ enum CategoryFlag : unsigned int {
   OTHER_FLAG = 1 << OTHER_CATEGORY,
   ACTIVE_CHAR_FLAG = 1 << ACTIVE_CHAR_CATEGORY,
   COMMENT_FLAG = 1 << COMMENT_CATEGORY,
-  INVALID_FLAG = 1 << INVALID_CATEGORY
+  INVALID_FLAG = 1 << INVALID_CATEGORY,
+  VERB_DELIM_EXT_FLAG = 1 << VERB_DELIM_EXT_CATEGORY,
+  ANY_FLAG = (1 << CATEGORY_COUNT) - 1
 };
 
 typedef std::bitset<CATEGORY_COUNT> CategoryFlags;
 
 struct CatCodeInterval {
-  int32_t begin, end;
+  char32_t begin, end;
   Category category;
 };
 
@@ -61,7 +63,7 @@ class CatCodeTable {
 protected:
   uint8_t level; // 0 is the default catcode table, 1 is the global scope, 2-255
                  // are the group scopes.
-  std::unordered_map<int32_t, std::map<uint8_t, Category>> codes;
+  std::unordered_map<char32_t, std::map<uint8_t, Category>> codes;
 
 public:
   CatCodeTable(std::initializer_list<CatCodeInterval> init) {
@@ -72,16 +74,16 @@ public:
 
   void reset();
 
-  void assign(const int32_t key, Category code, bool global = false);
+  void assign(const char32_t key, Category code, bool global = false);
 
   void assign(const std::vector<CatCodeInterval> &intervals,
               bool global = false);
 
-  void erase(const int32_t key, bool global = false);
+  void erase(const char32_t key, bool global = false);
 
-  // Category& operator[](const int32_t key);
+  // Category& operator[](const char32_t key);
 
-  Category operator[](const int32_t key) const;
+  Category operator[](const char32_t key) const;
 
   void push();
 

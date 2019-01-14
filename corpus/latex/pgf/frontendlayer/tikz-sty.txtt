@@ -1,24 +1,12 @@
 ================================================================================
-newtheorem*
+tikzpicture
 ================================================================================
-\newtheorem*{foo}{bar}
+\begin{tikzpicture}
+bar
+\end{tikzpicture}
 --------------------------------------------------------------------------------
 (document
-  (newtheorem
-    (cs)
-    (star)
-    (group (l) (text) (r))
-    (group (l) (text) (r))))
-
-================================================================================
-proof environment
-================================================================================
-\begin{proof}
-foo
-\end{proof}
---------------------------------------------------------------------------------
-(document
-  (theorem_env
+  (tikzpicture_env
     (begin
       (cs)
       (group (l) (name) (r)))
@@ -28,14 +16,14 @@ foo
       (group (l) (name) (r)))))
 
 ================================================================================
-proof environment with optional parameter
+tikzpicture environment with optional parameter
 ================================================================================
-\begin{proof}[bar]
-foo
-\end{proof}
+\begin{tikzpicture}[foo]
+bar
+\end{tikzpicture}
 --------------------------------------------------------------------------------
 (document
-  (theorem_env
+  (tikzpicture_env
     (begin
       (cs)
       (group (l) (name) (r))
