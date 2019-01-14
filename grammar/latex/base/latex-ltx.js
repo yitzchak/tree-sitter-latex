@@ -1,6 +1,16 @@
 module.exports = {
   common: {
     commands: {
+      CheckCommand: {
+        cs: $ => $.cs_CheckCommand,
+        parameters: $ => [
+          optional($.star),
+          $._cs_parameter,
+          optional($.brack_group),
+          optional($.brack_group),
+          $._nil_token
+        ]
+      },
       endinput: {
         cs: $ => $.cs_endinput,
         parameters: $ => [alias($.ignored_rest, $.ignored)]
@@ -8,6 +18,14 @@ module.exports = {
       ensuremath: {
         cs: $ => $.cs_ensuremath,
         parameters: $ => [$._math_token]
+      },
+      Error: {
+        cs: $ => $.cs_Error,
+        parameters: $ => [
+          $._text_token,
+          $._text_token,
+          $._text_token
+        ]
       },
       label: {
         cs: $ => $.cs_label,
@@ -67,6 +85,13 @@ module.exports = {
             alias($.verb_end_delim, $.verb_delim),
             $.exit
           )
+        ]
+      },
+      WarningInfo: {
+        cs: $ => $.cs_WarningInfo,
+        parameters: $ => [
+          $._text_token,
+          $._text_token
         ]
       }
     },
