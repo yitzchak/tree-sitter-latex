@@ -11,6 +11,10 @@ module.exports = {
           $._nil_token
         ]
       },
+      cline: {
+        cs: $ => $.cs_cline,
+        parameters: $ => [$._text_token]
+      },
       endinput: {
         cs: $ => $.cs_endinput,
         parameters: $ => [alias($.ignored_rest, $.ignored)]
@@ -218,10 +222,34 @@ module.exports = {
           $._text_token
         ]
       },
+      discretionary: {
+        cs: $ => $.cs_discretionary,
+        parameters: $ => [$._text_token, $._text_token, $._text_token]
+      },
       emph: {
         cs: $ => $.cs_emph,
         parameters: $ => [
           $._text_token
+        ]
+      },
+      enlargethispage: {
+        cs: $ => $.cs_enlargethispage,
+        parameters: $ => [
+          optional($.star),
+          $._dimension_parameter
+        ]
+      },
+      footnote: {
+        cs: $ => $.cs_footnote,
+        parameters: $ => [
+          optional($.brack_group),
+          $._text_token
+        ]
+      },
+      footnotemark: {
+        cs: $ => $.cs_footnotemark,
+        parameters: $ => [
+          optional($.brack_group)
         ]
       },
       ExecuteOptions: {
@@ -230,8 +258,16 @@ module.exports = {
           $._text_token
         ]
       },
+      hyphenation: {
+        cs: $ => $.cs_hyphenation,
+        parameters: $ => [$._text_token]
+      },
       item: {
         cs: $ => $.cs_item,
+        parameters: $ => [optional($.brack_group)]
+      },
+      linebreak: {
+        cs: $ => $.cs_linebreak,
         parameters: $ => [optional($.brack_group)]
       },
       makebox: {
@@ -288,6 +324,10 @@ module.exports = {
             )
           )
         ]
+      },
+      pagebreak: {
+        cs: $ => $.cs_pagebreak,
+        parameters: $ => [optional($.brack_group)]
       },
       parbox: {
         cs: $ => $.cs_parbox,
