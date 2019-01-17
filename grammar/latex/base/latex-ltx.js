@@ -58,6 +58,13 @@ module.exports = {
           $._nil_token
         ]
       },
+      newcounter: {
+        cs: $ => $.cs_newcounter,
+        parameters: $ => [
+          $._text_token,
+          optional($.brack_group)
+        ]
+      },
       newenvironment: {
         cs: $ => $.cs_newenvironment,
         parameters: $ => [
@@ -67,6 +74,25 @@ module.exports = {
           optional($.brack_group),
           $._nil_token,
           $._nil_token
+        ]
+      },
+      newfont: {
+        cs: $ => $.cs_newfont,
+        parameters: $ => [
+          $._cs_parameter,
+          $._text_token
+        ]
+      },
+      newlength: {
+        cs: $ => $.cs_newlength,
+        parameters: $ => [
+          $._cs_parameter
+        ]
+      },
+      newsavebox: {
+        cs: $ => $.cs_newsavebox,
+        parameters: $ => [
+          $._cs_parameter
         ]
       },
       ref: {
