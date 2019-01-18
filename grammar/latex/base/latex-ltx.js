@@ -120,6 +120,13 @@ module.exports = {
           $._glue_parameter
         ]
       },
+      setto: {
+        cs: $ => $.cs_setto,
+        parameters: $ => [
+          $._cs_parameter,
+          $._text_token
+        ]
+      },
       stepcounter: {
         cs: $ => $.cs_stepcounter,
         parameters: $ => [$._text_token]
