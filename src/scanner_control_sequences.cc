@@ -132,6 +132,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"PassOptionsToClass", cs_PassOptionsTo},
     {"PassOptionsToPackage", cs_PassOptionsTo},
     {"ProcessOptions", cs_ProcessOptions},
+    {"protect", cs_protect},
     {"providecommand", cs_newcommand},
     {"ProvidesClass", {cs_Provides, false, {{'@', '@', LETTER_CATEGORY}}}},
     {"ProvidesFile", {cs_Provides, false, {{'@', '@', LETTER_CATEGORY}}}},

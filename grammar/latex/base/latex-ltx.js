@@ -182,6 +182,10 @@ module.exports = {
           $._math_token
         ]
       },
+      protect: {
+        cs: $ => $.cs_protect,
+        parameters: $ => [$._math_expanded_parameter]
+      },
       stackrel: {
         cs: $ => $.cs_stackrel,
         parameters: $ => [
@@ -377,6 +381,10 @@ module.exports = {
         parameters: $ => [
           optional($.star)
         ]
+      },
+      protect: {
+        cs: $ => $.cs_protect,
+        parameters: $ => [$._text_expanded_parameter]
       },
       Provides: {
         cs: $ => $.cs_Provides,

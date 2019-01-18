@@ -166,6 +166,7 @@ let g = {
     $.cs_parbox,
     $.cs_PassOptionsTo,
     $.cs_ProcessOptions,
+    $.cs_protect,
     $.cs_Provides,
     $.cs_ref,
     $.cs_refrange,
