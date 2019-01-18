@@ -95,6 +95,10 @@ module.exports = {
           $._cs_parameter
         ]
       },
+      printcounter: {
+        cs: $ => $.cs_printcounter,
+        parameters: $ => [$._text_token]
+      },
       ref: {
         cs: $ => $.cs_ref,
         parameters: $ => [
@@ -105,12 +109,24 @@ module.exports = {
           $._text_token
         ]
       },
+      setcounter: {
+        cs: $ => $.cs_setcounter,
+        parameters: $ => [$._text_token, $._text_token]
+      },
       setlength: {
         cs: $ => $.cs_setlength,
         parameters: $ => [
           $._cs_parameter,
           $._glue_parameter
         ]
+      },
+      stepcounter: {
+        cs: $ => $.cs_stepcounter,
+        parameters: $ => [$._text_token]
+      },
+      value: {
+        cs: $ => $.cs_value,
+        parameters: $ => [$._text_token]
       },
       verb: {
         cs: $ => $.cs_verb,

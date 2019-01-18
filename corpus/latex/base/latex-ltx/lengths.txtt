@@ -14,3 +14,20 @@ setlength
         (minus) (dimension (fixed) (unit))
         (plus) (dimension (fixed) (unit)))
       (r))))
+
+================================================================================
+addtolength
+================================================================================
+\addtolength{\foo}{1in minus 0.5in plus 1in}
+--------------------------------------------------------------------------------
+(document
+  (setlength
+    (cs)
+    (group (l) (cs) (r))
+    (group
+      (l)
+      (glue
+        (dimension (fixed) (unit))
+        (minus) (dimension (fixed) (unit))
+        (plus) (dimension (fixed) (unit)))
+      (r))))
