@@ -259,6 +259,12 @@ struct Environment {
   }
 };
 
+#ifdef _MSC_VER
+#define CHAR32_T __int32
+#else
+#define CHAR32_T char32_t
+#endif
+
 class Scanner {
   const std::u32string decimal_separator = U".";
   const std::u32string signs = U"+-";
@@ -266,7 +272,7 @@ class Scanner {
   const std::u32string decimal_digits = U"0123456789";
   const std::u32string hexadecimal_digits = U"0123456789ABCDEFabcdef";
 
-  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
+  std::wstring_convert<std::codecvt_utf8<CHAR32_T>, CHAR32_T> convert;
   std::string cs_name, e_name, u_name;
   char32_t start_delim = 0, lookahead = 0;
   bool raw = false, advanced = false;

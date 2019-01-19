@@ -489,7 +489,10 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[decimal]) {
       return scan_decimal(lexer);
     }
-    [[fallthrough]];
+    if (valid_symbols[fixed]) {
+      return scan_fixed(lexer);
+    }
+    break;
   case '+':
   case '-':
   case '.':
