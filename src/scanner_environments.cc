@@ -51,6 +51,7 @@ unordered_map<string, Environment> Scanner::environments = {
     {"figure", env_name_figure},
     {"figure*", env_name_figure},
     {"itemize", env_name_itemize},
+    {"lrbox", env_name_lrbox},
     {"math", env_name_inline_math},
     {"minipage", env_name_minipage},
     {"picture", env_name_picture},

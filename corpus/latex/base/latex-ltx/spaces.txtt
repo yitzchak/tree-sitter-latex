@@ -1,66 +1,81 @@
 ================================================================================
-setlength
+hspace
 ================================================================================
-\setlength{\foo}{1in minus 0.5in plus 1in}
+\hspace{1ex plus 0.5ex}
 --------------------------------------------------------------------------------
 (document
-  (setlength
+  (space
     (cs)
-    (group (l) (cs) (r))
     (group
       (l)
       (glue
         (dimension (fixed) (unit))
-        (minus) (dimension (fixed) (unit))
-        (plus) (dimension (fixed) (unit)))
+        (plus)
+        (dimension (fixed) (unit)))
       (r))))
 
 ================================================================================
-addtolength
+hspace*
 ================================================================================
-\addtolength{\foo}{1in minus 0.5in plus 1in}
+\hspace*{1ex plus 0.5ex}
 --------------------------------------------------------------------------------
 (document
-  (setlength
+  (space
     (cs)
-    (group (l) (cs) (r))
+    (star)
     (group
       (l)
       (glue
         (dimension (fixed) (unit))
-        (minus) (dimension (fixed) (unit))
-        (plus) (dimension (fixed) (unit)))
+        (plus)
+        (dimension (fixed) (unit)))
       (r))))
 
 ================================================================================
-settodepth
+vspace
 ================================================================================
-\settodepth{\foo}{bar}
+\vspace{1ex plus 0.5ex}
 --------------------------------------------------------------------------------
 (document
-  (setto
+  (space
     (cs)
-    (group (l) (cs) (r))
-    (group (l) (text) (r))))
+    (group
+      (l)
+      (glue
+        (dimension (fixed) (unit))
+        (plus)
+        (dimension (fixed) (unit)))
+      (r))))
 
 ================================================================================
-settoheight
+vspace*
 ================================================================================
-\settoheight{\foo}{bar}
+\vspace*{1ex plus 0.5ex}
 --------------------------------------------------------------------------------
 (document
-  (setto
+  (space
     (cs)
-    (group (l) (cs) (r))
-    (group (l) (text) (r))))
+    (star)
+    (group
+      (l)
+      (glue
+        (dimension (fixed) (unit))
+        (plus)
+        (dimension (fixed) (unit)))
+      (r))))
 
 ================================================================================
-settowidth
+addvspace
 ================================================================================
-\settowidth{\foo}{bar}
+\addvspace{1ex plus 0.5ex}
 --------------------------------------------------------------------------------
 (document
-  (setto
+  (addvspace
     (cs)
-    (group (l) (cs) (r))
-    (group (l) (text) (r))))
+    (group
+      (l)
+      (glue
+        (dimension (fixed) (unit))
+        (plus)
+        (dimension (fixed) (unit)))
+      (r))))

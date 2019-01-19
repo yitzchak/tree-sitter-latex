@@ -1,6 +1,26 @@
 module.exports = {
   common: {
     commands: {
+      addvspace: {
+        cs: $ => $.cs_addvspace,
+        parameters: $ => [
+          $._glue_parameter
+        ]
+      },
+      CheckCommand: {
+        cs: $ => $.cs_CheckCommand,
+        parameters: $ => [
+          optional($.star),
+          $._cs_parameter,
+          optional($.brack_group),
+          optional($.brack_group),
+          $._nil_token
+        ]
+      },
+      cline: {
+        cs: $ => $.cs_cline,
+        parameters: $ => [$._text_token]
+      },
       endinput: {
         cs: $ => $.cs_endinput,
         parameters: $ => [alias($.ignored_rest, $.ignored)]
@@ -8,6 +28,22 @@ module.exports = {
       ensuremath: {
         cs: $ => $.cs_ensuremath,
         parameters: $ => [$._math_token]
+      },
+      Error: {
+        cs: $ => $.cs_Error,
+        parameters: $ => [
+          $._text_token,
+          $._text_token,
+          $._text_token
+        ]
+      },
+      IfFileExists: {
+        cs: $ => $.cs_IfFileExists,
+        parameters: $ => [
+          $._text_token,
+          $._text_token,
+          $._text_token
+        ]
       },
       label: {
         cs: $ => $.cs_label,
@@ -28,16 +64,46 @@ module.exports = {
           $._nil_token
         ]
       },
+      newcounter: {
+        cs: $ => $.cs_newcounter,
+        parameters: $ => [
+          $._text_token,
+          optional($.brack_group)
+        ]
+      },
       newenvironment: {
         cs: $ => $.cs_newenvironment,
         parameters: $ => [
           optional($.star),
-          alias($.name_group, $.group),
+          $._name_group,
           optional($.brack_group),
           optional($.brack_group),
           $._nil_token,
           $._nil_token
         ]
+      },
+      newfont: {
+        cs: $ => $.cs_newfont,
+        parameters: $ => [
+          $._cs_parameter,
+          $._text_token
+        ]
+      },
+      newlength: {
+        cs: $ => $.cs_newlength,
+        parameters: $ => [
+          $._cs_parameter
+        ]
+      },
+      newsavebox: {
+        cs: $ => $.cs_newsavebox,
+        parameters: $ => [
+          $._cs_parameter
+        ]
+      },
+      printcounter: {
+        cs: $ => $.cs_printcounter,
+        parameters: $ => [$._text_token]
       },
       ref: {
         cs: $ => $.cs_ref,
@@ -49,12 +115,38 @@ module.exports = {
           $._text_token
         ]
       },
+      setcounter: {
+        cs: $ => $.cs_setcounter,
+        parameters: $ => [$._text_token, $._text_token]
+      },
       setlength: {
         cs: $ => $.cs_setlength,
         parameters: $ => [
           $._cs_parameter,
           $._glue_parameter
         ]
+      },
+      space: {
+        cs: $ => $.cs_space,
+        parameters: $ => [
+          optional($.star),
+          $._glue_parameter
+        ]
+      },
+      setto: {
+        cs: $ => $.cs_setto,
+        parameters: $ => [
+          $._cs_parameter,
+          $._text_token
+        ]
+      },
+      stepcounter: {
+        cs: $ => $.cs_stepcounter,
+        parameters: $ => [$._text_token]
+      },
+      value: {
+        cs: $ => $.cs_value,
+        parameters: $ => [$._text_token]
       },
       verb: {
         cs: $ => $.cs_verb,
@@ -67,6 +159,13 @@ module.exports = {
             alias($.verb_end_delim, $.verb_delim),
             $.exit
           )
+        ]
+      },
+      WarningInfo: {
+        cs: $ => $.cs_WarningInfo,
+        parameters: $ => [
+          $._text_token,
+          $._text_token
         ]
       }
     },
@@ -118,6 +217,10 @@ module.exports = {
           $._math_token,
           $._math_token
         ]
+      },
+      protect: {
+        cs: $ => $.cs_protect,
+        parameters: $ => [$._math_expanded_parameter]
       },
       stackrel: {
         cs: $ => $.cs_stackrel,
@@ -185,14 +288,52 @@ module.exports = {
           $._text_token
         ]
       },
+      discretionary: {
+        cs: $ => $.cs_discretionary,
+        parameters: $ => [$._text_token, $._text_token, $._text_token]
+      },
       emph: {
         cs: $ => $.cs_emph,
         parameters: $ => [
           $._text_token
         ]
       },
+      enlargethispage: {
+        cs: $ => $.cs_enlargethispage,
+        parameters: $ => [
+          optional($.star),
+          $._dimension_parameter
+        ]
+      },
+      footnote: {
+        cs: $ => $.cs_footnote,
+        parameters: $ => [
+          optional($.brack_group),
+          $._text_token
+        ]
+      },
+      footnotemark: {
+        cs: $ => $.cs_footnotemark,
+        parameters: $ => [
+          optional($.brack_group)
+        ]
+      },
+      ExecuteOptions: {
+        cs: $ => $.cs_ExecuteOptions,
+        parameters: $ => [
+          $._text_token
+        ]
+      },
+      hyphenation: {
+        cs: $ => $.cs_hyphenation,
+        parameters: $ => [$._text_token]
+      },
       item: {
         cs: $ => $.cs_item,
+        parameters: $ => [optional($.brack_group)]
+      },
+      linebreak: {
+        cs: $ => $.cs_linebreak,
         parameters: $ => [optional($.brack_group)]
       },
       makebox: {
@@ -221,6 +362,13 @@ module.exports = {
           $._text_token
         ]
       },
+      NeedsTeXFormat: {
+        cs: $ => $.cs_NeedsTeXFormat,
+        parameters: $ => [
+          $._text_token,
+          optional($.brack_group)
+        ]
+      },
       newline: {
         cs: $ => $.cs_newline,
         parameters: $ => [optional($.star), optional($._glue_brack_parameter)]
@@ -243,6 +391,18 @@ module.exports = {
           )
         ]
       },
+      pagebreak: {
+        cs: $ => $.cs_pagebreak,
+        parameters: $ => [optional($.brack_group)]
+      },
+      pagenumbering: {
+        cs: $ => $.cs_pagenumbering,
+        parameters: $ => [$._text_token]
+      },
+      pagestyle: {
+        cs: $ => $.cs_pagestyle,
+        parameters: $ => [$._text_token]
+      },
       parbox: {
         cs: $ => $.cs_parbox,
         parameters: $ => [
@@ -250,6 +410,55 @@ module.exports = {
           optional($._dimension_brack_group),
           optional($.brack_group),
           $._dimension_parameter,
+          $._text_token
+        ]
+      },
+      PassOptionsTo: {
+        cs: $ => $.cs_PassOptionsTo,
+        parameters: $ => [
+          $._text_token,
+          $._name_group
+        ]
+      },
+      ProcessOptions: {
+        cs: $ => $.cs_ProcessOptions,
+        parameters: $ => [
+          optional($.star)
+        ]
+      },
+      protect: {
+        cs: $ => $.cs_protect,
+        parameters: $ => [$._text_expanded_parameter]
+      },
+      Provides: {
+        cs: $ => $.cs_Provides,
+        parameters: $ => [
+          $._name_parameter,
+          optional($.brack_group)
+        ]
+      },
+      raisebox: {
+        cs: $ => $.cs_raisebox,
+        parameters: $ => [
+          optional($._dimension_brack_group),
+          optional($._dimension_brack_group),
+          $._dimension_parameter,
+          $._text_token
+        ]
+      },
+      savebox: {
+        cs: $ => $.cs_savebox,
+        parameters: $ => [
+          $._cs_parameter,
+          optional($._dimension_brack_group),
+          optional($.brack_group),
+          $._text_token
+        ]
+      },
+      sbox: {
+        cs: $ => $.cs_sbox,
+        parameters: $ => [
+          $._cs_parameter,
           $._text_token
         ]
       },
@@ -294,6 +503,10 @@ module.exports = {
           alias($.names_group, $.group),
           optional($.brack_group)
         ]
+      },
+      usebox: {
+        cs: $ => $.cs_usebox,
+        parameters: $ => [$._cs_parameter]
       }
     },
     environments: {
@@ -317,6 +530,10 @@ module.exports = {
         name: $ => $.env_name_itemize,
         // enumitem allows an optional parameter
         beginParameters: $ => [optional($.brack_group)]
+      },
+      lrbox: {
+        name: $ => $.env_name_lrbox,
+        beginParameters: $ => [$._cs_parameter]
       },
       minipage: {
         name: $ => $.env_name_minipage,
