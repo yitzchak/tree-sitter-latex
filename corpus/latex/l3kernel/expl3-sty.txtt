@@ -15,9 +15,9 @@
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff
 --------------------------------------------------------------------------------
 (document
+  (ExplSyntaxOn (cs))
   (cs)
-  (cs)
-  (cs))
+  (ExplSyntaxOff (cs)))
 
 ================================================================================
 [ProvidesExplPackage] colon/underscore is letter
@@ -26,11 +26,12 @@
 \bar:wibble_wobble
 --------------------------------------------------------------------------------
 (document
-  (cs)
-  (group (l) (text) (r))
-  (group (l) (text) (r))
-  (group (l) (text) (r))
-  (group (l) (text) (r))
+  (ProvidesExpl
+    (cs)
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r))
+    (group (l) (text) (r)))
   (cs))
 
 ================================================================================
@@ -39,12 +40,12 @@
 \ExplSyntaxOn{\bar:wibble_wobble}\ExplSyntaxOff
 --------------------------------------------------------------------------------
 (document
-  (cs)
+  (ExplSyntaxOn (cs))
   (group
     (l)
     (cs)
     (r))
-  (cs))
+  (ExplSyntaxOff (cs)))
 
 ================================================================================
 [ExplSyntaxOn] colon/underscore is letter in optional text group
@@ -52,7 +53,7 @@
 \ExplSyntaxOn\usepackage[foo\bar:wibble_wobble]{foo}\ExplSyntaxOff
 --------------------------------------------------------------------------------
 (document
-  (cs)
+  (ExplSyntaxOn (cs))
   (use (cs)
     (brack_group
       (lbrack)
@@ -60,7 +61,7 @@
       (cs)
       (rbrack))
     (group (l) (name) (r)))
-  (cs))
+  (ExplSyntaxOff (cs)))
 
 ================================================================================
 [ExplSyntaxOn] colon/underscore is letter then other
@@ -68,9 +69,9 @@
 \ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
 --------------------------------------------------------------------------------
 (document
+  (ExplSyntaxOn (cs))
   (cs)
-  (cs)
-  (cs)
+  (ExplSyntaxOff (cs))
   (cs)
   (text)
   (text)
@@ -82,13 +83,13 @@
 \ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\makeatother\ExplSyntaxOff\zap@zip:nil_zil
 --------------------------------------------------------------------------------
 (document
-  (cs)
+  (ExplSyntaxOn (cs))
   (cs)
   (text)
+  (makeatletter (cs))
   (cs)
-  (cs)
-  (cs)
-  (cs)
+  (makeatother (cs))
+  (ExplSyntaxOff (cs))
   (cs)
   (text)
   (text)
@@ -100,11 +101,11 @@
 \ExplSyntaxOn\foo@bar\makeatletter\gronk@baffle:quux_baz\ExplSyntaxOff\zap@zip\makeatother
 --------------------------------------------------------------------------------
 (document
-  (cs)
+  (ExplSyntaxOn (cs))
   (cs)
   (text)
+  (makeatletter (cs))
   (cs)
+  (ExplSyntaxOff (cs))
   (cs)
-  (cs)
-  (cs)
-  (cs))
+  (makeatother (cs)))

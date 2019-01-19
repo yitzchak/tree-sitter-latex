@@ -3,7 +3,6 @@ module.exports = {
     commands: {
       mint: {
         cs: $ => $.cs_mint,
-        local: true,
         parameters: $ => [
           optional($.brack_group),
           $._text_token,
@@ -17,7 +16,6 @@ module.exports = {
       },
       mintinline: {
         cs: $ => $.cs_mintinline,
-        local: true,
         parameters: $ => [
           optional($.brack_group),
           $._text_token,

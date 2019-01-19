@@ -2,7 +2,6 @@ module.exports = {
   common: {
     commands: {
       luacode: {
-        local: true,
         cs: $ => $.cs_luacode,
         parameters: $ => [$._apply_parameter]
       }

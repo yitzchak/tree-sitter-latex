@@ -12,7 +12,6 @@ module.exports = {
       },
       cites: {
         cs: $ => $.cs_cites,
-        local: true,
         parameters: $ => [
           prec.right(-1,
             repeat1(
@@ -45,7 +44,6 @@ module.exports = {
       },
       volcites: {
         cs: $ => $.cs_volcites,
-        local: true,
         parameters: $ => [
           prec.right(-1,
             repeat1(

@@ -7,6 +7,12 @@ module.exports = {
       bgroup: {
         cs: $ => $.cs_bgroup
       },
+      csname: {
+        cs: $ => $.cs_csname
+      },
+      endcsname: {
+        cs: $ => $.cs_endcsname
+      },
       endgroup: {
         cs: $ => $.cs_endgroup
       },
@@ -40,7 +46,6 @@ module.exports = {
         ]
       },
       def: {
-        local: true,
         cs: $ => $.cs_def,
         parameters: $ => [
           choice($.active_char, $.cs),
@@ -71,7 +76,12 @@ module.exports = {
       }
     },
     rules: {
-      _cmd: $ => seq($.cs, $._cmd_apply)
+      _cmd: $ => $.cs,
+      csname_group: $ => seq(
+        $.csname,
+        repeat($._text_token),
+        $.endcsname
+      )
     }
   },
   math: {

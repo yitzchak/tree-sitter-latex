@@ -3,7 +3,6 @@ module.exports = {
     commands: {
       lstinline: {
         cs: $ => $.cs_lstinline,
-        local: true,
         parameters: $ => [
           choice(
             seq(

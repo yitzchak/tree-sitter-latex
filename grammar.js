@@ -86,6 +86,7 @@ let g = {
     $.cs_cites,
     $.cs_cline,
     $.cs_code,
+    $.cs_csname,
     $.cs_date,
     $.cs_DeclareOption,
     $.cs_def,
@@ -98,6 +99,7 @@ let g = {
     $.cs_egroup,
     $.cs_emph,
     $.cs_end,
+    $.cs_endcsname,
     $.cs_endgroup,
     $.cs_endinput,
     $.cs_enlargethispage,
@@ -105,6 +107,8 @@ let g = {
     $.cs_Error,
     $.cs_ExecuteOptions,
     $.cs_expandafter,
+    $.cs_ExplSyntaxOff,
+    $.cs_ExplSyntaxOn,
     $.cs_footnote,
     $.cs_footnotemark,
     $.cs_frac,
@@ -132,6 +136,8 @@ let g = {
     $.cs_lua,
     $.cs_luacode,
     $.cs_make_verb_delim,
+    $.cs_makeatletter,
+    $.cs_makeatother,
     $.cs_makebox,
     $.cs_MakeShortVerb,
     $.cs_marginpar,
@@ -164,6 +170,7 @@ let g = {
     $.cs_ProcessOptions,
     $.cs_protect,
     $.cs_Provides,
+    $.cs_ProvidesExpl,
     $.cs_raisebox,
     $.cs_ref,
     $.cs_refrange,
@@ -447,7 +454,7 @@ let g = {
 
     _dimension: $ => choice(
       $.dimension,
-      seq(optional($.fixed), $.cs)
+      seq($.fixed, $.cs)
     ),
 
     dimension_brack_group: $ => brackGroup($, $._dimension),
@@ -505,10 +512,10 @@ function isOptional (p) {
     (p.type === 'CHOICE' && p.members.some(member => member.type === 'BLANK'))
 }
 
-function defCmd (mode, label, { cs, parameters, local }) {
+function defCmd (mode, label, { cs, parameters, apply }) {
   const cmdSym = (label in g.rules) ? `${mode}_${label}` : label
 
-  g.rules[cmdSym] = function ($) {
+  g.rules[cmdSym] = $ => {
     const head = []
     const body = parameters ? parameters($) : []
     const tail = []
@@ -530,15 +537,17 @@ function defCmd (mode, label, { cs, parameters, local }) {
       head.push(body.shift())
     }
 
-    if (!local) {
+    if (apply) {
       tail.unshift($._cmd_apply)
     }
+
+    const bodyAndTail = body.reduceRight((c, p) => choice(...exit, c ? seq(p, c) : p),
+      tail.length === 0 ? undefined : (tail.length === 1 ? tail[0] : seq(...tail)))
 
     return cmd($,
       cs($),
       ...head,
-      ...[body.reduceRight((c, p) => choice(...exit, c ? seq(p, c) : p),
-        tail.length === 0 ? undefined : (tail.length === 1 ? tail[0] : seq(...tail)))])
+      ...bodyAndTail ? [bodyAndTail] : [])
   }
 
   rules[mode].push($ => label === cmdSym ? $[cmdSym] : alias($[cmdSym], $[label]))

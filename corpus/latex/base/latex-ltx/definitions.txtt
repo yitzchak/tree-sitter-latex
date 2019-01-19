@@ -49,9 +49,9 @@ newcommand with parameter count and default value
 \makeatletter\bar@wibble\makeatother
 --------------------------------------------------------------------------------
 (document
+  (makeatletter (cs))
   (cs)
-  (cs)
-  (cs))
+  (makeatother (cs)))
 
 ================================================================================
 [makeatletter] @ sign is letter in text group
@@ -59,12 +59,12 @@ newcommand with parameter count and default value
 \makeatletter{\bar@wibble}\makeatother
 --------------------------------------------------------------------------------
 (document
-  (cs)
+  (makeatletter (cs))
   (group
     (l)
     (cs)
     (r))
-  (cs))
+  (makeatother (cs)))
 
 ================================================================================
 [makeatletter] @ sign is letter in optional text group
@@ -72,7 +72,7 @@ newcommand with parameter count and default value
 \makeatletter\usepackage[foo\bar@wibble]{foo}\makeatother
 --------------------------------------------------------------------------------
 (document
-  (cs)
+  (makeatletter (cs))
   (use (cs)
     (brack_group
       (lbrack)
@@ -80,7 +80,7 @@ newcommand with parameter count and default value
       (cs)
       (rbrack))
     (group (l) (name) (r)))
-  (cs))
+  (makeatother (cs)))
 
 ================================================================================
 [makeatletter] @ sign is letter then other
@@ -88,9 +88,9 @@ newcommand with parameter count and default value
 \makeatletter\bar@wibble\makeatother\quux@gronk
 --------------------------------------------------------------------------------
 (document
+  (makeatletter (cs))
   (cs)
-  (cs)
-  (cs)
+  (makeatother (cs))
   (cs)
   (text))
 

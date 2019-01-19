@@ -54,6 +54,14 @@ module.exports = {
           $._text_token
         ]
       },
+      makeatletter: {
+        cs: $ => $.cs_makeatletter,
+        apply: true
+      },
+      makeatother: {
+        cs: $ => $.cs_makeatother,
+        apply: true
+      },
       newcommand: {
         cs: $ => $.cs_newcommand,
         parameters: $ => [
@@ -150,7 +158,6 @@ module.exports = {
       },
       verb: {
         cs: $ => $.cs_verb,
-        local: true,
         parameters: $ => [
           optional($.star),
           $.verb_delim,
@@ -375,7 +382,6 @@ module.exports = {
       },
       newtheorem: {
         cs: $ => $.cs_newtheorem,
-        local: true,
         parameters: $ => [
           optional($.star),
           $._text_token,
@@ -390,6 +396,10 @@ module.exports = {
             )
           )
         ]
+      },
+      obeycr: {
+        cs: $ => $.cs_obeycr,
+        apply: true
       },
       pagebreak: {
         cs: $ => $.cs_pagebreak,
@@ -435,7 +445,8 @@ module.exports = {
         parameters: $ => [
           $._name_parameter,
           optional($.brack_group)
-        ]
+        ],
+        apply: true
       },
       raisebox: {
         cs: $ => $.cs_raisebox,
@@ -445,6 +456,10 @@ module.exports = {
           $._dimension_parameter,
           $._text_token
         ]
+      },
+      restorecr: {
+        cs: $ => $.cs_restorecr,
+        apply: true
       },
       savebox: {
         cs: $ => $.cs_savebox,
