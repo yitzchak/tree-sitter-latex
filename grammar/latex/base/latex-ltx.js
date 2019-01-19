@@ -437,6 +437,31 @@ module.exports = {
           optional($.brack_group)
         ]
       },
+      raisebox: {
+        cs: $ => $.cs_raisebox,
+        parameters: $ => [
+          optional($._dimension_brack_group),
+          optional($._dimension_brack_group),
+          $._dimension_parameter,
+          $._text_token
+        ]
+      },
+      savebox: {
+        cs: $ => $.cs_savebox,
+        parameters: $ => [
+          $._cs_parameter,
+          optional($._dimension_brack_group),
+          optional($.brack_group),
+          $._text_token
+        ]
+      },
+      sbox: {
+        cs: $ => $.cs_sbox,
+        parameters: $ => [
+          $._cs_parameter,
+          $._text_token
+        ]
+      },
       // section is actually in the class file, but it's here in the core for
       // simplicity.
       section: {
@@ -478,6 +503,10 @@ module.exports = {
           alias($.names_group, $.group),
           optional($.brack_group)
         ]
+      },
+      usebox: {
+        cs: $ => $.cs_usebox,
+        parameters: $ => [$._cs_parameter]
       }
     },
     environments: {
@@ -501,6 +530,10 @@ module.exports = {
         name: $ => $.env_name_itemize,
         // enumitem allows an optional parameter
         beginParameters: $ => [optional($.brack_group)]
+      },
+      lrbox: {
+        name: $ => $.env_name_lrbox,
+        beginParameters: $ => [$._cs_parameter]
       },
       minipage: {
         name: $ => $.env_name_minipage,
