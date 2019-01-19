@@ -126,11 +126,26 @@ module.exports = {
           $._glue_parameter
         ]
       },
+<<<<<<< HEAD
       space: {
         cs: $ => $.cs_space,
         parameters: $ => [
           optional($.star),
           $._glue_parameter
+        ]
+      },
+      setto: {
+        cs: $ => $.cs_setto,
+        parameters: $ => [
+          $._cs_parameter,
+          $._text_token
+=======
+      setto: {
+        cs: $ => $.cs_setto,
+        parameters: $ => [
+          $._cs_parameter,
+          $._text_token
+>>>>>>> cd72355a125571da8e3f662b8c99a262afad5187
         ]
       },
       stepcounter: {

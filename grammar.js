@@ -173,6 +173,7 @@ let g = {
     $.cs_section,
     $.cs_setcounter,
     $.cs_setlength,
+    $.cs_setto,
     $.cs_space,
     $.cs_sqrt,
     $.cs_stackrel,
