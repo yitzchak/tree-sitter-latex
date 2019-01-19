@@ -1,6 +1,12 @@
 module.exports = {
   common: {
     commands: {
+      addvspace: {
+        cs: $ => $.cs_addvspace,
+        parameters: $ => [
+          $._glue_parameter
+        ]
+      },
       CheckCommand: {
         cs: $ => $.cs_CheckCommand,
         parameters: $ => [
@@ -117,6 +123,13 @@ module.exports = {
         cs: $ => $.cs_setlength,
         parameters: $ => [
           $._cs_parameter,
+          $._glue_parameter
+        ]
+      },
+      space: {
+        cs: $ => $.cs_space,
+        parameters: $ => [
+          optional($.star),
           $._glue_parameter
         ]
       },

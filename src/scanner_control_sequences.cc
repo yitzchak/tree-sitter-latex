@@ -45,6 +45,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"acute", cs_mathaccent},
     {"addtocounter", cs_setcounter},
     {"addtolength", cs_setlength},
+    {"addvspace", cs_addvspace},
     {"alph", cs_printcounter},
     {"Alph", cs_printcounter},
     {"arabic", cs_printcounter},
@@ -90,6 +91,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"framebox", cs_makebox},
     {"grave", cs_mathaccent},
     {"hat", cs_mathaccent},
+    {"hspace", cs_space},
     {"hyphenation", cs_hyphenation},
     {"IfFileExists", cs_IfFileExists},
     {"include", cs_input},
@@ -182,6 +184,7 @@ unordered_map<string, CatCodeCommand> Scanner::control_sequences = {
     {"value", cs_value},
     {"vec", cs_mathaccent},
     {"verb", cs_verb},
+    {"vspace", cs_space},
     {"widehat", cs_mathaccent},
     {"widetilde", cs_mathaccent},
     // latex base shortvrb-sty
