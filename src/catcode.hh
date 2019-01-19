@@ -31,7 +31,7 @@ enum Category : uint8_t {
   CATEGORY_COUNT
 };
 
-enum CategoryFlag : unsigned int {
+enum CategoryFlag : uint32_t {
   ESCAPE_FLAG = 1 << ESCAPE_CATEGORY,
   BEGIN_FLAG = 1 << BEGIN_CATEGORY,
   END_FLAG = 1 << END_CATEGORY,

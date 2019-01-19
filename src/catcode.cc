@@ -83,9 +83,9 @@ SerializationBuffer &operator<<(SerializationBuffer &buffer,
   // Count the characters that have non-zero level.
   unsigned ch_count = count_if(
       table.codes.cbegin(), table.codes.cend(),
-      [](pair<char32_t, map<uint8_t, Category>> p) {
+      [](const pair<char32_t, map<uint8_t, Category>> &p) {
         return any_of(p.second.cbegin(), p.second.cend(),
-                      [](pair<uint8_t, Category> p2) { return p2.first != 0; });
+                      [](const pair<uint8_t, Category> &p2) { return p2.first; });
       });
 
   buffer << table.level << ch_count;
@@ -93,7 +93,7 @@ SerializationBuffer &operator<<(SerializationBuffer &buffer,
   for (auto it = table.codes.cbegin(); it != table.codes.cend(); it++) {
     uint8_t level_count =
         count_if(it->second.cbegin(), it->second.cend(),
-                 [](const pair<uint8_t, Category> &p) { return p.first != 0; });
+                 [](const pair<uint8_t, Category> &p) { return p.first; });
 
     if (level_count > 0) {
       buffer << it->first << level_count;
