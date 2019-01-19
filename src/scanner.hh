@@ -111,6 +111,8 @@ enum SymbolType {
   cs_nocite,
   cs_obeycr,
   cs_pagebreak,
+  cs_pagenumbering,
+  cs_pagestyle,
   cs_par,
   cs_parbox,
   cs_PassOptionsTo,

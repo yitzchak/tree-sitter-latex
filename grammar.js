@@ -9,14 +9,6 @@ function cmd ($, cs, ...args) {
     : seq(cs, ...args)
 }
 
-// function cmdOpt ($, cs, ...args) {
-//   cs = alias(cs, $.cs)
-//
-//   return (args.length === 0)
-//     ? cs
-//     : prec.right(-1, seq(cs, optional(seq(...args))))
-// }
-
 function beginCmd ($, ...args) {
   const cs = alias($.cs_begin, $.cs)
 
@@ -162,6 +154,8 @@ let g = {
     $.cs_nocite,
     $.cs_obeycr,
     $.cs_pagebreak,
+    $.cs_pagenumbering,
+    $.cs_pagestyle,
     $.cs_par,
     $.cs_parbox,
     $.cs_PassOptionsTo,

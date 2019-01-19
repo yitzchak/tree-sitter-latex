@@ -375,6 +375,14 @@ module.exports = {
         cs: $ => $.cs_pagebreak,
         parameters: $ => [optional($.brack_group)]
       },
+      pagenumbering: {
+        cs: $ => $.cs_pagenumbering,
+        parameters: $ => [$._text_token]
+      },
+      pagestyle: {
+        cs: $ => $.cs_pagestyle,
+        parameters: $ => [$._text_token]
+      },
       parbox: {
         cs: $ => $.cs_parbox,
         parameters: $ => [
