@@ -81,12 +81,14 @@ void CatCodeTable::pop() {
 SerializationBuffer &operator<<(SerializationBuffer &buffer,
                                 const CatCodeTable &table) {
   // Count the characters that have non-zero level.
-  unsigned ch_count = count_if(
-      table.codes.cbegin(), table.codes.cend(),
-      [](const pair<char32_t, map<uint8_t, Category>> &p) {
-        return any_of(p.second.cbegin(), p.second.cend(),
-                      [](const pair<uint8_t, Category> &p2) { return p2.first; });
-      });
+  unsigned ch_count =
+      count_if(table.codes.cbegin(), table.codes.cend(),
+               [](const pair<char32_t, map<uint8_t, Category>> &p) {
+                 return any_of(p.second.cbegin(), p.second.cend(),
+                               [](const pair<uint8_t, Category> &p2) {
+                                 return p2.first;
+                               });
+               });
 
   buffer << table.level << ch_count;
 
