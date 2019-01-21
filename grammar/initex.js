@@ -92,6 +92,10 @@ module.exports = {
           $._math_token,
           $._math_expanded_parameter
         ]
+      },
+      phantom_smash: {
+        cs: $ => $.cs_phantom_smash,
+        parameters: $ => [$._math_token]
       }
     },
     rules: {

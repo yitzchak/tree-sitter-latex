@@ -1,18 +1,13 @@
 .vscode
 *.log
+*.tgz
 build
 node_modules
 package-lock.json
 
 # See https://github.com/tree-sitter/tree-sitter/issues/240
 index.js
-src/*
-!src/catcode.cc
-!src/catcode.hh
-!src/scanner_control_sequences.cc
-!src/scanner_environments.cc
-!src/scanner_keywords.cc
-!src/scanner_names.cc
-!src/scanner.cc
-!src/scanner.hh
-!src/serialization.hh
+src/binding.cc
+src/grammar.json
+src/parser.c
+src/tree_sitter

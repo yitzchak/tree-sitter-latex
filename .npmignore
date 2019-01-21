@@ -1,9 +1,11 @@
-.vscode
 .gitattributes
 .travis.yml
-*.tgz
+.vscode
 *.log
+*.tgz
+appveyor.yml
 build
 corpus
 node_modules
 package-lock.json
+script
