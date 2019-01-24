@@ -1,6 +1,6 @@
 {
-  "name": "tree-sitter-latex",
-  "version": "0.0.0",
+  "name": "@dicy/tree-sitter-latex",
+  "version": "0.1.0",
   "description": "LaTeX grammar for tree-sitter",
   "main": "index.js",
   "scripts": {
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/yitzchak/tree-sitter-latex",
   "dependencies": {
-    "nan": "^2.11.1"
+    "nan": "^2.12.1"
   },
   "devDependencies": {
     "chalk": "^2.4.1",
