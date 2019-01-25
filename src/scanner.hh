@@ -238,31 +238,45 @@ enum SymbolType {
   verbatim_text,
 };
 
+enum ModeFlag : uint8_t { MF_Nil = 1, MF_Text = 2, MF_Math = 4, MF_Any = 6 };
+
+typedef std::bitset<3> ModeFlags;
+
 struct CatCodeCommand {
   SymbolType symbol;
+  ModeFlags modes;
   bool global;
   std::vector<CatCodeInterval> intervals;
 
-  CatCodeCommand(SymbolType t, bool g = false) {
+  CatCodeCommand(SymbolType t, ModeFlags m = MF_Any, bool g = false) {
     symbol = t;
+    modes = m;
     global = g;
   }
 
-  CatCodeCommand(SymbolType t, bool g, std::initializer_list<CatCodeInterval> i)
+  CatCodeCommand(SymbolType t, ModeFlags m, bool g,
+                 std::initializer_list<CatCodeInterval> i)
       : intervals(i) {
     symbol = t;
+    modes = m;
     global = g;
   }
 };
 
 struct Environment {
   SymbolType symbol;
+  ModeFlags modes;
   std::vector<CatCodeInterval> intervals;
 
-  Environment(SymbolType s) { symbol = s; }
+  Environment(SymbolType s, ModeFlags m = MF_Any) {
+    symbol = s;
+    modes = m;
+  }
 
-  Environment(SymbolType s, std::initializer_list<CatCodeInterval> i)
+  Environment(SymbolType s, ModeFlags m,
+              std::initializer_list<CatCodeInterval> i)
       : intervals(i) {
+    modes = m;
     symbol = s;
   }
 };
@@ -281,6 +295,7 @@ class Scanner {
   const std::u32string hexadecimal_digits = U"0123456789ABCDEFabcdef";
 
   std::wstring_convert<std::codecvt_utf8<CHAR32_T>, CHAR32_T> convert;
+  ModeFlags modes = MF_Text;
   std::string cs_name, e_name, u_name;
   char32_t start_delim = 0, lookahead = 0;
   bool raw = false, advanced = false;
@@ -359,9 +374,9 @@ class Scanner {
 
   bool scan_space(TSLexer *lexer, const bool *valid_symbols);
 
-  bool scan_env_name(TSLexer *lexer);
+  bool scan_env_name(TSLexer *lexer, const bool *valid_symbols);
 
-  bool scan_name(TSLexer *lexer);
+  bool scan_name(TSLexer *lexer, const bool *valid_symbols);
 
   bool scan_math_delim(TSLexer *lexer, const bool *valid_symbols);
 

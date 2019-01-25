@@ -7,13 +7,14 @@ using std::unordered_map;
 
 unordered_map<string, CatCodeCommand> Scanner::names = {
     // latex base ltxdoc-cls
-    {"ltxdoc", {name, true, {{'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
+    {"ltxdoc", {name, MF_Text, true, {{'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
     // latex base ltxguide-cls
-    {"ltxguide", {name, true, {{'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
+    {"ltxguide", {name, MF_Text, true, {{'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
     // latex dashundergaps l3doc-TUB-cls
     {
         "l3doc-TUB",
         {name,
+         MF_Text,
          true,
          {{'"', '"', VERB_DELIM_EXT_CATEGORY},
           {'|', '|', VERB_DELIM_EXT_CATEGORY}}},
@@ -22,14 +23,15 @@ unordered_map<string, CatCodeCommand> Scanner::names = {
     {
         "l3doc",
         {name,
+         MF_Text,
          true,
          {{'"', '"', VERB_DELIM_EXT_CATEGORY},
           {'|', '|', VERB_DELIM_EXT_CATEGORY}}},
     },
     // latex nltcdoc nltcdoc-cls
-    {"nlctdoc", {name, true, {{'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
+    {"nlctdoc", {name, MF_Text, true, {{'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
     // platex base plnews-cls
-    {"plnews", {name, true, {{'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
+    {"plnews", {name, MF_Text, true, {{'|', '|', VERB_DELIM_EXT_CATEGORY}}}},
 };
 
 }; // namespace LaTeX

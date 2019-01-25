@@ -25,6 +25,7 @@ unordered_map<string, Environment> Scanner::environments = {
     // latex base alltt-sty
     {"alltt",
      {env_name,
+      MF_Any,
       {{'\t', '\t', OTHER_CATEGORY},
        {' ', ' ', OTHER_CATEGORY},
        {'#', '#', OTHER_CATEGORY},
@@ -124,6 +125,7 @@ unordered_map<string, Environment> Scanner::environments = {
     // lualatex luacode luacode-sty
     {"luacode",
      {env_name_luacode,
+      MF_Any,
       {{1, '@', OTHER_CATEGORY},
        {'A', 'Z', LETTER_CATEGORY},
        {'[', '[', OTHER_CATEGORY},

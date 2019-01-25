@@ -15,6 +15,7 @@ inline bool isHexDigit(char32_t ch) {
 }
 
 void Scanner::reset() {
+  modes = MF_Text;
   start_delim = 0;
   cs_name.clear();
   e_name.clear();
@@ -25,7 +26,7 @@ void Scanner::reset() {
 unsigned Scanner::serialize(char *buffer) const {
   SerializationBuffer buf(buffer);
 
-  buf << start_delim << cs_name << e_name << u_name << catcode_table;
+  buf << modes << start_delim << cs_name << e_name << u_name << catcode_table;
 
   return buf.length;
 }
@@ -39,7 +40,7 @@ void Scanner::deserialize(const char *buffer, unsigned length) {
 
   DeserializationBuffer buf(buffer, length);
 
-  buf >> start_delim >> cs_name >> e_name >> u_name >> catcode_table;
+  buf >> modes >> start_delim >> cs_name >> e_name >> u_name >> catcode_table;
 }
 
 bool Scanner::enter_raw_mode(TSLexer *lexer) {
@@ -325,7 +326,8 @@ bool Scanner::scan_cs(TSLexer *lexer, const bool *valid_symbols) {
 
   auto it = control_sequences.find(cs_name);
   lexer->result_symbol =
-      (it != control_sequences.end() && valid_symbols[it->second.symbol])
+      (it != control_sequences.end() && valid_symbols[it->second.symbol] &&
+       (modes | it->second.modes).any())
           ? it->second.symbol
           : cs;
 
@@ -365,30 +367,32 @@ bool Scanner::scan_space(TSLexer *lexer, const bool *valid_symbols) {
   return true;
 }
 
-bool Scanner::scan_env_name(TSLexer *lexer) {
+bool Scanner::scan_env_name(TSLexer *lexer, const bool *valid_symbols) {
   e_name = read_string(lexer, LETTER_FLAG | OTHER_FLAG);
 
   auto it = environments.find(e_name);
 
-  if (it == environments.end()) {
-    lexer->result_symbol = env_name;
-  } else {
+  if (it != environments.end() && valid_symbols[it->second.symbol] &&
+      (modes | it->second.modes).any()) {
     lexer->result_symbol = it->second.symbol;
+  } else {
+    lexer->result_symbol = env_name;
   }
 
   return true;
 }
 
-bool Scanner::scan_name(TSLexer *lexer) {
+bool Scanner::scan_name(TSLexer *lexer, const bool *valid_symbols) {
   u_name = read_string(lexer, LETTER_FLAG | OTHER_FLAG, U",");
 
   auto it = names.find(u_name);
 
-  if (it == names.end()) {
-    lexer->result_symbol = name;
-  } else {
+  if (it != names.end() && valid_symbols[it->second.symbol] &&
+      (modes | it->second.modes).any()) {
     lexer->result_symbol = it->second.symbol;
     catcode_table.assign(it->second.intervals, it->second.global);
+  } else {
+    lexer->result_symbol = name;
   }
 
   return true;
@@ -724,10 +728,10 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
       break;
     }
     if (valid_symbol_in_range(valid_symbols, env_name_alignat, env_name)) {
-      return scan_env_name(lexer);
+      return scan_env_name(lexer, valid_symbols);
     }
     if (valid_symbols[name]) {
-      return scan_name(lexer);
+      return scan_name(lexer, valid_symbols);
     }
     return scan_text(lexer, valid_symbols);
   }
