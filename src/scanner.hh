@@ -17,6 +17,8 @@ enum SymbolType {
   _cmd_apply,
   _env_begin,
   _env_end,
+  _mode_math,
+  _mode_text,
   _scope_begin,
   _scope_end,
   _space,
@@ -211,6 +213,8 @@ enum SymbolType {
   lparen,
   math_shift_end,
   math_shift,
+  math_single,
+  math,
   minus,
   name,
   octal,
@@ -238,46 +242,50 @@ enum SymbolType {
   verbatim_text,
 };
 
-enum ModeFlag : uint8_t { MF_Nil = 1, MF_Text = 2, MF_Math = 4, MF_Any = 6 };
-
-typedef std::bitset<3> ModeFlags;
+enum ModeFlags : uint8_t { MF_None = 0, MF_Nil = 1, MF_Text = 2, MF_Math = 4, MF_Any = 6 };
 
 struct CatCodeCommand {
   SymbolType symbol;
   ModeFlags modes;
   bool global;
+  ModeFlags apply;
   std::vector<CatCodeInterval> intervals;
 
-  CatCodeCommand(SymbolType t, ModeFlags m = MF_Any, bool g = false) {
+  CatCodeCommand(SymbolType t, ModeFlags m = MF_Any, bool g = false, ModeFlags a = MF_None) {
     symbol = t;
     modes = m;
     global = g;
+    apply = a;
   }
 
-  CatCodeCommand(SymbolType t, ModeFlags m, bool g,
+  CatCodeCommand(SymbolType t, ModeFlags m, bool g, ModeFlags a,
                  std::initializer_list<CatCodeInterval> i)
       : intervals(i) {
     symbol = t;
     modes = m;
     global = g;
+    apply = a;
   }
 };
 
 struct Environment {
   SymbolType symbol;
   ModeFlags modes;
+  ModeFlags apply;
   std::vector<CatCodeInterval> intervals;
 
-  Environment(SymbolType s, ModeFlags m = MF_Any) {
+  Environment(SymbolType s, ModeFlags m = MF_Any, ModeFlags a = MF_None) {
     symbol = s;
     modes = m;
+    apply = a;
   }
 
-  Environment(SymbolType s, ModeFlags m,
+  Environment(SymbolType s, ModeFlags m, ModeFlags a,
               std::initializer_list<CatCodeInterval> i)
       : intervals(i) {
     modes = m;
     symbol = s;
+    apply = a;
   }
 };
 
@@ -295,7 +303,7 @@ class Scanner {
   const std::u32string hexadecimal_digits = U"0123456789ABCDEFabcdef";
 
   std::wstring_convert<std::codecvt_utf8<CHAR32_T>, CHAR32_T> convert;
-  ModeFlags modes = MF_Text;
+  std::vector<ModeFlags> modes;
   std::string cs_name, e_name, u_name;
   char32_t start_delim = 0, lookahead = 0;
   bool raw = false, advanced = false;

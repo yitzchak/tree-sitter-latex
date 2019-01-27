@@ -15,7 +15,8 @@ inline bool isHexDigit(char32_t ch) {
 }
 
 void Scanner::reset() {
-  modes = MF_Text;
+  modes.clear();
+  modes.push_back(MF_Text);
   start_delim = 0;
   cs_name.clear();
   e_name.clear();
@@ -26,7 +27,11 @@ void Scanner::reset() {
 unsigned Scanner::serialize(char *buffer) const {
   SerializationBuffer buf(buffer);
 
-  buf << modes << start_delim << cs_name << e_name << u_name << catcode_table;
+  buf << start_delim << cs_name << e_name << u_name << catcode_table << modes.size();
+
+  for (auto it = modes.cbegin(); it != modes.cend(); it++) {
+    buf << *it;
+  }
 
   return buf.length;
 }
@@ -39,8 +44,17 @@ void Scanner::deserialize(const char *buffer, unsigned length) {
   }
 
   DeserializationBuffer buf(buffer, length);
+  size_t mode_size;
 
-  buf >> modes >> start_delim >> cs_name >> e_name >> u_name >> catcode_table;
+  buf >> start_delim >> cs_name >> e_name >> u_name >> catcode_table >> mode_size;
+
+  modes.clear();
+  while (mode_size-- > 0) {
+    ModeFlags flags;
+
+    buf >> flags;
+    modes.push_back(flags);
+  }
 }
 
 bool Scanner::enter_raw_mode(TSLexer *lexer) {
@@ -325,9 +339,10 @@ bool Scanner::scan_cs(TSLexer *lexer, const bool *valid_symbols) {
   cs_name = read_string(lexer, LETTER_CATEGORY);
 
   auto it = control_sequences.find(cs_name);
+
   lexer->result_symbol =
       (it != control_sequences.end() && valid_symbols[it->second.symbol] &&
-       (modes | it->second.modes).any())
+       (it->second.modes & modes.back()))
           ? it->second.symbol
           : cs;
 
@@ -373,7 +388,7 @@ bool Scanner::scan_env_name(TSLexer *lexer, const bool *valid_symbols) {
   auto it = environments.find(e_name);
 
   if (it != environments.end() && valid_symbols[it->second.symbol] &&
-      (modes | it->second.modes).any()) {
+      (it->second.modes & modes.back())) {
     lexer->result_symbol = it->second.symbol;
   } else {
     lexer->result_symbol = env_name;
@@ -388,9 +403,12 @@ bool Scanner::scan_name(TSLexer *lexer, const bool *valid_symbols) {
   auto it = names.find(u_name);
 
   if (it != names.end() && valid_symbols[it->second.symbol] &&
-      (modes | it->second.modes).any()) {
+      (modes.back() & it->second.modes)) {
     lexer->result_symbol = it->second.symbol;
     catcode_table.assign(it->second.intervals, it->second.global);
+    if (it->second.modes) {
+      modes.back() = it->second.modes;
+    }
   } else {
     lexer->result_symbol = name;
   }
@@ -515,8 +533,8 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     return true;
   }
 
-  if (valid_symbols[text_single]) {
-    lexer->result_symbol = text_single;
+  if (valid_symbols[math_single] || valid_symbols[text_single]) {
+    lexer->result_symbol = modes.back() == MF_Math ? math_single : text_single;
     return true;
   }
 
@@ -533,7 +551,7 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
   match_chars(lexer, LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG,
               excluded);
 
-  lexer->result_symbol = text;
+  lexer->result_symbol = modes.back() == MF_Math ? math : text;
 
   return true;
 }
@@ -542,6 +560,9 @@ bool Scanner::scan_cmd_apply(TSLexer *lexer) {
   auto it = control_sequences.find(cs_name);
   if (it != control_sequences.end()) {
     catcode_table.assign(it->second.intervals);
+    if (it->second.apply) {
+      modes.back() = it->second.apply;
+    }
   }
 
   return symbol(lexer, _cmd_apply);
@@ -549,9 +570,14 @@ bool Scanner::scan_cmd_apply(TSLexer *lexer) {
 
 bool Scanner::scan_env_begin(TSLexer *lexer) {
   catcode_table.push();
+  modes.push_back(modes.back());
+
   auto it = environments.find(e_name);
   if (it != environments.end()) {
     catcode_table.assign(it->second.intervals);
+    if (it->second.apply) {
+      modes.back() = it->second.apply;
+    }
   }
 
   return symbol(lexer, _env_begin);
@@ -559,23 +585,36 @@ bool Scanner::scan_env_begin(TSLexer *lexer) {
 
 bool Scanner::scan_env_end(TSLexer *lexer) {
   catcode_table.pop();
+  modes.pop_back();
 
   return symbol(lexer, _env_end);
 }
 
 bool Scanner::scan_scope_begin(TSLexer *lexer) {
   catcode_table.push();
+  modes.push_back(modes.back());
 
   return symbol(lexer, _scope_begin);
 }
 
 bool Scanner::scan_scope_end(TSLexer *lexer) {
   catcode_table.pop();
+  modes.pop_back();
 
   return symbol(lexer, _scope_end);
 }
 
 bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
+  if (valid_symbols[_mode_math]) {
+    modes.back() = MF_Math;
+    return symbol(lexer, _mode_math);
+  }
+
+  if (valid_symbols[_mode_text]) {
+    modes.back() = MF_Text;
+    return symbol(lexer, _mode_text);
+  }
+
   if (valid_symbols[_cmd_apply]) {
     return scan_cmd_apply(lexer);
   }

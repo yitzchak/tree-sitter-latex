@@ -6,8 +6,7 @@ module.exports = {
     environments: {
       alignat: {
         name: $ => $.env_name_alignat,
-        beginParameters: $ => [$._text_token],
-        contents: $ => [repeat($._math_mode)]
+        beginParameters: $ => [$._text_token]
       }
     }
   },

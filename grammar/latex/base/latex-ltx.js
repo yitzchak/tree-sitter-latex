@@ -14,7 +14,7 @@ module.exports = {
           $._cs_parameter,
           optional($.brack_group),
           optional($.brack_group),
-          $._nil_token
+          $._token_apply
         ]
       },
       cline: {
@@ -27,7 +27,7 @@ module.exports = {
       },
       ensuremath: {
         cs: $ => $.cs_ensuremath,
-        parameters: $ => [$._math_token]
+        parameters: $ => [$._token_apply]
       },
       Error: {
         cs: $ => $.cs_Error,
@@ -69,7 +69,7 @@ module.exports = {
           $._cs_parameter,
           optional($.brack_group),
           optional($.brack_group),
-          $._nil_token
+          $._token_apply
         ]
       },
       newcounter: {
@@ -86,8 +86,8 @@ module.exports = {
           $._name_group,
           optional($.brack_group),
           optional($.brack_group),
-          $._nil_token,
-          $._nil_token
+          $._token_apply,
+          $._token_apply
         ]
       },
       newfont: {
@@ -183,7 +183,7 @@ module.exports = {
           optional($.brack_group),
           $._text_token
         ],
-        contents: $ => [repeat($._text_mode)]
+        contents: $ => [repeat($._token_expanded)]
       },
       tabularstar: {
         name: $ => $.env_name_tabularstar,
@@ -192,7 +192,7 @@ module.exports = {
           optional($.brack_group),
           $._text_token
         ],
-        contents: $ => [repeat($._text_mode)]
+        contents: $ => [repeat($._token_expanded)]
       }
     }
   },
@@ -201,46 +201,34 @@ module.exports = {
       frac: {
         cs: $ => $.cs_frac,
         parameters: $ => [
-          $._math_token,
-          $._math_token
+          $._text_token,
+          $._text_token
         ]
       },
       mathaccent: {
         cs: $ => $.cs_mathaccent,
         parameters: $ => [
-          $._math_token
+          $._text_token
         ]
       },
       mathstyle: {
         cs: $ => $.cs_mathstyle,
         parameters: $ => [
-          $._math_token
+          $._text_token
         ]
-      },
-      multicolumn: {
-        cs: $ => $.cs_multicolumn,
-        parameters: $ => [
-          $._math_token,
-          $._math_token,
-          $._math_token
-        ]
-      },
-      protect: {
-        cs: $ => $.cs_protect,
-        parameters: $ => [$._math_expanded_parameter]
       },
       stackrel: {
         cs: $ => $.cs_stackrel,
         parameters: $ => [
-          $._math_token,
-          $._math_token
+          $._text_token,
+          $._text_token
         ]
       },
       sqrt: {
         cs: $ => $.cs_sqrt,
         parameters: $ => [
-          optional(alias($.math_brack_group, $.brack_group)),
-          $._math_token
+          optional($.brack_group),
+          $._text_token
         ]
       }
     },
@@ -251,9 +239,6 @@ module.exports = {
           optional($.brack_group),
           $._text_token
         ]
-      },
-      math: {
-        name: $ => $.env_name
       }
     }
   },
@@ -264,8 +249,8 @@ module.exports = {
         parameters: $ => [
           $._text_token,
           $._text_token,
-          $._nil_token,
-          $._nil_token
+          $._token_apply,
+          $._token_apply
         ]
       },
       At: {
@@ -438,12 +423,12 @@ module.exports = {
       },
       protect: {
         cs: $ => $.cs_protect,
-        parameters: $ => [$._text_expanded_parameter]
+        parameters: $ => [$._token_expanded]
       },
       Provides: {
         cs: $ => $.cs_Provides,
         parameters: $ => [
-          $._name_parameter,
+          $._token_name,
           optional($.brack_group)
         ],
         apply: true
@@ -526,8 +511,7 @@ module.exports = {
     },
     environments: {
       display_math: {
-        name: $ => $.env_name_display_math,
-        contents: $ => [repeat($._math_mode)]
+        name: $ => $.env_name_display_math
       },
       document: {
         name: $ => $.env_name_document,
@@ -538,8 +522,7 @@ module.exports = {
         beginParameters: $ => [optional($.brack_group)]
       },
       inline_math: {
-        name: $ => $.env_name_inline_math,
-        contents: $ => [repeat($._math_mode)]
+        name: $ => $.env_name_inline_math
       },
       itemize: {
         name: $ => $.env_name_itemize,
@@ -585,13 +568,19 @@ module.exports = {
     rules: {
       latex_display_math: $ => seq(
         alias($.cs_display_math_begin, $.cs),
-        repeat($._math_mode),
-        choice(alias($.cs_display_math_end, $.cs), $.exit)
+        $._scope_begin,
+        $._mode_math,
+        repeat($._token_expanded),
+        choice(alias($.cs_display_math_end, $.cs), $.exit),
+        $._scope_end
       ),
       latex_inline_math: $ => seq(
         alias($.cs_inline_math_begin, $.cs),
-        repeat($._math_mode),
-        choice(alias($.cs_inline_math_end, $.cs), $.exit)
+        $._scope_begin,
+        $._mode_math,
+        repeat($._token_expanded),
+        choice(alias($.cs_inline_math_end, $.cs), $.exit),
+        $._scope_end
       )
     }
   }
