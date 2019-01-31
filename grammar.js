@@ -365,6 +365,10 @@ let g = {
 
     _names_group: $ => alias($.names_group, $.group),
 
+    env_name_group: $ => group($, alias($.env_name, $.name)),
+
+    _env_name_group: $ => alias($.env_name_group, $.group),
+
     _nil_token: $ => choice(
       $.cs,
       $._nil_group,
@@ -581,13 +585,13 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
     }
 
     return beginCmd($,
-      alias(name ? $[nameGroupRuleSym] : $.name_group, $.group),
+      alias(name ? $[nameGroupRuleSym] : $.env_name_group, $.group),
       ...body, ...tail
     )
   }
 
   g.rules[endRuleSym] = $ => endCmd($,
-    alias(name ? $[nameGroupRuleSym] : $.name_group, $.group),
+    alias(name ? $[nameGroupRuleSym] : $.env_name_group, $.group),
     ...(endParameters ? endParameters($) : [])
   )
 
