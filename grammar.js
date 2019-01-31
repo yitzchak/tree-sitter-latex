@@ -327,12 +327,6 @@ let g = {
       $.par,
       $.semi_simple_group,
       $.text,
-      // Underscore produces an error by default in LaTeX text mode. Some
-      // some packages define underscore to produce \tex­tun­der­score. We assume
-      // that this has been done since underscore is never actually subscript
-      // in text mode.
-      alias($.subscript, $.text),
-      alias($.superscript, $.text),
       ...rules.text.map(rule => rule($))
     ),
 

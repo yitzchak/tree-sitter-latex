@@ -526,8 +526,17 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     excluded.push_back(L')');
   }
 
-  match_chars(lexer, LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG,
-              excluded);
+  CategoryFlags flags = LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG;
+
+  if (!valid_symbols[superscript]) {
+    flags.set(SUPERSCRIPT_CATEGORY);
+  }
+
+  if (!valid_symbols[subscript]) {
+    flags.set(SUBSCRIPT_CATEGORY);
+  }
+
+  match_chars(lexer, flags, excluded);
 
   lexer->result_symbol = text;
 
@@ -688,12 +697,12 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     if (valid_symbols[superscript]) {
       return symbol(lexer, superscript, true);
     }
-    break;
+    return scan_text(lexer, valid_symbols);
   case SUBSCRIPT_CATEGORY:
     if (valid_symbols[subscript]) {
       return symbol(lexer, subscript, true);
     }
-    break;
+    return scan_text(lexer, valid_symbols);
   case IGNORED_CATEGORY:
     if (valid_symbols[ignored]) {
       return match_chars(lexer, IGNORED_FLAG) && symbol(lexer, ignored);
