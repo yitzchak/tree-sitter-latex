@@ -62,6 +62,18 @@ module.exports = {
         cs: $ => $.cs_makeatother,
         apply: true
       },
+      makebox: {
+        cs: $ => $.cs_makebox,
+        parameters: $ => [
+          optional(
+            seq(
+              $._dimension_brack_group,
+              optional($.brack_group)
+            )
+          ),
+          $._text_token
+        ]
+      },
       newcommand: {
         cs: $ => $.cs_newcommand,
         parameters: $ => [
@@ -342,18 +354,6 @@ module.exports = {
       linebreak: {
         cs: $ => $.cs_linebreak,
         parameters: $ => [optional($.brack_group)]
-      },
-      makebox: {
-        cs: $ => $.cs_makebox,
-        parameters: $ => [
-          optional(
-            seq(
-              $._dimension_brack_group,
-              optional($.brack_group)
-            )
-          ),
-          $._text_token
-        ]
       },
       marginpar: {
         cs: $ => $.cs_marginpar,
