@@ -346,8 +346,12 @@ module.exports = {
       makebox: {
         cs: $ => $.cs_makebox,
         parameters: $ => [
-          optional($._dimension_brack_group),
-          optional($.brack_group),
+          optional(
+            seq(
+              $._dimension_brack_group,
+              optional($.brack_group)
+            )
+          ),
           $._text_token
         ]
       },
@@ -416,9 +420,17 @@ module.exports = {
       parbox: {
         cs: $ => $.cs_parbox,
         parameters: $ => [
-          optional($.brack_group),
-          optional($._dimension_brack_group),
-          optional($.brack_group),
+          optional(
+            seq(
+              $.brack_group,
+              optional(
+                seq(
+                  $._dimension_brack_group,
+                  optional($.brack_group)
+                )
+              )
+            )
+          ),
           $._dimension_parameter,
           $._text_token
         ]
@@ -465,8 +477,12 @@ module.exports = {
         cs: $ => $.cs_savebox,
         parameters: $ => [
           $._cs_parameter,
-          optional($._dimension_brack_group),
-          optional($.brack_group),
+          optional(
+            seq(
+              $._dimension_brack_group,
+              optional($.brack_group)
+            )
+          ),
           $._text_token
         ]
       },
@@ -553,9 +569,17 @@ module.exports = {
       minipage: {
         name: $ => $.env_name_minipage,
         beginParameters: $ => [
-          optional($.brack_group),
-          optional(alias($.dimension_brack_group, $.brack_group)),
-          optional($.brack_group),
+          optional(
+            seq(
+              $.brack_group,
+              optional(
+                seq(
+                  alias($.dimension_brack_group, $.brack_group),
+                  optional($.brack_group)
+                )
+              )
+            )
+          ),
           $._dimension_parameter
         ]
       },

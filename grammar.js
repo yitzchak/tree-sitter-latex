@@ -453,7 +453,7 @@ let g = {
 
     _dimension: $ => choice(
       $.dimension,
-      seq($.fixed, $.cs)
+      seq(optional($.fixed), $.cs)
     ),
 
     dimension_brack_group: $ => brackGroup($, $._dimension),
