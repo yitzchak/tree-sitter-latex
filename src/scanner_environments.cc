@@ -5,7 +5,7 @@ namespace LaTeX {
 using std::string;
 using std::unordered_map;
 
-unordered_map<string, Environment> Scanner::environments = {
+unordered_map<string, SymbolDescription> Scanner::environments = {
     // latex amscls amsthm-sty
     {"proof", env_name_theorem},
     // latex amsmath amsmath-sty

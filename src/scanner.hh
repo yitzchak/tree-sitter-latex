@@ -238,32 +238,15 @@ enum SymbolType {
   verbatim_text,
 };
 
-struct CatCodeCommand {
-  SymbolType symbol;
-  bool global;
-  std::vector<CatCodeInterval> intervals;
-
-  CatCodeCommand(SymbolType t, bool g = false) {
-    symbol = t;
-    global = g;
-  }
-
-  CatCodeCommand(SymbolType t, bool g, std::initializer_list<CatCodeInterval> i)
-      : intervals(i) {
-    symbol = t;
-    global = g;
-  }
-};
-
-struct Environment {
+struct SymbolDescription {
   SymbolType symbol;
   std::vector<CatCodeInterval> intervals;
 
-  Environment(SymbolType s) { symbol = s; }
+  SymbolDescription(SymbolType t) { symbol = t; }
 
-  Environment(SymbolType s, std::initializer_list<CatCodeInterval> i)
+  SymbolDescription(SymbolType t, std::initializer_list<CatCodeInterval> i)
       : intervals(i) {
-    symbol = s;
+    symbol = t;
   }
 };
 
@@ -312,9 +295,9 @@ class Scanner {
       {'A', 'Z', LETTER_CATEGORY},
   };
 
-  static std::unordered_map<std::string, CatCodeCommand> control_sequences;
-  static std::unordered_map<std::string, CatCodeCommand> names;
-  static std::unordered_map<std::string, Environment> environments;
+  static std::unordered_map<std::string, SymbolDescription> control_sequences;
+  static std::unordered_map<std::string, SymbolDescription> names;
+  static std::unordered_map<std::string, SymbolDescription> environments;
   static std::unordered_map<std::string, SymbolType> keywords;
 
   void reset();

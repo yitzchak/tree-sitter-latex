@@ -388,7 +388,7 @@ bool Scanner::scan_name(TSLexer *lexer) {
     lexer->result_symbol = name;
   } else {
     lexer->result_symbol = it->second.symbol;
-    catcode_table.assign(it->second.intervals, it->second.global);
+    catcode_table.assign(it->second.intervals, true);
   }
 
   return true;
