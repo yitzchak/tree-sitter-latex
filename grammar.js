@@ -49,13 +49,7 @@ function parenGroup ($, ...contents) {
   return seq($.lparen, ...contents, $.rparen)
 }
 
-let rules = {
-  _: [],
-  common: [],
-  math: [],
-  nil: [],
-  text: []
-}
+let rules = []
 
 let g = {
   name: 'latex',
@@ -332,7 +326,7 @@ let g = {
       $.subscript,
       $.superscript,
       $.text,
-      ...rules.text.map(rule => rule($))
+      ...rules.map(rule => rule($))
     ),
 
     nil_group: $ => group($, repeat($._nil_tokens)),
@@ -379,7 +373,7 @@ let g = {
       $.group,
       alias($.math_single, $.math),
       alias($.text_single, $.text),
-      ...rules.text.map(rule => rule($))
+      ...rules.map(rule => rule($))
     ),
 
     apply_group: $ => cmdGroup($, repeat($._expanded_tokens)),
@@ -451,6 +445,11 @@ let g = {
 
     fixed_pair: $ => parenGroup($, $.fixed, $.comma, $.fixed),
 
+    par: $ => choice(
+      alias($.par_eol, $.eol),
+      alias($.cs_par, $.cs)
+    ),
+
     _number: $ => choice(
       $.decimal,
       $.octal,
@@ -471,10 +470,10 @@ let g = {
   }
 }
 
-function defRule (mode, label, rule) {
+function defRule (label, rule) {
   g.rules[label] = rule
 
-  rules[mode].push($ => $[label])
+  rules.push($ => $[label])
 }
 
 function isOptional (p) {
@@ -482,8 +481,8 @@ function isOptional (p) {
     (p.type === 'CHOICE' && p.members.some(member => member.type === 'BLANK'))
 }
 
-function defCmd (mode, label, { cs, parameters, apply }) {
-  const cmdSym = (label in g.rules) ? `${mode}_${label}` : label
+function defCmd (label, { cs, parameters, apply, support }) {
+  const cmdSym = label
 
   g.rules[cmdSym] = $ => {
     const head = []
@@ -491,13 +490,13 @@ function defCmd (mode, label, { cs, parameters, apply }) {
     const tail = []
     const exit = [$.exit]
 
-    if (mode !== 'math') {
-      exit.push($.par)
-    }
+    // if (mode !== 'math') {
+    exit.push($.par)
+    // }
 
-    if (mode !== 'text') {
-      exit.push(alias($.exit_math, $.exit))
-    }
+    // if (mode !== 'text') {
+    //   exit.push(alias($.exit_math, $.exit))
+    // }
 
     while (body.length && isOptional(body[body.length - 1])) {
       tail.unshift(body.pop())
@@ -520,10 +519,12 @@ function defCmd (mode, label, { cs, parameters, apply }) {
       ...bodyAndTail ? [bodyAndTail] : [])
   }
 
-  rules[mode].push($ => label === cmdSym ? $[cmdSym] : alias($[cmdSym], $[label]))
+  if (!support) {
+    rules.push($ => label === cmdSym ? $[cmdSym] : alias($[cmdSym], $[label]))
+  }
 }
 
-function defEnv (mode, label, { name, beginParameters, endParameters, contents, bare }) {
+function defEnv (label, { name, beginParameters, endParameters, contents, bare, support }) {
   const envSym = `${label}_env`
   const nameGroupRuleSym = `${label}_name_group`
   const beginRuleSym = `${label}_begin`
@@ -569,7 +570,9 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
     ...(bare ? [] : [$._scope_end])
   )
 
-  rules[mode].push($ => $[envSym])
+  if (!support) {
+    rules.push($ => $[envSym])
+  }
 }
 
 const root = 'grammar'
@@ -578,27 +581,23 @@ console.log(`Loading grammar definitions...`)
 
 for (const filePath of readdir.sync(root, { deep: true, filter: '**/*.js' })) {
   console.log(`  ${path.join(root, filePath)}`)
-  const m = require(path.join(__dirname, root, filePath))
+  const obj = require(path.join(__dirname, root, filePath))
 
-  for (const mode in m) {
-    const obj = m[mode]
-
-    if (obj.commands) {
-      for (const label in obj.commands) {
-        defCmd(mode, label, obj.commands[label])
-      }
+  if (obj.commands) {
+    for (const label in obj.commands) {
+      defCmd(label, obj.commands[label])
     }
+  }
 
-    if (obj.environments) {
-      for (const label in obj.environments) {
-        defEnv(mode, label, obj.environments[label])
-      }
+  if (obj.environments) {
+    for (const label in obj.environments) {
+      defEnv(label, obj.environments[label])
     }
+  }
 
-    if (obj.rules) {
-      for (const label in obj.rules) {
-        defRule(mode, label, obj.rules[label])
-      }
+  if (obj.rules) {
+    for (const label in obj.rules) {
+      defRule(label, obj.rules[label])
     }
   }
 }
