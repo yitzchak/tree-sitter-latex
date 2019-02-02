@@ -1,7 +1,7 @@
 ================================================================================
 [ExplSyntaxOn] colon/underscore is not letter
 ================================================================================
-\bar:wibble_wobble
+\baz:wibble_wobble
 --------------------------------------------------------------------------------
 (document
   (cs)
@@ -10,7 +10,7 @@
 ================================================================================
 [ExplSyntaxOn] colon/underscore is letter
 ================================================================================
-\ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff
+\ExplSyntaxOn\baz:wibble_wobble\ExplSyntaxOff
 --------------------------------------------------------------------------------
 (document
   (ExplSyntaxOn (cs))
@@ -21,7 +21,7 @@
 [ProvidesExplPackage] colon/underscore is letter
 ================================================================================
 \ProvidesExplPackage{foo}{bar}{wibble}{wobble}
-\bar:wibble_wobble
+\baz:wibble_wobble
 --------------------------------------------------------------------------------
 (document
   (ProvidesExpl
@@ -35,7 +35,7 @@
 ================================================================================
 [ExplSyntaxOn] colon/underscore is letter in text group
 ================================================================================
-\ExplSyntaxOn{\bar:wibble_wobble}\ExplSyntaxOff
+\ExplSyntaxOn{\baz:wibble_wobble}\ExplSyntaxOff
 --------------------------------------------------------------------------------
 (document
   (ExplSyntaxOn (cs))
@@ -48,7 +48,7 @@
 ================================================================================
 [ExplSyntaxOn] colon/underscore is letter in optional text group
 ================================================================================
-\ExplSyntaxOn\usepackage[foo\bar:wibble_wobble]{foo}\ExplSyntaxOff
+\ExplSyntaxOn\usepackage[foo\baz:wibble_wobble]{foo}\ExplSyntaxOff
 --------------------------------------------------------------------------------
 (document
   (ExplSyntaxOn (cs))
@@ -64,7 +64,7 @@
 ================================================================================
 [ExplSyntaxOn] colon/underscore is letter then other
 ================================================================================
-\ExplSyntaxOn\bar:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
+\ExplSyntaxOn\baz:wibble_wobble\ExplSyntaxOff\quux:gronk_baffle
 --------------------------------------------------------------------------------
 (document
   (ExplSyntaxOn (cs))

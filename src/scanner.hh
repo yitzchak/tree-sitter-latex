@@ -15,8 +15,10 @@ namespace LaTeX {
 
 enum SymbolType {
   _cmd_apply,
-  _env_begin,
-  _env_end,
+  _mode_math,
+  _mode_text,
+  _scope_begin_cmd,
+  _scope_begin_env,
   _scope_begin,
   _scope_end,
   _space,
@@ -209,8 +211,11 @@ enum SymbolType {
   l,
   lbrack,
   lparen,
+  math_non_escape,
   math_shift_end,
   math_shift,
+  math_single,
+  math,
   minus,
   name,
   octal,
@@ -240,13 +245,19 @@ enum SymbolType {
 
 struct SymbolDescription {
   SymbolType symbol;
+  Mode mode;
   std::vector<CatCodeInterval> intervals;
 
-  SymbolDescription(SymbolType t) { symbol = t; }
+  SymbolDescription(SymbolType t, Mode m = M_None) {
+    symbol = t;
+    mode = m;
+  }
 
-  SymbolDescription(SymbolType t, std::initializer_list<CatCodeInterval> i)
+  SymbolDescription(SymbolType t, Mode m,
+                    std::initializer_list<CatCodeInterval> i)
       : intervals(i) {
     symbol = t;
+    mode = m;
   }
 };
 
@@ -366,9 +377,9 @@ class Scanner {
 
   bool scan_cmd_apply(TSLexer *lexer);
 
-  bool scan_env_begin(TSLexer *lexer);
+  bool scan_scope_begin_cmd(TSLexer *lexer);
 
-  bool scan_env_end(TSLexer *lexer);
+  bool scan_scope_begin_env(TSLexer *lexer);
 
   bool scan_scope_begin(TSLexer *lexer);
 

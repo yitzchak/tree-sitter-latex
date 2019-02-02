@@ -48,6 +48,14 @@ void CatCodeTable::reset() {
       it++;
     }
   }
+
+  for (auto it = modes.begin(); it != modes.end();) {
+    if (it->first != 0) {
+      it = modes.erase(it);
+    } else {
+      it++;
+    }
+  }
 }
 
 void CatCodeTable::assign(const vector<CatCodeInterval> &intervals,
@@ -61,6 +69,10 @@ void CatCodeTable::assign(const vector<CatCodeInterval> &intervals,
   }
 }
 
+Mode CatCodeTable::get_mode() const { return modes.crbegin()->second; }
+
+void CatCodeTable::set_mode(Mode mode) { modes[level] = mode; }
+
 void CatCodeTable::push() { level++; }
 
 void CatCodeTable::pop() {
@@ -73,6 +85,8 @@ void CatCodeTable::pop() {
         it++;
       }
     }
+
+    modes.erase(level);
 
     level--;
   }
@@ -108,6 +122,12 @@ SerializationBuffer &operator<<(SerializationBuffer &buffer,
     }
   }
 
+  buffer << static_cast<uint8_t>(table.modes.size() - 1);
+
+  for (auto it = ++table.modes.cbegin(); it != table.modes.cend(); it++) {
+    buffer << it->first << it->second;
+  }
+
   return buffer;
 }
 
@@ -118,8 +138,9 @@ DeserializationBuffer &operator>>(DeserializationBuffer &buffer,
   if (buffer.length != 0) {
     char32_t ch;
     unsigned ch_count;
-    uint8_t level, level_count;
+    uint8_t level, level_count, mode_count;
     Category cat;
+    Mode mode;
 
     buffer >> table.level >> ch_count;
 
@@ -129,6 +150,13 @@ DeserializationBuffer &operator>>(DeserializationBuffer &buffer,
         buffer >> level >> cat;
         table.codes[ch][level] = cat;
       }
+    }
+
+    buffer >> mode_count;
+
+    for (; mode_count > 0; mode_count--) {
+      buffer >> level >> mode;
+      table.modes[level] = mode;
     }
   }
 

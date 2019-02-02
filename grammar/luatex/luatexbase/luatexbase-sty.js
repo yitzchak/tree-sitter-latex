@@ -1,9 +1,9 @@
 module.exports = {
-  common: {
+  text: {
     commands: {
       lua: {
         cs: $ => $.cs_lua,
-        parameters: $ => [optional($._number), $._apply_parameter]
+        parameters: $ => [optional($._number), $._apply_token]
       }
     }
   }

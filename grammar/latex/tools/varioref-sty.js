@@ -1,9 +1,9 @@
 module.exports = {
-  common: {
+  text: {
     commands: {
       refrange: {
         cs: $ => $.cs_refrange,
-        parameters: $ => [optional($.star), $._text_token, $._text_token]
+        parameters: $ => [optional($.star), $._token, $._token]
       }
     }
   }

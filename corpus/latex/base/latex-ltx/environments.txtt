@@ -484,6 +484,33 @@ wibble
   (text))
 
 ================================================================================
+tabular environment in math mode
+================================================================================
+foo
+\[
+\begin{tabular}{l|c|r}
+bar
+\end{tabular}
+\]
+wibble
+--------------------------------------------------------------------------------
+(document
+  (text)
+  (latex_display_math
+    (cs)
+    (tabular_env
+      (begin
+        (cs)
+        (group (l) (name) (r))
+        (group (l) (text) (r)))
+      (text)
+      (end
+        (cs)
+        (group (l) (name) (r))))
+    (cs))
+  (text))
+
+================================================================================
 tabular environment with position
 ================================================================================
 foo
@@ -676,7 +703,7 @@ inline verbatim
 ================================================================================
 text
 \verb+foo+bar
-\verb\foo\bar
+\verb\foo\baz
 \verb+foo
 \verb*|starred verb|
 \verb**starred verb* is not what you expect (s is acting as the delim here)
@@ -717,7 +744,7 @@ not (quite) inline verbatim
 inline verbatim using various special character
 ================================================================================
 \verb%foo%
-\verb\bar\
+\verb\baz\
 \verb~baz~
 \verb#wibble#
 \verb{quux{

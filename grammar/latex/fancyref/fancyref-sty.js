@@ -1,11 +1,11 @@
 module.exports = {
-  common: {
+  text: {
     commands: {
       fref: {
         cs: $ => $.cs_fref,
         parameters: $ => [
           optional($.brack_group),
-          $._text_token
+          $._token
         ]
       }
     }

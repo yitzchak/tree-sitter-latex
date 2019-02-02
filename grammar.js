@@ -29,6 +29,10 @@ function group ($, ...contents) {
   return seq($.l, $._scope_begin, ...contents, $.r, $._scope_end)
 }
 
+function cmdGroup ($, ...contents) {
+  return seq($.l, $._scope_begin_cmd, ...contents, $.r, $._scope_end)
+}
+
 // function simple_group ($, ...contents) {
 //   return seq(choice($.l, $.bgroup), $._scope_begin, ...contents, choice($.r, $.egroup), $._scope_end)
 // }
@@ -58,8 +62,10 @@ let g = {
 
   externals: $ => [
     $._cmd_apply,
-    $._env_begin,
-    $._env_end,
+    $._mode_math,
+    $._mode_text,
+    $._scope_begin_cmd,
+    $._scope_begin_env,
     $._scope_begin,
     $._scope_end,
     $._space,
@@ -252,8 +258,11 @@ let g = {
     $.l,
     $.lbrack,
     $.lparen,
+    $.math_non_escape,
     $.math_shift_end,
     $.math_shift,
+    $.math_single,
+    $.math,
     $.minus,
     $.name,
     $.octal,
@@ -291,9 +300,9 @@ let g = {
   ],
 
   rules: {
-    document: $ => repeat($._text_mode),
+    document: $ => repeat($._expanded_tokens),
 
-    _nil_mode: $ => choice(
+    _nil_tokens: $ => choice(
       $._nil_group,
       $.active_char,
       $.alignment_tab,
@@ -306,50 +315,31 @@ let g = {
       $.parameter_ref,
       $.subscript,
       $.superscript,
-      $.text,
-      ...rules.nil.map(rule => rule($))
+      $.text
     ),
 
-    _common: $ => choice(
+    _expanded_tokens: $ => choice(
       $.active_char,
       $.alignment_tab,
       $.char_ref_invalid,
+      $.group,
       $.ignored,
       $.invalid,
-      $.parameter_ref,
-      // $.eol,
-      ...rules.common.map(rule => rule($))
-    ),
-
-    _text_mode: $ => choice(
-      $._common,
-      $._text_group,
+      $.math,
       $.par,
+      $.parameter_ref,
       $.semi_simple_group,
+      $.subscript,
+      $.superscript,
       $.text,
       ...rules.text.map(rule => rule($))
     ),
 
-    _math_mode: $ => choice(
-      $._common,
-      $._math_group,
-      $.subscript,
-      $.superscript,
-      alias($.text, $.math),
-      ...rules.math.map(rule => rule($))
-    ),
-
-    nil_group: $ => group($, repeat($._nil_mode)),
+    nil_group: $ => group($, repeat($._nil_tokens)),
 
     _nil_group: $ => alias($.nil_group, $.group),
 
-    text_group: $ => group($, repeat($._text_mode)),
-
-    _text_group: $ => alias($.text_group, $.group),
-
-    math_group: $ => group($, repeat($._math_mode)),
-
-    _math_group: $ => alias($.math_group, $.group),
+    group: $ => group($, repeat($._expanded_tokens)),
 
     name_group: $ => group($, $.name),
 
@@ -370,57 +360,40 @@ let g = {
       alias($.text_single, $.text)
     ),
 
-    _text_token: $ => choice(
+    _token: $ => choice(
       $.cs,
-      $._text_group,
+      $.group,
       $.parameter_ref,
+      alias($.math_single, $.math),
       alias($.text_single, $.text)
     ),
 
-    _math_token: $ => choice(
-      $.cs,
-      $._math_group,
-      $.parameter_ref,
-      alias($.text_single, $.math)
-    ),
-
-    _name_parameter: $ => choice(
+    _name_token: $ => choice(
       $.cs,
       $._name_group,
       $.parameter_ref
     ),
 
-    _common_expanded_parameter: $ => choice(
+    _expanded_token: $ => choice(
       $.parameter_ref,
-      ...rules.common.map(rule => rule($))
-    ),
-
-    _text_expanded_parameter: $ => choice(
-      $._common_expanded_parameter,
-      $._text_group,
+      $.group,
+      alias($.math_single, $.math),
       alias($.text_single, $.text),
       ...rules.text.map(rule => rule($))
     ),
 
-    _math_expanded_parameter: $ => choice(
-      $._common_expanded_parameter,
-      $._math_group,
-      alias($.text_single, $.math),
-      ...rules.math.map(rule => rule($))
-    ),
+    apply_group: $ => cmdGroup($, repeat($._expanded_tokens)),
 
-    apply_group: $ => group($, $._cmd_apply, repeat($._text_mode)),
-
-    _apply_parameter: $ => choice($.cs, alias($.apply_group, $.group)),
+    _apply_token: $ => choice($.cs, alias($.apply_group, $.group)),
 
     make_verb_delim_group: $ => group($,
       choice(
         cmd($, $.cs_make_verb_delim),
-        repeat($._text_mode)
+        repeat($._expanded_tokens)
       )
     ),
 
-    _make_verb_delim_parameter: $ => choice(
+    _make_verb_delim_token: $ => choice(
       cmd($, $.cs_make_verb_delim),
       $.cs,
       alias($.make_verb_delim_group, $.group)
@@ -429,25 +402,23 @@ let g = {
     delete_verb_delim_group: $ => group($,
       choice(
         cmd($, $.cs_delete_verb_delim),
-        repeat($._text_mode)
+        repeat($._expanded_tokens)
       )
     ),
 
-    _delete_verb_delim_parameter: $ => choice(
+    _delete_verb_delim_token: $ => choice(
       cmd($, $.cs_delete_verb_delim),
       $.cs,
       alias($.delete_verb_delim_group, $.group)
     ),
 
-    _cs_parameter: $ => choice($.cs, alias($.cs_group, $.group)),
+    _cs_token: $ => choice($.cs, alias($.cs_group, $.group)),
 
     cs_group: $ => group($, $.cs),
 
-    brack_group: $ => brackGroup($, repeat($._text_mode)),
+    brack_group: $ => brackGroup($, repeat($._expanded_tokens)),
 
-    math_brack_group: $ => brackGroup($, repeat($._math_mode)),
-
-    semi_simple_group: $ => semiSimpleGroup($, repeat($._text_mode)),
+    semi_simple_group: $ => semiSimpleGroup($, repeat($._expanded_tokens)),
 
     dimension: $ => seq($.fixed, $.unit),
 
@@ -462,7 +433,7 @@ let g = {
 
     dimension_group: $ => group($, $._dimension),
 
-    _dimension_parameter: $ => choice(alias($.dimension_group, $.group), $.cs),
+    _dimension_token: $ => choice(alias($.dimension_group, $.group), $.cs),
 
     glue: $ => seq(
       $._dimension,
@@ -472,11 +443,11 @@ let g = {
 
     glue_group: $ => group($, $.glue),
 
-    _glue_parameter: $ => choice($.cs, alias($.glue_group, $.group)),
+    _glue_token: $ => choice($.cs, alias($.glue_group, $.group)),
 
     glue_brack_group: $ => brackGroup($, $.glue),
 
-    _glue_brack_parameter: $ => alias($.glue_brack_group, $.brack_group),
+    _glue_brack_group: $ => alias($.glue_brack_group, $.brack_group),
 
     fixed_pair: $ => parenGroup($, $.fixed, $.comma, $.fixed),
 
@@ -554,8 +525,6 @@ function defCmd (mode, label, { cs, parameters, apply }) {
 
 function defEnv (mode, label, { name, beginParameters, endParameters, contents, bare }) {
   const envSym = `${label}_env`
-  const envMathSym = `${label}_math_env`
-  const envTextSym = `${label}_text_env`
   const nameGroupRuleSym = `${label}_name_group`
   const beginRuleSym = `${label}_begin`
   const endRuleSym = `${label}_end`
@@ -575,7 +544,7 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
     }
 
     if (!bare) {
-      tail.unshift($._env_begin)
+      tail.unshift($._scope_begin_env)
     }
 
     return beginCmd($,
@@ -589,45 +558,18 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
     ...(endParameters ? endParameters($) : [])
   )
 
-  if (mode === 'common' && !contents) {
-    g.rules[envMathSym] = $ => seq(
-      alias($[beginRuleSym], $.begin),
-      // ...(bare ? [] : [$._env_begin]),
-      repeat($._math_mode),
-      choice(
-        alias($[endRuleSym], $.end),
-        $.exit
-      ),
-      ...(bare ? [] : [$._env_end])
-    )
+  g.rules[envSym] = $ => seq(
+    alias($[beginRuleSym], $.begin),
+    // ...(bare ? [] : [$._scope_begin_env]),
+    ...(contents ? contents($) : [repeat($._expanded_tokens)]),
+    choice(
+      alias($[endRuleSym], $.end),
+      $.exit
+    ),
+    ...(bare ? [] : [$._scope_end])
+  )
 
-    g.rules[envTextSym] = $ => seq(
-      alias($[beginRuleSym], $.begin),
-      // ...(bare ? [] : [$._env_begin]),
-      repeat($._text_mode),
-      choice(
-        alias($[endRuleSym], $.end),
-        $.exit
-      ),
-      ...(bare ? [] : [$._env_end])
-    )
-
-    rules.math.push($ => alias($[envMathSym], $[envSym]))
-    rules.text.push($ => alias($[envTextSym], $[envSym]))
-  } else {
-    g.rules[envSym] = $ => seq(
-      alias($[beginRuleSym], $.begin),
-      // ...(bare ? [] : [$._env_begin]),
-      ...(contents ? contents($) : [repeat(mode === 'math' ? $._math_mode : $._text_mode)]),
-      choice(
-        alias($[endRuleSym], $.end),
-        $.exit
-      ),
-      ...(bare ? [] : [$._env_end])
-    )
-
-    rules[mode].push($ => $[envSym])
-  }
+  rules[mode].push($ => $[envSym])
 }
 
 const root = 'grammar'

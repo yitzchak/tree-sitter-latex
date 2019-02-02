@@ -1,5 +1,5 @@
 module.exports = {
-  common: {
+  text: {
     environments: {
       tikzpicture: {
         name: $ => $.env_name_tikzpicture,

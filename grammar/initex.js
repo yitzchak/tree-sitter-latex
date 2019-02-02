@@ -21,11 +21,11 @@ module.exports = {
       },
       left: {
         cs: $ => $.cs_left,
-        parameters: $ => [$._math_token]
+        parameters: $ => [$._token]
       },
       right: {
         cs: $ => $.cs_right,
-        parameters: $ => [$._math_token]
+        parameters: $ => [$._token]
       }
     },
     rules: {
@@ -35,7 +35,7 @@ module.exports = {
       )
     }
   },
-  common: {
+  text: {
     commands: {
       code: {
         cs: $ => $.cs_code,
@@ -61,7 +61,7 @@ module.exports = {
       },
       input: {
         cs: $ => $.cs_input,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._token]
       },
       let: {
         cs: $ => $.cs_let,
@@ -73,65 +73,52 @@ module.exports = {
       string: {
         cs: $ => $.cs_string,
         parameters: $ => [choice($.cs, alias($.text_non_escape, $.text))]
+      },
+      expandafter: {
+        cs: $ => $.cs_expandafter,
+        parameters: $ => [
+          $._token,
+          $._expanded_token
+        ]
+      },
+      phantom_smash: {
+        cs: $ => $.cs_phantom_smash,
+        parameters: $ => [$._token]
       }
     },
     rules: {
       _cmd: $ => $.cs,
       csname_group: $ => seq(
         $.csname,
-        repeat($._text_token),
+        repeat($._token),
         $.endcsname
-      )
-    }
-  },
-  math: {
-    commands: {
-      expandafter: {
-        cs: $ => $.cs_expandafter,
-        parameters: $ => [
-          $._math_token,
-          $._math_expanded_parameter
-        ]
-      },
-      phantom_smash: {
-        cs: $ => $.cs_phantom_smash,
-        parameters: $ => [$._math_token]
-      }
-    },
-    rules: {
+      ),
       delimiter_group: $ => seq(
         $.left,
         $._scope_begin,
-        repeat($._math_mode),
+        repeat($._expanded_tokens),
         choice($.right, $.exit, alias($.exit_math, $.exit)),
         $._scope_end
-      )
-    }
-  },
-  text: {
-    commands: {
-      expandafter: {
-        cs: $ => $.cs_expandafter,
-        parameters: $ => [
-          $._text_token,
-          $._text_expanded_parameter
-        ]
-      }
-    },
-    rules: {
+      ),
       tex_display_math: $ => seq(
         $.display_math_shift,
-        repeat($._math_mode),
+        $._scope_begin,
+        $._mode_math,
+        repeat($._expanded_tokens),
         choice(
           alias($.display_math_shift_end, $.display_math_shift),
           seq($.math_shift, $.exit),
           $.exit
-        )
+        ),
+        $._scope_end
       ),
       tex_inline_math: $ => seq(
         $.math_shift,
-        repeat1($._math_mode),
-        choice(alias($.math_shift_end, $.math_shift), $.exit)
+        $._scope_begin,
+        $._mode_math,
+        repeat1($._expanded_tokens),
+        choice(alias($.math_shift_end, $.math_shift), $.exit),
+        $._scope_end
       )
     }
   }

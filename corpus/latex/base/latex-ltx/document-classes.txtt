@@ -69,7 +69,7 @@ usepackage with multiple packages
 ProvidesClass @ sign is letter
 ================================================================================
 \ProvidesClass{bar}
-\bar@wibble
+\baz@wibble
 --------------------------------------------------------------------------------
 (document
   (Provides
@@ -81,7 +81,7 @@ ProvidesClass @ sign is letter
 ProvidesClass with optional date
 ================================================================================
 \ProvidesClass{bar}[wibble]
-\bar@wibble
+\baz@wibble
 --------------------------------------------------------------------------------
 (document
   (Provides
@@ -94,7 +94,7 @@ ProvidesClass with optional date
 ProvidesPackage @ sign is letter
 ================================================================================
 \ProvidesPackage{bar}
-\bar@wibble
+\baz@wibble
 --------------------------------------------------------------------------------
 (document
   (Provides
@@ -106,7 +106,7 @@ ProvidesPackage @ sign is letter
 ProvidesFile @ sign is letter
 ================================================================================
 \ProvidesFile{bar}
-\bar@wibble
+\baz@wibble
 --------------------------------------------------------------------------------
 (document
   (Provides
@@ -201,7 +201,7 @@ DeclareOption*
 ================================================================================
 CheckCommand
 ================================================================================
-\CheckCommand\foo{$\bar}
+\CheckCommand\foo{$\baz}
 --------------------------------------------------------------------------------
 (document
   (CheckCommand
@@ -212,7 +212,7 @@ CheckCommand
 ================================================================================
 CheckCommand with parameter count
 ================================================================================
-\CheckCommand\foo[2]{$\bar}
+\CheckCommand\foo[2]{$\baz}
 --------------------------------------------------------------------------------
 (document
   (CheckCommand
@@ -224,7 +224,7 @@ CheckCommand with parameter count
 ================================================================================
 CheckCommand with parameter count and default value
 ================================================================================
-\CheckCommand\foo[2][wibble]{$\bar}
+\CheckCommand\foo[2][wibble]{$\baz}
 --------------------------------------------------------------------------------
 (document
   (CheckCommand

@@ -1,17 +1,17 @@
 module.exports = {
-  common: {
+  text: {
     commands: {
       addvspace: {
         cs: $ => $.cs_addvspace,
         parameters: $ => [
-          $._glue_parameter
+          $._glue_token
         ]
       },
       CheckCommand: {
         cs: $ => $.cs_CheckCommand,
         parameters: $ => [
           optional($.star),
-          $._cs_parameter,
+          $._cs_token,
           optional($.brack_group),
           optional($.brack_group),
           $._nil_token
@@ -19,7 +19,7 @@ module.exports = {
       },
       cline: {
         cs: $ => $.cs_cline,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._token]
       },
       endinput: {
         cs: $ => $.cs_endinput,
@@ -27,22 +27,22 @@ module.exports = {
       },
       ensuremath: {
         cs: $ => $.cs_ensuremath,
-        parameters: $ => [$._math_token]
+        parameters: $ => [$._apply_token]
       },
       Error: {
         cs: $ => $.cs_Error,
         parameters: $ => [
-          $._text_token,
-          $._text_token,
-          $._text_token
+          $._token,
+          $._token,
+          $._token
         ]
       },
       IfFileExists: {
         cs: $ => $.cs_IfFileExists,
         parameters: $ => [
-          $._text_token,
-          $._text_token,
-          $._text_token
+          $._token,
+          $._token,
+          $._token
         ]
       },
       label: {
@@ -51,7 +51,7 @@ module.exports = {
           // Base LaTeX doesn't actually allow an optional arguments, but
           // cleveref does. It's just easier to join the two definitions.
           optional($.brack_group),
-          $._text_token
+          $._token
         ]
       },
       makeatletter: {
@@ -71,14 +71,14 @@ module.exports = {
               optional($.brack_group)
             )
           ),
-          $._text_token
+          $._token
         ]
       },
       newcommand: {
         cs: $ => $.cs_newcommand,
         parameters: $ => [
           optional($.star),
-          $._cs_parameter,
+          $._cs_token,
           optional($.brack_group),
           optional($.brack_group),
           $._nil_token
@@ -87,7 +87,7 @@ module.exports = {
       newcounter: {
         cs: $ => $.cs_newcounter,
         parameters: $ => [
-          $._text_token,
+          $._token,
           optional($.brack_group)
         ]
       },
@@ -105,25 +105,25 @@ module.exports = {
       newfont: {
         cs: $ => $.cs_newfont,
         parameters: $ => [
-          $._cs_parameter,
-          $._text_token
+          $._cs_token,
+          $._token
         ]
       },
       newlength: {
         cs: $ => $.cs_newlength,
         parameters: $ => [
-          $._cs_parameter
+          $._cs_token
         ]
       },
       newsavebox: {
         cs: $ => $.cs_newsavebox,
         parameters: $ => [
-          $._cs_parameter
+          $._cs_token
         ]
       },
       printcounter: {
         cs: $ => $.cs_printcounter,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._token]
       },
       ref: {
         cs: $ => $.cs_ref,
@@ -132,41 +132,41 @@ module.exports = {
           // adds \ref* and \pageref*. This combined with the starred versions
           // of varioref makes just simpler to define one command.
           optional($.star),
-          $._text_token
+          $._token
         ]
       },
       setcounter: {
         cs: $ => $.cs_setcounter,
-        parameters: $ => [$._text_token, $._text_token]
+        parameters: $ => [$._token, $._token]
       },
       setlength: {
         cs: $ => $.cs_setlength,
         parameters: $ => [
-          $._cs_parameter,
-          $._glue_parameter
+          $._cs_token,
+          $._glue_token
         ]
       },
       space: {
         cs: $ => $.cs_space,
         parameters: $ => [
           optional($.star),
-          $._glue_parameter
+          $._glue_token
         ]
       },
       setto: {
         cs: $ => $.cs_setto,
         parameters: $ => [
-          $._cs_parameter,
-          $._text_token
+          $._cs_token,
+          $._token
         ]
       },
       stepcounter: {
         cs: $ => $.cs_stepcounter,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._token]
       },
       value: {
         cs: $ => $.cs_value,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._token]
       },
       verb: {
         cs: $ => $.cs_verb,
@@ -183,152 +183,68 @@ module.exports = {
       WarningInfo: {
         cs: $ => $.cs_WarningInfo,
         parameters: $ => [
-          $._text_token,
-          $._text_token
-        ]
-      }
-    },
-    environments: {
-      tabular: {
-        name: $ => $.env_name_tabular,
-        beginParameters: $ => [
-          optional($.brack_group),
-          $._text_token
-        ],
-        contents: $ => [repeat($._text_mode)]
-      },
-      tabularstar: {
-        name: $ => $.env_name_tabularstar,
-        beginParameters: $ => [
-          $._text_token,
-          optional($.brack_group),
-          $._text_token
-        ],
-        contents: $ => [repeat($._text_mode)]
-      }
-    }
-  },
-  math: {
-    commands: {
-      frac: {
-        cs: $ => $.cs_frac,
-        parameters: $ => [
-          $._math_token,
-          $._math_token
+          $._token,
+          $._token
         ]
       },
-      mathaccent: {
-        cs: $ => $.cs_mathaccent,
-        parameters: $ => [
-          $._math_token
-        ]
-      },
-      mathstyle: {
-        cs: $ => $.cs_mathstyle,
-        parameters: $ => [
-          $._math_token
-        ]
-      },
-      multicolumn: {
-        cs: $ => $.cs_multicolumn,
-        parameters: $ => [
-          $._math_token,
-          $._math_token,
-          $._math_token
-        ]
-      },
-      protect: {
-        cs: $ => $.cs_protect,
-        parameters: $ => [$._math_expanded_parameter]
-      },
-      stackrel: {
-        cs: $ => $.cs_stackrel,
-        parameters: $ => [
-          $._math_token,
-          $._math_token
-        ]
-      },
-      sqrt: {
-        cs: $ => $.cs_sqrt,
-        parameters: $ => [
-          optional(alias($.math_brack_group, $.brack_group)),
-          $._math_token
-        ]
-      }
-    },
-    environments: {
-      array: {
-        name: $ => $.env_name_array,
-        beginParameters: $ => [
-          optional($.brack_group),
-          $._text_token
-        ]
-      },
-      math: {
-        name: $ => $.env_name
-      }
-    }
-  },
-  text: {
-    commands: {
       at_ifpackagelater: {
         cs: $ => $.cs_at_ifpackagelater,
         parameters: $ => [
-          $._text_token,
-          $._text_token,
+          $._token,
+          $._token,
           $._nil_token,
           $._nil_token
         ]
       },
       At: {
         cs: $ => $.cs_At,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._token]
       },
       author: {
         cs: $ => $.cs_author,
         parameters: $ => [
-          $._text_token
+          $._token
         ]
       },
       bibitem: {
         cs: $ => $.cs_bibitem,
-        parameters: $ => [optional($.brack_group), $._text_token]
+        parameters: $ => [optional($.brack_group), $._token]
       },
       DeclareOption: {
         cs: $ => $.cs_DeclareOption,
         parameters: $ => [
-          choice($.star, $._text_token),
-          $._text_token
+          choice($.star, $._token),
+          $._token
         ]
       },
       date: {
         cs: $ => $.cs_date,
         parameters: $ => [
-          $._text_token
+          $._token
         ]
       },
       discretionary: {
         cs: $ => $.cs_discretionary,
-        parameters: $ => [$._text_token, $._text_token, $._text_token]
+        parameters: $ => [$._token, $._token, $._token]
       },
       emph: {
         cs: $ => $.cs_emph,
         parameters: $ => [
-          $._text_token
+          $._token
         ]
       },
       enlargethispage: {
         cs: $ => $.cs_enlargethispage,
         parameters: $ => [
           optional($.star),
-          $._dimension_parameter
+          $._dimension_token
         ]
       },
       footnote: {
         cs: $ => $.cs_footnote,
         parameters: $ => [
           optional($.brack_group),
-          $._text_token
+          $._token
         ]
       },
       footnotemark: {
@@ -340,12 +256,31 @@ module.exports = {
       ExecuteOptions: {
         cs: $ => $.cs_ExecuteOptions,
         parameters: $ => [
-          $._text_token
+          $._token
+        ]
+      },
+      frac: {
+        cs: $ => $.cs_frac,
+        parameters: $ => [
+          $._token,
+          $._token
+        ]
+      },
+      mathaccent: {
+        cs: $ => $.cs_mathaccent,
+        parameters: $ => [
+          $._token
+        ]
+      },
+      mathstyle: {
+        cs: $ => $.cs_mathstyle,
+        parameters: $ => [
+          $._token
         ]
       },
       hyphenation: {
         cs: $ => $.cs_hyphenation,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._token]
       },
       item: {
         cs: $ => $.cs_item,
@@ -357,45 +292,45 @@ module.exports = {
       },
       marginpar: {
         cs: $ => $.cs_marginpar,
-        parameters: $ => [optional($.brack_group), $._text_token]
+        parameters: $ => [optional($.brack_group), $._token]
       },
       mbox: {
         cs: $ => $.cs_mbox,
         parameters: $ => [
-          $._text_token
+          $._token
         ]
       },
       multicolumn: {
         cs: $ => $.cs_multicolumn,
         parameters: $ => [
-          $._text_token,
-          $._text_token,
-          $._text_token
+          $._token,
+          $._token,
+          $._token
         ]
       },
       NeedsTeXFormat: {
         cs: $ => $.cs_NeedsTeXFormat,
         parameters: $ => [
-          $._text_token,
+          $._token,
           optional($.brack_group)
         ]
       },
       newline: {
         cs: $ => $.cs_newline,
-        parameters: $ => [optional($.star), optional($._glue_brack_parameter)]
+        parameters: $ => [optional($.star), optional($._glue_brack_group)]
       },
       newtheorem: {
         cs: $ => $.cs_newtheorem,
         parameters: $ => [
           optional($.star),
-          $._text_token,
+          $._token,
           choice(
             seq(
               $.brack_group,
-              $._text_token
+              $._token
             ),
             seq(
-              $._text_token,
+              $._token,
               optional($.brack_group)
             )
           )
@@ -411,11 +346,11 @@ module.exports = {
       },
       pagenumbering: {
         cs: $ => $.cs_pagenumbering,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._token]
       },
       pagestyle: {
         cs: $ => $.cs_pagestyle,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._token]
       },
       parbox: {
         cs: $ => $.cs_parbox,
@@ -431,14 +366,14 @@ module.exports = {
               )
             )
           ),
-          $._dimension_parameter,
-          $._text_token
+          $._dimension_token,
+          $._token
         ]
       },
       PassOptionsTo: {
         cs: $ => $.cs_PassOptionsTo,
         parameters: $ => [
-          $._text_token,
+          $._token,
           $._name_group
         ]
       },
@@ -450,12 +385,12 @@ module.exports = {
       },
       protect: {
         cs: $ => $.cs_protect,
-        parameters: $ => [$._text_expanded_parameter]
+        parameters: $ => [$._expanded_token]
       },
       Provides: {
         cs: $ => $.cs_Provides,
         parameters: $ => [
-          $._name_parameter,
+          $._name_token,
           optional($.brack_group)
         ],
         apply: true
@@ -465,8 +400,8 @@ module.exports = {
         parameters: $ => [
           optional($._dimension_brack_group),
           optional($._dimension_brack_group),
-          $._dimension_parameter,
-          $._text_token
+          $._dimension_token,
+          $._token
         ]
       },
       restorecr: {
@@ -476,21 +411,21 @@ module.exports = {
       savebox: {
         cs: $ => $.cs_savebox,
         parameters: $ => [
-          $._cs_parameter,
+          $._cs_token,
           optional(
             seq(
               $._dimension_brack_group,
               optional($.brack_group)
             )
           ),
-          $._text_token
+          $._token
         ]
       },
       sbox: {
         cs: $ => $.cs_sbox,
         parameters: $ => [
-          $._cs_parameter,
-          $._text_token
+          $._cs_token,
+          $._token
         ]
       },
       // section is actually in the class file, but it's here in the core for
@@ -499,19 +434,33 @@ module.exports = {
         cs: $ => $.cs_section,
         parameters: $ => [
           optional(choice($.star, $.brack_group)),
-          $._text_token
+          $._token
+        ]
+      },
+      stackrel: {
+        cs: $ => $.cs_stackrel,
+        parameters: $ => [
+          $._token,
+          $._token
+        ]
+      },
+      sqrt: {
+        cs: $ => $.cs_sqrt,
+        parameters: $ => [
+          optional($.brack_group),
+          $._token
         ]
       },
       thanks: {
         cs: $ => $.cs_thanks,
         parameters: $ => [
-          $._text_token
+          $._token
         ]
       },
       title: {
         cs: $ => $.cs_title,
         parameters: $ => [
-          $._text_token
+          $._token
         ]
       },
       use_209: {
@@ -524,7 +473,7 @@ module.exports = {
       textstyle: {
         cs: $ => $.cs_textstyle,
         parameters: $ => [
-          $._text_token
+          $._token
         ]
       },
       use: {
@@ -537,13 +486,19 @@ module.exports = {
       },
       usebox: {
         cs: $ => $.cs_usebox,
-        parameters: $ => [$._cs_parameter]
+        parameters: $ => [$._cs_token]
       }
     },
     environments: {
+      array: {
+        name: $ => $.env_name_array,
+        beginParameters: $ => [
+          optional($.brack_group),
+          $._token
+        ]
+      },
       display_math: {
-        name: $ => $.env_name_display_math,
-        contents: $ => [repeat($._math_mode)]
+        name: $ => $.env_name_display_math
       },
       document: {
         name: $ => $.env_name_document,
@@ -554,8 +509,7 @@ module.exports = {
         beginParameters: $ => [optional($.brack_group)]
       },
       inline_math: {
-        name: $ => $.env_name_inline_math,
-        contents: $ => [repeat($._math_mode)]
+        name: $ => $.env_name_inline_math
       },
       itemize: {
         name: $ => $.env_name_itemize,
@@ -564,7 +518,7 @@ module.exports = {
       },
       lrbox: {
         name: $ => $.env_name_lrbox,
-        beginParameters: $ => [$._cs_parameter]
+        beginParameters: $ => [$._cs_token]
       },
       minipage: {
         name: $ => $.env_name_minipage,
@@ -580,7 +534,7 @@ module.exports = {
               )
             )
           ),
-          $._dimension_parameter
+          $._dimension_token
         ]
       },
       picture: {
@@ -594,12 +548,27 @@ module.exports = {
         name: $ => $.env_name_table,
         beginParameters: $ => [optional($.brack_group)]
       },
+      tabular: {
+        name: $ => $.env_name_tabular,
+        beginParameters: $ => [
+          optional($.brack_group),
+          $._token
+        ]
+      },
+      tabularstar: {
+        name: $ => $.env_name_tabularstar,
+        beginParameters: $ => [
+          $._token,
+          optional($.brack_group),
+          $._token
+        ]
+      },
       text: {
         name: $ => $.env_name
       },
       thebibliography: {
         name: $ => $.env_name_thebibliography,
-        beginParameters: $ => [$._text_token]
+        beginParameters: $ => [$._token]
       },
       theorem: {
         name: $ => $.env_name_theorem,
@@ -609,13 +578,17 @@ module.exports = {
     rules: {
       latex_display_math: $ => seq(
         alias($.cs_display_math_begin, $.cs),
-        repeat($._math_mode),
-        choice(alias($.cs_display_math_end, $.cs), $.exit)
+        $._scope_begin_cmd,
+        repeat($._expanded_tokens),
+        choice(alias($.cs_display_math_end, $.cs), $.exit),
+        $._scope_end
       ),
       latex_inline_math: $ => seq(
         alias($.cs_inline_math_begin, $.cs),
-        repeat($._math_mode),
-        choice(alias($.cs_inline_math_end, $.cs), $.exit)
+        $._scope_begin_cmd,
+        repeat($._expanded_tokens),
+        choice(alias($.cs_inline_math_end, $.cs), $.exit),
+        $._scope_end
       )
     }
   }

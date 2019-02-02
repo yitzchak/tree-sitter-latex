@@ -1,18 +1,18 @@
 module.exports = {
-  common: {
+  text: {
     commands: {
       DeleteShortVerb: {
         cs: $ => $.cs_DeleteShortVerb,
         parameters: $ => [
           optional($.star),
-          $._delete_verb_delim_parameter
+          $._delete_verb_delim_token
         ]
       },
       MakeShortVerb: {
         cs: $ => $.cs_MakeShortVerb,
         parameters: $ => [
           optional($.star),
-          $._make_verb_delim_parameter
+          $._make_verb_delim_token
         ]
       }
     },

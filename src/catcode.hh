@@ -59,15 +59,19 @@ struct CatCodeInterval {
   Category category;
 };
 
+enum Mode : uint8_t { M_None, M_Math, M_Text };
+
 class CatCodeTable {
 protected:
   uint8_t level; // 0 is the default catcode table, 1 is the global scope, 2-255
                  // are the group scopes.
   std::unordered_map<char32_t, std::map<uint8_t, Category>> codes;
+  std::map<uint8_t, Mode> modes;
 
 public:
   CatCodeTable(std::initializer_list<CatCodeInterval> init) {
     level = 0;
+    modes[level] = M_Text;
     assign(init);
     level = 1;
   }
@@ -84,6 +88,10 @@ public:
   // Category& operator[](const char32_t key);
 
   Category operator[](const char32_t key) const;
+
+  Mode get_mode() const;
+
+  void set_mode(Mode mode);
 
   void push();
 

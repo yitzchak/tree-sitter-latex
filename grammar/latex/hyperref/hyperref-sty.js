@@ -1,31 +1,31 @@
 module.exports = {
-  common: {
+  text: {
     commands: {
       href: {
         cs: $ => $.cs_href,
         parameters: $ => [
           optional($.brack_group),
-          $._text_token,
-          $._text_token
+          $._token,
+          $._token
         ]
       },
       url: {
         cs: $ => $.cs_url,
         parameters: $ => [
-          $._text_token
+          $._token
         ]
       },
       hyperbaseurl: {
         cs: $ => $.cs_hyperbaseurl,
         parameters: $ => [
-          $._text_token
+          $._token
         ]
       },
       hyperimage: {
         cs: $ => $.cs_hyperimage,
         parameters: $ => [
-          $._text_token,
-          $._text_token
+          $._token,
+          $._token
         ]
       },
       hyperref: {
@@ -33,14 +33,14 @@ module.exports = {
         parameters: $ => [
           choice(
             seq(
-              $._text_token,
-              $._text_token,
-              $._text_token,
-              $._text_token
+              $._token,
+              $._token,
+              $._token,
+              $._token
             ),
             seq(
               $.brack_group,
-              $._text_token
+              $._token
             )
           )
         ]

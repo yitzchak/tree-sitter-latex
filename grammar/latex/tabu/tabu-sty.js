@@ -1,5 +1,5 @@
 module.exports = {
-  common: {
+  text: {
     environments: {
       tabu: {
         name: $ => $.env_name_tabu,
@@ -11,7 +11,7 @@ module.exports = {
             )
           ),
           optional($.brack_group),
-          $._text_token
+          $._token
         ]
       }
     }

@@ -1,5 +1,5 @@
 module.exports = {
-  common: {
+  text: {
     commands: {
       ExplSyntaxOff: {
         cs: $ => $.cs_ExplSyntaxOff,
@@ -8,18 +8,14 @@ module.exports = {
       ExplSyntaxOn: {
         cs: $ => $.cs_ExplSyntaxOn,
         apply: true
-      }
-    }
-  },
-  text: {
-    commands: {
+      },
       ProvidesExpl: {
         cs: $ => $.cs_ProvidesExpl,
         parameters: $ => [
-          $._text_token,
-          $._text_token,
-          $._text_token,
-          $._text_token
+          $._token,
+          $._token,
+          $._token,
+          $._token
         ],
         apply: true
       }

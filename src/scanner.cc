@@ -511,6 +511,11 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
     return true;
   }
 
+  if (valid_symbols[math_single] && catcode_table.get_mode() == M_Math) {
+    lexer->result_symbol = math_single;
+    return true;
+  }
+
   if (valid_symbols[text_single]) {
     lexer->result_symbol = text_single;
     return true;
@@ -528,17 +533,14 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
 
   CategoryFlags flags = LETTER_FLAG | OTHER_FLAG | SPACE_FLAG | EOL_FLAG;
 
-  if (!valid_symbols[superscript]) {
+  if (catcode_table.get_mode() == M_Text) {
     flags.set(SUPERSCRIPT_CATEGORY);
-  }
-
-  if (!valid_symbols[subscript]) {
     flags.set(SUBSCRIPT_CATEGORY);
   }
 
   match_chars(lexer, flags, excluded);
 
-  lexer->result_symbol = text;
+  lexer->result_symbol = (catcode_table.get_mode() == M_Text) ? text : math;
 
   return true;
 }
@@ -547,25 +549,38 @@ bool Scanner::scan_cmd_apply(TSLexer *lexer) {
   auto it = control_sequences.find(cs_name);
   if (it != control_sequences.end()) {
     catcode_table.assign(it->second.intervals);
+    if (it->second.mode != M_None) {
+      catcode_table.set_mode(it->second.mode);
+    }
   }
 
   return symbol(lexer, _cmd_apply);
 }
 
-bool Scanner::scan_env_begin(TSLexer *lexer) {
+bool Scanner::scan_scope_begin_cmd(TSLexer *lexer) {
+  catcode_table.push();
+  auto it = control_sequences.find(cs_name);
+  if (it != control_sequences.end()) {
+    catcode_table.assign(it->second.intervals);
+    if (it->second.mode != M_None) {
+      catcode_table.set_mode(it->second.mode);
+    }
+  }
+
+  return symbol(lexer, _scope_begin_cmd);
+}
+
+bool Scanner::scan_scope_begin_env(TSLexer *lexer) {
   catcode_table.push();
   auto it = environments.find(e_name);
   if (it != environments.end()) {
     catcode_table.assign(it->second.intervals);
+    if (it->second.mode != M_None) {
+      catcode_table.set_mode(it->second.mode);
+    }
   }
 
-  return symbol(lexer, _env_begin);
-}
-
-bool Scanner::scan_env_end(TSLexer *lexer) {
-  catcode_table.pop();
-
-  return symbol(lexer, _env_end);
+  return symbol(lexer, _scope_begin_env);
 }
 
 bool Scanner::scan_scope_begin(TSLexer *lexer) {
@@ -585,12 +600,22 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     return scan_cmd_apply(lexer);
   }
 
-  if (valid_symbols[_env_begin]) {
-    return scan_env_begin(lexer);
+  if (valid_symbols[_mode_math]) {
+    catcode_table.set_mode(M_Math);
+    return symbol(lexer, _mode_math);
   }
 
-  if (valid_symbols[_env_end]) {
-    return scan_env_end(lexer);
+  if (valid_symbols[_mode_text]) {
+    catcode_table.set_mode(M_Text);
+    return symbol(lexer, _mode_text);
+  }
+
+  if (valid_symbols[_scope_begin_cmd]) {
+    return scan_scope_begin_cmd(lexer);
+  }
+
+  if (valid_symbols[_scope_begin_env]) {
+    return scan_scope_begin_env(lexer);
   }
 
   if (valid_symbols[_scope_begin]) {
@@ -694,15 +719,13 @@ bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
     }
     break;
   case SUPERSCRIPT_CATEGORY:
-    if (valid_symbols[superscript]) {
-      return symbol(lexer, superscript, true);
-    }
-    return scan_text(lexer, valid_symbols);
+    return (valid_symbols[superscript] && catcode_table.get_mode() == M_Math)
+               ? symbol(lexer, superscript, true)
+               : scan_text(lexer, valid_symbols);
   case SUBSCRIPT_CATEGORY:
-    if (valid_symbols[subscript]) {
-      return symbol(lexer, subscript, true);
-    }
-    return scan_text(lexer, valid_symbols);
+    return (valid_symbols[subscript] && catcode_table.get_mode() == M_Math)
+               ? symbol(lexer, subscript, true)
+               : scan_text(lexer, valid_symbols);
   case IGNORED_CATEGORY:
     if (valid_symbols[ignored]) {
       return match_chars(lexer, IGNORED_FLAG) && symbol(lexer, ignored);

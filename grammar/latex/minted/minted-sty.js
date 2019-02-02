@@ -5,7 +5,7 @@ module.exports = {
         cs: $ => $.cs_mint,
         parameters: $ => [
           optional($.brack_group),
-          $._text_token,
+          $._token,
           $.verb_delim,
           optional(alias($.verb_body, $.verbatim)),
           choice(
@@ -18,7 +18,7 @@ module.exports = {
         cs: $ => $.cs_mintinline,
         parameters: $ => [
           optional($.brack_group),
-          $._text_token,
+          $._token,
           $.verb_delim,
           optional(alias($.verb_body, $.verbatim)),
           choice(
@@ -33,7 +33,7 @@ module.exports = {
         name: $ => $.env_name_minted,
         beginParameters: $ => [
           optional($.brack_group),
-          optional($._text_token),
+          optional($._token),
           $.eol
         ],
         contents: $ => [

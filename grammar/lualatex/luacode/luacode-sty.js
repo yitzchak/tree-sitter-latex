@@ -1,15 +1,15 @@
 module.exports = {
-  common: {
+  text: {
     commands: {
       luacode: {
         cs: $ => $.cs_luacode,
-        parameters: $ => [$._apply_parameter]
+        parameters: $ => [$._apply_token]
       }
     },
     environments: {
       luacode: {
         name: $ => $.env_name_luacode,
-        contents: $ => [repeat($._text_mode)]
+        contents: $ => [repeat($._expanded_tokens)]
       },
       luacodestar: {
         name: $ => $.env_name_luacodestar,

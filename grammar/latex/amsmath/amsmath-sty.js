@@ -3,23 +3,20 @@
 
 module.exports = {
   text: {
-    environments: {
-      alignat: {
-        name: $ => $.env_name_alignat,
-        beginParameters: $ => [$._text_token],
-        contents: $ => [repeat($._math_mode)]
-      }
-    }
-  },
-  math: {
     commands: {
       tag: {
         cs: $ => $.cs_tag,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._apply_token]
       },
       text_cmd: {
         cs: $ => $.cs_text,
-        parameters: $ => [$._text_token]
+        parameters: $ => [$._apply_token]
+      }
+    },
+    environments: {
+      alignat: {
+        name: $ => $.env_name_alignat,
+        beginParameters: $ => [$._token]
       }
     }
   }
