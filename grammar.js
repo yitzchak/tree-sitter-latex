@@ -29,6 +29,10 @@ function group ($, ...contents) {
   return seq($.l, $._scope_begin, ...contents, $.r, $._scope_end)
 }
 
+function cmdGroup ($, ...contents) {
+  return seq($.l, $._scope_begin_cmd, ...contents, $.r, $._scope_end)
+}
+
 // function simple_group ($, ...contents) {
 //   return seq(choice($.l, $.bgroup), $._scope_begin, ...contents, choice($.r, $.egroup), $._scope_end)
 // }
@@ -57,9 +61,9 @@ let g = {
   name: 'latex',
 
   externals: $ => [
-    $._cmd_apply,
-    $._env_begin,
-    $._env_end,
+    $._apply_cmd,
+    $._scope_begin_cmd,
+    $._scope_begin_env,
     $._scope_begin,
     $._scope_end,
     $._space,
@@ -409,9 +413,9 @@ let g = {
       ...rules.math.map(rule => rule($))
     ),
 
-    apply_group: $ => group($, $._cmd_apply, repeat($._text_mode)),
+    cmd_group: $ => cmdGroup($, repeat($._text_mode)),
 
-    _apply_parameter: $ => choice($.cs, alias($.apply_group, $.group)),
+    _cmd_token: $ => choice($.cs, alias($.cmd_group, $.group)),
 
     make_verb_delim_group: $ => group($,
       choice(
@@ -537,7 +541,7 @@ function defCmd (mode, label, { cs, parameters, apply }) {
     }
 
     if (apply) {
-      tail.unshift($._cmd_apply)
+      tail.unshift($._apply_cmd)
     }
 
     const bodyAndTail = body.reduceRight((c, p) => choice(...exit, c ? seq(p, c) : p),
@@ -575,7 +579,7 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
     }
 
     if (!bare) {
-      tail.unshift($._env_begin)
+      tail.unshift($._scope_begin_env)
     }
 
     return beginCmd($,
@@ -592,24 +596,24 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
   if (mode === 'common' && !contents) {
     g.rules[envMathSym] = $ => seq(
       alias($[beginRuleSym], $.begin),
-      // ...(bare ? [] : [$._env_begin]),
+      // ...(bare ? [] : [$._scope_begin_env]),
       repeat($._math_mode),
       choice(
         alias($[endRuleSym], $.end),
         $.exit
       ),
-      ...(bare ? [] : [$._env_end])
+      ...(bare ? [] : [$._scope_end])
     )
 
     g.rules[envTextSym] = $ => seq(
       alias($[beginRuleSym], $.begin),
-      // ...(bare ? [] : [$._env_begin]),
+      // ...(bare ? [] : [$._scope_begin_env]),
       repeat($._text_mode),
       choice(
         alias($[endRuleSym], $.end),
         $.exit
       ),
-      ...(bare ? [] : [$._env_end])
+      ...(bare ? [] : [$._scope_end])
     )
 
     rules.math.push($ => alias($[envMathSym], $[envSym]))
@@ -617,13 +621,13 @@ function defEnv (mode, label, { name, beginParameters, endParameters, contents, 
   } else {
     g.rules[envSym] = $ => seq(
       alias($[beginRuleSym], $.begin),
-      // ...(bare ? [] : [$._env_begin]),
+      // ...(bare ? [] : [$._scope_begin_env]),
       ...(contents ? contents($) : [repeat(mode === 'math' ? $._math_mode : $._text_mode)]),
       choice(
         alias($[endRuleSym], $.end),
         $.exit
       ),
-      ...(bare ? [] : [$._env_end])
+      ...(bare ? [] : [$._scope_end])
     )
 
     rules[mode].push($ => $[envSym])

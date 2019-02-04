@@ -3,7 +3,7 @@ module.exports = {
     commands: {
       luacode: {
         cs: $ => $.cs_luacode,
-        parameters: $ => [$._apply_parameter]
+        parameters: $ => [$._cmd_token]
       }
     },
     environments: {

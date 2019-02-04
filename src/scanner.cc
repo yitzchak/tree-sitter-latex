@@ -543,29 +543,35 @@ bool Scanner::scan_text(TSLexer *lexer, const bool *valid_symbols) {
   return true;
 }
 
-bool Scanner::scan_cmd_apply(TSLexer *lexer) {
+bool Scanner::scan_apply_cmd(TSLexer *lexer) {
   auto it = control_sequences.find(cs_name);
   if (it != control_sequences.end()) {
     catcode_table.assign(it->second.intervals);
   }
 
-  return symbol(lexer, _cmd_apply);
+  return symbol(lexer, _apply_cmd);
 }
 
-bool Scanner::scan_env_begin(TSLexer *lexer) {
+bool Scanner::scan_scope_begin_cmd(TSLexer *lexer) {
   catcode_table.push();
+
+  auto it = control_sequences.find(cs_name);
+  if (it != control_sequences.end()) {
+    catcode_table.assign(it->second.intervals);
+  }
+
+  return symbol(lexer, _scope_begin_cmd);
+}
+
+bool Scanner::scan_scope_begin_env(TSLexer *lexer) {
+  catcode_table.push();
+
   auto it = environments.find(e_name);
   if (it != environments.end()) {
     catcode_table.assign(it->second.intervals);
   }
 
-  return symbol(lexer, _env_begin);
-}
-
-bool Scanner::scan_env_end(TSLexer *lexer) {
-  catcode_table.pop();
-
-  return symbol(lexer, _env_end);
+  return symbol(lexer, _scope_begin_env);
 }
 
 bool Scanner::scan_scope_begin(TSLexer *lexer) {
@@ -581,16 +587,16 @@ bool Scanner::scan_scope_end(TSLexer *lexer) {
 }
 
 bool Scanner::scan(TSLexer *lexer, const bool *valid_symbols) {
-  if (valid_symbols[_cmd_apply]) {
-    return scan_cmd_apply(lexer);
+  if (valid_symbols[_apply_cmd]) {
+    return scan_apply_cmd(lexer);
   }
 
-  if (valid_symbols[_env_begin]) {
-    return scan_env_begin(lexer);
+  if (valid_symbols[_scope_begin_cmd]) {
+    return scan_scope_begin_cmd(lexer);
   }
 
-  if (valid_symbols[_env_end]) {
-    return scan_env_end(lexer);
+  if (valid_symbols[_scope_begin_env]) {
+    return scan_scope_begin_env(lexer);
   }
 
   if (valid_symbols[_scope_begin]) {

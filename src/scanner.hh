@@ -14,9 +14,9 @@
 namespace LaTeX {
 
 enum SymbolType {
-  _cmd_apply,
-  _env_begin,
-  _env_end,
+  _apply_cmd,
+  _scope_begin_cmd,
+  _scope_begin_env,
   _scope_begin,
   _scope_end,
   _space,
@@ -364,11 +364,11 @@ class Scanner {
 
   bool scan_text(TSLexer *lexer, const bool *valid_symbols);
 
-  bool scan_cmd_apply(TSLexer *lexer);
+  bool scan_apply_cmd(TSLexer *lexer);
 
-  bool scan_env_begin(TSLexer *lexer);
+  bool scan_scope_begin_cmd(TSLexer *lexer);
 
-  bool scan_env_end(TSLexer *lexer);
+  bool scan_scope_begin_env(TSLexer *lexer);
 
   bool scan_scope_begin(TSLexer *lexer);
 
